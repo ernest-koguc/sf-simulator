@@ -1,0 +1,31 @@
+@use "@angular/material" as mat;
+
+body {
+  background-image: url('assets/background.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body { font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@include mat.core();
+
+$my-app-primary: mat.define-palette(mat.$deep-purple-palette);
+$my-app-accent: mat.define-palette(mat.$blue-palette);
+$my-app-warn: mat.define-palette(mat.$red-palette);
+
+$dark-theme: mat.define-dark-theme( ( color: ( primary: $my-app-primary, accent: $my-app-accent, warn: $my-app-warn, ), ) );
+$light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accent: $my-app-accent, warn: $my-app-warn, ), ) );
+
+@include mat.all-component-themes($dark-theme);

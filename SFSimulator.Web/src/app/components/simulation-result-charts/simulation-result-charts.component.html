@@ -1,0 +1,44 @@
+<div class=" row" styl="height-auto" [@slideInOutY]="chartVisible ? 'in' : 'out'" style="overflow-x: clip">
+    <div class="col-xxl-6 pt-5">
+      <div class="row">
+        <div align="center" [@slideInOutX]="baseStatChartType == 'Daily' ? 'in' : 'out'">
+          <mat-slider class="p-auto" min="1" [max]="lastDay" step="1" discrete="true">
+            <input matSliderThumb [(ngModel)]="baseStatChartCurrentDay">
+          </mat-slider>
+        </div>
+      </div>
+      <div class="row">
+        <mat-radio-group [(ngModel)]="baseStatChartType" align="center">
+          <mat-radio-button *ngFor="let chartType of chartTypes" [value]="chartType">
+            {{chartType}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <canvas baseChart height="200"
+              [data]="baseStatChart?.data"
+              [options]="baseStatChart?.options"
+              [type]="'bar'">
+      </canvas>
+    </div>
+    <div class="col-xxl-6 py-5">
+      <div class="row">
+        <div align="center" [@slideInOutX]="xpChartType == 'Daily' ? 'in' : 'out'">
+          <mat-slider min="1" [max]="lastDay" step="1" discrete="true" align="center">
+            <input matSliderThumb [(ngModel)]="xpChartCurrentDay">
+          </mat-slider>
+        </div>
+      </div>
+      <div class="row">
+        <mat-radio-group [(ngModel)]="xpChartType" align="center">
+          <mat-radio-button *ngFor="let chartType of chartTypes" [value]="chartType">
+            {{chartType}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+        <canvas baseChart height="200"
+                [data]="xpChart?.data"
+                [options]="xpChart?.options"
+                [type]="'bar'">
+        </canvas>
+    </div>
+</div>
