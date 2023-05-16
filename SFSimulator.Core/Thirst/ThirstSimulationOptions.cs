@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.Thirst
+﻿namespace SFSimulator.Core
 {
     public class ThirstSimulationOptions
     {

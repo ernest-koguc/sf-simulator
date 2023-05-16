@@ -1,6 +1,4 @@
-﻿using QuestSimulator.Enums;
-
-namespace QuestSimulator.Items
+﻿namespace SFSimulator.Core
 {
     public class Item
     {

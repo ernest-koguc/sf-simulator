@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.IoC
+﻿namespace SFSimulator.Core
 {
     public class TypeMap
     {
@@ -6,7 +6,7 @@
         public Type Interface { get; }
         public TypeMapOption TypeMapOption { get; }
 
-        public TypeMap(Type implementation, Type typeInterface, TypeMapOption typeMapOption=TypeMapOption.None)
+        public TypeMap(Type implementation, Type typeInterface, TypeMapOption typeMapOption = TypeMapOption.None)
         {
             Implementation = implementation;
             Interface = typeInterface;

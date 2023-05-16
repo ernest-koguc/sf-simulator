@@ -1,14 +1,4 @@
-﻿using QuestSimulator.Calendars;
-using QuestSimulator.Characters;
-using QuestSimulator.FileReaders;
-using QuestSimulator.Games;
-using QuestSimulator.Items;
-using QuestSimulator.Quests;
-using QuestSimulator.TavernEvents;
-using QuestSimulator.Thirst;
-using QuestSimulator.Utility;
-
-namespace QuestSimulator.IoC
+﻿namespace SFSimulator.Core
 {
     public static class TypesMapper
     {

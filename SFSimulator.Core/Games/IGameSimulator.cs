@@ -1,7 +1,4 @@
-﻿using QuestSimulator.Characters;
-using QuestSimulator.Simulation;
-
-namespace QuestSimulator.Games
+﻿namespace SFSimulator.Core
 {
     public interface IGameSimulator
     {

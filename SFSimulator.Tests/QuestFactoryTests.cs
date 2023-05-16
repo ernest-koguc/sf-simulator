@@ -1,13 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuestSimulator.Enums;
-using QuestSimulator.FileReaders;
-using QuestSimulator.Items;
-using QuestSimulator.Quests;
+using SFSimulator.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuestSimulatorTests
+namespace SFSimulator.Tests
 {
     [TestClass]
     public class QuestFactoryTests
@@ -156,7 +153,7 @@ namespace QuestSimulatorTests
 
             var count = questList.Count(q => q.Item != null && q.Item.ItemSourceType == ItemSourceType.BeforeQuest);
 
-            Assert.IsTrue(count >= i*0.095 && count <= i*0.105);
+            Assert.IsTrue(count >= i * 0.095 && count <= i * 0.105);
         }
         [TestMethod]
         public void Create_has_estimated_9percent_to_return_quest_with_pet_item()
@@ -192,7 +189,7 @@ namespace QuestSimulatorTests
                 questList.Add(quest);
             }
 
-            var count = questList.Count(q => q.Item != null && q.Item.ItemSourceType == ItemSourceType.AfterQuest && q.Item.ItemType!= ItemType.PetFood);
+            var count = questList.Count(q => q.Item != null && q.Item.ItemSourceType == ItemSourceType.AfterQuest && q.Item.ItemType != ItemType.PetFood);
 
             Assert.IsTrue(count >= i * 0.075 && count <= i * 0.087);
         }

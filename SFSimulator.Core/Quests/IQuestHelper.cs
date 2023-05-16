@@ -1,6 +1,4 @@
-﻿using QuestSimulator.Enums;
-
-namespace QuestSimulator.Quests
+﻿namespace SFSimulator.Core
 {
     public interface IQuestHelper
     {

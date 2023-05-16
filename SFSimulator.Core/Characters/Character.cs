@@ -1,6 +1,4 @@
-﻿using QuestSimulator.Enums;
-
-namespace QuestSimulator.Characters
+﻿namespace SFSimulator.Core
 {
     public class Character
     {

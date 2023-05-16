@@ -79,10 +79,15 @@ export class SimulationConfig implements OnInit {
     if (this.simulationOptions.valid)
       this.configEmitter.emit(this.simulationOptions.getRawValue());
   }
-  loadForm(formData: any) {
-    this.simulationOptions.patchValue(formData, { emitEvent: true });
+  loadForm(data: any) {
+    var form = this.mapToForm(JSON.parse(data));
+    this.simulationOptions.patchValue(form, { emitEvent: true });
   }
-
   public position: TooltipPosition = "right";
   public goldPitTooltip: string = "Goldpit lvl is raised by 1 every 15 days";
+
+  mapToForm(data: any): Partial<SimulationOptionsForm> {
+
+    return {};
+  }
 }

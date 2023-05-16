@@ -1,8 +1,7 @@
-﻿namespace QuestSimulator.Utility
+﻿namespace SFSimulator.Core
 {
     public interface ICurvesHelper
     {
-        List<double> ExperienceCurve { get; }
         List<double> GoldCurve { get; }
     }
 }

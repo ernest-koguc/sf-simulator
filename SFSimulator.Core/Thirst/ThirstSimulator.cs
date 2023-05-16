@@ -1,7 +1,4 @@
-﻿using QuestSimulator.Enums;
-using QuestSimulator.Quests;
-
-namespace QuestSimulator.Thirst
+﻿namespace SFSimulator.Core
 {
     public class ThirstSimulator : IThirstSimulator
     {
@@ -18,7 +15,7 @@ namespace QuestSimulator.Thirst
         {
             _questFactory = questFactory;
         }
-        public IEnumerable<Quest>? StartThirst(double thirst, QuestValue minQuestValues, int characterLevel, MountType mountType, List<EventType>? currentEvents, bool drinkBeerOneByOne=false)
+        public IEnumerable<Quest>? StartThirst(double thirst, QuestValue minQuestValues, int characterLevel, MountType mountType, List<EventType>? currentEvents, bool drinkBeerOneByOne = false)
         {
             if (thirst <= 0) return null;
 
@@ -40,7 +37,7 @@ namespace QuestSimulator.Thirst
         public IEnumerable<Quest>? NextQuests(Quest previouslyChoosenQuest, QuestValue minQuestValue, int characterLevel, MountType mountType)
         {
             CurrentThirst -= previouslyChoosenQuest.Time;
-            if (CurrentThirst==0 && MaxBeers>Beers)
+            if (CurrentThirst == 0 && MaxBeers > Beers)
             {
                 Beers++;
                 CurrentThirst = 20;
@@ -52,9 +49,9 @@ namespace QuestSimulator.Thirst
             var quests = new List<Quest>();
             while (thirst > 0)
             {
-                    var quest = _questFactory.CreateTimeMachineQuest(minQuestValue, thirst, mountType);
-                    quests.Add(quest);
-                    thirst -= quest.Time;
+                var quest = _questFactory.CreateTimeMachineQuest(minQuestValue, thirst, mountType);
+                quests.Add(quest);
+                thirst -= quest.Time;
             }
             return quests;
         }
@@ -67,7 +64,7 @@ namespace QuestSimulator.Thirst
 
             var quests = new List<Quest>();
 
-            if (Beers==10 || Beers == 11)
+            if (Beers == 10 || Beers == 11)
             {
                 quests.Add(
                     _questFactory.CreateBonusQuest(minQuestValue, characterLevel, CurrentThirst, ThirstSimulationOptions.HasGoldScroll, ThirstSimulationOptions.GoldRuneBonus, events: TavernEvents, mountType));

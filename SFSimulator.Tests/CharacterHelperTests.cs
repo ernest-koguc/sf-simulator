@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuestSimulator.Characters;
-using QuestSimulator.FileReaders;
-using QuestSimulator.Utility;
+using SFSimulator.Core;
 using System.Collections.Generic;
 
-namespace QuestSimulatorTests
+namespace SFSimulator.Tests
 {
     [TestClass]
     public class CharacterHelperTests

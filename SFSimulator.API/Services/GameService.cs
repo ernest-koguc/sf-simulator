@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using QuestSimulator.Characters;
-using QuestSimulator.DTOs;
-using QuestSimulator.Games;
-using QuestSimulator.Simulation;
+using SFSimulator.Core;
 
-namespace SFSimulatorAPI.Services
+namespace SFSimulator.API.Services
 {
     public class GameService : IGameService
     {

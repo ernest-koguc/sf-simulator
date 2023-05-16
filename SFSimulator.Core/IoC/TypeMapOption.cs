@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.IoC
+﻿namespace SFSimulator.Core
 {
     public enum TypeMapOption
     {

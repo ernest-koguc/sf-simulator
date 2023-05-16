@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.Items
+﻿namespace SFSimulator.Core
 {
     public class ItemGoldValueComparer : IComparer<Item>
     {

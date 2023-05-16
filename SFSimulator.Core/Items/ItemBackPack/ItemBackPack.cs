@@ -1,8 +1,6 @@
-﻿using QuestSimulator.Enums;
-using QuestSimulator.FileReaders;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace QuestSimulator.Items
+namespace SFSimulator.Core
 {
     public class ItemBackPack : IItemBackPack
     {
@@ -18,7 +16,7 @@ namespace QuestSimulator.Items
 
         public float? AddItemToBackPack(Item? item, IEnumerable<ItemType> currentItemsForWitch)
         {
-            if (item == null || item.ItemType==ItemType.PetFood)
+            if (item == null || item.ItemType == ItemType.PetFood)
                 return null;
 
             if (currentItemsForWitch.Contains(item.ItemType))
@@ -53,7 +51,7 @@ namespace QuestSimulator.Items
             });
 
             Items.Sort(ItemComparer);
-            return gold > 0 ? gold*2 : null;
+            return gold > 0 ? gold * 2 : null;
         }
 
         public float? SellAllItemsToWItch()

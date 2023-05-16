@@ -1,10 +1,9 @@
-﻿namespace QuestSimulator.Utility
+﻿namespace SFSimulator.Core
 {
     public class CurvesHelper : ICurvesHelper
     {
 
         public List<double> GoldCurve { get; } = new(650) { 0, 25, 50, 75 };
-        public List<double> ExperienceCurve { get; } = new(650);
         public CurvesHelper()
         {
             for (int i = GoldCurve.Count; i < 640; i++)

@@ -1,7 +1,4 @@
-﻿using QuestSimulator.Enums;
-using QuestSimulator.Quests;
-
-namespace QuestSimulator.Characters
+﻿namespace SFSimulator.Core
 {
     public interface ICharacterHelper
     {
@@ -18,6 +15,6 @@ namespace QuestSimulator.Characters
         float GetDailyGoldFromDiceGame(int characterLevel, IEnumerable<EventType> events);
         float GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events);
         int GetXPFromGuildFight(int characterLevel, IEnumerable<EventType> events);
-        float GetDailyGoldFromGemMine(int characterLevel, int gemMineLevel, int workers=15);
+        float GetDailyGoldFromGemMine(int characterLevel, int gemMineLevel, int workers = 15);
     }
 }

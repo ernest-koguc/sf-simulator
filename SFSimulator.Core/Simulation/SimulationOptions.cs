@@ -1,8 +1,4 @@
-﻿using QuestSimulator.Characters;
-using QuestSimulator.Enums;
-using QuestSimulator.Quests;
-
-namespace QuestSimulator.Simulation
+﻿namespace SFSimulator.Core
 {
     public class SimulationOptions
     {

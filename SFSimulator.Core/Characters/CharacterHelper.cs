@@ -1,9 +1,4 @@
-﻿using QuestSimulator.Enums;
-using QuestSimulator.FileReaders;
-using QuestSimulator.Quests;
-using QuestSimulator.Utility;
-
-namespace QuestSimulator.Characters
+﻿namespace SFSimulator.Core
 {
     public class CharacterHelper : ICharacterHelper
     {
@@ -60,7 +55,7 @@ namespace QuestSimulator.Characters
         public float GetHourlyGoldPitProduction(int characterLevel, int goldPitLevel, bool goldEvent)
         {
             var goldCurveValue = _curvesHelper.GoldCurve[characterLevel] * 12 / 1000;
-            var goldPitProduction = (goldCurveValue * goldPitLevel / 75f) * (1 + Math.Max(0, goldPitLevel-15)/100f);
+            var goldPitProduction = goldCurveValue * goldPitLevel / 75f * (1 + Math.Max(0, goldPitLevel - 15) / 100f);
 
             if (goldEvent)
                 goldPitProduction *= 1.5f;
@@ -72,7 +67,7 @@ namespace QuestSimulator.Characters
             var xp = GetExperienceForNextLevel(characterLevel);
             var multiplier = 1.5 + 0.75 * (characterLevel - 1);
             var basic = xp / multiplier;
-            var hbase = (basic / 30) / Math.Max(1, Math.Exp(30090.33 / 5000000 * (characterLevel - 99)));
+            var hbase = basic / 30 / Math.Max(1, Math.Exp(30090.33 / 5000000 * (characterLevel - 99)));
             var hourly = (int)(academyLevel * hbase);
 
             if (xpEvent)
@@ -100,7 +95,7 @@ namespace QuestSimulator.Characters
                 throw new ArgumentOutOfRangeException(nameof(rewardSize));
 
             var xp = GetExperienceForNextLevel(characterLevel);
-            var multiplier = 5d * (4-rewardSize);
+            var multiplier = 5d * (4 - rewardSize);
             var calendar = Math.Ceiling(xp / multiplier);
 
             return (int)calendar;
@@ -171,7 +166,7 @@ namespace QuestSimulator.Characters
             var smallXpRewardChance = 0.1f;
             var bigXpRewardChance = 0.1f;
 
-            var totalXp = (dailySpins * smallXpRewardChance * xpReward / 2) + (dailySpins * bigXpRewardChance * xpReward);
+            var totalXp = dailySpins * smallXpRewardChance * xpReward / 2 + dailySpins * bigXpRewardChance * xpReward;
 
             if (events.Contains(EventType.EXPERIENCE))
                 totalXp *= 2;

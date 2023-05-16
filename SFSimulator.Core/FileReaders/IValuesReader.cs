@@ -1,7 +1,4 @@
-﻿
-using QuestSimulator.Quests;
-
-namespace QuestSimulator.FileReaders
+﻿namespace SFSimulator.Core
 {
     public interface IValuesReader
     {

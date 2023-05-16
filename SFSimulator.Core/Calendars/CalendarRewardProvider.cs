@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.Calendars
+﻿namespace SFSimulator.Core
 {
     public class CalendarRewardProvider : ICalendarRewardProvider
     {
@@ -13,7 +13,7 @@
         public void SetCalendar(int calendar, int day, bool skipCalendar)
         {
             CalendarSkipping = skipCalendar;
-            
+
             CalendarRewards = CalendarSkipping ? SetCalendarSkippingRewards() : SetCalendarRewards();
 
             if (calendar < 1 || calendar > CalendarRewards.Keys.Max())
@@ -22,7 +22,7 @@
                 throw new ArgumentOutOfRangeException(nameof(day));
 
             CurrentCalendar = calendar;
-            CurrentDay= day;
+            CurrentDay = day;
         }
         public CalendarRewardType GetNextReward()
         {

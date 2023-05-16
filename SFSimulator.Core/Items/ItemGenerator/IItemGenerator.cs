@@ -1,5 +1,4 @@
-﻿using QuestSimulator.Enums;
-namespace QuestSimulator.Items
+﻿namespace SFSimulator.Core
 {
     public interface IItemGenerator
     {

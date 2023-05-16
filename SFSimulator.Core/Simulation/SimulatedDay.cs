@@ -1,6 +1,4 @@
-﻿using QuestSimulator.Enums;
-
-namespace QuestSimulator.Simulation
+﻿namespace SFSimulator.Core
 {
     public class SimulatedDay
     {

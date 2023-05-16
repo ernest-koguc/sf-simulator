@@ -1,7 +1,6 @@
-﻿using QuestSimulator.DTOs;
-using QuestSimulator.Simulation;
+﻿using SFSimulator.Core;
 
-namespace SFSimulatorAPI.Services
+namespace SFSimulator.API.Services
 {
     public interface IGameService
     {

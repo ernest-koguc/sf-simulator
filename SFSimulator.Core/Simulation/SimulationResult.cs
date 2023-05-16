@@ -1,6 +1,4 @@
-﻿using QuestSimulator.DTOs;
-
-namespace QuestSimulator.Simulation
+﻿namespace SFSimulator.Core
 {
     public class SimulationResult
     {

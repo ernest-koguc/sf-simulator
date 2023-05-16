@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.Enums
+﻿namespace SFSimulator.Core
 {
     public enum GainSource
     {

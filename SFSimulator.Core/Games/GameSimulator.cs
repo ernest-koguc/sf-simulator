@@ -1,15 +1,6 @@
 ﻿using AutoMapper;
-using QuestSimulator.Calendars;
-using QuestSimulator.Characters;
-using QuestSimulator.DTOs;
-using QuestSimulator.Enums;
-using QuestSimulator.Items;
-using QuestSimulator.Quests;
-using QuestSimulator.Simulation;
-using QuestSimulator.TavernEvents;
-using QuestSimulator.Thirst;
 
-namespace QuestSimulator.Games
+namespace SFSimulator.Core
 {
     public class GameSimulator : IGameSimulator
     {
@@ -32,7 +23,7 @@ namespace QuestSimulator.Games
         public SimulationResult SimulationResult { get; set; } = new SimulationResult();
         public Character Character { get; set; } = null!;
         public SimulationOptions SimulationOptions { get; set; } = null!;
-        
+
         public GameSimulator(ICharacterHelper characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IEventScheduler eventScheduler, IQuestChooser questChooser, IMapper mapper)
         {
             _characterHelper = characterHelper;
@@ -71,7 +62,7 @@ namespace QuestSimulator.Games
 
             return SimulationResult;
         }
-        private void SetSimulationOptions(Character character, SimulationOptions simulationOptions, int? days=null)
+        private void SetSimulationOptions(Character character, SimulationOptions simulationOptions, int? days = null)
         {
             Character = character;
             SimulationOptions = simulationOptions;

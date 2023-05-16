@@ -1,7 +1,4 @@
-﻿using QuestSimulator.Enums;
-using QuestSimulator.Items;
-
-namespace QuestSimulator.Quests
+﻿namespace SFSimulator.Core
 {
     public class QuestFactory : IQuestFactory
     {

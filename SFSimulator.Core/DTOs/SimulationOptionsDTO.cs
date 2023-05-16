@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuestSimulator.DTOs
+namespace SFSimulator.Core
 {
     public class SimulationOptionsDTO
     {
-        [Required]
+        public string CharacterName { get; set; } = null!;
         public int Level { get; set; } = 1;
         public int BaseStat { get; set; } = 0;
         public int Experience { get; set; } = 0;

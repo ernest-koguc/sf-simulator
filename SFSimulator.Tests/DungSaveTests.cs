@@ -1,4 +1,4 @@
-﻿namespace QuestSimulatorTests
+﻿namespace SFSimulator.Tests
 {
     public class DungSaveTests
     {

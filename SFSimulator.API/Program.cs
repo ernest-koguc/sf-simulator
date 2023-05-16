@@ -1,6 +1,6 @@
 ﻿using NLog.Extensions.Logging;
-using SFSimulatorAPI.IoC;
-using SFSimulatorAPI.Mappings;
+using SFSimulator.API.IoC;
+using SFSimulator.API.Mappings;
 
 var logger = NLog.LogManager.GetCurrentClassLogger();
 

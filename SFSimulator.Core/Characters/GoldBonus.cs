@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.Characters
+﻿namespace SFSimulator.Core
 {
     public class GoldBonus
     {
@@ -8,11 +8,11 @@
         public bool HasGoldScroll { get; set; } = false;
         public GoldBonus(float tower = 100, float guildBonus = 200, float runeBonus = 50, bool scroll = true)
         {
-            Tower = tower/100;
-            GuildBonus = guildBonus/100;
-            RuneBonus = runeBonus/100;
+            Tower = tower / 100;
+            GuildBonus = guildBonus / 100;
+            RuneBonus = runeBonus / 100;
             HasGoldScroll = scroll;
         }
-        public float CombinedBonus() => (1 + Tower + GuildBonus);
+        public float CombinedBonus() => 1 + Tower + GuildBonus;
     }
 }

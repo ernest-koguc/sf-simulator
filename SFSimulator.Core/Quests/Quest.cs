@@ -1,6 +1,4 @@
-﻿using QuestSimulator.Items;
-
-namespace QuestSimulator.Quests
+﻿namespace SFSimulator.Core
 {
     public class Quest
     {

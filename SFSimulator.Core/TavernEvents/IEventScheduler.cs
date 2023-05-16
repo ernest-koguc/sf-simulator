@@ -1,7 +1,4 @@
-﻿
-using QuestSimulator.Enums;
-
-namespace QuestSimulator.TavernEvents
+﻿namespace SFSimulator.Core
 {
     public interface IEventScheduler
     {

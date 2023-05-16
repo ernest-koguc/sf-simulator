@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, ObservableInput, retry, throwError } from 'rxjs';
 import { SimulationOptionsForm } from '../../dto/simulation-options';
@@ -22,7 +22,7 @@ export class SimulatorService {
 
   simulateDays(simulationOptions: SimulationOptionsForm, days: number): Observable<SimulationResult> {
 
-    var url = environment.apiUrl + '/api/game/simulateUntilDays';
+    var url = environment.apiUrl + '/api/simulateUntilDays';
 
     var options = {
       params: new HttpParams().set("days", days)
@@ -34,7 +34,7 @@ export class SimulatorService {
   }
   simulateLevels(simulationOptions: SimulationOptionsForm, level: number): Observable<SimulationResult> {
 
-    var url = environment.apiUrl + '/api/game/simulateUntilLevel';
+    var url = environment.apiUrl + '/api/simulateUntilLevel';
 
     var options = {
       params: new HttpParams().set("level", level)

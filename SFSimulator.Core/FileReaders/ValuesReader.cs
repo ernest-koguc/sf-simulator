@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace QuestSimulator.FileReaders
+namespace SFSimulator.Core
 {
     public class ValuesReader : IValuesReader
     {

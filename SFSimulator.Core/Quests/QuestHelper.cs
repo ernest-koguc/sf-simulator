@@ -1,13 +1,12 @@
-﻿using QuestSimulator.Enums;
-
-namespace QuestSimulator.Quests
+﻿namespace SFSimulator.Core
 {
     public class QuestHelper : IQuestHelper
     {
         public float GetTime(int questLength, MountType mountType)
         {
             var mountFactor = 1f;
-            switch (mountType) {
+            switch (mountType)
+            {
                 case MountType.None:
                     mountFactor = 1f;
                     break;

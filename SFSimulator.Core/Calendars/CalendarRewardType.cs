@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.Calendars
+﻿namespace SFSimulator.Core
 {
     public enum CalendarRewardType
     {

@@ -1,7 +1,7 @@
-﻿using QuestSimulator.IoC;
-using SFSimulatorAPI.Services;
+﻿using SFSimulator.API.Services;
+using SFSimulator.Core;
 
-namespace SFSimulatorAPI.IoC
+namespace SFSimulator.API.IoC
 {
     public static class IoCRegisterer
     {

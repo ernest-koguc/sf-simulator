@@ -1,13 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuestSimulator.Enums;
-using QuestSimulator.FileReaders;
-using QuestSimulator.Items;
-using QuestSimulator.Quests;
-using QuestSimulator.Thirst;
+using SFSimulator.Core;
 using System;
 using System.Collections.Generic;
 
-namespace QuestSimulatorTests
+namespace SFSimulator.Tests
 {
     [TestClass]
     public class ThirstSimulatorTests
@@ -21,7 +17,7 @@ namespace QuestSimulatorTests
                 var thirstSimulator = new ThirstSimulator(new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(), new ValuesReader()), new Random()));
                 var thirst = 200;
                 var choosenQuestsThirst = 0d;
-                var quests = thirstSimulator.StartThirst( thirst, new QuestValue(10000, 10000), 1, MountType.Griffin, new List<EventType>());
+                var quests = thirstSimulator.StartThirst(thirst, new QuestValue(10000, 10000), 1, MountType.Griffin, new List<EventType>());
 
 
                 //SMART AI
@@ -35,7 +31,7 @@ namespace QuestSimulatorTests
 
                 choosenQuestsThirst = 0d;
                 //SIMPLE AI
-                quests = thirstSimulator.StartThirst( thirst, new QuestValue(10000, 10000), 1, MountType.Griffin, new List<EventType>());
+                quests = thirstSimulator.StartThirst(thirst, new QuestValue(10000, 10000), 1, MountType.Griffin, new List<EventType>());
                 while (quests is not null)
                 {
                     var choosenQuest = questChooser.ChooseBestQuest(quests, Priority.GOLD, QuestChooserAI.SIMPLE);

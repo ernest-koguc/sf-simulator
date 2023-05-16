@@ -1,8 +1,6 @@
-﻿using QuestSimulator.Enums;
-using QuestSimulator.FileReaders;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace QuestSimulator.Items
+namespace SFSimulator.Core
 {
     public class ItemGenerator : IItemGenerator
     {

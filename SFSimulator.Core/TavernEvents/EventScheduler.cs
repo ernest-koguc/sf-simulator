@@ -1,6 +1,4 @@
-﻿using QuestSimulator.Enums;
-
-namespace QuestSimulator.TavernEvents
+﻿namespace SFSimulator.Core
 {
     public class EventScheduler : IEventScheduler
     {
@@ -38,7 +36,7 @@ namespace QuestSimulator.TavernEvents
 
             if (week > 12)
                 week %= 12;
-            if (week==0)
+            if (week == 0)
                 week = 12;
 
             return EventWeeks[week];

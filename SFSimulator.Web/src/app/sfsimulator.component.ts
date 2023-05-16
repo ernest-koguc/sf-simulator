@@ -3,11 +3,13 @@ import { SimulationOptionsForm } from './dto/simulation-options';
 import { SimulationResult } from './dto/simulation-result';
 import { ngIfVerticalSlide } from './animation/slide-animation';
 import { SimulatorService } from './services/simulator/simulator.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SimulationOptionsDialogComponent, SimulationType } from './dialogs/simulation-options-dialog/simulation-options-dialog.component';
 import { ProgressBarComponent } from './dialogs/progress-bar/progress-bar.component';
 import { ConfigurationLoaderService } from './services/configuration-loader/configuration-loader.service';
 import { SimulationConfig } from './components/simulation-config/simulation-config.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SftoolsloginComponent } from './dialogs/sftoolslogin/sftoolslogin.component';
 
 @Component({
   selector: 'sfsimulator',
@@ -17,13 +19,12 @@ import { SimulationConfig } from './components/simulation-config/simulation-conf
 })
 export class SFSimulatorComponent {
   @ViewChild(SimulationConfig)
-    simulationConfigComponent!: SimulationConfig;
+  simulationConfigComponent!: SimulationConfig;
 
-  constructor(private simulatorService: SimulatorService, private configurationLoader: ConfigurationLoaderService, private dialog: MatDialog) { }
+  constructor(private simulatorService: SimulatorService, private configurationLoader: ConfigurationLoaderService, private dialog: MatDialog, private sanitizer: DomSanitizer) { }
 
   simulationConfig?: SimulationOptionsForm;
 
-  days: number = 1;
   private simulationBlocked = false;
 
   public simulationResult?: SimulationResult;
@@ -37,11 +38,14 @@ export class SFSimulatorComponent {
   saveConfiguration() {
     this.configurationLoader.saveToStorage("data", JSON.stringify(this.simulationConfigComponent.simulationOptions.getRawValue()))
   }
-  loadConfiguration() {
-    var data = this.configurationLoader.getStoredFile("data");
-    data.subscribe(value => {
-      this.simulationConfigComponent.loadForm(JSON.parse(value));
-    })
+  loginThroughSFTools() {
+    this.dialog.open(SftoolsloginComponent, { autoFocus: 'dialog', width: "80%", height: "80%" }).afterClosed().subscribe(data => {
+      if (data)
+        this.loadConfiguration(data);
+    });
+  }
+  private loadConfiguration(data: any) {
+    this.simulationConfigComponent.loadForm(data);
   }
 
   showDialog() {
@@ -55,7 +59,7 @@ export class SFSimulatorComponent {
 
         if (!this.simulationBlocked) {
           this.simulationBlocked = true;
-          const progressBar = this.dialog.open(ProgressBarComponent, { autoFocus: 'dialog', disableClose: true, enterAnimationDuration: 400});
+          const progressBar = this.dialog.open(ProgressBarComponent, { autoFocus: 'dialog', disableClose: true, enterAnimationDuration: 400 });
           this.simulatorService.simulate(this.simulationType, this.simulationConfig).subscribe(v => {
             this.simulationResult = v
             this.simulationBlocked = false;
@@ -66,6 +70,6 @@ export class SFSimulatorComponent {
           });
         }
       }
-    })
+    });
   }
 }

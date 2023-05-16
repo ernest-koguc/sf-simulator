@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.Quests
+﻿namespace SFSimulator.Core
 {
     public class QuestValue
     {

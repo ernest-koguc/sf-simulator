@@ -6,7 +6,7 @@
   <div class="col-sm-3 mt-2">
     <div class="d-inline-flex d-flex w-100">
       <button style="width: 33%" mat-stroked-button class="big-button" [disabled]="!simulationConfig" (click)="saveConfiguration()">Save</button>
-      <button style="width: 33%" mat-stroked-button class="big-button" (click)="loadConfiguration()">Load</button>
+      <button style="width: 33%" mat-stroked-button class="big-button" (click)="loginThroughSFTools()">Endpoint</button>
       <button style="width: 33%" mat-stroked-button class="big-button" [disabled]="!simulationConfig" (click)="showDialog()">Simulate</button>
     </div>
     <div class="mt-2 align-items-center">
@@ -28,3 +28,4 @@
     <simulation-result-charts [simulatedDays]="simulationResult?.simulatedDays"></simulation-result-charts>
   </div>
 </div>
+

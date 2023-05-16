@@ -1,4 +1,4 @@
-﻿namespace QuestSimulator.DTOs
+﻿namespace SFSimulator.Core
 {
     public class CharacterDTO
     {
