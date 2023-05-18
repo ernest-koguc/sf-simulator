@@ -29,7 +29,10 @@ jobs:
         node-version: 14.x
         cache: 'npm'
         cache-dependency-path: SFSimulator.Web/package-lock.json
+    - run: echo %cd%
+    - run: dir
     - run: cd SFSimulator.Web
+    - run: dir
     - run: npm ci
     - run: ng build --output-path ..\sfsimulator
     - run: cd ..
