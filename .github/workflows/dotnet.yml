@@ -19,6 +19,8 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+    - name: Restore
+      run: dotnet restore
     - name: Build API
       run: dotnet build .\SFSimulator.API --no-restore
     - name: Use Node.js ${{ matrix.node-version }}
