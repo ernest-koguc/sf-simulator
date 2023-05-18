@@ -23,17 +23,14 @@ jobs:
       run: dotnet restore
     - name: Build API
       run: dotnet build .\SFSimulator.API --no-restore
-    - name: GO TO WEB
-      run: cd SFSimulator.Web
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: 14.x
         cache: 'npm'
+        cache-depedency-pack: SFSimulator.Web/package-lock.json
     - run: npm ci
     - run: ng build --output-path ..\sfsimulator
-    - name: GO BACK
-      run: cd ..
     - name: dotnet publish 
       run: dotnet publish -c Release -o sfsimulator .\SFSimulator.API
         
