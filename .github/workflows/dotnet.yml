@@ -1,0 +1,44 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: dotnet iis
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-test-deploy:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      
+         # Publish
+    - name: Build with dotnet
+      run: dotnet build --configuration Release .\dotnet-core-webapp
+
+    - name: dotnet publish 
+      run: |
+        dotnet publish -c Release -o dotnetcorewebapp .\dotnet-core-webapp
+        
+    - name: deploy on iis
+      uses: ChristopheLav/iis-deploy@v1
+      with:
+        website-name: 'MyWebsite'
+        msdeploy-service-url: ${{ secrets.MSDEPLOY_URL }}
+        msdeploy-username: ${{ secrets.MSDEPLOY_USERNAME }}
+        msdeploy-password: ${{ secrets.MSDEPLOY_PASSWORD }}
+        source-path: ${{ github.workspace }}\website\publish
