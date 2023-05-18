@@ -26,15 +26,12 @@ namespace SFSimulator.Core
 
             Items.Sort(ItemComparer);
 
-            if (Items.Count > Size)
-            {
-                var itemToSell = Items.Take(1).FirstOrDefault();
-                Items.RemoveAll(item => item == itemToSell);
+            if (Items.Count <= Size) return null;
 
-                return itemToSell?.GoldValue;
-            }
+            var itemToSell = Items.Take(1).FirstOrDefault();
+            Items.RemoveAll(i => i == itemToSell);
 
-            return null;
+            return itemToSell?.GoldValue;
         }
 
         public float? SellSpecifiedItemTypeToWitch(IEnumerable<ItemType> currentItemsForWitch)

@@ -1,11 +1,6 @@
-<div class="container-fluid w-100 h-100 bg-dark">
-  <div class="row top-bar">
-    <h1 class="col-10 align-self-center ps-4 py-auto">Login through SFTools</h1>
-    <div class="col-2 d-flex justify-content-end">
-      <button [mat-dialog-close] color="warn" mat-raised-button class="w-50 align-self-center">Cancel</button>
-    </div>
-  </div>
-    <div class="w-100 iframe p-2 pb-3 pt-0 m-0">
-      <iframe *ngIf="iframeSource" id="sftools" class="w-100 h-100" [attr.src]="iframeSource" title="Login through SFTools"></iframe>
+
+<div class="container-fluid w-100 h-100 bg-dark border border-white overflow-hidden px-0">
+  <div class="w-100 h-100 iframe p-0 m-0">
+      <iframe id="sftools" class="bg-dark w-100 border border-white h-100 p-0 m-0" [attr.src]="iframeSource" title="Login through SFTools"></iframe>
     </div>
 </div>

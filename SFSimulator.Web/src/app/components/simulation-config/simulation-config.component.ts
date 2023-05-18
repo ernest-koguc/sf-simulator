@@ -1,9 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TooltipPosition } from '@angular/material/tooltip';
 import { MountType } from '../../dto/mount-type';
 import { QuestPriority } from '../../dto/quest-priority';
 import { SimulationOptionsForm } from '../../dto/simulation-options';
+import { SnackbarService } from '../../services/snackbar.service';
+import { SnackbarComponent } from '../../snackbars/snackbar/snackbar.component';
 
 
 @Component({
@@ -13,8 +16,7 @@ import { SimulationOptionsForm } from '../../dto/simulation-options';
 })
 export class SimulationConfig implements OnInit {
 
-  constructor() { }
-
+  constructor(private snackBar: SnackbarService) { }
   @Output() configEmitter = new EventEmitter<SimulationOptionsForm>();
 
   public questPriority = ['Gold', 'Experience', 'Hybrid'];
@@ -70,24 +72,40 @@ export class SimulationConfig implements OnInit {
     this.simulationOptions.valueChanges.subscribe(_ => {
       this.toggleInputs();
 
-      if (this.simulationOptions.valid)
-        this.configEmitter.emit(this.simulationOptions.getRawValue())
-      else
-        this.configEmitter.emit(undefined);
+      var form = this.simulationOptions.valid ? this.simulationOptions.getRawValue() : undefined;
+      this.configEmitter.emit(form);
     });
-
     if (this.simulationOptions.valid)
       this.configEmitter.emit(this.simulationOptions.getRawValue());
   }
   loadForm(data: any) {
-    var form = this.mapToForm(JSON.parse(data));
-    this.simulationOptions.patchValue(form, { emitEvent: true });
+    if (data.error) {
+      this.snackBar.createErrorSnackbar(data.error);
+      return;
+    }
+    try {
+      var form = this.mapToForm(data);
+      this.simulationOptions.patchValue(form, { emitEvent: true });
+      return this.snackBar.createSuccessSnackBar("Successfully logged in!");
+    }
+    catch {
+      this.snackBar.createErrorSnackbar('Error with parsing API response');
+      return;
+    }
   }
-  public position: TooltipPosition = "right";
-  public goldPitTooltip: string = "Goldpit lvl is raised by 1 every 15 days";
 
   mapToForm(data: any): Partial<SimulationOptionsForm> {
-
-    return {};
+    var key, keys = Object.keys(data);
+    var n = keys.length;
+    var mappedData: any = {};
+    while (n--) {
+      key = keys[n][0].toLowerCase();
+      var lowerCaseName = key + keys[n].substring(1);
+      mappedData[lowerCaseName] = data[keys[n]];
+    }
+    return mappedData;
   }
+
+  public position: TooltipPosition = "right";
+  public goldPitTooltip: string = "Goldpit lvl is raised by 1 every 15 days";
 }

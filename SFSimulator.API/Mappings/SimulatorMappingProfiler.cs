@@ -48,9 +48,10 @@ namespace SFSimulator.API.Mappings
                 .ForMember(d => d.DrinkBeerOneByOne, m => m.MapFrom(s => s.DrinkBeerOneByOne))
                 .ForMember(d => d.DailyThirst, m => m.MapFrom(s => s.DailyThirst));
 
-            CreateMap<Maria21DataDTO, SimulationOptionsDTO>()
+            CreateMap<Maria21DataDTO, EndpointDataDTO>()
                 .ForMember(d => d.CharacterName, m => m.MapFrom(s => s.Name))
-                .ForMember(d => d.ScrapbookFillness, m => m.MapFrom(s => s.Book / 2283f))
+                .ForMember(d => d.Prefix, m => m.MapFrom(s => s.Prefix))
+                .ForMember(d => d.ScrapbookFillness, m => m.MapFrom(s => Math.Round(s.Book / 2283f*100, 3)))
                 .ForMember(d => d.Level, m => m.MapFrom(s => s.Level))
                 .ForMember(d => d.Experience, m => m.MapFrom(s => s.XP))
                 .ForMember(d => d.GoldPitLevel, m => m.MapFrom(s => s.Underworld.GoldPit))
@@ -64,9 +65,16 @@ namespace SFSimulator.API.Mappings
                 .ForMember(d => d.HasGoldScroll, m => m.MapFrom(s => s.Items.Ring.Enchantment != 0))
                 .ForMember(d => d.HasExperienceScroll, m => m.MapFrom(s => s.Items.Head.Enchantment != 0))
                 .ForMember(d => d.BaseStat, m => m.MapFrom(s => SumBaseStats(s)))
-                //.ForMember(d => d.HydraHeads, m => m.MapFrom(s => s.Group.))
-                .ForMember(d => d.GoldGuildBonus, m => m.MapFrom(s => s.XP))
-                .ForMember(d => d.XpGuildBonus, m => m.MapFrom(s => s.XP));
+                .ForMember(d => d.HydraHeads, m => m.MapFrom(s => s.Group.Group.Hydra))
+                .ForMember(d => d.GoldGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.GOLD)))
+                .ForMember(d => d.XpGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.XP)));
+        }
+        private int GetGuildBonus(Maria21DataDTO dto, BonusType type)
+        {
+            var raid = dto.Dungeons.Raid * 2;
+            var guild = type == BonusType.GOLD ? dto.Group.Group.TotalTreasure : dto.Group.Group.TotalInstructor;
+            return Math.Min(200, raid + guild);
+
         }
         private MountType TranslateMountType(string mountType)
         {
@@ -93,24 +101,18 @@ namespace SFSimulator.API.Mappings
         private int SumBaseStats(Maria21DataDTO dto)
         {
             var con = dto.Constitution.Base;
-            switch(dto.Class)
+            return dto.Class switch
             {
-                case 1:
-                case 5:
-                case 6:
-                    return con + dto.Strength.Base;
-                case 2:
-                case 8:
-                case 9:
-                    return con + dto.Intelligence.Base;
-                case 3:
-                case 4:
-                case 7:
-                    return con + dto.Dexterity.Base;
-                default:
-                    return con;
-
-            }
+                1 or 5 or 6 => con + dto.Strength.Base,
+                2 or 8 or 9 => con + dto.Intelligence.Base,
+                3 or 4 or 7 => con + dto.Dexterity.Base,
+                _ => con,
+            };
+        }
+        public enum BonusType
+        {
+            GOLD,
+            XP
         }
     }
 }

@@ -1,39 +1,39 @@
-<div class="row justify-content-center text-white">
+<div *ngIf="data" class="row justify-content-center text-white">
   <mat-card matRipple class="bg-dark mt-2" style="width:70%">
     <mat-card-header><mat-card-subtitle class="text-primary">After</mat-card-subtitle></mat-card-header>
     <div class="d-flex flex-row justify-content-between mt-2">
       <p class="card-text">Days passed:</p>
-      <span>{{daysPassed}}</span>
+      <span>{{data.days}}</span>
     </div>
     <div class="d-flex flex-row justify-content-between">
       <p class="card-text">Level:</p>
-      <span>{{level}}</span>
+      <span>{{data.characterAfter.level}}</span>
     </div>
     <div class="d-flex flex-row justify-content-between">
       <p class="card-text">Base-stats:</p>
-      <span>{{baseStats}}</span>
+      <span>{{data.characterAfter.baseStat}}</span>
     </div>
     <div class="d-flex flex-row justify-content-between">
       <p class="card-text">Experience:</p>
-      <span>{{experience}}</span>
+      <span>{{data.characterAfter.experience}}</span>
     </div>
   </mat-card>
 </div>
 
-<div class="row justify-content-center text-white">
+<div *ngIf="data" class="row justify-content-center text-white">
   <mat-card matRipple class="bg-dark mt-1" style="width:70%">
     <mat-card-header><mat-card-subtitle class="text-primary">Previously</mat-card-subtitle></mat-card-header>
     <div class="d-flex flex-row justify-content-between mt-2">
       <p class="card-text">Level:</p>
-      <span>{{prevLevel}}</span>
+      <span>{{data.characterPreviously.level}}</span>
     </div>
     <div class="d-flex flex-row justify-content-between">
       <p class="card-text">Base-stats:</p>
-      <span>{{prevBaseStats}}</span>
+      <span>{{data.characterPreviously.baseStat}}</span>
     </div>
     <div class="d-flex flex-row justify-content-between">
       <p class="card-text">Experience:</p>
-      <span>{{prevExperience}}</span>
+      <span>{{data.characterPreviously.experience}}</span>
     </div>
   </mat-card>
 </div>

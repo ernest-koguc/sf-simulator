@@ -5,23 +5,14 @@
   </div>
   <div class="col-sm-3 mt-2">
     <div class="d-inline-flex d-flex w-100">
-      <button style="width: 33%" mat-stroked-button class="big-button" [disabled]="!simulationConfig" (click)="saveConfiguration()">Save</button>
       <button style="width: 33%" mat-stroked-button class="big-button" (click)="loginThroughSFTools()">Endpoint</button>
-      <button style="width: 33%" mat-stroked-button class="big-button" [disabled]="!simulationConfig" (click)="showDialog()">Simulate</button>
+      <button style="width: 33%" mat-stroked-button class="big-button" [disabled]="!simulationConfig || simulationBlocked" (click)="showDialog()">Simulate</button>
     </div>
     <div class="mt-2 align-items-center">
-      <div>
         <div *ngIf="simulationResult" @ngIfVerticalSlide>
-          <character-details [daysPassed]="simulationResult.days"
-                             [level]="simulationResult.characterAfter.level"
-                             [baseStats]="simulationResult.characterAfter.baseStat"
-                             [experience]="simulationResult.characterAfter.experience"
-                             [prevLevel]="simulationResult.characterPreviously.level"
-                             [prevBaseStats]="simulationResult.characterPreviously.baseStat"
-                             [prevExperience]="simulationResult.characterPreviously.experience">
+          <character-details [data]="simulationResult">
           </character-details>
         </div>
-      </div>
     </div>
   </div>
   <div class="col-sm-6" style="overflow-y: clip">
