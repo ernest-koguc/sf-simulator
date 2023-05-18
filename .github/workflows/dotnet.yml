@@ -27,13 +27,10 @@ jobs:
         cache-dependency-path: SFSimulator.Web/package-lock.json
     - run: |
         cd SFSimulator.Web
-        dir
         npm install
     - run: |
         cd SFSimulator.Web
-        dir
-        ng build --output-path ..\sfsimulator
-    - run: cd ..
+        npm run build
     - name: Restore
       run: dotnet restore
     - name: Build API
