@@ -37,8 +37,8 @@ jobs:
     - name: deploy on iis
       uses: ChristopheLav/iis-deploy@v1
       with:
-        website-name: 'MyWebsite'
-        msdeploy-service-url: ${{ secrets.MSDEPLOY_URL }}
-        msdeploy-username: ${{ secrets.MSDEPLOY_USERNAME }}
-        msdeploy-password: ${{ secrets.MSDEPLOY_PASSWORD }}
+        website-name: 'sfsimulator.xyz'
+        msdeploy-service-url: ${{ secrets.IISURL }}
+        msdeploy-username: ${{ secrets.IISUSER }}
+        msdeploy-password: ${{ secrets.IISPASSWORD }}
         source-path: ${{ github.workspace }}\website\publish
