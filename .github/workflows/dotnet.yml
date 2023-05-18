@@ -28,9 +28,9 @@ jobs:
       with:
         node-version: 14.x
         cache: 'npm'
+    - run: cd SFSimulator.Web
     - run: npm ci
-    - run: cd .\SFSimulator.Web
-    - run: ng build --output-path .\sfsimulator
+    - run: ng build --output-path ..\sfsimulator
     - run: cd ..
     - name: dotnet publish 
       run: dotnet publish -c Release -o sfsimulator .\SFSimulator.API
