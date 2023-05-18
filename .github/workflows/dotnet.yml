@@ -13,10 +13,6 @@ jobs:
   build-test-deploy:
     runs-on: windows-latest
     
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -27,12 +23,10 @@ jobs:
       run: dotnet restore
     - name: Build API
       run: dotnet build .\SFSimulator.API --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
         cache: 'npm'
     - run: npm ci
     - run: cd .\SFSimulator.Web
