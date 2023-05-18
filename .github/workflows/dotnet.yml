@@ -28,7 +28,7 @@ jobs:
     - run: |
         cd SFSimulator.Web
         dir
-        npm ci
+        npm install
     - run: |
         cd SFSimulator.Web
         dir
