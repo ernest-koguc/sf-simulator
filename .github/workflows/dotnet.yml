@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-test-deploy:
-    runs-on: self-hosted
+    runs-on: windows
 
     steps:
     - uses: actions/checkout@v3
@@ -25,14 +25,9 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-      
-         # Publish
-    - name: Build with dotnet
-      run: dotnet build --configuration Release .\dotnet-core-webapp
-
     - name: dotnet publish 
       run: |
-        dotnet publish -c Release -o dotnetcorewebapp .\dotnet-core-webapp
+        dotnet publish -c Release -o sfsimulator .\SFSimulator.API
         
     - name: deploy on iis
       uses: ChristopheLav/iis-deploy@v1
@@ -41,4 +36,4 @@ jobs:
         msdeploy-service-url: ${{ secrets.IISURL }}
         msdeploy-username: ${{ secrets.IISUSER }}
         msdeploy-password: ${{ secrets.IISPASSWORD }}
-        source-path: ${{ github.workspace }}\website\publish
+        source-path: sfsimulator
