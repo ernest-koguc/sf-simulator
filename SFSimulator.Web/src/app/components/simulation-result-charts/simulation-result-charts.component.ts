@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { SimulatedDay } from '../../dto/simulation-result';
 import { SlideInOutHorizontallyAnimation, SlideInOutVericallyAnimation } from '../../animation/slide-animation';
 import { Chart, ChartType } from '../../dto/chart';
-import { ChartServiceService } from '../../services/chart/chart-service.service';
+import { ChartServiceService } from '../../services/chart-service.service';
 
 @Component({
   selector: 'simulation-result-charts',

@@ -3,6 +3,7 @@
     public class Maria21DataDTO
     {
         public string Name { get; set; } = null!;
+        public string Prefix { get; set; } = null!;
         public int Class { get; set; }
         public int XP { get; set; }
         public int Level { get; set; }
@@ -11,18 +12,26 @@
         public Fortress Fortress { get; set; } = null!;
         public Underworld Underworld { get; set; } = null!;
         public Dungeons Dungeons { get; set; } = null!;
-        public string Prefix { get; set; } = null!;
         public Runes Runes { get; set; } = null!;
         public Strength Strength { get; set; } = null!;
         public Dexterity Dexterity { get; set; } = null!;
         public Intelligence Intelligence { get; set; } = null!;
         public Constitution Constitution { get; set; } = null!;
         public Items Items { get; set; } = null!;
-        public Group Group { get; set; } = null!;
+        public GroupData Group { get; set; } = null!;
     }
-    public class Group
+    public class GroupData
     {
+        public InnerGroupData Group { get; set; } = null!;
+    }
+
+    public class InnerGroupData
+    {
+        public int Raid { get; set; }
         public int Hydra { get; set; }
+        public int TotalInstructor { get; set; }
+        public int TotalTreasure { get; set; }
+
     }
     public class Items
     {
@@ -59,6 +68,7 @@
 
     public class Dungeons
     {
+        public int Raid { get; set; }
         public int Tower { get; set; }
     }
 
@@ -78,7 +88,7 @@
         public int Base { get; set; }
     }
 
-   
+
     public class Runes
     {
         public int Gold { get; set; }

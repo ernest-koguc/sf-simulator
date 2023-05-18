@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ChartConfiguration, ChartDataset } from 'chart.js';
-import { ExperienceGain, BaseStatGain } from '../../dto/simulation-result'
-import { Chart, ChartType } from '../../dto/chart';
+import { Chart, ChartType } from '../dto/chart';
+import { BaseStatGain, ExperienceGain } from '../dto/simulation-result';
 
 @Injectable({
   providedIn: 'root'

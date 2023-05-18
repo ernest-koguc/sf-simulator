@@ -1,17 +1,20 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, Observable, ObservableInput, retry, throwError } from 'rxjs';
-import { SimulationOptionsForm } from '../../dto/simulation-options';
-import { SimulationResult } from '../../dto/simulation-result';
-import { environment } from '../../../environments/environment';
-import { SimulationType } from '../../dialogs/simulation-options-dialog/simulation-options-dialog.component';
+import { environment } from '../../environments/environment';
+import { SimulationType } from '../dialogs/simulation-options-dialog/simulation-options-dialog.component';
+import { SimulationOptionsForm } from '../dto/simulation-options';
+import { SimulationResult } from '../dto/simulation-result';
+import { SnackbarService } from './snackbar.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class SimulatorService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private snackBar: SnackbarService) { }
 
   simulate(simulationType: SimulationType, simulationOptions: SimulationOptionsForm): Observable<SimulationResult>  {
     if (simulationType.simulationType == 'Days')
@@ -45,15 +48,11 @@ export class SimulatorService {
     return result;
   }
 
-  private handleError(error: HttpErrorResponse): ObservableInput<any>{
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
+  private handleError(error: HttpErrorResponse): ObservableInput<any> {
+    
+    if (error.status === 500) {
+      this.snackBar.createErrorSnackbar("Internal problem with API. Try again.")
     }
-    else {
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-    }
-
     return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

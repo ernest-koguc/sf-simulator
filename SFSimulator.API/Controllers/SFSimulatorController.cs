@@ -30,7 +30,6 @@ namespace SFSimulator.API.Controllers
                 days = 3000;
 
             var simulationResult = _gameService.RunSimulationUntilDays(simulationOptions, days ?? 1);
-
             return Ok(simulationResult);
         }
         [HttpPost("simulateUntilLevel")]
@@ -56,9 +55,8 @@ namespace SFSimulator.API.Controllers
                 await writer.FlushAsync();
                 stream.Position = 0;
                 var data = await JsonSerializer.DeserializeAsync<Maria21DataDTO>(stream);
-                var simulationOptions = _mapper.Map<SimulationOptionsDTO>(data);
-                var jsonData = JsonConvert.SerializeObject(data);
-                
+                var simulationOptions = _mapper.Map<EndpointDataDTO>(data);
+                var jsonData = JsonConvert.SerializeObject(simulationOptions);
                 return PostMessageResult(jsonData);
             }
             catch
@@ -70,11 +68,8 @@ namespace SFSimulator.API.Controllers
         private ActionResult PostMessageResult(string data)
         {
             var url = _configuration.GetValue<string>("Target");
-            var script = $"<script>\r\nwindow.top.postMessage('{data}', '{url}');\r\n</script>\r\n";
+            var script = $"<script>window.top.postMessage({data}, '{url}');</script>";
             return Content(script, "text/html");
         }
-
-        // Webhook link
-        //https://beta.sftools.mar21.eu/request?scope=default+pets+items&origin=#{appname}&redirect=#{postUrl}
     }
 }

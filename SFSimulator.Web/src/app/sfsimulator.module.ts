@@ -30,6 +30,8 @@ import { ProgressBarComponent } from './dialogs/progress-bar/progress-bar.compon
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CookieService } from 'ngx-cookie-service';
 import { SftoolsloginComponent } from './dialogs/sftoolslogin/sftoolslogin.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SnackbarComponent } from './snackbars/snackbar/snackbar.component';
 
 
 @NgModule({
@@ -42,7 +44,7 @@ import { SftoolsloginComponent } from './dialogs/sftoolslogin/sftoolslogin.compo
     SimulationOptionsDialogComponent,
     ToolBarComponent,
     ProgressBarComponent,
-    SftoolsloginComponent,
+    SnackbarComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +67,8 @@ import { SftoolsloginComponent } from './dialogs/sftoolslogin/sftoolslogin.compo
     MatDialogModule,
     MatInputModule,
     MatSelectModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   providers: [CookieService, { provide: Window, useValue: window }],
   bootstrap: [SFSimulatorComponent]

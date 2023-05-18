@@ -54,7 +54,7 @@
 
                     return (q, estimatedGold);
                 });
-                var quest = transformedQuests.OrderByDescending(tuple => tuple.estimatedGold).First().q;
+                var quest = transformedQuests.MaxBy(tuple => tuple.estimatedGold).q;
                 return quest;
             }
             if (questPriority == Priority.XP)
@@ -67,7 +67,7 @@
 
                     return (q, estimatedExperience);
                 });
-                var quest = transformedQuests.OrderByDescending(tuple => tuple.estimatedExperience).First().q;
+                var quest = transformedQuests.MaxBy(tuple => tuple.estimatedExperience).q;
 
                 return quest;
             }

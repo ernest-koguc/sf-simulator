@@ -29,3 +29,25 @@ $dark-theme: mat.define-dark-theme( ( color: ( primary: $my-app-primary, accent:
 $light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accent: $my-app-accent, warn: $my-app-warn, ), ) );
 
 @include mat.all-component-themes($dark-theme);
+
+.mat-mdc-snack-bar-container {
+  &.bg-success {
+    --mdc-snackbar-container-color: #00802b;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
+.mat-mdc-snack-bar-container {
+  &.bg-error {
+    --mdc-snackbar-container-color: #990000;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
+.mat-mdc-snack-bar-container {
+  &.bg-info {
+    --mdc-snackbar-container-color: #327ba8;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
