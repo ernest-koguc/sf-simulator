@@ -28,7 +28,7 @@ jobs:
       with:
         node-version: 14.x
         cache: 'npm'
-        cache-dependency-pack: SFSimulator.Web/package-lock.json
+        cache-dependency-path: SFSimulator.Web/package-lock.json
     - run: npm ci
     - run: ng build --output-path sfsimulator
     - name: dotnet publish 
