@@ -2,7 +2,7 @@
 {
     public class QuestChooser : IQuestChooser
     {
-        public double Multiplier { get; set; } = 0.5d;
+        public double Multiplier { get; set; } = 0.85d;
         public QuestChooser()
         {
         }
