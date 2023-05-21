@@ -1,6 +1,6 @@
 import { ChartConfiguration } from "chart.js";
 
-export type Chart = {
+export type ChartConfig = {
   data: ChartConfiguration<'bar'>['data'];
   options: ChartConfiguration<'bar'>['options'];
   displayLegend: boolean;

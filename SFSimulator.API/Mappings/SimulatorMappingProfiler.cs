@@ -49,8 +49,7 @@ namespace SFSimulator.API.Mappings
                 .ForMember(d => d.DailyThirst, m => m.MapFrom(s => s.DailyThirst));
 
             CreateMap<Maria21DataDTO, EndpointDataDTO>()
-                .ForMember(d => d.CharacterName, m => m.MapFrom(s => s.Name))
-                .ForMember(d => d.Prefix, m => m.MapFrom(s => s.Prefix))
+                .ForMember(d => d.CharacterName, m => m.MapFrom(s => s.Name + "@" + s.Prefix.Replace(" ", string.Empty)))
                 .ForMember(d => d.ScrapbookFillness, m => m.MapFrom(s => Math.Round(s.Book / 2283f*100, 3)))
                 .ForMember(d => d.Level, m => m.MapFrom(s => s.Level))
                 .ForMember(d => d.Experience, m => m.MapFrom(s => s.XP))

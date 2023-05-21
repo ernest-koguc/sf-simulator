@@ -1,0 +1,42 @@
+.table {
+  width: 100%;
+}
+
+.scroll {
+    overflow-y: scroll;
+    overflow-x: clip;
+    height: 93%;
+}
+
+tr.detail-row {
+  height: 0;
+}
+
+tr.table-row:not(.table-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.table-row:not(.table-expanded-row):active {
+  background: #efefef;
+}
+.table-row td {
+  border-bottom-width: 0;
+}
+
+.mat-grid-list-text {
+    text-align: center;
+}
+p {
+    text-align: center;
+    height: 33%;
+}
+.cell {
+  text-align: center;
+  height: 33%;
+}
+.header {
+  text-align: center;
+  height: 33%;
+  font-weight: 600;
+  background-color: cornflowerblue;
+}

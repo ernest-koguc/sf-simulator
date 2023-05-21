@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SimulationResult } from '../../dto/simulation-result';
+import { SimulationResult } from '../../models/simulation-result';
 
 
 @Component({
@@ -11,9 +11,8 @@ export class CharacterDetailsComponent implements OnInit {
 
   constructor() { }
   @Input()
-  public data?: SimulationResult;
+  public data!: SimulationResult;
 
   ngOnInit(): void {
   }
-
 }

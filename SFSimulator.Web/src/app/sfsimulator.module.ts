@@ -29,9 +29,14 @@ import { SimulationOptionsDialogComponent } from './dialogs/simulation-options-d
 import { ProgressBarComponent } from './dialogs/progress-bar/progress-bar.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CookieService } from 'ngx-cookie-service';
-import { SftoolsloginComponent } from './dialogs/sftoolslogin/sftoolslogin.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './snackbars/snackbar/snackbar.component';
+import { AppRoutingModule } from './app-routing.module';
+import { SimulatorComponent } from './layout/simulator/simulator.component';
+import { SimulationResultComponent } from './layout/simulation-result/simulation-result.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { RemoveRecordDialogComponent } from './dialogs/remove-record-dialog/remove-record-dialog.component';
 
 
 @NgModule({
@@ -44,9 +49,13 @@ import { SnackbarComponent } from './snackbars/snackbar/snackbar.component';
     SimulationOptionsDialogComponent,
     ToolBarComponent,
     ProgressBarComponent,
-    SnackbarComponent
+    SnackbarComponent,
+    SimulatorComponent,
+    SimulationResultComponent,
+    RemoveRecordDialogComponent
   ],
   imports: [
+    AppRoutingModule,
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -68,7 +77,9 @@ import { SnackbarComponent } from './snackbars/snackbar/snackbar.component';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule,
+    MatGridListModule
   ],
   providers: [CookieService, { provide: Window, useValue: window }],
   bootstrap: [SFSimulatorComponent]

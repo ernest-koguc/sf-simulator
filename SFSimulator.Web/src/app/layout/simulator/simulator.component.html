@@ -1,0 +1,26 @@
+<div class='row mx-3 d-flex'>
+  <div class='col-md-3 m-0 mt-2 p-0'>
+    <simulation-config (configEmitter)='saveForm($event)'></simulation-config>
+  </div>
+  <div class='col-md-9' style='overflow-y: clip'>
+    <div class='row mt-2'>
+      <div class='d-flex d-inline-flex w-100'>
+        <button mat-stroked-button class='button text-warning border-warning' (click)='loginThroughSFTools()'>Endpoint</button>
+        <button mat-stroked-button class='ms-1 button text-primary border-primary' [disabled]='!simulationConfig || simulationBlocked' (click)='showSimulationDialog()'>Simulate</button>
+        <span class='toolbar-spacer d-none d-sm-block'></span>
+        <button mat-stroked-button class='ms-1 button border-success text-success' *ngIf='simulationResult' (click)="saveResult()">Save</button>
+      </div>
+    </div>
+    <div class='row mt-3'>
+      <div class='col-xl-3 h-0'></div>
+      <simulation-result-charts class='col-xl-9' [simulationResult]='simulationResult'></simulation-result-charts>
+    </div>
+    <div class='mt-2 row'>
+      <div class='col-md-3'></div>
+      <div class='col-md-9' *ngIf='simulationResult' @ngIfVerticalSlide>
+        <character-details [data]='simulationResult'>
+        </character-details>
+      </div>
+    </div>
+  </div>
+</div>

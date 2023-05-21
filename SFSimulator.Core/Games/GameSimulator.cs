@@ -44,6 +44,7 @@ namespace SFSimulator.Core
             }
 
             SimulationResult.CharacterAfter = _mapper.Map<CharacterDTO>(Character);
+            CalculateStatistics();
 
             return SimulationResult;
         }
@@ -59,9 +60,41 @@ namespace SFSimulator.Core
             }
 
             SimulationResult.CharacterAfter = _mapper.Map<CharacterDTO>(Character);
+            CalculateStatistics();
 
             return SimulationResult;
         }
+
+        private void CalculateStatistics()
+        {
+            var totalGains = new SimulatedGains();
+            var averageGains = new SimulatedGains();
+            var experienceGains = SimulationResult.SimulatedDays.Select(o => o.ExperienceGain);
+
+            foreach(var day in SimulationResult.SimulatedDays)
+            {
+                foreach (var gain in day.BaseStatGain.Keys)
+                {
+                    totalGains.BaseStatGain[gain] += day.BaseStatGain[gain];
+                }
+                foreach (var gain in day.ExperienceGain.Keys)
+                {
+                    totalGains.ExperienceGain[gain] += day.ExperienceGain[gain];
+                }
+            }
+            foreach (var key in totalGains.BaseStatGain.Keys)
+            {
+                averageGains.BaseStatGain[key] = totalGains.BaseStatGain[key] / SimulationResult.Days;
+            }
+            foreach (var key in totalGains.ExperienceGain.Keys)
+            {
+                averageGains.ExperienceGain[key] = totalGains.ExperienceGain[key] / SimulationResult.Days;
+            }
+
+            SimulationResult.TotalGains = totalGains;
+            SimulationResult.AverageGains = averageGains;
+        }
+
         private void SetSimulationOptions(Character character, SimulationOptions simulationOptions, int? days = null)
         {
             Character = character;
@@ -73,7 +106,7 @@ namespace SFSimulator.Core
 
             var charPreviously = _mapper.Map<CharacterDTO>(Character);
 
-            SimulationResult = new SimulationResult { Days = days ?? 0, SimulatedDays = new(), CharacterPreviously = charPreviously };
+            SimulationResult = new SimulationResult { CharacterName=simulationOptions.CharacterName, Days = days ?? 0, SimulatedDays = new(), CharacterPreviously = charPreviously };
         }
         private void RunDay()
         {
@@ -207,11 +240,13 @@ namespace SFSimulator.Core
                 Character.Gold %= 10000000;
             }
 
-            var BaseStatGain = SimulationResult.SimulatedDays.Where(d => d.DayIndex == CurrentDay).FirstOrDefault()?.BaseStatGain;
+            var baseStatGain = SimulationResult.SimulatedDays.FirstOrDefault(d => d.DayIndex == CurrentDay)?.BaseStatGain;
 
-            _ = BaseStatGain ?? throw new NullReferenceException();
+            _ = baseStatGain ?? throw new NullReferenceException();
 
-            BaseStatGain[source] += gold / 10000000;
+            var baseStats = (float)Math.Round(gold / 10000000, 3);
+            baseStatGain[source] += baseStats;
+            baseStatGain[GainSource.TOTAL] += baseStats;
         }
         private void GiveXPToCharacter(int xp, GainSource source)
         {
@@ -228,11 +263,11 @@ namespace SFSimulator.Core
                 LevelUpCharacter();
             }
 
-            var xpGains = SimulationResult.SimulatedDays.Where(d => d.DayIndex == CurrentDay).FirstOrDefault()?.ExperienceGain;
+            var xpGains = SimulationResult.SimulatedDays.FirstOrDefault(d => d.DayIndex == CurrentDay)?.ExperienceGain;
 
             _ = xpGains ?? throw new NullReferenceException();
-
             xpGains[source] += xp;
+            xpGains[GainSource.TOTAL] += xp;
         }
         private void LevelUpCharacter()
         {

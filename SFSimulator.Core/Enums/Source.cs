@@ -14,6 +14,7 @@
         GEM,
         ITEM,
         DICE_GAME,
-        GUILD_FIGHT
+        GUILD_FIGHT,
+        TOTAL
     }
 }

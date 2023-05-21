@@ -2,6 +2,7 @@
 {
     public class SimulationOptions
     {
+        public string CharacterName { get; set; } = string.Empty;
         public Priority QuestPriority { get; set; } = Priority.XP;
         public float? HybridRatio { get; set; } = null;
         public QuestChooserAI QuestChooserAI { get; set; } = QuestChooserAI.SMART;

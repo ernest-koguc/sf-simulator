@@ -4,6 +4,7 @@ namespace SFSimulator.Core
 {
     public class SimulationOptionsDTO
     {
+        public string CharacterName { get; set; } = string.Empty;
         public int Level { get; set; } = 1;
         public int BaseStat { get; set; } = 0;
         public int Experience { get; set; } = 0;

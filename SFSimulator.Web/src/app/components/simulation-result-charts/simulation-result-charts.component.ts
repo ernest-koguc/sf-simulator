@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { SimulatedDay } from '../../dto/simulation-result';
 import { SlideInOutHorizontallyAnimation, SlideInOutVericallyAnimation } from '../../animation/slide-animation';
-import { Chart, ChartType } from '../../dto/chart';
-import { ChartServiceService } from '../../services/chart-service.service';
+import { ChartConfig, ChartType } from '../../models/chart';
+import { SimulationResult } from '../../models/simulation-result';
+import { ChartService } from '../../services/chart.service';
 
 @Component({
   selector: 'simulation-result-charts',
@@ -12,7 +12,7 @@ import { ChartServiceService } from '../../services/chart-service.service';
 })
 export class SimulationResultChartsComponent{
 
-  constructor(private chartService: ChartServiceService) { }
+  constructor(private chartService: ChartService) { }
 
   public chartTypes: string[] = ['Total', 'Daily', 'Average'];
 
@@ -28,10 +28,10 @@ export class SimulationResultChartsComponent{
 
   public xpSliderVisibility: 'hidden' | 'visible' = 'hidden';
   private _xpChartType: ChartType = 'Total';
-  public baseStatChart: Chart | null = null;
-  public xpChart: Chart | null = null;
+  public baseStatChart: ChartConfig | null = null;
+  public xpChart: ChartConfig | null = null;
 
-  private _simulatedDays?: SimulatedDay[];
+  private _simulationResult?: SimulationResult;
 
   set baseStatChartType(value: ChartType) {
     this._baseStatChartType = value;
@@ -66,40 +66,41 @@ export class SimulationResultChartsComponent{
   }
 
   @Input()
-  set simulatedDays(value: SimulatedDay[] | undefined) {
+  set simulationResult(value: SimulationResult | undefined) {
     if (!value)
       return;
 
-    this._simulatedDays = value;
+    this._simulationResult = value;
     this._baseStatChartCurrentDay = 1;
     this._xpChartCurrentDay = 1;
-    this.lastDay = value?.length;
+    this.lastDay = value.days;
     this.createCharts('XP', 'Total');
     this.createCharts('Base Stat', 'Total');
     this.chartVisible = true;
   }
 
+  // TODO: Split chart component into 2 (1 generic component used for setting up 1 basestat component and 1 xp chart component)
   public createCharts(gainType: 'XP' | 'Base Stat', chartType: ChartType) {
-    if (!this._simulatedDays)
+    if (!this._simulationResult)
       return;
 
     var title = chartType + ' ' + gainType + ' Gains';
 
     if (gainType == 'Base Stat') {
       if (this.baseStatChartType == 'Daily')
-        this.baseStatChart = this.chartService.createChart(this._simulatedDays[this.baseStatChartCurrentDay - 1].baseStatGain, this.baseStatChartType, title);
+        this.baseStatChart = this.chartService.createChart(this._simulationResult.simulatedDays[this.baseStatChartCurrentDay - 1].baseStatGain, title, undefined, 'white');
       else if (this.baseStatChartType == 'Average')
-        this.baseStatChart = this.chartService.createChart(this._simulatedDays.map(d => d.baseStatGain), this.baseStatChartType, title);
+        this.baseStatChart = this.chartService.createChart(this._simulationResult.averageGains.baseStatGain, title, undefined, 'white');
       else
-        this.baseStatChart = this.chartService.createChart(this._simulatedDays.map(d => d.baseStatGain), this.baseStatChartType, title);
+        this.baseStatChart = this.chartService.createChart(this._simulationResult.totalGains.baseStatGain, title, undefined, 'white');
     }
     else {
       if (this.xpChartType == 'Daily')
-        this.xpChart = this.chartService.createChart(this._simulatedDays[this.xpChartCurrentDay - 1].experienceGain, this.xpChartType, title);
+        this.xpChart = this.chartService.createChart(this._simulationResult.simulatedDays[this.xpChartCurrentDay - 1].experienceGain, title, undefined, 'white');
       else if (this.xpChartType == 'Average')
-        this.xpChart = this.chartService.createChart(this._simulatedDays.map(d => d.experienceGain), this.xpChartType, title); 
+        this.xpChart = this.chartService.createChart(this._simulationResult.averageGains.experienceGain, title, undefined, 'white'); 
       else
-        this.xpChart = this.chartService.createChart(this._simulatedDays.map(d => d.experienceGain), this.xpChartType, title);
+        this.xpChart = this.chartService.createChart(this._simulationResult.totalGains.experienceGain, title, undefined, 'white');
     }
   }
 }

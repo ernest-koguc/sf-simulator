@@ -1,11 +1,10 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, Observable, ObservableInput, retry, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SimulationType } from '../dialogs/simulation-options-dialog/simulation-options-dialog.component';
-import { SimulationOptionsForm } from '../dto/simulation-options';
-import { SimulationResult } from '../dto/simulation-result';
+import { SimulationOptionsForm } from '../models/simulation-options';
+import { SimulationResult } from '../models/simulation-result';
 import { SnackbarService } from './snackbar.service';
 
 

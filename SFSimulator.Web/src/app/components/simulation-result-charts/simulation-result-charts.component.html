@@ -1,5 +1,5 @@
-<div class=" row" styl="height-auto" [@slideInOutY]="chartVisible ? 'in' : 'out'" style="overflow-x: clip">
-    <div class="col-xxl-6 pt-5">
+<div class="row overflow-hidden" [@slideInOutY]="chartVisible ? 'in' : 'out'">
+    <div class="col-md-6">
       <div class="row">
         <div align="center" [@slideInOutX]="baseStatChartType == 'Daily' ? 'in' : 'out'">
           <mat-slider class="p-auto" min="1" [max]="lastDay" step="1" discrete="true">
@@ -20,7 +20,7 @@
               [type]="'bar'">
       </canvas>
     </div>
-    <div class="col-xxl-6 py-5">
+    <div class="col-md-6">
       <div class="row">
         <div align="center" [@slideInOutX]="xpChartType == 'Daily' ? 'in' : 'out'">
           <mat-slider min="1" [max]="lastDay" step="1" discrete="true" align="center">

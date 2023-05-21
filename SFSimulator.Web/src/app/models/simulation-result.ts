@@ -1,11 +1,14 @@
 export type SimulationResult = {
+  characterName: string;
   days: number;
   characterAfter: Character;
   characterPreviously: Character;
-  simulatedDays: SimulatedDay[];
+  simulatedDays: SimulatedGains[];
+  totalGains: SimulatedGains;
+  averageGains: SimulatedGains;
 }
 
-export type SimulatedDay = {
+export type SimulatedGains = {
   dayId: number;
   experienceGain: ExperienceGain;
   baseStatGain: BaseStatGain;
@@ -26,6 +29,7 @@ export type ExperienceGain = {
   DAILY_MISSION: number;
   ARENA: number;
   GUILD_FIGHT: number;
+  TOTAL: number;
 }
 
 export type BaseStatGain = {
@@ -38,4 +42,8 @@ export type BaseStatGain = {
   GEM: number;
   ITEM: number;
   DICE_GAME: number;
+  TOTAL: number;
 }
+
+export const BaseStatKeys: (keyof BaseStatGain)[] = ['QUEST', 'CALENDAR', 'TIME_MACHINE', 'WHEEL', 'GOLD_PIT', 'GUARD', 'GEM', 'ITEM', 'DICE_GAME'];
+export const ExperienceKeys: (keyof ExperienceGain)[] = ['QUEST', 'CALENDAR', 'TIME_MACHINE', 'WHEEL', 'ACADEMY', 'DAILY_MISSION', 'ARENA', 'GUILD_FIGHT'];
