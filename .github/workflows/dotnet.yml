@@ -26,7 +26,8 @@ jobs:
     - run: |
         cd SFSimulator.Web
         npm install
-    - run: |
+    - name: npm build
+      run: |
         cd SFSimulator.Web
         npm run build
     - name: Restore
