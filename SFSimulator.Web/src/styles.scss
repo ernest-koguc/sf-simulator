@@ -1,4 +1,6 @@
 @use "@angular/material" as mat;
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
 
 body {
   background-image: url('assets/background.png');

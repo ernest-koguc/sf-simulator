@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -34,9 +34,10 @@ import { SnackbarComponent } from './snackbars/snackbar/snackbar.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SimulatorComponent } from './layout/simulator/simulator.component';
 import { SimulationResultComponent } from './layout/simulation-result/simulation-result.component';
-import { MatTableModule } from '@angular/material/table';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { RemoveRecordDialogComponent } from './dialogs/remove-record-dialog/remove-record-dialog.component';
+import { TestComponent } from './layout/test/test.component';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { RemoveRecordDialogComponent } from './dialogs/remove-record-dialog/remo
     SnackbarComponent,
     SimulatorComponent,
     SimulationResultComponent,
-    RemoveRecordDialogComponent
+    RemoveRecordDialogComponent,
+    TestComponent
   ],
   imports: [
     AppRoutingModule,
@@ -62,6 +64,8 @@ import { RemoveRecordDialogComponent } from './dialogs/remove-record-dialog/remo
     NgChartsModule,
     BrowserAnimationsModule,
     FormsModule,
+    TableModule,
+    ButtonModule,
     MatSliderModule,
     MatSlideToggleModule,
     MatTabsModule,
@@ -77,11 +81,10 @@ import { RemoveRecordDialogComponent } from './dialogs/remove-record-dialog/remo
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatGridListModule
+    MatSnackBarModule
   ],
   providers: [CookieService, { provide: Window, useValue: window }],
-  bootstrap: [SFSimulatorComponent]
+  bootstrap: [SFSimulatorComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SFSimulatorModule { }

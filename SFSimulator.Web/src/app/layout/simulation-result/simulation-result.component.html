@@ -1,153 +1,131 @@
-<div class="scroll w-100 bg-white">
-  <table mat-table
-         [dataSource]="dataSource" multiTemplateDataRows
-         class="mat-elevation-z8">
-    <ng-container matColumnDef="{{column.column}}" *ngFor="let column of columnsToDisplay">
-      <th mat-header-cell *matHeaderCellDef> {{column.header}} </th>
-      <td mat-cell *matCellDef="let element"> {{element[column.column]}} </td>
-    </ng-container>
-    <ng-container matColumnDef="expand">
-      <th mat-header-cell *matHeaderCellDef aria-label="row actions">
-        <button mat-icon-button style="visibility:hidden"><mat-icon></mat-icon></button>
-        <button mat-icon-button aria-label='removeAllItems' (click)="showRemoveItemDialog()" [class.invisible]="dataSource.length == 0" class="invisible" matTooltip="Remove ALL records" matTooltipShowDelay="400">
-          <mat-icon class="text-danger">delete_forever</mat-icon>
-        </button>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button aria-label='show details' (click)="onElementClick(element); $event.stopPropagation()">
-          <mat-icon color="accent" *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
-          <mat-icon color="warn" *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
-        </button>
-        <button mat-icon-button aria-label='removeAllItems' (click)="showRemoveItemDialog(element)" matTooltip="Remove record" matTooltipShowDelay="400">
-          <mat-icon class="text-danger">delete</mat-icon>
-        </button>
-        <!--<button mat-icon-button aria-label='toggle charts' (click)="toggleCharts()" [class.invisible]="expandedElement !== element" class="invisible" matTooltip="Show charts" matTooltipShowDelay="400">
-          <mat-icon class="text-success">bar_chart</mat-icon>
-        </button>-->
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
-        <div class="example-element-detail" style="height: 0px"
-             [@detailExpand]="element == expandedElement ? chartsEnabled ? 'charts' : 'expanded' : 'collapsed'">
-          <div *ngIf="expandedElement" class="justify-content-between w-100 h-100 text-dark">
-            <div class="d-flex d-inline-flex justify-content-center w-100 mb-1"><h1 class="text-cente border-bottom border-primary">Base Stat Gains</h1></div>
-            <div class="d-flex d-inline-flex w-100">
-              <div class="d-flex d-inline-flex mb-0" style="height: 140px; width:8%">
-                <mat-grid-list [cols]='1' rowHeight="100%" class='w-100'>
-                  <mat-grid-tile align="center" class="text-center w-100" colspan="1" rowspan="1">
-                    <div class="d-flex flex-column text-center w-100 h-100">
-                      <div class="border header m-0 d-flex justify-content-center align-items-end"><p>Type</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>Average</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>Total</p></div>
-                    </div>
-                  </mat-grid-tile>
-                </mat-grid-list>
+<div class="h-100 bg-gray">
+  <p-table #table [value]="dataSource" dataKey="timestamp" [tableStyle]="{'min-width': '80rem; color: white'}" [scrollable]="true" scrollHeight="flex">
+    <ng-template pTemplate="header">
+      <tr class="p-1 top-row text-white">
+        <th class="py-1 bg-gray text-white">Character Name</th>
+        <th class="py-1 bg-gray text-white">Start Date</th>
+        <th class="py-1 bg-gray text-white">End Date</th>
+        <th class="py-1 bg-gray text-white">Days Passed</th>
+        <th class="py-1 bg-gray text-white">Level Difference</th>
+        <th class="py-1 bg-gray text-white">Base Stat Difference</th>
+        <th class="py-1 bg-gray text-white w-auto">
+          <button mat-icon-button class="invisible"></button>
+          <button mat-icon-button class="invisible"></button>
+          <button mat-icon-button aria-label='removeAllItems' (click)="removeElement()" [class.invisible]="dataSource.length == 0" class="invisible" matTooltip="Remove all records" matTooltipShowDelay="400">
+            <mat-icon class="text-danger">delete_forever</mat-icon>
+          </button>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-snapshot let-expanded="expanded">
+      <tr>
+        <td class='bg-gray'>{{ snapshot.characterName }}</td>
+        <td class='bg-gray'>{{ snapshot.startDate }}</td>
+        <td class='bg-gray'>{{ snapshot.endDate }}</td>
+        <td class='bg-gray'>{{ snapshot.daysPassed }}</td>
+        <td class='bg-gray'>{{ snapshot.levelDifference }}</td>
+        <td class='bg-gray'>{{ snapshot.baseStatDifference }}</td>
+        <td class='bg-gray'>
+          <button mat-icon-button (click)="table.toggleRow(snapshot, $event)">
+            <mat-icon color="accent" *ngIf="!expanded">keyboard_arrow_down</mat-icon>
+            <mat-icon color="accent" *ngIf="expanded">keyboard_arrow_up</mat-icon>
+          </button>
+          <button mat-icon-button (click)="showCharts(snapshot)" class="invisible" [class.invisible]="!expanded">
+            <mat-icon class="text-success">bar_chart</mat-icon>
+          </button>
+          <button mat-icon-button aria-label='remove record' (click)="removeElement(snapshot)" matTooltip="Remove record" matTooltipShowDelay="400">
+            <mat-icon class="text-danger">close</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-snapshot>
+      <tr>
+        <td colspan="7">
+          <table class="w-100">
+            <tr class="text-center border-bottom border-primary">
+              <th><h1>Experience Gains</h1></th>
+            </tr>
+            <tr class="row">
+              <th class="side">TYPE</th>
+              <div class="d-flex d-inline-flex justify-content-between gains">
+                <th class="" *ngFor="let key of experienceKeys" [style]="'width:' + experienceWidth">{{key.replace('_', ' ')}}</th>
               </div>
-              <div class="d-flex d-inline-flex mb-0" style="height: 140px; width: 84%">
-                <mat-grid-list [cols]='baseStatKeys.length' rowHeight="100%" class="w-100">
-                  <mat-grid-tile *ngFor="let key of baseStatKeys" [colspan]='1' rowspan="1">
-                    <div class="d-flex flex-column text-center w-100 h-100">
-                      <div class="border header m-0 d-flex justify-content-center align-items-end"><p>{{key.replace('_', ' ')}}</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.avgBaseStatGain[key]}}</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.totalBaseStatGain[key]}}</p></div>
-                    </div>
-                  </mat-grid-tile>
-                </mat-grid-list>
+              <th class="side">TOTAL</th>
+            </tr>
+            <tr class="row">
+              <td class="side">Average</td>
+              <div class="d-flex d-inline-flex justify-content-between gains">
+              <td *ngFor="let key of experienceKeys" [style]="'width:' + experienceWidth">{{snapshot.avgXPGain[key]}}</td>
               </div>
-              <div class="d-flex d-inline-flex mb-0" style="height: 140px; width:8%">
-                <mat-grid-list [cols]='1' rowHeight="100%" class='w-100'>
-                  <mat-grid-tile align="center" class="text-center w-100" colspan="1" rowspan="1">
-                    <div class="d-flex flex-column text-center w-100 h-100">
-                      <div class="border header m-0 d-flex justify-content-center align-items-end"><p>TOTAL</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.avgBaseStatGain.TOTAL}}</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.avgBaseStatGain.TOTAL}}</p></div>
-                    </div>
-                  </mat-grid-tile>
-                </mat-grid-list>
+              <td class="side">{{snapshot.avgXPGain.TOTAL}}</td>
+            </tr>
+            <tr class="row border-bottom border-white">
+              <td class="side">Total</td>
+              <div class="d-flex d-inline-flex justify-content-between gains">
+              <td *ngFor="let key of experienceKeys" [style]="'width:' + experienceWidth">{{snapshot.totalXPGain[key]}}</td>
               </div>
+              <td class="side">{{snapshot.totalXPGain.TOTAL}}</td>
+            </tr>
+          </table>
+          <table class="w-100 mt-3">
+            <tr class="text-center border-bottom border-primary">
+              <th><h1>Base Stat Gains</h1></th>
+            </tr>
+            <tr class="row">
+              <th class="side">TYPE</th>
+              <div class="d-flex d-inline-flex justify-content-between gains">
+              <th class="" *ngFor="let key of baseStatKeys" [style]="'width:' + experienceWidth">{{key.replace('_', ' ')}}</th>
+              </div>
+              <th class="side">TOTAL</th>
+            </tr>
+            <tr class="row">
+              <td class="side">Average</td>
+              <div class="d-flex d-inline-flex justify-content-between gains">
+              <td *ngFor="let key of baseStatKeys" [style]="'width:' + experienceWidth">{{snapshot.avgBaseStatGain[key]}}</td>
+              </div>
+              <td class="side">{{snapshot.avgBaseStatGain.TOTAL}}</td>
+            </tr>
+            <tr class="row">
+              <td class="side">Total</td>
+              <div class="d-flex d-inline-flex justify-content-between gains">
+              <td *ngFor="let key of baseStatKeys" [style]="'width:' + experienceWidth">{{snapshot.totalBaseStatGain[key]}}</td>
+              </div>
+              <td class="side">{{snapshot.totalBaseStatGain.TOTAL}}</td>
+            </tr>
+          </table>
+          <div class="d-flex d-inline-flex w-100 chart-container" *ngIf="snapshot.chartsEnabled">
+            <div class="w-25 h-100">
+              <canvas baseChart
+                      [data]="snapshot.avgBaseStatChart.data"
+                      [options]="snapshot.avgBaseStatChart!.options"
+                      [type]="'bar'">
+              </canvas>
             </div>
-            <div class="d-flex d-inline-flex justify-content-center w-100 mb-1"><h1 class="text-cente border-bottom border-primary">Experience Gains</h1></div>
-            <div class="d-flex d-inline-flex w-100">
-              <div class="d-flex d-inline-flex mb-0" style="height: 140px; width:8%">
-                <mat-grid-list [cols]='1' rowHeight="100%" class='w-100'>
-                  <mat-grid-tile align="center" class="text-center w-100" colspan="1" rowspan="1">
-                    <div class="d-flex flex-column text-center w-100 h-100">
-                      <div class="border header m-0 d-flex justify-content-center align-items-end"><p>Type</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>Average</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>Total</p></div>
-                    </div>
-                  </mat-grid-tile>
-                </mat-grid-list>
-              </div>
-              <div class="d-flex d-inline-flex mb-0" style="height: 140px; width: 84%">
-                <mat-grid-list [cols]='experienceKeys.length' rowHeight="100%" class="w-100">
-                  <mat-grid-tile *ngFor="let key of experienceKeys" [colspan]='1' rowspan="1">
-                    <div class="d-flex flex-column text-center w-100 h-100">
-                      <div class="border header m-0 d-flex justify-content-center align-items-end"><p>{{key.replace('_', ' ')}}</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.avgXPGain[key]}}</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.totalXPGain[key]}}</p></div>
-                    </div>
-                  </mat-grid-tile>
-                </mat-grid-list>
-              </div>
-              <div class="d-flex d-inline-flex mb-0" style="height: 140px; width:8%">
-                <mat-grid-list [cols]='1' rowHeight="100%" class='w-100'>
-                  <mat-grid-tile align="center" class="text-center w-100" colspan="1" rowspan="1">
-                    <div class="d-flex flex-column text-center w-100 h-100">
-                      <div class="border header m-0 d-flex justify-content-center align-items-end"><p>TOTAL</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.avgXPGain.TOTAL}}</p></div>
-                      <div class="border cell m-0 d-flex justify-content-center align-items-end"><p>{{expandedElement.totalXPGain.TOTAL}}</p></div>
-                    </div>
-                  </mat-grid-tile>
-                </mat-grid-list>
-              </div>
+            <div class="w-25 h-100">
+              <canvas baseChart
+                      [data]="snapshot.totalBaseStatChart.data"
+                      [options]="snapshot.totalBaseStatChart!.options"
+                      [type]="'bar'">
+              </canvas>
             </div>
-            <!-- TODO Change current layout to support better chart experience-->
-            <!--<div class="d-flex d-inline-flex w-100" *ngIf="chartsEnabled" height="320px">
-              <div class="w-25 h-100" *ngIf="avgBaseStatChart">
-                <canvas baseChart
-                        [data]="avgBaseStatChart.data"
-                        [options]="avgBaseStatChart!.options"
-                        [type]="'bar'">
-                </canvas>
-
-
-              </div>
-              <div class="w-25 h-100" *ngIf="totalBaseStatChart">
-                <canvas baseChart
-                        [data]="totalBaseStatChart.data"
-                        [options]="avgBaseStatChart!.options"
-                        [type]="'bar'">
-                </canvas>
-              </div>
-              <div class="w-25 h-100" *ngIf="avgXPChart">
-                <canvas baseChart
-                        [data]="avgXPChart.data"
-                        [options]="avgBaseStatChart!.options"
-                        [type]="'bar'">
-                </canvas>
-              </div>
-              <div class="w-25 h-100" *ngIf="totalXPChart">
-                <canvas baseChart
-                        [data]="totalXPChart.data"
-                        [options]="avgBaseStatChart!.options"
-                        [type]="'bar'">
-                </canvas>
-              </div>
-            </div>-->
+            <div class="w-25 h-100">
+              <canvas baseChart
+                      [data]="snapshot.avgXPChart.data"
+                      [options]="snapshot.avgXPChart!.options"
+                      [type]="'bar'">
+              </canvas>
+            </div>
+            <div class="w-25 h-100">
+              <canvas baseChart
+                      [data]="snapshot.totalXPChart.data"
+                      [options]="snapshot.avgXPChart!.options"
+                      [type]="'bar'">
+              </canvas>
+            </div>
           </div>
-        </div>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
-        class="table-row"
-        [class.table-expanded-row]="expandedElement === element">
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
-  </table>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
-

@@ -1,9 +1,9 @@
-import { SimulationSnapshot } from "../layout/simulation-result/simulation-result.component";
 import { SimulationResult } from "../models/simulation-result";
+import { SimulationSnapshot, SimulationSnapshotTableRecord } from "../models/simulation-snapshot";
 import { addDays } from "./date-helper";
 import { roundValues } from "./round-values";
 
-export function mapToSimulationSnaphsot(data: SimulationResult) {
+export function mapToSimulationSnapshot(data: SimulationResult): SimulationSnapshot {
   var timestamp = Date.now();
   var startDate = new Date(timestamp);
   var simulationSnapshot: SimulationSnapshot = {
@@ -23,4 +23,7 @@ export function mapToSimulationSnaphsot(data: SimulationResult) {
     totalXPGain: roundValues(data.totalGains.experienceGain)
   }
   return simulationSnapshot;
+}
+export function mapToSimulationSnapshotTableRecord(data: SimulationSnapshot): SimulationSnapshotTableRecord {
+  return { ...data, chartsEnabled: false, avgBaseStatChart: null, totalBaseStatChart: null, avgXPChart: null, totalXPChart: null }
 }

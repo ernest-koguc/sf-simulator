@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { addDays } from '../helpers/date-helper';
-import { mapToSimulationSnaphsot } from '../helpers/mapper';
-import { roundValues } from '../helpers/round-values';
-import { SimulationSnapshot } from '../layout/simulation-result/simulation-result.component';
+import { mapToSimulationSnapshot } from '../helpers/mapper';
 import { SimulationResult } from '../models/simulation-result';
+import { SimulationSnapshot } from '../models/simulation-snapshot';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +13,7 @@ export class DataBaseService {
 
   // SimulationSnapshot
   public saveSimulationSnapshot(data: SimulationResult) {
-    var snapshot = mapToSimulationSnaphsot(data);
+    var snapshot = mapToSimulationSnapshot(data);
 
     var storedItem = this.getFromStorage('SimulationSnapshotTable');
     var snapshotArray: SimulationSnapshot[];

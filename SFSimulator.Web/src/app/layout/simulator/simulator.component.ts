@@ -11,7 +11,6 @@ import { SimulationResult } from '../../models/simulation-result';
 import { DataBaseService } from '../../services/database.service';
 import { SimulatorService } from '../../services/simulator.service';
 import { SnackbarService } from '../../services/snackbar.service';
-import { SimulationSnapshot } from '../simulation-result/simulation-result.component';
 
 @Component({
   selector: 'app-simulator',

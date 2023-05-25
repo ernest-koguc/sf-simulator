@@ -1,42 +1,23 @@
-.table {
-  width: 100%;
+table {
+  background-color: rgb(25, 25, 25);
+  color: rgb(180,180,180)
 }
 
-.scroll {
-    overflow-y: scroll;
-    overflow-x: clip;
-    height: 93%;
+td:not(.bg-gray) {
+  background-color: rgb(25, 25, 25);
 }
 
-tr.detail-row {
-  height: 0;
+.bg-gray {
+  background-color: rgb(20, 20, 20) !important;
+  color: rgb(200,200,200) !important;
 }
 
-tr.table-row:not(.table-expanded-row):hover {
-  background: whitesmoke;
+.side {
+    width: 8%;
 }
-
-tr.table-row:not(.table-expanded-row):active {
-  background: #efefef;
+.gains {
+    width: 84%;
 }
-.table-row td {
-  border-bottom-width: 0;
-}
-
-.mat-grid-list-text {
-    text-align: center;
-}
-p {
-    text-align: center;
-    height: 33%;
-}
-.cell {
-  text-align: center;
-  height: 33%;
-}
-.header {
-  text-align: center;
-  height: 33%;
-  font-weight: 600;
-  background-color: cornflowerblue;
+.chart-container {
+  height: 220px;
 }

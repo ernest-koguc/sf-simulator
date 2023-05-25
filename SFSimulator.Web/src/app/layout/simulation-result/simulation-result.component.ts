@@ -1,67 +1,33 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RemoveRecordDialogComponent } from '../../dialogs/remove-record-dialog/remove-record-dialog.component';
-import { ChartConfig } from '../../models/chart';
-import { BaseStatGain, BaseStatKeys, Character, ExperienceGain, ExperienceKeys } from '../../models/simulation-result';
+import { mapToSimulationSnapshotTableRecord } from '../../helpers/mapper';
+import { BaseStatKeys, ExperienceKeys } from '../../models/simulation-result';
+import { SimulationSnapshot, SimulationSnapshotTableRecord } from '../../models/simulation-snapshot';
 import { ChartService } from '../../services/chart.service';
 import { DataBaseService } from '../../services/database.service';
 
 @Component({
   selector: 'app-simulation-result',
   templateUrl: './simulation-result.component.html',
-  styleUrls: ['./simulation-result.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '410px' })),
-      state('charts', style({ height: '640px'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-      transition('expanded <=> charts', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-      transition('charts => collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-    ]),
-  ],
-})
+  styleUrls: ['./simulation-result.component.scss']})
 export class SimulationResultComponent {
-  constructor(public chartService: ChartService, private databaseService: DataBaseService, private matDialog: MatDialog) {
-    this.databaseService.getAllSimulationSnapshot().subscribe(data => {
-      if (data) {
-        this.dataSource = data;
-        return;
-      }
-      this.dataSource = [];
+  constructor(private dataBaseService: DataBaseService, private chartService: ChartService, private matDialog: MatDialog) {
+    this.dataBaseService.getAllSimulationSnapshot().subscribe(v => {
+      if (v)
+        this.dataSource = v.map(s => mapToSimulationSnapshotTableRecord(s))
     });
   }
 
-  avgBaseStatChart: ChartConfig | null = null;
-  avgXPChart: ChartConfig | null = null;
-  totalBaseStatChart: ChartConfig | null = null;
-  totalXPChart: ChartConfig | null = null;
+  public dataSource!: SimulationSnapshotTableRecord[];
+  public baseStatKeys = BaseStatKeys;
+  public baseStatWidth = 1 / this.baseStatKeys.length * 100 + "%";
+  public experienceKeys = ExperienceKeys;
+  public experienceWidth = 1 / this.experienceKeys.length * 100 + "%";
 
-  dataSource: SimulationSnapshot[] = [];
-
-  columnsToDisplay = [
-    { header: 'Character Name', column: 'characterName' },
-    { header: 'Start', column: 'startDate'},
-    { header: 'End', column: 'endDate'},
-    { header: 'Days Passed', column: 'daysPassed'},
-    { header: 'Level Difference', column: 'levelDifference'},
-    { header: 'Base Stat Difference', column: 'baseStatDifference' }]
-  columnsToDisplayWithExpand = [...this.columnsToDisplay.map(o => o.column), 'expand'];
-  expandedElement!: SimulationSnapshot | null;
-  baseStatKeys = BaseStatKeys;
-  experienceKeys = ExperienceKeys;
-
-  private getChartData() {
-    this.avgBaseStatChart = this.chartService.createChart(this.expandedElement!.avgBaseStatGain, 'Average Base Stat', false, 'black', 'black');
-    this.totalBaseStatChart = this.chartService.createChart(this.expandedElement!.totalBaseStatGain, 'Total Base Stat', false, 'black', 'black');
-    this.avgXPChart = this.chartService.createChart(this.expandedElement!.avgXPGain, 'Average Experience', false, 'black', 'black');
-    this.totalXPChart = this.chartService.createChart(this.expandedElement!.totalXPGain, 'Total Experience', false, 'black', 'black');
-  }
-
-  public showRemoveItemDialog(element?: SimulationSnapshot) {
+  public removeElement(element?: SimulationSnapshotTableRecord) {
     if (element) {
-      this.databaseService.removeSimulationSnapshot(element);
+      this.dataBaseService.removeSimulationSnapshot(element);
       this.dataSource = this.dataSource.filter(e => e != element);
       return
     }
@@ -70,46 +36,22 @@ export class SimulationResultComponent {
       if (v !== true)
         return;
 
-      this.databaseService.removeAllSimulationSnapshots();
+      this.dataBaseService.removeAllSimulationSnapshots();
       this.dataSource = [];
 
     });
   }
 
-  onElementClick(element: any) {
-    this.expandedElement = this.expandedElement === element ? null : element;
-    this.chartsEnabled = false;
-    if (this.expandedElement) {
-      this.getChartData();
-    }
+  showCharts(snapshot: SimulationSnapshotTableRecord) {
+    snapshot.chartsEnabled = !snapshot.chartsEnabled;
+    if (!snapshot.chartsEnabled)
+      return;
+
+    snapshot.avgBaseStatChart = this.chartService.createChart(snapshot.avgBaseStatGain, 'Average Base Stat');
+    snapshot.totalBaseStatChart = this.chartService.createChart(snapshot.totalBaseStatGain, 'Total Base Stat');
+    snapshot.avgXPChart = this.chartService.createChart(snapshot.avgXPGain, 'Average Experience');
+    snapshot.totalXPChart = this.chartService.createChart(snapshot.totalXPGain, 'Total Experience');
   }
 
-  public chartsEnabled = false;
 
-  toggleCharts() {
-    this.chartsEnabled = !this.chartsEnabled;
-  }
-}
-export interface ExpandedElement {
-  element: SimulationSnapshot | null,
-  avgBaseStatChart: ChartConfig | null,
-  avgXPChart: ChartConfig | null;
-  totalBaseStatChart: ChartConfig | null,
-  totalXPChart: ChartConfig | null
-}
-export interface SimulationSnapshot {
-  timestamp: number;
-  characterName: string;
-  startDate: string;
-  endDate: string;
-  daysPassed: number;
-  levelDifference: string;
-  baseStatDifference: string;
-  description: string;
-  characterBeforeSimulation: Character;
-  characterAfterSimulation: Character;
-  avgBaseStatGain: BaseStatGain;
-  avgXPGain: ExperienceGain;
-  totalBaseStatGain: BaseStatGain;
-  totalXPGain: ExperienceGain;
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SFSimulator.Core;
-using System.Xml;
 
 namespace SFSimulator.API.Mappings
 {
@@ -58,15 +57,46 @@ namespace SFSimulator.API.Mappings
                 .ForMember(d => d.GemMineLevel, m => m.MapFrom(s => s.Fortress.GemMine))
                 .ForMember(d => d.TreasuryLevel, m => m.MapFrom(s => s.Fortress.Treasury))
                 .ForMember(d => d.Tower, m => m.MapFrom(s => s.Dungeons.Tower))
-                .ForMember(d => d.XpRuneBonus, m => m.MapFrom(s => s.Runes.XP))
-                .ForMember(d => d.GoldRuneBonus, m => m.MapFrom(s => s.Runes.Gold))
+                .ForMember(d => d.XpRuneBonus, m => m.MapFrom(s => GetRuneBonus(s, BonusType.XP)))
+                .ForMember(d => d.GoldRuneBonus, m => m.MapFrom(s => GetRuneBonus(s, BonusType.GOLD)))
                 .ForMember(d => d.MountType, m => m.MapFrom(s => TranslateMountType(s.Mount)))
-                .ForMember(d => d.HasGoldScroll, m => m.MapFrom(s => s.Items.Ring.Enchantment != 0))
-                .ForMember(d => d.HasExperienceScroll, m => m.MapFrom(s => s.Items.Head.Enchantment != 0))
+                .ForMember(d => d.HasGoldScroll, m => m.MapFrom(s => s.Items.Ring.HasEnchantment || s.Inventory.Dummy.Ring.HasEnchantment))
+                .ForMember(d => d.HasExperienceScroll, m => m.MapFrom(s => s.Items.Head.HasEnchantment || s.Inventory.Dummy.Head.HasEnchantment))
                 .ForMember(d => d.BaseStat, m => m.MapFrom(s => SumBaseStats(s)))
                 .ForMember(d => d.HydraHeads, m => m.MapFrom(s => s.Group.Group.Hydra))
                 .ForMember(d => d.GoldGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.GOLD)))
                 .ForMember(d => d.XpGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.XP)));
+        }
+        private int GetRuneBonus(Maria21DataDTO dto, BonusType type)
+        {
+            int runeType, runeBonus, runeMax;
+            if (type == BonusType.GOLD)
+            {
+                runeType = 1;
+                runeBonus = dto.Runes.Gold;
+                runeMax = 50;
+            }
+            else
+            {
+                runeType = 4;
+                runeBonus = dto.Runes.XP;
+                runeMax = 10;
+            }
+
+            var dummy = dto.Inventory.Dummy;
+            var props = typeof(Slots).GetProperties();
+
+            foreach (var property in props)
+            {
+                var value = property.GetValue(dummy);
+                if (value is PlayerItem)
+                {
+                    var item = (PlayerItem)value;
+                    runeBonus += item.RuneType == runeType ? item.RuneValue : 0;
+                }
+            }
+            runeBonus = Math.Min(runeMax, runeBonus);
+            return runeBonus;
         }
         private int GetGuildBonus(Maria21DataDTO dto, BonusType type)
         {

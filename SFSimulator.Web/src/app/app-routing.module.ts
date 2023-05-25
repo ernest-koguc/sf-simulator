@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SimulationResultComponent } from './layout/simulation-result/simulation-result.component';
 import { SimulatorComponent } from './layout/simulator/simulator.component';
+import { TestComponent } from './layout/test/test.component';
 
 
 const routes: Routes = [
   { path: 'results', component: SimulationResultComponent },
+  { path: 'test', component: TestComponent},
   { path: '**', component: SimulatorComponent },
 ];
 

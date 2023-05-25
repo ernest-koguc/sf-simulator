@@ -9,16 +9,33 @@
         public int Level { get; set; }
         public int Mount { get; set; }
         public int Book { get; set; }
+
+        public Inventory Inventory { get; set; } = null!;
         public Fortress Fortress { get; set; } = null!;
         public Underworld Underworld { get; set; } = null!;
         public Dungeons Dungeons { get; set; } = null!;
         public Runes Runes { get; set; } = null!;
-        public Strength Strength { get; set; } = null!;
-        public Dexterity Dexterity { get; set; } = null!;
-        public Intelligence Intelligence { get; set; } = null!;
-        public Constitution Constitution { get; set; } = null!;
-        public Items Items { get; set; } = null!;
+        public PlayerAttribute Strength { get; set; } = null!;
+        public PlayerAttribute Dexterity { get; set; } = null!;
+        public PlayerAttribute Intelligence { get; set; } = null!;
+        public PlayerAttribute Constitution { get; set; } = null!;
+        public Slots Items { get; set; } = null!;
         public GroupData Group { get; set; } = null!;
+    }
+    public class Inventory
+    {
+        public Slots Dummy { get; set; } = null!;
+    }
+    public class Slots
+    {
+        public PlayerItem Head { get; set; } = null!;
+        public PlayerItem Body { get; set; } = null!;
+        public PlayerItem Hand { get; set; } = null!;
+        public PlayerItem Feet { get; set; } = null!;
+        public PlayerItem Neck { get; set; } = null!;
+        public PlayerItem Belt { get; set; } = null!;
+        public PlayerItem Ring { get; set; } = null!;
+        public PlayerItem Misc { get; set; } = null!;
     }
     public class GroupData
     {
@@ -33,36 +50,15 @@
         public int TotalTreasure { get; set; }
 
     }
-    public class Items
+    public class PlayerItem
     {
-        public Head Head { get; set; } = null!;
-        public Neck Neck { get; set; } = null!;
-        public Ring Ring { get; set; } = null!;
+        public bool HasEnchantment { get; set; }
+        public bool HasRune { get; set; }
+        public int RuneType { get; set; }
+        public int RuneValue { get; set; }
     }
-
-    public class Head
+    public class PlayerAttribute
     {
-        public int Enchantment { get; set; }
-    }
-    public class Neck
-    {
-        public int Enchantment { get; set; }
-    }
-    public class Ring
-    {
-        public int Enchantment { get; set; }
-    }
-    public class Constitution
-    {
-        public int Type { get; set; }
-        public int Value { get; set; }
-        public int Base { get; set; }
-    }
-
-    public class Dexterity
-    {
-        public int Type { get; set; }
-        public int Value { get; set; }
         public int Base { get; set; }
     }
 
@@ -81,24 +77,10 @@
         public int Treasury { get; set; }
     }
 
-    public class Intelligence
-    {
-        public int Type { get; set; }
-        public int Value { get; set; }
-        public int Base { get; set; }
-    }
-
-
     public class Runes
     {
         public int Gold { get; set; }
         public int XP { get; set; }
-    }
-    public class Strength
-    {
-        public int Type { get; set; }
-        public int Value { get; set; }
-        public int Base { get; set; }
     }
 
     public class Underworld
