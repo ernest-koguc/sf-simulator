@@ -117,7 +117,7 @@
 
         public float GetDailyGoldFromDiceGame(int characterLevel, IEnumerable<EventType> events)
         {
-            var averageGold = 0.0222125f;
+            var averageGold = 0.3555f;
 
             var dailySpins = 10;
 
