@@ -23,7 +23,8 @@ jobs:
         node-version: 14.x
         cache: 'npm'
         cache-dependency-path: SFSimulator.Web/package-lock.json
-    - run: |
+    - name: npm install
+      run: |
         cd SFSimulator.Web
         npm install
     - name: npm build
