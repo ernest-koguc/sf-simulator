@@ -102,6 +102,8 @@ namespace SFSimulator.Core
             ItemBackPack = new ItemBackPack(new ItemGoldValueComparer(), 5 + Character.TreasuryLevel);
             _thirstSimulator.ThirstSimulationOptions.HasGoldScroll = SimulationOptions.GoldBonus.HasGoldScroll;
             _thirstSimulator.ThirstSimulationOptions.GoldRuneBonus = SimulationOptions.GoldBonus.RuneBonus;
+            _thirstSimulator.ThirstSimulationOptions.Mount = Character.Mount;
+            _thirstSimulator.ThirstSimulationOptions.DrinkBeerOneByOne = SimulationOptions.DrinkBeerOneByOne;
             _calendarRewardProvider.SetCalendar(1, 1, simulationOptions.SkipCalendar);
 
             var charPreviously = _mapper.Map<CharacterDTO>(Character);
@@ -169,9 +171,7 @@ namespace SFSimulator.Core
             var quests = _thirstSimulator.StartThirst(SimulationOptions.DailyThirst,
                 _characterHelper.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
                 Character.Level,
-                Character.Mount,
-                CurrentEvents,
-                SimulationOptions.DrinkBeerOneByOne
+                CurrentEvents
                 );
             var questList = new List<Quest>();
 
@@ -191,8 +191,7 @@ namespace SFSimulator.Core
 
                 quests = _thirstSimulator.NextQuests(choosenQuest,
                     _characterHelper.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
-                    Character.Level,
-                    Character.Mount);
+                    Character.Level);
             }
             var totalXP = questList.Sum(q => q.Experience);
         }
@@ -219,7 +218,7 @@ namespace SFSimulator.Core
             var goldFromGems = _characterHelper.GetDailyGoldFromGemMine(Character.Level, Character.GemMineLevel);
             GiveGoldToCharacter(goldFromGems, GainSource.GEM);
 
-            var questsFromTimeMachine = _thirstSimulator.GenerateQuestsFromTimeMachine(20, _characterHelper.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus), Character.Mount);
+            var questsFromTimeMachine = _thirstSimulator.GenerateQuestsFromTimeMachine(20, _characterHelper.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus));
 
             foreach (var quest in questsFromTimeMachine)
             {
