@@ -2,7 +2,7 @@
 {
     public class QuestHelper : IQuestHelper
     {
-        public float GetTime(int questLength, MountType mountType)
+        public float GetTime(int questSegments, MountType mountType)
         {
             var mountFactor = 1f;
             switch (mountType)
@@ -25,13 +25,13 @@
             }
 
 
-            return questLength switch
+            return questSegments switch
             {
                 1 => 5 * mountFactor,
                 2 => 10 * mountFactor,
                 3 => 15 * mountFactor,
                 4 => 20 * mountFactor,
-                _ => throw new ArgumentOutOfRangeException(nameof(questLength)),
+                _ => throw new ArgumentOutOfRangeException(nameof(questSegments)),
             };
         }
     }

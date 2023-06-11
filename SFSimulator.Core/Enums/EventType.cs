@@ -2,20 +2,20 @@
 {
     public enum EventType
     {
-        MUSHROOM,
-        EXPERIENCE,
-        GOLD,
-        EPIC_QUEST,
-        EPIC_SHOP,
-        EPIC_LUCK,
-        FORTRESS,
-        PETS,
-        SOULS,
-        HOURGLASSES,
-        WITCH,
-        TOILET,
-        LUCKY_DAY,
-        FORGE,
-        PIECEWORK_PARTY
+        Mushroom,
+        Experience,
+        Gold,
+        EpicQuest,
+        EpicShop,
+        EpicLuck,
+        Fortress,
+        Pets,
+        Souls,
+        Hourglasses,
+        Witch,
+        Toilet,
+        LuckyDay,
+        Forge,
+        PieceworkParty
     }
 }

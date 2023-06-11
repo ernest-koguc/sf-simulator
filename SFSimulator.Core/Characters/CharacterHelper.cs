@@ -121,22 +121,29 @@
 
             var dailySpins = 10;
 
-            if (events.Contains(EventType.LUCKY_DAY))
+            if (events.Contains(EventType.LuckyDay))
                 dailySpins = 20;
 
 
             var goldFromGuard = GetGoldFromGuardDuty(characterLevel, null, false);
             var goldReward = goldFromGuard * dailySpins * averageGold;
 
-            if (events.Contains(EventType.GOLD))
+            if (events.Contains(EventType.Gold))
                 goldReward *= 5;
 
             return goldReward;
         }
 
-        public float GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events)
+        public float GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount)
         {
-            var dailySpins = events.Contains(EventType.LUCKY_DAY) ? 40 : 20;
+            var isLuckyDay = events.Contains(EventType.LuckyDay);
+
+            var spins = 1;
+
+            if (isLuckyDay && spinAmount == SpinAmountType.Max)
+                spins = 40;
+            else if (spinAmount == SpinAmountType.Max)
+                spins = 20;
 
             var goldRewardChance = 0.1f;
 
@@ -145,30 +152,37 @@
 
             if (goldReward > 15000000)
                 goldReward = 15000000;
-            if (events.Contains(EventType.GOLD))
+            if (events.Contains(EventType.Gold))
                 goldReward *= 5;
 
-            var gold = goldReward * dailySpins * goldRewardChance;
+            var gold = goldReward * spins * goldRewardChance;
 
             return gold;
         }
 
-        public int GetDailyExperienceFromWheel(int characterLevel, IEnumerable<EventType> events)
+        public int GetDailyExperienceFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount)
         {
+            var isLuckyDay = events.Contains(EventType.LuckyDay);
+
+            var spins = 1;
+
+            if (isLuckyDay && spinAmount == SpinAmountType.Max)
+                spins = 40;
+            else if (spinAmount == SpinAmountType.Max)
+                spins = 20;
+
             var xp = GetExperienceForNextLevel(characterLevel);
             var multiplier = 1.5 + 0.75 * (characterLevel - 1);
             var basic = xp / multiplier;
 
             var xpReward = Math.Truncate(basic / Math.Max(1, Math.Exp(30090.33 / 5000000 * (characterLevel - 99))));
 
-            var dailySpins = events.Contains(EventType.LUCKY_DAY) ? 40 : 20;
-
             var smallXpRewardChance = 0.1f;
             var bigXpRewardChance = 0.1f;
 
-            var totalXp = dailySpins * smallXpRewardChance * xpReward / 2 + dailySpins * bigXpRewardChance * xpReward;
+            var totalXp = spins * smallXpRewardChance * xpReward / 2 + spins * bigXpRewardChance * xpReward;
 
-            if (events.Contains(EventType.EXPERIENCE))
+            if (events.Contains(EventType.Experience))
                 totalXp *= 2;
 
             return (int)totalXp;
@@ -178,7 +192,7 @@
             var xpBase = GetExperienceForNextLevel(characterLevel);
             var xp = Math.Floor(15 / 16d * xpBase / (characterLevel + 5d));
 
-            if (events.Contains(EventType.EXPERIENCE))
+            if (events.Contains(EventType.Experience))
                 xp *= 2;
 
             return (int)xp;

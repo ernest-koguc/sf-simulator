@@ -7,14 +7,14 @@ namespace SFSimulator.Core
         private readonly IThirstSimulator _thirstSimulator;
         private readonly ICharacterHelper _characterHelper;
         private readonly ICalendarRewardProvider _calendarRewardProvider;
-        private readonly IEventScheduler _eventScheduler;
+        private readonly IScheduler _scheduler;
         private readonly IQuestChooser _questChooser;
         private readonly IMapper _mapper;
         private List<EventType> CurrentEvents = new();
         private IItemBackPack ItemBackPack { get; set; } = null!;
-        private bool IsExperienceEvent => CurrentEvents is not null && CurrentEvents.Contains(EventType.EXPERIENCE);
-        private bool IsGoldEvent => CurrentEvents is not null && CurrentEvents.Contains(EventType.GOLD);
-        private bool IsWitchEvent => CurrentEvents is not null && CurrentEvents.Contains(EventType.WITCH);
+        private bool IsExperienceEvent => CurrentEvents is not null && CurrentEvents.Contains(EventType.Experience);
+        private bool IsGoldEvent => CurrentEvents is not null && CurrentEvents.Contains(EventType.Gold);
+        private bool IsWitchEvent => CurrentEvents is not null && CurrentEvents.Contains(EventType.Witch);
 
         private List<ItemType> CurrentItemTypesForWitch = new();
 
@@ -24,12 +24,12 @@ namespace SFSimulator.Core
         public Character Character { get; set; } = null!;
         public SimulationOptions SimulationOptions { get; set; } = null!;
 
-        public GameSimulator(ICharacterHelper characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IEventScheduler eventScheduler, IQuestChooser questChooser, IMapper mapper)
+        public GameSimulator(ICharacterHelper characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IScheduler scheduler, IQuestChooser questChooser, IMapper mapper)
         {
             _characterHelper = characterHelper;
             _thirstSimulator = thirstSimulator;
             _calendarRewardProvider = calendarRewardProvider;
-            _eventScheduler = eventScheduler;
+            _scheduler = scheduler;
             _questChooser = questChooser;
             _mapper = mapper;
         }
@@ -105,6 +105,7 @@ namespace SFSimulator.Core
             _thirstSimulator.ThirstSimulationOptions.Mount = Character.Mount;
             _thirstSimulator.ThirstSimulationOptions.DrinkBeerOneByOne = SimulationOptions.DrinkBeerOneByOne;
             _calendarRewardProvider.SetCalendar(1, 1, simulationOptions.SkipCalendar);
+            _scheduler.SetCustomSchedule(SimulationOptions.Schedule);
 
             var charPreviously = _mapper.Map<CharacterDTO>(Character);
 
@@ -112,14 +113,13 @@ namespace SFSimulator.Core
         }
         private void RunDay()
         {
-            CurrentEvents = _eventScheduler.GetCurrentEvents(CurrentDay);
+            var schedule = _scheduler.GetCurrentSchedule();
+            CurrentEvents = schedule.Events;
+
+            PerformScheduleActions(schedule);
 
             var calendarReward = _calendarRewardProvider.GetNextReward();
             GiveCalendarRewardToPlayer(calendarReward);
-
-
-            if (Character.GoldPitLevel < 100 && CurrentDay % 14 == 0)
-                Character.GoldPitLevel++;
 
             SellItemsToWitch();
 
@@ -137,7 +137,7 @@ namespace SFSimulator.Core
 
             GiveXPToCharacter(arenaXP, GainSource.ARENA);
 
-            var goldFromWatch = 23 * _characterHelper.GetGoldFromGuardDuty(Character.Level, SimulationOptions.GoldBonus, IsGoldEvent);
+            var goldFromWatch = SimulationOptions.DailyGuard * _characterHelper.GetGoldFromGuardDuty(Character.Level, SimulationOptions.GoldBonus, IsGoldEvent);
             GiveGoldToCharacter(goldFromWatch, GainSource.GUARD);
 
             var goldFromDiceGame = _characterHelper.GetDailyGoldFromDiceGame(Character.Level, CurrentEvents!);
@@ -145,6 +145,14 @@ namespace SFSimulator.Core
 
             var guildFightsXp = (int)(24 / 11.5 * _characterHelper.GetXPFromGuildFight(Character.Level, CurrentEvents));
             GiveXPToCharacter(guildFightsXp, GainSource.GUILD_FIGHT);
+        }
+
+        private void PerformScheduleActions(ScheduleDay schedule)
+        {
+            foreach (var action in schedule.Actions)
+            {
+                Character.PerformAction(SimulationOptions, _thirstSimulator.ThirstSimulationOptions, action);
+            }
         }
 
         private void SellItemsToWitch()
@@ -198,10 +206,10 @@ namespace SFSimulator.Core
 
         private void SpinAbawuwuWheel()
         {
-            var goldFromWheel = _characterHelper.GetDailyGoldFromWheel(Character.Level, CurrentEvents);
+            var goldFromWheel = _characterHelper.GetDailyGoldFromWheel(Character.Level, CurrentEvents, SimulationOptions.SpinAmount);
             GiveGoldToCharacter(goldFromWheel, GainSource.WHEEL);
 
-            var xpFromWheel = _characterHelper.GetDailyExperienceFromWheel(Character.Level, CurrentEvents);
+            var xpFromWheel = _characterHelper.GetDailyExperienceFromWheel(Character.Level, CurrentEvents, SimulationOptions.SpinAmount);
             GiveXPToCharacter(xpFromWheel, GainSource.WHEEL);
 
             //TODO: PET AND NORMAL ITEMS FROM WHEEL LOGIC
@@ -319,7 +327,7 @@ namespace SFSimulator.Core
                 return;
             }
 
-            //TODO FRUITS LOGIC AND ATTRIBUTES  - CLASS AS NECESSARY INPUT??
+            //TODO FRUITS LOGIC AND ATTRIBUTES - CLASS AS NECESSARY INPUT??
         }
     }
 }

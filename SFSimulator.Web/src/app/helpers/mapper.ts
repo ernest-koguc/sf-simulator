@@ -24,6 +24,7 @@ export function mapToSimulationSnapshot(data: SimulationResult): SimulationSnaps
   }
   return simulationSnapshot;
 }
+
 export function mapToSimulationSnapshotTableRecord(data: SimulationSnapshot): SimulationSnapshotTableRecord {
   return { ...data, chartsEnabled: false, avgBaseStatChart: null, totalBaseStatChart: null, avgXPChart: null, totalXPChart: null }
 }

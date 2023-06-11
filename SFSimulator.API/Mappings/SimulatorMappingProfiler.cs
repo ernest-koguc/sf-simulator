@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.Extensions.Logging;
 using SFSimulator.Core;
 
 namespace SFSimulator.API.Mappings
@@ -13,26 +15,8 @@ namespace SFSimulator.API.Mappings
             CreateMap<Character, CharacterDTO>();
 
             CreateMap<SimulationOptionsDTO, SimulationOptions>()
-                .ForMember(d => d.QuestPriority, m => m.MapFrom((s, _) =>
-                {
-                    if (s.QuestPriority?.ToUpper() == "GOLD")
-                        return Priority.GOLD;
-                    if (s.QuestPriority?.ToUpper() == "EXPERIENCE")
-                        return Priority.XP;
-                    if (s.QuestPriority?.ToUpper() == "HYBRID")
-                        return Priority.HYBRID;
-                    return Priority.XP;
-                }))
-                .ForMember(d => d.PriorityAfterSwitch, m => m.MapFrom((s, _) =>
-                {
-                    if (s.PriorityAfterSwitch?.ToUpper() == "GOLD")
-                        return Priority.GOLD;
-                    if (s.PriorityAfterSwitch?.ToUpper() == "EXPERIENCE")
-                        return Priority.XP;
-                    if (s.PriorityAfterSwitch?.ToUpper() == "HYBRID")
-                        return Priority.HYBRID;
-                    return Priority.XP;
-                }))
+                .ForMember(d => d.QuestPriority, m => m.MapFrom(s => GetQuestPriorityType(s.QuestPriority)))
+                .ForMember(d => d.PriorityAfterSwitch, m => m.MapFrom(s => GetQuestPriorityType(s.PriorityAfterSwitch)))
                 .ForMember(d => d.HybridRatio, m => m.MapFrom(s => s.HybridRatio))
                 .ForMember(d => d.SwitchPriority, m => m.MapFrom(s => s.SwitchPriority))
                 .ForMember(d => d.SwitchLevel, m => m.MapFrom(s => s.SwitchLevel))
@@ -45,7 +29,9 @@ namespace SFSimulator.API.Mappings
                     return new ExperienceBonus(s.ScrapbookFillness, s.XpGuildBonus, s.XpRuneBonus, s.HasExperienceScroll);
                 }))
                 .ForMember(d => d.DrinkBeerOneByOne, m => m.MapFrom(s => s.DrinkBeerOneByOne))
-                .ForMember(d => d.DailyThirst, m => m.MapFrom(s => s.DailyThirst));
+                .ForMember(d => d.DailyThirst, m => m.MapFrom(s => s.DailyThirst))
+                .ForMember(d => d.SpinAmount, m => m.MapFrom(s => GetSpinAmount(s.SpinAmount)))
+                .ForMember(d => d.Schedule, m => m.MapFrom(s => MapSchedule(s.Schedule)));
 
             CreateMap<Maria21DataDTO, EndpointDataDTO>()
                 .ForMember(d => d.CharacterName, m => m.MapFrom(s => s.Name + "@" + s.Prefix.Replace(" ", string.Empty)))
@@ -56,7 +42,7 @@ namespace SFSimulator.API.Mappings
                 .ForMember(d => d.AcademyLevel, m => m.MapFrom(s => s.Fortress.Academy))
                 .ForMember(d => d.GemMineLevel, m => m.MapFrom(s => s.Fortress.GemMine))
                 .ForMember(d => d.TreasuryLevel, m => m.MapFrom(s => s.Fortress.Treasury))
-                .ForMember(d => d.Tower, m => m.MapFrom(s => s.Dungeons.Tower))
+                .ForMember(d => d.Tower, m => m.MapFrom(s => Math.Max(s.Dungeons.Tower, 0)))
                 .ForMember(d => d.XpRuneBonus, m => m.MapFrom(s => GetRuneBonus(s, BonusType.XP)))
                 .ForMember(d => d.GoldRuneBonus, m => m.MapFrom(s => GetRuneBonus(s, BonusType.GOLD)))
                 .ForMember(d => d.MountType, m => m.MapFrom(s => TranslateMountType(s.Mount)))
@@ -67,6 +53,68 @@ namespace SFSimulator.API.Mappings
                 .ForMember(d => d.GoldGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.GOLD)))
                 .ForMember(d => d.XpGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.XP)));
         }
+
+        private Dictionary<(int Week, int Day), ScheduleDay> MapSchedule(Schedule schedule)
+        {
+            var mappedSchedule = new Dictionary<(int, int), ScheduleDay>();
+            var weekId = 1;
+            var dayId = 1;
+            foreach (var week in schedule.ScheduleWeeks)
+            {
+                foreach (var day in week.ScheduleDays)
+                {
+                    var actions = MapActions(day.Actions);
+                    var events = MapEvents(day.Events);
+                    mappedSchedule[(weekId, dayId)] = new ScheduleDay { Actions = actions, Events = events };
+                    dayId++;
+                }
+                weekId++;
+                dayId = 1;
+            }
+
+            return mappedSchedule;
+        }
+
+        private List<EventType> MapEvents(List<string> events)
+        {
+            var list = new List<EventType>();
+            foreach (var @event in events)
+            {
+                var eventEnum = Enum.Parse<EventType>(@event);
+                list.Add(eventEnum);
+            }
+
+            return list;
+        }
+
+        private List<ActionType> MapActions(List<string> actions)
+        {
+            var list = new List<ActionType>();
+            foreach (var action in actions)
+            {
+                var actionEnum = Enum.Parse<ActionType>(action);
+                list.Add(actionEnum);
+            }
+
+            return list;
+        }
+
+        private QuestPriorityType GetQuestPriorityType(string? priority)
+        {
+            return priority switch
+            {
+                nameof(QuestPriorityType.Gold) => QuestPriorityType.Gold,
+                nameof(QuestPriorityType.Experience) => QuestPriorityType.Experience,
+                nameof(QuestPriorityType.Hybrid) => QuestPriorityType.Hybrid,
+                _ => QuestPriorityType.Experience
+            };
+        }
+
+        private SpinAmountType GetSpinAmount(string spinAmount)
+        {
+            return spinAmount == nameof(SpinAmountType.Max) ? SpinAmountType.Max : SpinAmountType.OnlyFree;
+        }
+
         private int GetRuneBonus(Maria21DataDTO dto, BonusType type)
         {
             int runeType, runeBonus, runeMax;
@@ -109,10 +157,10 @@ namespace SFSimulator.API.Mappings
         {
             return mountType switch
             {
-                "Griffin" => MountType.Griffin,
-                "Tiger" => MountType.Tiger,
-                "Horse" => MountType.Horse,
-                "Pig" => MountType.Pig,
+                nameof(MountType.Griffin) => MountType.Griffin,
+                nameof(MountType.Tiger) => MountType.Tiger,
+                nameof(MountType.Horse) => MountType.Horse,
+                nameof(MountType.Pig) => MountType.Pig,
                 _ => MountType.None,
             };
         }

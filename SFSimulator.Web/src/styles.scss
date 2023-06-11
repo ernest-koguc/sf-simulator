@@ -62,3 +62,8 @@ $light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accen
   width: 4rem;
   height: 4rem;
 }
+
+.bg-gray {
+  background-color: rgb(20, 20, 20) !important;
+  color: rgb(200,200,200) !important;
+}

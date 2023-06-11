@@ -10,7 +10,7 @@
         {
             Multiplier = multiplier;
         }
-        public Quest ChooseBestQuest(IEnumerable<Quest> quests, Priority questPriority, QuestChooserAI questChooserAI, float? hybridRatio = 0f)
+        public Quest ChooseBestQuest(IEnumerable<Quest> quests, QuestPriorityType questPriority, QuestChooserAI questChooserAI, float? hybridRatio = 0f)
         {
             return questChooserAI switch
             {
@@ -19,11 +19,11 @@
                 _ => throw new ArgumentException($"Wrong {nameof(questChooserAI)} value"),
             };
         }
-        private Quest SimpleChooser(IEnumerable<Quest> quests, Priority questPriority, float? hybridRatio)
+        private Quest SimpleChooser(IEnumerable<Quest> quests, QuestPriorityType questPriority, float? hybridRatio)
         {
             return questPriority switch
             {
-                Priority.GOLD => quests.OrderByDescending(q =>
+                QuestPriorityType.Gold => quests.OrderByDescending(q =>
                 {
                     if (q.Item != null && q.Item.ItemSourceType == ItemSourceType.BeforeQuest)
                         return q.Gold + q.Item.GoldValue / q.Time;
@@ -32,17 +32,17 @@
 
                 }).First(),
 
-                Priority.XP => quests.OrderByDescending(q => q.Experience / q.Time).First(),
+                QuestPriorityType.Experience => quests.OrderByDescending(q => q.Experience / q.Time).First(),
 
-                Priority.HYBRID => quests.OrderByDescending(q => q.Experience / q.Time + q.Gold * hybridRatio / q.Time).First(),
+                QuestPriorityType.Hybrid => quests.OrderByDescending(q => q.Experience / q.Time + q.Gold * hybridRatio / q.Time).First(),
                 _ => throw new Exception("Wrong priority")
             };
         }
 
-        private Quest SmartChooser(IEnumerable<Quest> quests, Priority questPriority, float? hybridRatio)
+        private Quest SmartChooser(IEnumerable<Quest> quests, QuestPriorityType questPriority, float? hybridRatio)
         {
 
-            if (questPriority == Priority.GOLD)
+            if (questPriority == QuestPriorityType.Gold)
             {
                 var transformedQuests = quests.Select(q =>
                 {
@@ -57,7 +57,7 @@
                 var quest = transformedQuests.MaxBy(tuple => tuple.estimatedGold).q;
                 return quest;
             }
-            if (questPriority == Priority.XP)
+            if (questPriority == QuestPriorityType.Experience)
             {
                 var transformedQuests = quests.Select(q =>
                 {

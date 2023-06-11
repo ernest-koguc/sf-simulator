@@ -1,4 +1,4 @@
-﻿
+﻿using Mount = SFSimulator.Core.MountType;
 
 namespace SFSimulator.Core
 {
@@ -28,7 +28,25 @@ namespace SFSimulator.Core
         public bool HasGoldScroll { get; set; } = false;
         public bool DrinkBeerOneByOne { get; set; } = false;
         public int DailyThirst { get; set; } = 0;
-        public string MountType { get; set; } = "Griffin";
+        public string MountType { get; set; } = nameof(Mount.Griffin);
         public bool SkipCalendar { get; set; } = false;
+        public string SpinAmount { get; set; } = nameof(SpinAmountType.Max);
+        public float DailyGuard { get; set; } = 23;
+        public Schedule Schedule { get; set; } = new Schedule();
+    }
+
+    public class Schedule
+    {
+        public List<ScheduleWeeksDTO> ScheduleWeeks { get; set; } = null!;
+    } 
+
+    public class ScheduleWeeksDTO
+    {
+        public List<ScheduleDayDTO> ScheduleDays { get; set; } = null!;
+    }
+    public class ScheduleDayDTO
+    {
+        public List<string>? Actions { get; set; }
+        public List<string>? Events { get; set; }
     }
 }

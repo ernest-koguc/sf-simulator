@@ -13,7 +13,7 @@ import { SnackbarService } from './snackbar.service';
 })
 export class SimulatorService {
 
-  constructor(private httpClient: HttpClient, private snackBar: SnackbarService) { }
+  constructor(private httpClient: HttpClient, private snackbarService: SnackbarService) { }
 
   simulate(simulationType: SimulationType, simulationOptions: SimulationOptionsForm): Observable<SimulationResult>  {
     if (simulationType.simulationType == 'Days')
@@ -30,7 +30,7 @@ export class SimulatorService {
       params: new HttpParams().set("days", days)
     };
 
-    var result = this.httpClient.post<SimulationResult>(url, simulationOptions, options).pipe(retry(3), catchError(this.handleError));
+    var result = this.httpClient.post<SimulationResult>(url, simulationOptions, options).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
 
     return result;
   }
@@ -42,16 +42,13 @@ export class SimulatorService {
       params: new HttpParams().set("level", level)
     };
 
-    var result = this.httpClient.post<SimulationResult>(url, simulationOptions, options).pipe(retry(3), catchError(this.handleError));
+    var result = this.httpClient.post<SimulationResult>(url, simulationOptions, options).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
 
     return result;
   }
 
-  private handleError(error: HttpErrorResponse): ObservableInput<any> {
-    
-    if (error.status === 500) {
-      this.snackBar.createErrorSnackbar("Internal problem with API. Try again.")
-    }
+  private handleError(error: HttpErrorResponse, snackbarService: SnackbarService): ObservableInput<any> {
+    snackbarService.createErrorSnackbar('Something bad happened with internal API. Please try again.')
     return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

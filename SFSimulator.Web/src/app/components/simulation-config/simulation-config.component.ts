@@ -1,9 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TooltipPosition } from '@angular/material/tooltip';
+import { defaultSchedule } from '../../layout/custom-schedule/custom-schedule.component';
 import { MountType } from '../../models/mount-type';
 import { QuestPriority } from '../../models/quest-priority';
+import { SavedSchedule, ScheduleWeek } from '../../models/schedule';
 import { SimulationOptionsForm } from '../../models/simulation-options';
+import { SpinTactic, spinTactics } from '../../models/spin-tactics';
+import { DataBaseService } from '../../services/database.service';
 import { SnackbarService } from '../../services/snackbar.service';
 
 
@@ -14,14 +18,29 @@ import { SnackbarService } from '../../services/snackbar.service';
 })
 export class SimulationConfig implements OnInit {
 
-  constructor(private snackBar: SnackbarService) { }
+  constructor(private snackBar: SnackbarService, private databaseService: DataBaseService)
+  {
+    this.databaseService.getAllSchedules().subscribe(v => {
+      var defaultConfig: SavedSchedule =  defaultSchedule;
+      this.savedSchedules = [defaultConfig];
+      if (v) {
+        this.savedSchedules.push(...v);
+        this.simulationOptions.controls.schedule.setValue(this.savedSchedules[0]);
+      }
+    });
+    
+  }
   @Output() configEmitter = new EventEmitter<SimulationOptionsForm>();
 
   public questPriority = ['Gold', 'Experience', 'Hybrid'];
   public mountType = ['None', 'Pig', 'Horse', 'Tiger', 'Griffin'];
+  public savedSchedules!: SavedSchedule[];
+  public defaultScheduleOption: SavedSchedule = defaultSchedule;
+  public spinTactics = spinTactics;
 
   simulationOptions = new FormGroup({
     characterName: new FormControl(''),
+    schedule: new FormControl<SavedSchedule>(this.defaultScheduleOption, [Validators.required]),
     questPriority: new FormControl<QuestPriority>('Experience', [Validators.required]),
     hybridRatio: new FormControl({ value: 0, disabled: true }, [Validators.required, Validators.min(0), Validators.max(1)]),
     switchPriority: new FormControl(false, [Validators.required]),
@@ -46,7 +65,9 @@ export class SimulationConfig implements OnInit {
     tower: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(100)]),
     goldGuildBonus: new FormControl(200, [Validators.required, Validators.min(0), Validators.max(200)]),
     goldRuneBonus: new FormControl(50, [Validators.required, Validators.min(0), Validators.max(50)]),
-    hasGoldScroll: new FormControl(true)
+    hasGoldScroll: new FormControl(true),
+    spinAmount: new FormControl<SpinTactic>('Max', [Validators.required]),
+    dailyGuard: new FormControl(23, [Validators.required, Validators.min(0), Validators.max(24)])
   });
 
   toggleInputs() {
@@ -67,16 +88,7 @@ export class SimulationConfig implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.simulationOptions.valueChanges.subscribe(_ => {
-      this.toggleInputs();
 
-      var form = this.simulationOptions.valid ? this.simulationOptions.getRawValue() : undefined;
-      this.configEmitter.emit(form);
-    });
-    if (this.simulationOptions.valid)
-      this.configEmitter.emit(this.simulationOptions.getRawValue());
-  }
   loadForm(data: any): void {
     if (data.error) {
       this.snackBar.createErrorSnackbar(data.error);
@@ -106,6 +118,15 @@ export class SimulationConfig implements OnInit {
     return mappedData;
   }
 
-  public position: TooltipPosition = "right";
-  public goldPitTooltip: string = "Goldpit lvl is raised by 1 every 15 days";
+  ngOnInit(): void {
+    this.simulationOptions.valueChanges.subscribe(_ => {
+      this.toggleInputs();
+
+      var form = this.simulationOptions.valid ? this.simulationOptions.getRawValue() : undefined;
+      this.configEmitter.emit(form);
+    });
+
+    if (this.simulationOptions.valid)
+      this.configEmitter.emit(this.simulationOptions.getRawValue());
+  }
 }

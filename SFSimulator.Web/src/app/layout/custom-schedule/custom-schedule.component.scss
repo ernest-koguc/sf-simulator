@@ -1,0 +1,155 @@
+.cell {
+  border: solid 1px white;
+  min-width: 80px;
+  min-height: 80px;
+  max-width: 80px;
+  max-height: 80px;
+  user-select: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cell.action {
+  background-color: #b3ffff;
+}
+
+.cell:hover {
+  border: 3px solid purple;
+}
+
+.schedule {
+  min-width: 1120px;
+}
+
+.divider {
+  width: 0px;
+  border-image: linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,0)) 1;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.dayOfWeek {
+  min-width: 80px;
+  max-width: 80px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.spacer {
+  min-width: 48px;
+  max-width: 48px;
+}
+
+.flex-spacer {
+  width: 8rem;
+}
+
+.ctn {
+  min-width: 1200px;
+  min-height: 100%;
+  margin-bottom: -3px !important;
+  flex: 1 1 auto !important;
+  padding-bottom: 3px;
+}
+
+.btn-opt {
+    height: 56px;
+}
+
+ul {
+  display: grid;
+  list-style: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.row {
+  --bs-gutter-x: 0;
+}
+
+li {
+  color: white;
+  text-align: center;
+  border: 1px solid whitesmoke;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+li:hover {
+  background-color: rgb(60,60,60);
+}
+
+
+.avg-icon {
+  width: 4rem;
+  height: 4rem;
+  font-size: 3rem;
+  line-height: 3.75rem;
+}
+
+.icon {
+  width: 5rem;
+  height: 5rem;
+  font-size: 5rem;
+  line-height: 4.5rem;
+}
+
+.mat-icon {
+  vertical-align: middle;
+  align-self: center;
+}
+
+// Actions & Events styles
+#BuyGriffin {
+  background-image: url(../../../assets/actions/griffin.png);
+}
+
+#BuyTiger {
+  background-image: url(../../../assets/actions/tiger.png);
+}
+
+#SpinMaxTimes {
+  background-image: url(../../../assets/actions/three-coins.png);
+}
+
+#SpinOnce {
+  background-image: url(../../../assets/actions/one-coin.png);
+}
+
+#DrinkAllBeers {
+  background-image: url(../../../assets/actions/three-beers.png);
+}
+
+#DrinkOneBeer {
+  background-image: url(../../../assets/actions/one-beer.png);
+}
+
+#UpgradeTreasury {
+  background-image: url(../../../assets/actions/upgrade-treasury.png);
+}
+
+#UpgradeAcademy {
+  background-image: url(../../../assets/actions/upgrade-academy.png);
+}
+
+#UpgradeGoldPit {
+  background-image: url(../../../assets/actions/upgrade-goldpit.png);
+}
+
+#Experience {
+  background-image: url(../../../assets/events/three-books.png);
+}
+
+#Gold {
+  background-image: url(../../../assets/events/gold.png);
+}
+
+#Witch {
+  background-image: url(../../../assets/events/witch.png);
+}
+
+#LuckyDay {
+  background-image: url(../../../assets/events/lucky-day.png);
+}

@@ -18,6 +18,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { SimulationConfig } from './components/simulation-config/simulation-config.component';
 import { SFSimulatorComponent } from './sfsimulator.component';
@@ -26,7 +29,7 @@ import { CharacterDetailsComponent } from './components/character-details/charac
 import { InfoDialogComponent } from './dialogs/info-dialog/info-dialog.component';
 import { ToolBarComponent } from './layout/tool-bar/tool-bar.component';
 import { SimulationOptionsDialogComponent } from './dialogs/simulation-options-dialog/simulation-options-dialog.component';
-import { ProgressBarComponent } from './dialogs/progress-bar/progress-bar.component';
+import { ProgressBarComponent } from './dialogs/progress-bar-dialog/progress-bar.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CookieService } from 'ngx-cookie-service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -38,7 +41,11 @@ import { RemoveRecordDialogComponent } from './dialogs/remove-record-dialog/remo
 import { TestComponent } from './layout/test/test.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-
+import { PatchNotesDialogComponent } from './dialogs/patch-notes-dialog/patch-notes-dialog.component';
+import { MatContextMenuTrigger } from './directives/mat-context-menu-trigger-for.directive';
+import { ButtonToggleComponent } from './components/button-toggle/button-toggle.component';
+import { CustomScheduleComponent } from './layout/custom-schedule/custom-schedule.component';
+import { CustomScheduleInfoDialogComponent } from './dialogs/custom-schedule-info-dialog/custom-schedule-info-dialog.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +61,12 @@ import { ButtonModule } from 'primeng/button';
     SimulatorComponent,
     SimulationResultComponent,
     RemoveRecordDialogComponent,
-    TestComponent
+    TestComponent,
+    PatchNotesDialogComponent,
+    MatContextMenuTrigger,
+    ButtonToggleComponent,
+    CustomScheduleComponent,
+    CustomScheduleInfoDialogComponent
   ],
   imports: [
     AppRoutingModule,
@@ -81,7 +93,10 @@ import { ButtonModule } from 'primeng/button';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatButtonToggleModule,
+    MatMenuModule,
+    MatAutocompleteModule
   ],
   providers: [CookieService, { provide: Window, useValue: window }],
   bootstrap: [SFSimulatorComponent],

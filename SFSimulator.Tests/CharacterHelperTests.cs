@@ -8,19 +8,6 @@ namespace SFSimulator.Tests
     public class CharacterHelperTests
     {
         [TestMethod]
-        public void GetMinimumQuestValue_gives_correct_values()
-        {
-            //var valuesReader = new ValuesReader();
-            //var charHelper = new CharacterHelper(valuesReader, new CurvesHelper());
-            //var goldBonus = new GoldBonus() { HasGoldScroll = false };
-            //var xpBonus = new ExperienceBonus() { HasExperienceScroll = false, ScrapbookFillness = 0.95f };
-            //for (var x = 330; x <= 450; x++)
-            //{
-            //    Assert.AreEqual(questValues[x].Gold, charHelper.GetMinimumQuestValue(x, xpBonus, goldBonus).Gold, 0.99d);
-            //    Assert.AreEqual(questValues[x].Experience, charHelper.GetMinimumQuestValue(x, xpBonus, goldBonus).Experience, 10d);
-            //}
-        }
-        [TestMethod]
         public void GetAcademyHourlyProduction_gives_correct_values()
         {
             var characterHelper = new CharacterHelper(new ValuesReader(), new CurvesHelper());

@@ -10,7 +10,7 @@
 
             new TypeMap(typeof(GameSimulator), typeof(IGameSimulator), TypeMapOption.None),
             new TypeMap(typeof(CalendarRewardProvider), typeof(ICalendarRewardProvider), TypeMapOption.None),
-            new TypeMap(typeof(EventScheduler), typeof(IEventScheduler), TypeMapOption.None),
+            new TypeMap(typeof(Scheduler), typeof(IScheduler), TypeMapOption.None),
 
 
             new TypeMap(typeof(QuestHelper), typeof(IQuestHelper), TypeMapOption.None),

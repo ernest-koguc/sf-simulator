@@ -12,18 +12,16 @@ export class SftoolsloginComponent implements OnDestroy {
   constructor(public dialogRef: MatDialogRef<SftoolsloginComponent>, private sanitizer: DomSanitizer) {
 
     this.iframeSource = this.sanitizer.bypassSecurityTrustResourceUrl(environment.sftoolsLogin);
-    setTimeout(() => this.hide = undefined, 500);
     window.addEventListener('message', this.eventHandler);
   }
 
   iframeSource?: SafeResourceUrl;
-  hide?: string = 'hidden';
   eventHandler = (e: MessageEvent) => {
     if (e.origin == environment.apiUrl) {
-      setTimeout(() => this.dialogRef.close(e.data), 200);
+      setTimeout(() => this.dialogRef.close(e.data), 100);
     }
     else if (e.data.event == 'sftools-close')
-      setTimeout(() => this.dialogRef.close(),200);
+      setTimeout(() => this.dialogRef.close(), 100);
   }
   ngOnDestroy(): void {
     window.removeEventListener('message', this.eventHandler);

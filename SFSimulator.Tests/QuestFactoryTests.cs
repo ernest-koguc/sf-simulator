@@ -3,6 +3,7 @@ using SFSimulator.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 
 namespace SFSimulator.Tests
 {
@@ -26,7 +27,7 @@ namespace SFSimulator.Tests
                 Assert.IsTrue(quest.Gold <= 15000000);
                 quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.3f);
                 Assert.IsTrue(quest.Gold <= 14300000);
-                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.5f, new List<EventType> { EventType.GOLD });
+                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.5f, new List<EventType> { EventType.Gold });
                 Assert.IsTrue(quest.Gold <= 16500000);
             }
         }
@@ -67,7 +68,7 @@ namespace SFSimulator.Tests
             for (int i = 0; i < 100; i++)
             {
                 var normalQuest = questFactory.Create(new QuestValue(100, 100), 1, 20);
-                var eventQuest = questFactory2.Create(new QuestValue(100, 100), 1, 20, false, 0, new List<EventType> { EventType.EXPERIENCE });
+                var eventQuest = questFactory2.Create(new QuestValue(100, 100), 1, 20, false, 0, new List<EventType> { EventType.Experience });
 
                 Assert.IsTrue(normalQuest.Experience == eventQuest.Experience / 2);
             }
@@ -83,7 +84,7 @@ namespace SFSimulator.Tests
             for (int i = 0; i < 100; i++)
             {
                 var normalQuest = questFactory.Create(new QuestValue(100, 100), 1, 20);
-                var eventQuest = questFactory2.Create(new QuestValue(100, 100), 1, 20, false, 0, new List<EventType> { EventType.GOLD });
+                var eventQuest = questFactory2.Create(new QuestValue(100, 100), 1, 20, false, 0, new List<EventType> { EventType.Gold });
 
                 var normalGold = Math.Floor(normalQuest.Gold);
                 var eventGold = Math.Floor(eventQuest.Gold / 5);
@@ -105,6 +106,54 @@ namespace SFSimulator.Tests
                 questList.Add(quest);
             }
             Assert.IsTrue(questList.Any(q => q.Gold != 16500000));
+        }
+        [TestMethod]
+        public void Create_returns_truncuated_quest_with_proper_xp_and_gold()
+        {
+            var normalQuestsFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ValuesReader()), new Random(0));
+            var truncatedQuestsFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ValuesReader()), new Random(0));
+
+            // Truncated to 2.5min
+            for (int i = 0; i < 100; i++)
+            {
+                var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5, 4);
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4));
+            }
+            for (int i = 0; i < 100; i++)
+            {
+                var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5, 3);
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4));
+            }
+            for (int i = 0; i < 100; i++)
+            {
+                var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5, 2);
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4));
+            }
+
+            // Truncated to 5min
+            for (int i = 0; i < 100; i++)
+            {
+                var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 5, 4);
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience*2));
+            }
+            for (int i = 0; i < 100; i++)
+            {
+                var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 5, 3);
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience*2));
+            }
+
+            //Truncated to 7.5min
+            for (int i = 0; i < 100; i++)
+            {
+                var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 7.5, 4);
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4 / 3));
+            }
         }
         [TestMethod]
         public void Create_returns_not_truncuated_quest_if_thirst_is_above_or_equal_10()

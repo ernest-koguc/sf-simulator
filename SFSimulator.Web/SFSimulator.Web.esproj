@@ -13,5 +13,6 @@
   <ItemGroup>
     <Folder Include="src\app\animation\" />
     <Folder Include="src\app\helpers\" />
+    <Folder Include="src\app\directives\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { SimulationOptionsDialogComponent } from '../simulation-options-dialog/simulation-options-dialog.component';
 
 @Component({
   selector: 'app-progress-bar',

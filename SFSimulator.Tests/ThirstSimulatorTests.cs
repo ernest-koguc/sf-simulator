@@ -24,7 +24,7 @@ namespace SFSimulator.Tests
                 //SMART AI
                 while (quests is not null)
                 {
-                    var choosenQuest = questChooser.ChooseBestQuest(quests, Priority.GOLD, QuestChooserAI.SMART);
+                    var choosenQuest = questChooser.ChooseBestQuest(quests, QuestPriorityType.Gold, QuestChooserAI.SMART);
                     choosenQuestsThirst += choosenQuest.Time;
                     quests = thirstSimulator.NextQuests(choosenQuest, new QuestValue(10000, 10000), 1);
                 }
@@ -35,7 +35,7 @@ namespace SFSimulator.Tests
                 quests = thirstSimulator.StartThirst(thirst, new QuestValue(10000, 10000), 1, new List<EventType>());
                 while (quests is not null)
                 {
-                    var choosenQuest = questChooser.ChooseBestQuest(quests, Priority.GOLD, QuestChooserAI.SIMPLE);
+                    var choosenQuest = questChooser.ChooseBestQuest(quests, QuestPriorityType.Gold, QuestChooserAI.SIMPLE);
                     choosenQuestsThirst += choosenQuest.Time;
                     quests = thirstSimulator.NextQuests(choosenQuest, new QuestValue(10000, 10000), 1);
                 }
@@ -54,7 +54,7 @@ namespace SFSimulator.Tests
 
             while (quests is not null)
             {
-                var choosenQuest = questChooser.ChooseBestQuest(quests, Priority.GOLD, QuestChooserAI.SMART);
+                var choosenQuest = questChooser.ChooseBestQuest(quests, QuestPriorityType.Gold, QuestChooserAI.SMART);
                 choosenQuestsThirst.Add(choosenQuest);
                 quests = thirstSimulator.NextQuests(choosenQuest, new QuestValue(10000, 10000), 1);
             }
@@ -62,7 +62,7 @@ namespace SFSimulator.Tests
 
             while (quests is not null)
             {
-                var choosenQuest = questChooser.ChooseBestQuest(quests, Priority.GOLD, QuestChooserAI.SIMPLE);
+                var choosenQuest = questChooser.ChooseBestQuest(quests, QuestPriorityType.Gold, QuestChooserAI.SIMPLE);
                 choosenQuestsThirst.Add(choosenQuest);
                 quests = thirstSimulator.NextQuests(choosenQuest, new QuestValue(10000, 10000), 1);
             }

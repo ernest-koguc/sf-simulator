@@ -1,0 +1,52 @@
+<div class="bg-dark">
+  <h1 class="pt-3 px-4">Schedule Information</h1>
+  <div mat-dialog-content>
+    <h3>General</h3>
+    <p>
+      In Custom Schedules you can add your own events and actions to happen <br />
+      at given days. You can create your own schedule by either clicking the <br />
+      green plus icon or by selecting existing schedule and clicking 'To New' <br />
+      button (this way you don't start with blank template). Once you create <br />
+      new or open existing template you can add / edit own actions and events. <br />
+      To do so you need to click on the icons right below the coresponding <br />
+      headers and clicking on cell of desired day to add actions/events to. <br />
+      If you have created a new template you'll most likely need to add <br />
+      rows representing weeks first. It's done by clicking on large green <br />
+      plus button. The top one inserts row at the top and the bottom one <br />
+      accordingly at the bottom. Sooner or later you will want to remove action <br />
+      or event from given day. It's achieved by middle clicking with the mouse on <br />
+      action/event of the cell. There is also option to clear all actions/events <br />
+      from one cell by right clicking on the entire day cell (it will open context <br />
+      menu with "Clear" option). There is also a button with red bin icon which <br />
+      clears entire template. Once you create your own template remember to hit <br />
+      the "Save button". Otherwise changes will not be saved.<br />
+      Note that Default schedule cannot be deleted or modified. <br />
+      Note that all actions and events are performed before simulation of given day <br />
+      starts (e.g. if you set action buy griffin it will change the mount before quests <br />
+      are done). 
+      <h3>Actions</h3>
+    <p>
+      Actions like buy griffin / drink all beers / spin max times will have <br />
+      permament effect. This means that for example: buy griffin action will <br />
+      change the mount to griffin not only for the day of action but for entire <br />
+      simulation (although if you set buy tiger action in the next day the mount <br />
+      will be overwritten by new mount) <br />
+      <br />
+      Actions like upgrade gold pit / academy / treasury will just upgrade the level <br />
+      of the building by one. This way you can schedule your future fortress / underworld <br />
+      expansion. 
+      Note that these action will not upgrade building level above limit.<br />
+
+    </p>
+      <h3>Events</h3>
+    <p>
+      In events section only currently supported (and having relevant effect) events are <br />
+      visible. <br />
+      Note that events in contrary to actions will only span day of the cell event <br />
+      is inside.
+    </p>
+</div>
+  <div class="d-flex justify-content-end" mat-dialog-actions>
+    <button [mat-dialog-close] mat-button>Got It</button>
+  </div>
+</div>

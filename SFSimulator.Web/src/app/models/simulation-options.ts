@@ -1,5 +1,7 @@
 import { MountType } from "./mount-type";
 import { QuestPriority } from "./quest-priority";
+import { SavedSchedule } from "./schedule";
+import { SpinTactic } from "./spin-tactics";
 
 export interface SimulationOptionsForm {
   characterName: string | null;
@@ -28,4 +30,7 @@ export interface SimulationOptionsForm {
   drinkBeerOneByOne: boolean | null;
   dailyThirst: number | null;
   skipCalendar: boolean | null;
+  spinAmount: SpinTactic | null;
+  dailyGuard: number | null;
+  schedule: SavedSchedule | null ;
 };
