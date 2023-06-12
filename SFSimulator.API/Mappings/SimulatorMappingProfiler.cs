@@ -148,10 +148,9 @@ namespace SFSimulator.API.Mappings
         }
         private int GetGuildBonus(Maria21DataDTO dto, BonusType type)
         {
-            var raid = dto.Dungeons.Raid * 2;
+            var raid = dto.Group.Group.Raid * 2;
             var guild = type == BonusType.GOLD ? dto.Group.Group.TotalTreasure : dto.Group.Group.TotalInstructor;
             return Math.Min(200, raid + guild);
-
         }
         private MountType TranslateMountType(string mountType)
         {
