@@ -64,7 +64,6 @@
 
     public class Dungeons
     {
-        public int Raid { get; set; }
         public int Tower { get; set; }
     }
 

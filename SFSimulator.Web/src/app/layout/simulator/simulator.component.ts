@@ -1,8 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { ngIfVerticalSlide } from '../../animation/slide-animation';
 import { SimulationConfig } from '../../components/simulation-config/simulation-config.component';
+import { CreditsDialogComponent } from '../../dialogs/credits-dialog/credits-dialog.component';
 import { ProgressBarComponent } from '../../dialogs/progress-bar-dialog/progress-bar.component';
 import { SftoolsloginComponent } from '../../dialogs/sftools-login-dialog/sftoolslogin.component';
 import { SimulationOptionsDialogComponent, SimulationType } from '../../dialogs/simulation-options-dialog/simulation-options-dialog.component';
@@ -24,33 +26,31 @@ export class SimulatorComponent {
 
   constructor(private simulatorService: SimulatorService, private dataBaseService: DataBaseService, private dialog: MatDialog, private snackbar: SnackbarService) { }
 
-  simulationConfig?: SimulationOptionsForm;
-
+  public simulationConfig?: SimulationOptionsForm;
   public simulationResult?: SimulationResult;
-
-  simulationType: SimulationType = { simulateUntil: 1, simulationType: 'Days' }
-
+  public simulationType: SimulationType = { simulateUntil: 1, simulationType: 'Days' }
   public simulationBlocked = false;
+  public environment = environment;
 
-  saveForm(form?: SimulationOptionsForm) {
+  public saveForm(form?: SimulationOptionsForm) {
     this.simulationConfig = form;
   }
 
-  saveResult() {
+  public saveResult() {
     if (this.simulationResult) {
       this.dataBaseService.saveSimulationSnapshot(this.simulationResult);
       this.snackbar.createSuccessSnackBar('Saved simulation result')
     }
   }
 
-  loginThroughSFTools() {
+  public loginThroughSFTools() {
     this.dialog.open(SftoolsloginComponent, { autoFocus: 'dialog', enterAnimationDuration: 200, exitAnimationDuration: 200, restoreFocus: false, width: "80%", height: "80%" }).afterClosed().subscribe(data => {
       if (data)
         this.simulationConfigComponent.loadForm(data);
     });
   }
 
-  showSimulationDialog() {
+  public showSimulationDialog() {
     const dialogRef = this.dialog.open(SimulationOptionsDialogComponent, { autoFocus: 'dialog', restoreFocus: false, enterAnimationDuration: 400, data: this.simulationType });
     dialogRef.afterClosed().subscribe(result => {
       if (!result || !this.simulationConfig || this.simulationBlocked)
@@ -71,6 +71,10 @@ export class SimulatorComponent {
           this.snackbar.createInfoSnackbar('Simulation complete. Elapsed time: ' + (new Date().getTime() - startTime) + 'ms')
         });
     });
+  }
+
+  public showCredits() {
+    this.dialog.open(CreditsDialogComponent, { autoFocus: false, enterAnimationDuration: 400 })
   }
 }
 

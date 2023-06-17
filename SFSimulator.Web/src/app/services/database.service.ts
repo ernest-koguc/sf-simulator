@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { mapToSimulationSnapshot } from '../helpers/mapper';
+import { SavedConfiguration } from '../models/configuration';
 import { SavedSchedule } from '../models/schedule';
 import { SimulationResult } from '../models/simulation-result';
 import { SimulationSnapshot } from '../models/simulation-snapshot';
@@ -10,47 +11,59 @@ import { UserData } from '../models/user-data';
   providedIn: 'root'
 })
 export class DataBaseService {
-
   constructor() { }
 
-  // Saved Schedule
-  public saveSchedule(schedule: SavedSchedule) {
-    var storedItem = this.getFromStorage('SavedScheduleTable');
-    var scheduleArray: SavedSchedule[];
+  // *********************** Saved Configuration ***********************
 
-    if (!storedItem)
-      scheduleArray = [];
-    else {
-      scheduleArray = JSON.parse(storedItem);
-    }
-    var index = scheduleArray.findIndex(v => v.timestamp == schedule.timestamp);
-
-    if (index >= 0)
-      scheduleArray[index] = schedule;
-    else
-      scheduleArray.push(schedule);
-
-    var stringData = JSON.stringify(scheduleArray);
-    this.saveToStorage('SavedScheduleTable', stringData);
+  // Save One
+  public saveConfiguration(entity: SavedConfiguration) {
+    this.saveItemInTable(entity, SavedConfigurationTableKey);
   }
 
-  public getAllSchedules(): Observable<SavedSchedule[] | undefined>{
-    var storedTable = this.getStoredTable<SavedSchedule[]>('SavedScheduleTable');
+  // Get All
+  public getAllConfigurations(): Observable<SavedConfiguration[] | undefined> {
+    var storedTable = this.getStoredTable<SavedConfiguration[]>(SavedConfigurationTableKey);
     return storedTable;
   }
 
-  public removeSchedule(entity: SavedSchedule) {
-    this.getAllSchedules().subscribe(t => {
+  // Remove One
+  public removeConfiguration(entity: SavedConfiguration) {
+    this.getAllConfigurations().subscribe(t => {
       if (t) {
         t = t.filter(e => e.timestamp != entity.timestamp);
-        this.saveToStorage('SavedScheduleTable', JSON.stringify(t));
+        this.saveToStorage(SavedConfigurationTableKey, JSON.stringify(t));
       }
     });
   }
 
-  // User Data
+  // *********************** Saved Schedule ***********************
+
+  // Save One
+  public saveSchedule(entity: SavedSchedule) {
+    this.saveItemInTable(entity, SavedScheduleTableKey);
+  }
+
+  // Get Alll
+  public getAllSchedules(): Observable<SavedSchedule[] | undefined>{
+    var storedTable = this.getStoredTable<SavedSchedule[]>(SavedScheduleTableKey);
+    return storedTable;
+  }
+
+  // Remove One
+  public removeSchedule(entity: SavedSchedule) {
+    this.getAllSchedules().subscribe(t => {
+      if (t) {
+        t = t.filter(e => e.timestamp != entity.timestamp);
+        this.saveToStorage(SavedScheduleTableKey, JSON.stringify(t));
+      }
+    });
+  }
+
+  // *********************** User Data ***********************
+
+  // Get One
   public getUserData(): UserData {
-    var userData = this.getFromStorage("UserData");
+    var userData = this.getFromStorage(UserDataKey);
 
     if (userData)
       return JSON.parse(userData);
@@ -58,49 +71,43 @@ export class DataBaseService {
     return { lastSeenPatchNotes: undefined };
   }
 
-  public updateUserData(userData: UserData) {
-    this.saveToStorage("UserData", JSON.stringify(userData));
+
+  // Save One
+  public saveUserData(entity: UserData) {
+    this.saveToStorage(UserDataKey, JSON.stringify(entity));
   }
 
-  // SimulationSnapshot
-  public saveSimulationSnapshot(data: SimulationResult) {
-    var snapshot = mapToSimulationSnapshot(data);
+  // *********************** SimulationSnapshot ***********************
 
-    var storedItem = this.getFromStorage('SimulationSnapshotTable');
-    var snapshotArray: SimulationSnapshot[];
+  // Save One
+  public saveSimulationSnapshot(entity: SimulationResult) {
+    var snapshot = mapToSimulationSnapshot(entity);
 
-    if (!storedItem) {
-      snapshotArray = [];
-    }
-    else {
-      snapshotArray = JSON.parse(storedItem);
-    }
-
-    snapshotArray.push(snapshot);
-    var stringData = JSON.stringify(snapshotArray);
-    this.saveToStorage('SimulationSnapshotTable', stringData);
+    this.saveItemInTable(snapshot, SimulationSnapshotTableKey);
   }
 
+  // Get All
   public getAllSimulationSnapshot(): Observable<SimulationSnapshot[] | undefined> {
-    var storedTable = this.getStoredTable<SimulationSnapshot[]>("SimulationSnapshotTable");
+    var storedTable = this.getStoredTable<SimulationSnapshot[]>(SimulationSnapshotTableKey);
     return storedTable;
   }
 
-  public removeAllSimulationSnapshots() {
-    this.removeAllFromStorage("SimulationSnapshotTable");
-  }
-
+  // Remove One
   public removeSimulationSnapshot(entity: SimulationSnapshot) {
     this.getAllSimulationSnapshot().subscribe(t => {
 
       if (t) {
         t = t.filter(e => e.timestamp != entity.timestamp);
-        this.saveToStorage('SimulationSnapshotTable', JSON.stringify(t));
+        this.saveToStorage(SimulationSnapshotTableKey, JSON.stringify(t));
       }
     });
   }
+  // Remove All
+  public removeAllSimulationSnapshots() {
+    this.removeAllRecordsFromTable(SimulationSnapshotTableKey);
+  }
 
-  // Implementation
+  // *********************** Private Implementation ***********************
 
   private getStoredTable<T>(key: string): Observable<T | undefined>{
     var storedTable = this.getFromStorage(key);
@@ -122,7 +129,7 @@ export class DataBaseService {
     return localStorage.getItem(key);
   }
 
-  private removeAllFromStorage(key: string) {
+  private removeAllRecordsFromTable(key: string) {
     localStorage.removeItem(key);
   }
 
@@ -132,4 +139,29 @@ export class DataBaseService {
       observer.complete();
     });
   }
+
+  private saveItemInTable<E extends { timestamp: number }>(item: E, key: string) {
+    var tableInStorage = this.getFromStorage(key);
+
+    var entityTable: E[];
+    if (!tableInStorage)
+      entityTable = [];
+    else
+      entityTable = JSON.parse(tableInStorage);
+
+    var index = entityTable.findIndex(v => v.timestamp == item.timestamp);
+
+    if (index >= 0)
+      entityTable[index] = item;
+    else
+      entityTable.push(item);
+
+    var stringData = JSON.stringify(entityTable);
+    this.saveToStorage(key, stringData);
+  }
 }
+
+const SavedConfigurationTableKey = 'SavedConfigurationTable'
+const SavedScheduleTableKey = 'SavedScheduleTable';
+const SimulationSnapshotTableKey = 'SimulationSnapshotTable';
+const UserDataKey = 'UserData';

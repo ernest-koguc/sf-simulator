@@ -1,4 +1,4 @@
-<div class='row mx-3 d-flex main'>
+<div class='row mx-3 d-flex main h-100'>
   <div class='col-md-3 m-0 mt-2 p-0'>
     <simulation-config (configEmitter)='saveForm($event)'></simulation-config>
   </div>
@@ -22,5 +22,9 @@
         </character-details>
       </div>
     </div>
+  </div>
+  <div class="footer d-flex">
+    <p class="mb-0">ver{{environment.currentVersion}}</p>
+    <button class="ms-3 credits" (click)="showCredits()">Credits</button>
   </div>
 </div>

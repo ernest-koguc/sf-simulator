@@ -46,6 +46,9 @@ import { MatContextMenuTrigger } from './directives/mat-context-menu-trigger-for
 import { ButtonToggleComponent } from './components/button-toggle/button-toggle.component';
 import { CustomScheduleComponent } from './layout/custom-schedule/custom-schedule.component';
 import { CustomScheduleInfoDialogComponent } from './dialogs/custom-schedule-info-dialog/custom-schedule-info-dialog.component';
+import { ConfigurationDialogComponent } from './dialogs/configuration-dialog/configuration-dialog.component';
+import { SaveNewConfigurationDialogComponent } from './dialogs/save-new-configuration-dialog/save-new-configuration-dialog.component';
+import { CreditsDialogComponent } from './dialogs/credits-dialog/credits-dialog.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +69,10 @@ import { CustomScheduleInfoDialogComponent } from './dialogs/custom-schedule-inf
     MatContextMenuTrigger,
     ButtonToggleComponent,
     CustomScheduleComponent,
-    CustomScheduleInfoDialogComponent
+    CustomScheduleInfoDialogComponent,
+    ConfigurationDialogComponent,
+    SaveNewConfigurationDialogComponent,
+    CreditsDialogComponent
   ],
   imports: [
     AppRoutingModule,

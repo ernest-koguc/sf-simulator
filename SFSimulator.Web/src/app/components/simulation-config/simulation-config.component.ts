@@ -1,10 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { TooltipPosition } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfigurationDialogComponent } from '../../dialogs/configuration-dialog/configuration-dialog.component';
+import { SaveNewConfigurationDialogComponent } from '../../dialogs/save-new-configuration-dialog/save-new-configuration-dialog.component';
 import { defaultSchedule } from '../../layout/custom-schedule/custom-schedule.component';
+import { SavedConfiguration } from '../../models/configuration';
 import { MountType } from '../../models/mount-type';
 import { QuestPriority } from '../../models/quest-priority';
-import { SavedSchedule, ScheduleWeek } from '../../models/schedule';
+import { SavedSchedule } from '../../models/schedule';
 import { SimulationOptionsForm } from '../../models/simulation-options';
 import { SpinTactic, spinTactics } from '../../models/spin-tactics';
 import { DataBaseService } from '../../services/database.service';
@@ -18,7 +21,7 @@ import { SnackbarService } from '../../services/snackbar.service';
 })
 export class SimulationConfig implements OnInit {
 
-  constructor(private snackBar: SnackbarService, private databaseService: DataBaseService)
+  constructor(private snackBar: SnackbarService, private databaseService: DataBaseService, private dialog: MatDialog)
   {
     this.databaseService.getAllSchedules().subscribe(v => {
       var defaultConfig: SavedSchedule =  defaultSchedule;
@@ -37,6 +40,7 @@ export class SimulationConfig implements OnInit {
   public savedSchedules!: SavedSchedule[];
   public defaultScheduleOption: SavedSchedule = defaultSchedule;
   public spinTactics = spinTactics;
+  public savedConfiguration?: SavedConfiguration;
 
   simulationOptions = new FormGroup({
     characterName: new FormControl(''),
@@ -88,6 +92,15 @@ export class SimulationConfig implements OnInit {
     }
   }
 
+  loadFormFromConfiguration(configuration: SavedConfiguration) {
+    this.simulationOptions.patchValue({ ...configuration.playstyle, ...configuration.character }, { emitEvent: true });
+    var schedule = this.savedSchedules.find(v => v.timestamp == configuration.scheduleId) ?? this.savedSchedules.find(v => v.timestamp == 0);
+
+    if (schedule)
+      this.simulationOptions.controls.schedule.patchValue(schedule, {emitEvent: true});
+
+    this.savedConfiguration = configuration;
+  }
 
   loadForm(data: any): void {
     if (data.error) {
@@ -101,12 +114,39 @@ export class SimulationConfig implements OnInit {
       return;
     }
     catch {
-      this.snackBar.createErrorSnackbar('Error with parsing API response');
+      this.snackBar.createErrorSnackbar('Error occured while parsing API response');
       return;
     }
   }
 
-  mapToForm(data: any): Partial<SimulationOptionsForm> {
+  public openConfigurationDialog() {
+    this.dialog.open(ConfigurationDialogComponent, { autoFocus: false }).afterClosed().subscribe(configuration => {
+      if (!configuration)
+        return;
+
+      this.loadFormFromConfiguration(configuration);
+    });
+  }
+
+  public saveConfiguration(includeCharacter: boolean) {
+    if (!this.savedConfiguration)
+      return;
+
+    this.savedConfiguration.updateConfiguration(this.simulationOptions.getRawValue(), includeCharacter);
+    this.databaseService.saveConfiguration(this.savedConfiguration);
+  }
+
+  public saveConfigurationAsNew(includeCharacter: boolean) {
+    this.dialog.open(SaveNewConfigurationDialogComponent, { autoFocus: false, data: this.simulationOptions.controls.characterName.value }).afterClosed().subscribe(name => {
+      if (!name)
+        return;
+
+      var newConfiguration = new SavedConfiguration(name, this.simulationOptions.getRawValue(), includeCharacter);
+      this.databaseService.saveConfiguration(newConfiguration);
+    })
+  }
+
+  private mapToForm(data: any): Partial<SimulationOptionsForm> {
     var key, keys = Object.keys(data);
     var n = keys.length;
     var mappedData: any = {};

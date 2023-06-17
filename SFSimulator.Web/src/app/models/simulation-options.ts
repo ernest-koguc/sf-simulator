@@ -32,5 +32,5 @@ export interface SimulationOptionsForm {
   skipCalendar: boolean | null;
   spinAmount: SpinTactic | null;
   dailyGuard: number | null;
-  schedule: SavedSchedule | null ;
+  schedule: SavedSchedule | null;
 };

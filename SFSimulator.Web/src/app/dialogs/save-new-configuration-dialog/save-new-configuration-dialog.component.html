@@ -1,0 +1,12 @@
+<mat-card appearance="outlined" class="dialog p-2">
+  <h3 class="p-2 mb-0 text-center">Save Configuration</h3>
+  <mat-card-content align="center" class="row pt-0">
+    <mat-form-field appearance="outline" class="mt-4" align="center">
+      <mat-label><strong>Configuration Name</strong></mat-label>
+      <input matInput required [(ngModel)]="name" minlength="1" maxlength="24"/>
+    </mat-form-field>
+  </mat-card-content>
+  <mat-card-actions class="align-self-end">
+    <button [mat-dialog-close]="name" mat-stroked-button color="accent" [disabled]="!(name && name.length <= 24)">Save</button>
+  </mat-card-actions>
+</mat-card>

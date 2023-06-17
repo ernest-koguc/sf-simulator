@@ -20,7 +20,7 @@ export class SFSimulatorComponent implements OnInit {
 
     if (!userData.lastSeenPatchNotes || environment.currentVersion > userData.lastSeenPatchNotes) {
       setTimeout(() => this.matDialog.open(PatchNotesDialogComponent, { autoFocus: false, enterAnimationDuration: 400, disableClose: true }).afterClosed().subscribe(s =>
-        this.dataBaseService.updateUserData({ lastSeenPatchNotes: environment.currentVersion })), 1000);
+        this.dataBaseService.saveUserData({ lastSeenPatchNotes: environment.currentVersion })), 1000);
     }
   }
 }

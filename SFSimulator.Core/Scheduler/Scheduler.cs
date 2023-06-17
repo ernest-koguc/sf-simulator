@@ -45,6 +45,13 @@
             if (schedule == null)
                 throw new ArgumentNullException(nameof(schedule));
 
+            if (schedule.Count == 0)
+            {
+                schedule.Add((1, 1), new ScheduleDay());
+                Schedule = schedule;
+                return;
+            }
+
             var weeks = schedule.Keys.Select(s=>s.Week);
             var min = weeks.Min();
             var max = weeks.Max();

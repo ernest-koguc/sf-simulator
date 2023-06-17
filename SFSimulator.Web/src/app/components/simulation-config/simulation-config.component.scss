@@ -8,3 +8,32 @@ mat-slide-toggle {
   min-width: 13em;
 }
 
+.btn-ctn {
+  background-color: #673AB7;
+  min-width: 48px;
+  max-width: 48px;
+  margin: 0;
+  float: right;
+}
+
+.form-ctn {
+  width: calc(100% - 48px);
+  float:left;
+}
+
+.config-info {
+  padding: 10px 16px 0 16px;
+  color: rgb(160,160,160);
+  border-top: 1px solid black;
+  border-image: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0), rgba(250,250,250,1), rgba(250,250,250,1), rgba(255,255,255,0), rgba(255,255,255,0)) 10%;
+  margin-bottom: 5px;
+}
+.config-name {
+  padding: 0px 16px 0 16px;
+  color: rgb(160,160,160);
+  margin-bottom: 0px;
+}
+
+.mat-mdc-option-active {
+  --mdc-theme-primary: #9933ff;
+}
