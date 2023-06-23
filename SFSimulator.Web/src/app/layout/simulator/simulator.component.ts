@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ngIfVerticalSlide } from '../../animation/slide-animation';
+import { ngIfHorizontalSlide, ngIfVerticalSlide } from '../../animation/slide-animation';
 import { SimulationConfig } from '../../components/simulation-config/simulation-config.component';
 import { CreditsDialogComponent } from '../../dialogs/credits-dialog/credits-dialog.component';
 import { ProgressBarComponent } from '../../dialogs/progress-bar-dialog/progress-bar.component';
@@ -18,7 +18,7 @@ import { SnackbarService } from '../../services/snackbar.service';
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
   styleUrls: ['./simulator.component.scss'],
-  animations: [ngIfVerticalSlide]
+  animations: [ngIfVerticalSlide, ngIfHorizontalSlide]
 })
 export class SimulatorComponent {
   @ViewChild(SimulationConfig)

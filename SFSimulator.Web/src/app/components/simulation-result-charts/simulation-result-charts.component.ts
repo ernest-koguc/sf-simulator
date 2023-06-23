@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { SlideInOutHorizontallyAnimation, SlideInOutVericallyAnimation } from '../../animation/slide-animation';
+import { SlideInOutHorizontallyAnimation } from '../../animation/slide-animation';
 import { ChartConfig, ChartType } from '../../models/chart';
 import { SimulationResult } from '../../models/simulation-result';
 import { ChartService } from '../../services/chart.service';
@@ -8,7 +8,7 @@ import { ChartService } from '../../services/chart.service';
   selector: 'simulation-result-charts',
   templateUrl: './simulation-result-charts.component.html',
   styleUrls: ['./simulation-result-charts.component.scss'],
-  animations: [SlideInOutHorizontallyAnimation, SlideInOutVericallyAnimation]
+  animations: [SlideInOutHorizontallyAnimation]
 })
 export class SimulationResultChartsComponent{
 
@@ -21,7 +21,7 @@ export class SimulationResultChartsComponent{
 
   public lastDay: number = 1;
 
-  public chartVisible: boolean = false;
+
 
   public baseStatSliderVisibility: 'hidden' | 'visible' = 'hidden';
   private _baseStatChartType: ChartType = 'Total';
@@ -76,7 +76,6 @@ export class SimulationResultChartsComponent{
     this.lastDay = value.days;
     this.createCharts('XP', 'Total');
     this.createCharts('Base Stat', 'Total');
-    this.chartVisible = true;
   }
 
   // TODO: Split chart component into 2 (1 generic component used for setting up 1 basestat component and 1 xp chart component)

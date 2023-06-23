@@ -35,20 +35,6 @@ p {
   max-width: 280px;
 }
 
-.records-ctn::-webkit-scrollbar {
-  width: 10px;
-}
-
-.records-ctn::-webkit-scrollbar-track {
-  background: rgb(20, 20, 20);
-}
-
-.records-ctn::-webkit-scrollbar-thumb {
-  background-color: #673AB7;
-  border-radius: 100px;
-  border: 3px solid #673AB7;
-}
-
 .record {
     align-content: center;
 }

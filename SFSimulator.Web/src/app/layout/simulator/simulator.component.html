@@ -1,4 +1,5 @@
-<div class='row mx-3 d-flex main h-100'>
+<div>
+  <div class='row mx-3 mb-3 d-flex main h-100'>
   <div class='col-md-3 m-0 mt-2 p-0'>
     <simulation-config (configEmitter)='saveForm($event)'></simulation-config>
   </div>
@@ -13,11 +14,11 @@
     </div>
     <div class='row mt-3'>
       <div class='col-xl-3 h-0'></div>
-      <simulation-result-charts class='col-xl-9' [simulationResult]='simulationResult'></simulation-result-charts>
+      <simulation-result-charts *ngIf="simulationResult" @ngIfVerticalSlide class='col-xl-9' [simulationResult]='simulationResult'></simulation-result-charts>
     </div>
     <div class='mt-2 row'>
       <div class='col-md-3'></div>
-      <div class='col-md-9' *ngIf='simulationResult' @ngIfVerticalSlide>
+      <div class='col-md-9' *ngIf='simulationResult' @ngIfHorizontalSlide>
         <character-details [data]='simulationResult'>
         </character-details>
       </div>
@@ -26,5 +27,6 @@
   <div class="footer d-flex">
     <p class="mb-0">ver{{environment.currentVersion}}</p>
     <button class="ms-3 credits" (click)="showCredits()">Credits</button>
+  </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 <mat-card appearance="outlined" class="p-2 bg-black">
   <mat-card-title class="text-center pt-2"><h3>Saved Configuration</h3></mat-card-title>
   <mat-card-content align="center" class="px-0">
-    <ul class="records-ctn mx-sm-4 mt-2">
+    <ul class="records-ctn scrollbar mx-sm-4 mt-2">
       <p *ngIf="configurationList.length < 1" class="p-2 info">Looks like you havent saved any configuration yet.</p>
       <li *ngFor="let config of configurationList" [matRippleTrigger]='rippleTrigger' class="record record-selected" matRipple matRippleColor="rgba(103, 58, 183, 0.15)" [matRippleCentered]='true' (click)="selectConfig(config)" [class.record-selected]="config === selectedConfig">
         <button class="name-ctn text-wrap" #rippleTrigger>{{config.name}}</button>

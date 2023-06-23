@@ -13,7 +13,6 @@ body {
   flex: 1 1 auto;
 }
 
-
 html, body {
   height: 100%;
   margin: 0;
@@ -66,4 +65,27 @@ $light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accen
 .bg-gray {
   background-color: rgb(20, 20, 20) !important;
   color: rgb(200,200,200) !important;
+}
+
+.scrollbar {
+  overflow-y: auto;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: rgb(20, 20, 20);
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #673AB7;
+  border-radius: 100px;
+  border: 3px solid #673AB7;
+}
+
+.scrollbar::-webkit-scrollbar-corner {
+    background: rgb(20,20,20);
 }
