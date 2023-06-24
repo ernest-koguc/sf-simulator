@@ -138,35 +138,35 @@ export class ChartService {
     return options;
   }
 }
-export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatGain): string {
+export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatGain | 'TOTAL'): string {
   switch (gainType) {
-    case 'quest':
+    case 'QUEST':
       return '#0bb4ff';
-    case 'arena':
+    case 'ARENA':
       return '#b3d4ff';
-    case 'dailyMission':
+    case 'DAILY_MISSION':
       return '#50e991';
-    case 'academy':
+    case 'ACADEMY':
       return '#8BC34A';
-    case 'timeMachine':
+    case 'TIME_MACHINE':
       return '#9b19f5';
-    case 'wheel':
+    case 'WHEEL':
       return '#dc0ab4';
-    case 'calendar':
+    case 'CALENDAR':
       return '#e60049';
-    case 'guard':
+    case 'GUARD':
       return '#00bfa0';
-    case 'goldPit':
+    case 'GOLD_PIT':
       return '#e6d800';
-    case 'gem':
+    case 'GEM':
       return '#3F51B5';
-    case 'item':
+    case 'ITEM':
       return '#EC407A';
-    case 'diceGame':
+    case 'DICE_GAME':
       return '#8BC34A';
-    case 'guildFight':
+    case 'GUILD_FIGHT':
       return '#EC407A';
-    case 'total':
+    case 'TOTAL':
       return '#ffa300';
   }
 }
