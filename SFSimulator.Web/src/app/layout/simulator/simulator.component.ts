@@ -10,6 +10,7 @@ import { SftoolsloginComponent } from '../../dialogs/sftools-login-dialog/sftool
 import { SimulationOptionsDialogComponent, SimulationType } from '../../dialogs/simulation-options-dialog/simulation-options-dialog.component';
 import { SimulationOptionsForm } from '../../models/simulation-options';
 import { SimulationResult } from '../../models/simulation-result';
+import { SavedSimulationSnapshot } from '../../models/simulation-snapshot';
 import { DataBaseService } from '../../services/database.service';
 import { SimulatorService } from '../../services/simulator.service';
 import { SnackbarService } from '../../services/snackbar.service';
@@ -38,7 +39,8 @@ export class SimulatorComponent {
 
   public saveResult() {
     if (this.simulationResult) {
-      this.dataBaseService.saveSimulationSnapshot(this.simulationResult);
+      var snapshot = new SavedSimulationSnapshot(this.simulationResult);
+      this.dataBaseService.saveSimulationSnapshot(snapshot);
       this.snackbar.createSuccessSnackBar('Saved simulation result')
     }
   }

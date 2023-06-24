@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RemoveRecordDialogComponent } from '../../dialogs/remove-record-dialog/remove-record-dialog.component';
 import { mapToSimulationSnapshotTableRecord } from '../../helpers/mapper';
 import { BaseStatKeys, ExperienceKeys } from '../../models/simulation-result';
-import { SimulationSnapshot, SimulationSnapshotTableRecord } from '../../models/simulation-snapshot';
+import { SimulationSnapshotTableRecord } from '../../models/simulation-snapshot';
 import { ChartService } from '../../services/chart.service';
 import { DataBaseService } from '../../services/database.service';
 import { SnackbarService } from '../../services/snackbar.service';

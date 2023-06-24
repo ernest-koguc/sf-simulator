@@ -1,7 +1,12 @@
-export type SavedSchedule = {
-  timestamp: number;
-  name: string;
-  scheduleWeeks: ScheduleWeek[];
+export class SavedSchedule  {
+  constructor(name: string, timestamp: number, scheduleWeeks: ScheduleWeek[]) {
+    this.timestamp = timestamp;
+    this.name = name;
+    this.scheduleWeeks = scheduleWeeks;
+  }
+  public timestamp: number;
+  public name: string;
+  public scheduleWeeks: ScheduleWeek[];
 }
 
 export type ScheduleWeek = {
@@ -37,3 +42,154 @@ export const Events: EventCell[] =
     { event: 'Witch', tooltip: "Witches' Dance", toggled: false },
     { event: 'LuckyDay', tooltip: 'Lucky Day', toggled: false }
   ];
+
+export const defaultSchedule: SavedSchedule =
+{
+  name: 'Default',
+  timestamp: 0,
+  scheduleWeeks: [
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['Experience'] },
+          { actions: [], events: ['Experience'] },
+          { actions: [], events: ['Experience'] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['Gold', 'Witch'] },
+          { actions: [], events: ['Gold', 'Witch'] },
+          { actions: [], events: ['Gold', 'Witch'] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['Experience'] },
+          { actions: [], events: ['Experience'] },
+          { actions: [], events: ['Experience'] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['Gold', 'Witch'] },
+          { actions: [], events: ['Gold', 'Witch'] },
+          { actions: [], events: ['Gold', 'Witch'] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['Experience', 'Gold'] },
+          { actions: [], events: ['Experience', 'Gold'] },
+          { actions: [], events: ['Experience', 'Gold'] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['Experience'] },
+          { actions: [], events: ['Experience'] },
+          { actions: [], events: ['Experience'] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['Gold', 'Witch'] },
+          { actions: [], events: ['Gold', 'Witch'] },
+          { actions: [], events: ['Gold', 'Witch'] },
+        ]
+    },
+    {
+      scheduleDays:
+        [
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: [] },
+          { actions: [], events: ['LuckyDay'] },
+          { actions: [], events: ['LuckyDay'] },
+          { actions: [], events: ['LuckyDay'] },
+        ]
+    },
+  ]};

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { mapToSimulationSnapshot } from '../helpers/mapper';
 import { SavedConfiguration } from '../models/configuration';
 import { SavedSchedule } from '../models/schedule';
 import { SimulationResult } from '../models/simulation-result';
-import { SimulationSnapshot } from '../models/simulation-snapshot';
+import { SavedSimulationSnapshot } from '../models/simulation-snapshot';
 import { UserData } from '../models/user-data';
 
 @Injectable({
@@ -80,20 +79,19 @@ export class DataBaseService {
   // *********************** SimulationSnapshot ***********************
 
   // Save One
-  public saveSimulationSnapshot(entity: SimulationResult) {
-    var snapshot = mapToSimulationSnapshot(entity);
+  public saveSimulationSnapshot(entity: SavedSimulationSnapshot) {
 
-    this.saveItemInTable(snapshot, SimulationSnapshotTableKey);
+    this.saveItemInTable(entity, SimulationSnapshotTableKey);
   }
 
   // Get All
-  public getAllSimulationSnapshot(): Observable<SimulationSnapshot[] | undefined> {
-    var storedTable = this.getStoredTable<SimulationSnapshot[]>(SimulationSnapshotTableKey);
+  public getAllSimulationSnapshot(): Observable<SavedSimulationSnapshot[] | undefined> {
+    var storedTable = this.getStoredTable<SavedSimulationSnapshot[]>(SimulationSnapshotTableKey);
     return storedTable;
   }
 
   // Remove One
-  public removeSimulationSnapshot(entity: SimulationSnapshot) {
+  public removeSimulationSnapshot(entity: SavedSimulationSnapshot) {
     this.getAllSimulationSnapshot().subscribe(t => {
 
       if (t) {
