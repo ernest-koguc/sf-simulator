@@ -25,9 +25,9 @@ namespace SFSimulator.Core
             return result;
         }
 
-        public Dictionary<int, float> ReadItemGoldValues()
+        public Dictionary<int, decimal> ReadItemGoldValues()
         {
-            Dictionary<int, float> result = new();
+            Dictionary<int, decimal> result = new();
 
             using var reader = new StreamReader(_itemGoldValuesPath);
             string? nextLine;
@@ -36,7 +36,7 @@ namespace SFSimulator.Core
             while ((nextLine = reader.ReadLine()) != null)
             {
                 level++;
-                var goldValue = float.Parse(nextLine, CultureInfo.InvariantCulture);
+                var goldValue = decimal.Parse(nextLine, CultureInfo.InvariantCulture);
                 result.Add(level, goldValue);
             }
 

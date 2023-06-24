@@ -2,9 +2,9 @@
 {
     public class QuestValue
     {
-        public double Gold { get; set; }
-        public double Experience { get; set; }
-        public QuestValue(double gold, int experience)
+        public decimal Gold { get; set; }
+        public decimal Experience { get; set; }
+        public QuestValue(decimal gold, decimal experience)
         {
             Gold = gold;
             Experience = experience;

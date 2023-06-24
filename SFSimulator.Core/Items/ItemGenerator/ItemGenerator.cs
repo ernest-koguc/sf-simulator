@@ -6,7 +6,7 @@ namespace SFSimulator.Core
     {
         private readonly Random _random;
         private readonly IValuesReader _valuesReader;
-        private readonly Dictionary<int, float> _itemGoldValues;
+        private readonly Dictionary<int, decimal> _itemGoldValues;
 
         public ItemGenerator(Random random, IValuesReader valuesReader)
         {
@@ -34,7 +34,7 @@ namespace SFSimulator.Core
         {
             var item = GenerateItemBeforeQuest(characterLevel);
 
-            item.GoldValue *= 0.80f;
+            item.GoldValue *= 0.80M;
             item.ItemSourceType = ItemSourceType.AfterQuest;
 
             return item;
@@ -52,14 +52,14 @@ namespace SFSimulator.Core
             return item;
         }
 
-        private float GetGoldValueForItem(int characterLevel)
+        private decimal GetGoldValueForItem(int characterLevel)
         {
-            if (!_itemGoldValues.TryGetValue(characterLevel, out float goldValue))
+            if (!_itemGoldValues.TryGetValue(characterLevel, out decimal goldValue))
                 goldValue = 2500000;
 
             // 20% for item to have half the gold value
             if (_random.Next(0, 5) == 0)
-                return goldValue * 0.5f;
+                return goldValue * 0.5M;
 
             return goldValue;
         }

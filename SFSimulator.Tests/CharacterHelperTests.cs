@@ -10,7 +10,7 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void GetAcademyHourlyProduction_gives_correct_values()
         {
-            var characterHelper = new CharacterHelper(new ValuesReader(), new CurvesHelper());
+            var characterHelper = new CharacterHelper(new ValuesReader(), new Curves());
 
             var xpValues = new List<int>();
 
@@ -35,7 +35,7 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void GetDailyMissionReward_gives_correct_values()
         {
-            var characterHelper = new CharacterHelper(new ValuesReader(), new CurvesHelper());
+            var characterHelper = new CharacterHelper(new ValuesReader(), new Curves());
 
             var xpValues = new List<int>();
 

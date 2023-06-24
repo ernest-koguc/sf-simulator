@@ -188,7 +188,7 @@ namespace SFSimulator.Core
                 var choosenQuest = _questChooser.ChooseBestQuest(quests, SimulationOptions.QuestPriority, SimulationOptions.QuestChooserAI, SimulationOptions.HybridRatio);
                 questList.Add(choosenQuest);
 
-                GiveGoldToCharacter((float)choosenQuest.Gold, GainSource.QUEST);
+                GiveGoldToCharacter(choosenQuest.Gold, GainSource.QUEST);
                 GiveXPToCharacter((int)choosenQuest.Experience, GainSource.QUEST);
 
                 var goldFromItem = ItemBackPack.AddItemToBackPack(choosenQuest.Item, CurrentItemTypesForWitch);
@@ -230,12 +230,12 @@ namespace SFSimulator.Core
 
             foreach (var quest in questsFromTimeMachine)
             {
-                GiveGoldToCharacter((float)quest.Gold, GainSource.TIME_MACHINE);
+                GiveGoldToCharacter(quest.Gold, GainSource.TIME_MACHINE);
                 GiveXPToCharacter((int)quest.Experience, GainSource.TIME_MACHINE);
             }
         }
 
-        private void GiveGoldToCharacter(float gold, GainSource source)
+        private void GiveGoldToCharacter(decimal gold, GainSource source)
         {
             if (gold < 0)
                 throw new ArgumentOutOfRangeException(nameof(gold));
@@ -251,7 +251,7 @@ namespace SFSimulator.Core
 
             _ = baseStatGain ?? throw new NullReferenceException();
 
-            var baseStats = (float)Math.Round(gold / 10000000, 3);
+            var baseStats = Math.Round(gold / 10000000, 3);
             baseStatGain[source] += baseStats;
             baseStatGain[GainSource.TOTAL] += baseStats;
         }

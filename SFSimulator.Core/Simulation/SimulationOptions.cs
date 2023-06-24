@@ -4,7 +4,7 @@
     {
         public string CharacterName { get; set; } = string.Empty;
         public QuestPriorityType QuestPriority { get; set; } = QuestPriorityType.Experience;
-        public float? HybridRatio { get; set; } = null;
+        public decimal? HybridRatio { get; set; } = null;
         public QuestChooserAI QuestChooserAI { get; set; } = QuestChooserAI.Smart;
         public bool SwitchPriority { get; set; } = false;
         public int? SwitchLevel { get; set; } = null;
@@ -15,7 +15,7 @@
         public int DailyThirst { get; set; } = 320;
         public bool SkipCalendar { get; set; } = false;
         public SpinAmountType SpinAmount { get; set; } = SpinAmountType.Max;
-        public float DailyGuard { get; set; } = 23;
+        public decimal DailyGuard { get; set; } = 23;
 
         public Dictionary<(int Week, int Day), ScheduleDay> Schedule = new();
 

@@ -19,7 +19,7 @@
 
             new TypeMap(typeof(ThirstSimulator), typeof(IThirstSimulator), TypeMapOption.None),
 
-            new TypeMap(typeof(CurvesHelper), typeof(ICurvesHelper), TypeMapOption.None),
+            new TypeMap(typeof(Curves), typeof(ICurves), TypeMapOption.None),
             new TypeMap(typeof(Random), typeof(Random), TypeMapOption.None),
 
             new TypeMap(typeof(ItemGenerator), typeof(IItemGenerator), TypeMapOption.None)

@@ -5,8 +5,8 @@
         private readonly IValuesReader _valuesReader;
         private Dictionary<int, int> ExperienceForNextLevel { get; set; }
 
-        private readonly ICurvesHelper _curvesHelper;
-        public CharacterHelper(IValuesReader valuesReader, ICurvesHelper curvesHelper)
+        private readonly ICurves _curvesHelper;
+        public CharacterHelper(IValuesReader valuesReader, ICurves curvesHelper)
         {
             _valuesReader = valuesReader ?? throw new ArgumentNullException(nameof(valuesReader));
             _curvesHelper = curvesHelper ?? throw new ArgumentNullException(nameof(curvesHelper));
@@ -37,7 +37,7 @@
             var goldMin = goldBonus.CombinedBonus() * (gold / 11);
             return new QuestValue(goldMin, xpMin);
         }
-        public float GetGoldFromGuardDuty(int characterLevel, GoldBonus? goldBonus, bool goldEvent)
+        public decimal GetGoldFromGuardDuty(int characterLevel, GoldBonus? goldBonus, bool goldEvent)
         {
             var hourlyGuard = _curvesHelper.GoldCurve[characterLevel] * 12 / 1000 / 3;
 
@@ -50,17 +50,17 @@
             if (hourlyGuard > 10000000)
                 return 10000000;
 
-            return (float)hourlyGuard;
+            return hourlyGuard;
         }
-        public float GetHourlyGoldPitProduction(int characterLevel, int goldPitLevel, bool goldEvent)
+        public decimal GetHourlyGoldPitProduction(int characterLevel, int goldPitLevel, bool goldEvent)
         {
             var goldCurveValue = _curvesHelper.GoldCurve[characterLevel] * 12 / 1000;
-            var goldPitProduction = goldCurveValue * goldPitLevel / 75f * (1 + Math.Max(0, goldPitLevel - 15) / 100f);
+            var goldPitProduction = goldCurveValue * goldPitLevel / 75M * (1 + Math.Max(0, goldPitLevel - 15) / 100M);
 
             if (goldEvent)
-                goldPitProduction *= 1.5f;
+                goldPitProduction *= 1.5M;
 
-            return (float)goldPitProduction;
+            return goldPitProduction;
         }
         public int GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool xpEvent)
         {
@@ -101,7 +101,7 @@
             return (int)calendar;
         }
 
-        public float GetGoldRewardFromCalendar(int characterLevel, int rewardSize)
+        public decimal GetGoldRewardFromCalendar(int characterLevel, int rewardSize)
         {
             if (rewardSize < 1 || rewardSize > 2)
                 throw new ArgumentOutOfRangeException(nameof(rewardSize));
@@ -112,12 +112,12 @@
             if (rewardSize == 1)
                 reward = 3 * reward / 10;
 
-            return (float)reward;
+            return reward;
         }
 
-        public float GetDailyGoldFromDiceGame(int characterLevel, IEnumerable<EventType> events)
+        public decimal GetDailyGoldFromDiceGame(int characterLevel, IEnumerable<EventType> events)
         {
-            var averageGold = 0.3555f;
+            var averageGold = 0.3555M;
 
             var dailySpins = 10;
 
@@ -134,7 +134,7 @@
             return goldReward;
         }
 
-        public float GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount)
+        public decimal GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount)
         {
             var isLuckyDay = events.Contains(EventType.LuckyDay);
 
@@ -145,7 +145,7 @@
             else if (spinAmount == SpinAmountType.Max)
                 spins = 20;
 
-            var goldRewardChance = 0.1f;
+            var goldRewardChance = 0.1M;
 
             var goldFromGuard = GetGoldFromGuardDuty(characterLevel, null, false);
             var goldReward = goldFromGuard * 20;
@@ -198,17 +198,17 @@
             return (int)xp;
         }
 
-        public float GetDailyGoldFromGemMine(int characterLevel, int gemMineLevel, int workers = 15)
+        public decimal GetDailyGoldFromGemMine(int characterLevel, int gemMineLevel, int workers = 15)
         {
             if (gemMineLevel == 0)
                 return 0;
 
-            float time = (1 - workers * 0.05f) * GetMiningDuration(gemMineLevel) * 60;
-            float gold = 24 * 60 / time * GetAverageGemGold(characterLevel, gemMineLevel);
+            var time = (1 - workers * 0.05M) * GetMiningDuration(gemMineLevel) * 60;
+            var gold = 24 * 60 / time * GetAverageGemGold(characterLevel, gemMineLevel);
 
             return gold;
         }
-        private float GetAverageGemGold(int characterLevel, int gemMineLevel)
+        private decimal GetAverageGemGold(int characterLevel, int gemMineLevel)
         {
             var goldCurve = _curvesHelper.GoldCurve[characterLevel] * 12 / 1000;
 
@@ -217,14 +217,14 @@
             gem = Math.Min(10000000, gem * GetGemMineMultiplier(gemMineLevel));
 
             var gem2 = _curvesHelper.GoldCurve[characterLevel + 5] / 10;
-            gem2 = Math.Min(10E6, gem2 * 2 * GetGemMineMultiplier(gemMineLevel) / 100);
+            gem2 = Math.Min(10E6M, gem2 * 2 * GetGemMineMultiplier(gemMineLevel) / 100);
 
             var gem3 = _curvesHelper.GoldCurve[characterLevel + 10] / 10;
-            gem3 = Math.Min(10E6, gem3 * 2 * GetGemMineMultiplier(gemMineLevel) / 100);
+            gem3 = Math.Min(10E6M, gem3 * 2 * GetGemMineMultiplier(gemMineLevel) / 100);
 
             var avgValue = (gem + gem2 + gem3) / 3;
 
-            return (float)avgValue;
+            return avgValue;
         }
         private int GetGemMineMultiplier(int gemMineLevel)
         {

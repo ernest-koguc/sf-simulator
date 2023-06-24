@@ -4,6 +4,6 @@
     {
         Dictionary<int, int> ReadExperienceForNextLevel();
 
-        Dictionary<int, float> ReadItemGoldValues();
+        Dictionary<int, decimal> ReadItemGoldValues();
     }
 }

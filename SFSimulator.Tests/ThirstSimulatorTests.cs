@@ -17,7 +17,7 @@ namespace SFSimulator.Tests
                 var thirstSimulator = new ThirstSimulator(new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(), new ValuesReader()), new Random()), new QuestHelper());
                 thirstSimulator.ThirstSimulationOptions.Mount = MountType.Griffin;
                 var thirst = 200;
-                var choosenQuestsThirst = 0d;
+                var choosenQuestsThirst = 0M;
                 var quests = thirstSimulator.StartThirst(thirst, new QuestValue(10000, 10000), 1, new List<EventType>());
 
 
@@ -30,7 +30,7 @@ namespace SFSimulator.Tests
                 }
                 Assert.AreEqual(thirst, choosenQuestsThirst);
 
-                choosenQuestsThirst = 0d;
+                choosenQuestsThirst = 0M;
                 //SIMPLE AI
                 quests = thirstSimulator.StartThirst(thirst, new QuestValue(10000, 10000), 1, new List<EventType>());
                 while (quests is not null)
@@ -70,7 +70,7 @@ namespace SFSimulator.Tests
             foreach (var choosenQuest in choosenQuestsThirst)
             {
                 var time = choosenQuest.Time;
-                if (time != 2.5 && time != 5 && time != 7.5 && time != 10)
+                if (time != 2.5M && time != 5 && time != 7.5M && time != 10)
                     Assert.Fail();
             }
         }

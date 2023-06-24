@@ -2,25 +2,25 @@
 {
     public class QuestHelper : IQuestHelper
     {
-        public float GetTime(int questSegments, MountType mountType)
+        public decimal GetTime(int questSegments, MountType mountType)
         {
-            var mountFactor = 1f;
+            var mountFactor = 1M;
             switch (mountType)
             {
                 case MountType.None:
-                    mountFactor = 1f;
+                    mountFactor = 1M;
                     break;
                 case MountType.Pig:
-                    mountFactor = 0.9f;
+                    mountFactor = 0.9M;
                     break;
                 case MountType.Horse:
-                    mountFactor = 0.8f;
+                    mountFactor = 0.8M;
                     break;
                 case MountType.Tiger:
-                    mountFactor = 0.7f;
+                    mountFactor = 0.7M;
                     break;
                 case MountType.Griffin:
-                    mountFactor = 0.5f;
+                    mountFactor = 0.5M;
                     break;
             }
 

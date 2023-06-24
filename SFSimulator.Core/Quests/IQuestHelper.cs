@@ -2,6 +2,6 @@
 {
     public interface IQuestHelper
     {
-        float GetTime(int questLength, MountType mountType);
+        decimal GetTime(int questLength, MountType mountType);
     }
 }

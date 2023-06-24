@@ -2,17 +2,17 @@
 {
     public class GoldBonus
     {
-        public float Tower { get; set; } = 0;
-        public float GuildBonus { get; set; } = 0;
-        public float RuneBonus { get; set; } = 0;
+        public decimal Tower { get; set; } = 0;
+        public decimal GuildBonus { get; set; } = 0;
+        public decimal RuneBonus { get; set; } = 0;
         public bool HasGoldScroll { get; set; } = false;
-        public GoldBonus(float tower = 100, float guildBonus = 200, float runeBonus = 50, bool scroll = true)
+        public GoldBonus(int tower = 100, int guildBonus = 200, int runeBonus = 50, bool scroll = true)
         {
-            Tower = tower / 100;
-            GuildBonus = guildBonus / 100;
-            RuneBonus = runeBonus / 100;
+            Tower = tower / 100M;
+            GuildBonus = guildBonus / 100M;
+            RuneBonus = runeBonus / 100M;
             HasGoldScroll = scroll;
         }
-        public float CombinedBonus() => 1 + Tower + GuildBonus;
+        public decimal CombinedBonus() => 1 + Tower + GuildBonus;
     }
 }

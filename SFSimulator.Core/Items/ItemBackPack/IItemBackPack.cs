@@ -5,8 +5,8 @@
         IComparer<Item> ItemComparer { get; }
         List<Item> Items { get; set; }
         int Size { get; }
-        float? AddItemToBackPack(Item? item, IEnumerable<ItemType> currentItemsForWitch);
-        float? SellAllItemsToWItch();
-        float? SellSpecifiedItemTypeToWitch(IEnumerable<ItemType> currentItemsForWitch);
+        decimal? AddItemToBackPack(Item? item, IEnumerable<ItemType> currentItemsForWitch);
+        decimal? SellAllItemsToWItch();
+        decimal? SellSpecifiedItemTypeToWitch(IEnumerable<ItemType> currentItemsForWitch);
     }
 }

@@ -7,7 +7,7 @@
 
         private int MaxBeers { get; set; }
         private int CurrentBeer { get; set; } = 0;
-        private double CurrentThirst { get; set; }
+        private decimal CurrentThirst { get; set; }
         public ThirstSimulationOptions ThirstSimulationOptions { get; set; } = new ThirstSimulationOptions();
 
         private List<EventType>? TavernEvents;
@@ -17,7 +17,7 @@
             _questFactory = questFactory;
             _questHelper = questHelper;
         }
-        public IEnumerable<Quest>? StartThirst(double thirst, QuestValue minQuestValues, int characterLevel, List<EventType>? currentEvents)
+        public IEnumerable<Quest>? StartThirst(decimal thirst, QuestValue minQuestValues, int characterLevel, List<EventType>? currentEvents)
         {
             if (thirst <= 0) return null;
 
@@ -54,7 +54,7 @@
             }
             return Create3RandomQuests(minQuestValue, characterLevel);
         }
-        public IEnumerable<Quest> GenerateQuestsFromTimeMachine(double thirst, QuestValue minQuestValue)
+        public IEnumerable<Quest> GenerateQuestsFromTimeMachine(decimal thirst, QuestValue minQuestValue)
         {
             var quests = new List<Quest>();
             while (thirst > 0)

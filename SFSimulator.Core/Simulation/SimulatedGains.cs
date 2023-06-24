@@ -17,7 +17,7 @@
             { GainSource.TOTAL, 0         }
         };
 
-        public Dictionary<GainSource, float> BaseStatGain { get; set; } = new()
+        public Dictionary<GainSource, decimal> BaseStatGain { get; set; } = new()
         {
             { GainSource.QUEST, 0         },
             { GainSource.GOLD_PIT, 0      },

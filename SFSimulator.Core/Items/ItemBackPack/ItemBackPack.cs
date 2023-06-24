@@ -14,7 +14,7 @@ namespace SFSimulator.Core
             ItemComparer = itemComparer;
         }
 
-        public float? AddItemToBackPack(Item? item, IEnumerable<ItemType> currentItemsForWitch)
+        public decimal? AddItemToBackPack(Item? item, IEnumerable<ItemType> currentItemsForWitch)
         {
             if (item == null || item.ItemType == ItemType.PetFood)
                 return null;
@@ -34,12 +34,12 @@ namespace SFSimulator.Core
             return itemToSell?.GoldValue;
         }
 
-        public float? SellSpecifiedItemTypeToWitch(IEnumerable<ItemType> currentItemsForWitch)
+        public decimal? SellSpecifiedItemTypeToWitch(IEnumerable<ItemType> currentItemsForWitch)
         {
             if (currentItemsForWitch.Contains(ItemType.None) || currentItemsForWitch.Contains(ItemType.PetFood))
                 throw new InvalidEnumArgumentException("Item type cannot be 'None' or 'PetFood'");
 
-            var gold = 0f;
+            var gold = 0M;
 
             Items.Where(item => currentItemsForWitch.Contains(item.ItemType)).ToList().ForEach(item =>
             {
@@ -51,7 +51,7 @@ namespace SFSimulator.Core
             return gold > 0 ? gold * 2 : null;
         }
 
-        public float? SellAllItemsToWItch()
+        public decimal? SellAllItemsToWItch()
         {
             var sumGold = Items.Sum(item => item.GoldValue);
             Items.Clear();

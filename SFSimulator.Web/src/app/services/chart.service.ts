@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Chart, ChartConfiguration, ChartDataset } from 'chart.js';
-import { ChartConfig, ChartType } from '../models/chart';
+import { ChartConfig } from '../models/chart';
 import { BaseStatGain, ExperienceGain } from '../models/simulation-result';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import ChartDataLabels from 'chartjs-plugin-datalabels';

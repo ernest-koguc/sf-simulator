@@ -4,7 +4,7 @@
     {
         public bool HasGoldScroll { get; set; } = false;
         public bool DrinkBeerOneByOne { get; set; } = false;
-        public float GoldRuneBonus { get; set; } = 0f;
+        public decimal GoldRuneBonus { get; set; } = 0;
         public MountType Mount { get; set; }
     }
 }

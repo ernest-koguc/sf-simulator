@@ -13,14 +13,14 @@ namespace SFSimulator.Tests
         {
             var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(1), new ValuesReader()), new Random(1));
             var questChooser = new QuestChooser();
-            var characterHelper = new CharacterHelper(new ValuesReader(), new CurvesHelper());
+            var characterHelper = new CharacterHelper(new ValuesReader(), new Curves());
             var questValues = characterHelper.GetMinimumQuestValue(400, new ExperienceBonus(), new GoldBonus());
 
             for (var i =0; i<100; i++)
             {
                 var quest = questFactory.Create(questValues, 400, 100, true, 50, new List<EventType>(), MountType.Griffin);
 
-                var chosenQuest = questChooser.ChooseBestQuest(new List<Quest>() { quest }, QuestPriorityType.Hybrid, QuestChooserAI.Smart, 0.1F);
+                var chosenQuest = questChooser.ChooseBestQuest(new List<Quest>() { quest }, QuestPriorityType.Hybrid, QuestChooserAI.Smart, 0.1M);
 
                 Assert.IsTrue(chosenQuest.Experience == quest.Experience);
                 Assert.IsTrue(chosenQuest.Gold == quest.Gold);

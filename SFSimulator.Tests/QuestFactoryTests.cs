@@ -21,13 +21,13 @@ namespace SFSimulator.Tests
                 quest = questFactory.Create(new QuestValue(-10000, -10000), 1, 1);
                 Assert.IsTrue(quest.Experience >= 0);
                 Assert.IsTrue(quest.Gold >= 0);
-                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.5f);
+                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.5M);
                 Assert.IsTrue(quest.Gold <= 16500000);
-                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, false, 0.5f);
+                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, false, 0.5M);
                 Assert.IsTrue(quest.Gold <= 15000000);
-                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.3f);
+                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.3M);
                 Assert.IsTrue(quest.Gold <= 14300000);
-                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.5f, new List<EventType> { EventType.Gold });
+                quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1, true, 0.5M, new List<EventType> { EventType.Gold });
                 Assert.IsTrue(quest.Gold <= 16500000);
             }
         }
@@ -40,7 +40,7 @@ namespace SFSimulator.Tests
                 var quest = questFactory.Create(new QuestValue(100, 100), 1, 20);
                 Assert.IsTrue(quest.Time <= 10);
                 Assert.IsTrue(quest.Time > 0);
-                Assert.IsTrue(quest.Time == 2.5 || quest.Time == 5 || quest.Time == 7.5 || quest.Time == 10);
+                Assert.IsTrue(quest.Time == 2.5M || quest.Time == 5M || quest.Time == 7.5M || quest.Time == 10);
             }
         }
         [TestMethod]
@@ -102,7 +102,7 @@ namespace SFSimulator.Tests
 
             for (int i = 0; i < 100; i++)
             {
-                var quest = questFactory.Create(new QuestValue(1000000000000000, 100), 1, 2.5);
+                var quest = questFactory.Create(new QuestValue(1000000000000000, 100), 1, 2.5M);
                 questList.Add(quest);
             }
             Assert.IsTrue(questList.Any(q => q.Gold != 16500000));
@@ -117,19 +117,19 @@ namespace SFSimulator.Tests
             for (int i = 0; i < 100; i++)
             {
                 var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
-                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5M, 4);
                 Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4));
             }
             for (int i = 0; i < 100; i++)
             {
                 var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
-                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5, 3);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5M, 3);
                 Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4));
             }
             for (int i = 0; i < 100; i++)
             {
                 var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
-                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5, 2);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 2.5M, 2);
                 Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4));
             }
 
@@ -151,7 +151,7 @@ namespace SFSimulator.Tests
             for (int i = 0; i < 100; i++)
             {
                 var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
-                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 7.5, 4);
+                var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 7.5M, 4);
                 Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 4 / 3));
             }
         }
@@ -165,7 +165,7 @@ namespace SFSimulator.Tests
 
             for (int i = 0; i < 100; i++)
             {
-                var quest = questFactory.Create(new QuestValue(1000000000000000, 100), 1, 10, true, 0.5f);
+                var quest = questFactory.Create(new QuestValue(1000000000000000, 100), 1, 10, true, 0.5M);
                 questList.Add(quest);
             }
             Assert.IsFalse(questList.Any(q => q.Gold != 16500000));
@@ -179,7 +179,7 @@ namespace SFSimulator.Tests
 
             for (int i = 0; i < 100; i++)
             {
-                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 2.5, true, 0.5f);
+                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 2.5M, true, 0.5M);
                 questList.Add(quest);
             }
 
@@ -196,7 +196,7 @@ namespace SFSimulator.Tests
 
             for (; i < 1000; i++)
             {
-                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5f);
+                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5M);
                 questList.Add(quest);
             }
 
@@ -215,7 +215,7 @@ namespace SFSimulator.Tests
 
             for (; i < 1000; i++)
             {
-                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5f);
+                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5M);
                 questList.Add(quest);
             }
 
@@ -234,7 +234,7 @@ namespace SFSimulator.Tests
 
             for (; i < 1000; i++)
             {
-                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5f);
+                var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5M);
                 questList.Add(quest);
             }
 
