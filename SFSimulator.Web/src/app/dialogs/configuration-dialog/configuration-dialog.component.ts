@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SavedConfiguration } from '../../models/configuration';
 import { DataBaseService } from '../../services/database.service';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-configuration-dialog',
@@ -12,7 +13,8 @@ export class ConfigurationDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ConfigurationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SavedConfiguration[],
-    private dataBaseService: DataBaseService
+    private dataBaseService: DataBaseService,
+    private snackBarServie: SnackbarService
   ) {
     this.syncList();
   }
@@ -37,6 +39,7 @@ export class ConfigurationDialogComponent {
     }
 
     this.syncList();
+    this.snackBarServie.createErrorSnackbar("Configuration " + configuration.name + " was deleted!");
   }
 
   private syncList() {

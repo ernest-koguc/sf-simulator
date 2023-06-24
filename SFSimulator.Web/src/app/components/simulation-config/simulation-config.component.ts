@@ -100,6 +100,7 @@ export class SimulationConfig implements OnInit {
       this.simulationOptions.controls.schedule.patchValue(schedule, {emitEvent: true});
 
     this.savedConfiguration = configuration;
+    this.snackBar.createInfoSnackbar("Loaded configuration: " + configuration.name);
   }
 
   loadForm(data: any): void {
@@ -134,6 +135,7 @@ export class SimulationConfig implements OnInit {
 
     this.savedConfiguration.updateConfiguration(this.simulationOptions.getRawValue(), includeCharacter);
     this.databaseService.saveConfiguration(this.savedConfiguration);
+    this.snackBar.createSuccessSnackBar("Configuration saved successfully");
   }
 
   public saveConfigurationAsNew(includeCharacter: boolean) {
@@ -143,6 +145,7 @@ export class SimulationConfig implements OnInit {
 
       var newConfiguration = new SavedConfiguration(name, this.simulationOptions.getRawValue(), includeCharacter);
       this.databaseService.saveConfiguration(newConfiguration);
+      this.snackBar.createSuccessSnackBar("Configuration saved successfully");
     })
   }
 

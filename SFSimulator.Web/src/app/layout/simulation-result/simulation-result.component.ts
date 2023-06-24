@@ -6,13 +6,14 @@ import { BaseStatKeys, ExperienceKeys } from '../../models/simulation-result';
 import { SimulationSnapshot, SimulationSnapshotTableRecord } from '../../models/simulation-snapshot';
 import { ChartService } from '../../services/chart.service';
 import { DataBaseService } from '../../services/database.service';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-simulation-result',
   templateUrl: './simulation-result.component.html',
   styleUrls: ['./simulation-result.component.scss']})
 export class SimulationResultComponent {
-  constructor(private dataBaseService: DataBaseService, private chartService: ChartService, private matDialog: MatDialog) {
+  constructor(private dataBaseService: DataBaseService, private chartService: ChartService, private matDialog: MatDialog, private snackBarService: SnackbarService) {
     this.dataBaseService.getAllSimulationSnapshot().subscribe(v => {
       if (v)
         this.dataSource = v.map(s => mapToSimulationSnapshotTableRecord(s))
@@ -29,7 +30,8 @@ export class SimulationResultComponent {
     if (element) {
       this.dataBaseService.removeSimulationSnapshot(element);
       this.dataSource = this.dataSource.filter(e => e != element);
-      return
+      this.snackBarService.createErrorSnackbar("Simulation result was removed");
+      return;
     }
 
     this.matDialog.open(RemoveRecordDialogComponent, { autoFocus: false, restoreFocus: false }).afterClosed().subscribe(v => {
@@ -38,6 +40,7 @@ export class SimulationResultComponent {
 
       this.dataBaseService.removeAllSimulationSnapshots();
       this.dataSource = [];
+      this.snackBarService.createErrorSnackbar("All results were removed!");
 
     });
   }
