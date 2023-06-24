@@ -14,8 +14,8 @@
         {
             return questChooserAI switch
             {
-                QuestChooserAI.SIMPLE => SimpleChooser(quests, questPriority, hybridRatio),
-                QuestChooserAI.SMART => SmartChooser(quests, questPriority, hybridRatio),
+                QuestChooserAI.Simple => SimpleChooser(quests, questPriority, hybridRatio),
+                QuestChooserAI.Smart => SmartChooser(quests, questPriority, hybridRatio),
                 _ => throw new ArgumentException($"Wrong {nameof(questChooserAI)} value"),
             };
         }

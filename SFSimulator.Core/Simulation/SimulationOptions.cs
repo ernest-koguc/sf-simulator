@@ -5,7 +5,7 @@
         public string CharacterName { get; set; } = string.Empty;
         public QuestPriorityType QuestPriority { get; set; } = QuestPriorityType.Experience;
         public float? HybridRatio { get; set; } = null;
-        public QuestChooserAI QuestChooserAI { get; set; } = QuestChooserAI.SMART;
+        public QuestChooserAI QuestChooserAI { get; set; } = QuestChooserAI.Smart;
         public bool SwitchPriority { get; set; } = false;
         public int? SwitchLevel { get; set; } = null;
         public QuestPriorityType PriorityAfterSwitch { get; set; } = QuestPriorityType.Gold;

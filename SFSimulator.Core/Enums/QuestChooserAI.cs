@@ -2,7 +2,7 @@
 {
     public enum QuestChooserAI
     {
-        SIMPLE,
-        SMART
+        Simple,
+        Smart
     }
 }

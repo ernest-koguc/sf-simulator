@@ -34,13 +34,13 @@ export class ChartService {
     return chart;
   }
 
-  private getDataSets(xpGain: ExperienceGain | BaseStatGain): ChartDataset<'bar'>[]{
+  private getDataSets(gains: ExperienceGain | BaseStatGain): ChartDataset<'bar'>[]{
 
     var dataSets: ChartDataset<'bar'>[] = [];
 
-    var k: keyof typeof xpGain;
-    for (k in xpGain) {
-      var value = xpGain[k];
+    var k: keyof typeof gains;
+    for (k in gains) {
+      var value = gains[k];
 
       var dataSet: ChartDataset<'bar'> = {
         data: [value],
@@ -138,35 +138,35 @@ export class ChartService {
     return options;
   }
 }
-export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatGain | 'TOTAL'): string {
+export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatGain): string {
   switch (gainType) {
-    case 'QUEST':
+    case 'quest':
       return '#0bb4ff';
-    case 'ARENA':
+    case 'arena':
       return '#b3d4ff';
-    case 'DAILY_MISSION':
+    case 'dailyMission':
       return '#50e991';
-    case 'ACADEMY':
+    case 'academy':
       return '#8BC34A';
-    case 'TIME_MACHINE':
+    case 'timeMachine':
       return '#9b19f5';
-    case 'WHEEL':
+    case 'wheel':
       return '#dc0ab4';
-    case 'CALENDAR':
+    case 'calendar':
       return '#e60049';
-    case 'GUARD':
+    case 'guard':
       return '#00bfa0';
-    case 'GOLD_PIT':
+    case 'goldPit':
       return '#e6d800';
-    case 'GEM':
+    case 'gem':
       return '#3F51B5';
-    case 'ITEM':
+    case 'item':
       return '#EC407A';
-    case 'DICE_GAME':
+    case 'diceGame':
       return '#8BC34A';
-    case 'GUILD_FIGHT':
+    case 'guildFight':
       return '#EC407A';
-    case 'TOTAL':
+    case 'total':
       return '#ffa300';
   }
 }

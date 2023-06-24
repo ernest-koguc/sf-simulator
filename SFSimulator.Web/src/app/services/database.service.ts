@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SavedConfiguration } from '../models/configuration';
 import { SavedSchedule } from '../models/schedule';
-import { SimulationResult } from '../models/simulation-result';
 import { SavedSimulationSnapshot } from '../models/simulation-snapshot';
 import { UserData } from '../models/user-data';
 

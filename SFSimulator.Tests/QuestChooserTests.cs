@@ -20,7 +20,7 @@ namespace SFSimulator.Tests
             {
                 var quest = questFactory.Create(questValues, 400, 100, true, 50, new List<EventType>(), MountType.Griffin);
 
-                var chosenQuest = questChooser.ChooseBestQuest(new List<Quest>() { quest }, QuestPriorityType.Hybrid, QuestChooserAI.SMART, 0.1F);
+                var chosenQuest = questChooser.ChooseBestQuest(new List<Quest>() { quest }, QuestPriorityType.Hybrid, QuestChooserAI.Smart, 0.1F);
 
                 Assert.IsTrue(chosenQuest.Experience == quest.Experience);
                 Assert.IsTrue(chosenQuest.Gold == quest.Gold);
