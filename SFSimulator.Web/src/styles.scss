@@ -30,7 +30,6 @@ $dark-theme: mat.define-dark-theme( ( color: ( primary: $my-app-primary, accent:
 $light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accent: $my-app-accent, warn: $my-app-warn, ), ) );
 
 @include mat.all-component-themes($dark-theme);
-@include mat.table-theme($light-theme);
 
 .mat-mdc-snack-bar-container {
   &.bg-success {
@@ -88,4 +87,8 @@ $light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accen
 
 .scrollbar::-webkit-scrollbar-corner {
     background: rgb(20,20,20);
+}
+
+.mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after, .mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-minimal::after {
+    color: #b366ff !important;
 }
