@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatButtonToggleAppearance } from "@angular/material/button-toggle";
+import { finalize } from "rxjs";
 import { greaterThan, runeDamageBonusValidator, secondWeaponValidator } from "../../helpers/validators";
 import { ClassType, DamageRuneType } from "../../models/character";
 import { Dungeon, DungeonEnemy } from "../../models/dungeon";
@@ -20,6 +21,7 @@ export class TestComponent implements OnInit {
   public iterations = new FormControl<number>(1000, [Validators.required, Validators.min(1), Validators.max(10000000)]);
   public class = ClassType;
   public runeWeaponType = DamageRuneType;
+  public isInProgress = false;
 
   public character = new FormGroup({
     level: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(800)]),
@@ -96,15 +98,14 @@ export class TestComponent implements OnInit {
     }
 
     let char = this.character.getRawValue() as any;
-    if (char.firstWeapon.minDmg == null || char.firstWeapon.maxDmg == null) {
-      char.firstWeapon = null;
-    }
-    if (char.secondWeapon.minDmg == null || char.secondWeapon.maxDmg == null) {
-      char.secondWeapon = null;
-    }
+    char = this.normalizeForm(char);
 
     let iterations = this.iterations.value;
+    this.isInProgress = true;
     this.simulatorService.simulateDungeon(dungPosition, enemyPosition, char, iterations!, iterations!)
+      .pipe(finalize(() => {
+        this.isInProgress = false;
+      }))
       .subscribe(v => {
         this.result = v;
         this.result.iterations = iterations!; 
@@ -112,8 +113,19 @@ export class TestComponent implements OnInit {
   }
 
   normalizeForm(character: any) {
-    
-
+    if (character.firstWeapon.damageRuneType === DamageRuneType.None) {
+      character.firstWeapon.runeBonus = 0;
+    } 
+    if (character.secondWeapon.damageRuneType === DamageRuneType.None) {
+      character.secondWeapon.runeBonus = 0;
+    } 
+    if (character.firstWeapon.minDmg == null || character.firstWeapon.maxDmg == null) {
+      character.firstWeapon = null;
+    }
+    if (character.secondWeapon.minDmg == null || character.secondWeapon.maxDmg == null) {
+      character.secondWeapon = null;
+    }
+    return character;
   }
 
   ngOnInit(): void {
