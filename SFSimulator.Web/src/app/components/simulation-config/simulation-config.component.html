@@ -1,4 +1,4 @@
-<div class="ctn">
+<div class="rounded bg-darken d-flex p-3">
   <div class="form-ctn">
     <form [formGroup]='simulationOptions'>
       <mat-tab-group dynamicHeight backgroundColor="primary" mat-stretch-tabs="true" preserveContent="true">
@@ -9,45 +9,58 @@
             Account
           </ng-template>
           <ng-template matTabContent>
-            <div class="d-flex flex-column ms-3 mt-3">
-              <mat-form-field appearance="outline">
-                <mat-label>Level</mat-label>
-                <input matInput type="number" formControlName="level" placeholder="0" min="1" max="700" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Base Stats</mat-label>
-                <input matInput type="number" formControlName="baseStat" placeholder="0" min="0" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Experience</mat-label>
-                <input matInput type="number" formControlName="experience" placeholder="0" min="0" max="1500000000" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Academy level</mat-label>
-                <input matInput type="number" formControlName="academyLevel" placeholder="0" min="0" max="20" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Gold Pit level</mat-label>
-                <input matInput type="number" formControlName="goldPitLevel" placeholder="0" min="0" max="100" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Hydra</mat-label>
-                <input matInput type="number" formControlName="hydraHeads" placeholder="0" min="0" max="20" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Gem Mine Level</mat-label>
-                <input matInput type="number" formControlName="gemMineLevel" placeholder="0" min="0" max="100" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Treasury Level</mat-label>
-                <input matInput type="number" formControlName="treasuryLevel" placeholder="0" min="0" max="45" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Mount</mat-label>
-                <mat-select formControlName="mountType">
-                  <mat-option *ngFor="let mount of mountType" [value]="mount">{{mount}}</mat-option>
-                </mat-select>
-              </mat-form-field>
+            <div class="row gx-1">
+              <div class="col-xl-6 d-flex flex-column mt-3">
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Level</mat-label>
+                  <input matInput type="number" formControlName="level" placeholder="0" min="1" max="800" />
+                  <mat-error showError [control]="form.level"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Experience</mat-label>
+                  <input matInput type="number" formControlName="experience" placeholder="0" min="0" />
+                  <mat-error showError [control]="form.experience"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Academy level</mat-label>
+                  <input matInput type="number" formControlName="academyLevel" placeholder="0" min="0" max="20" />
+                  <mat-error showError [control]="form.academyLevel"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Gem Mine Level</mat-label>
+                  <input matInput type="number" formControlName="gemMineLevel" placeholder="0" min="0" max="100" />
+                  <mat-error showError [control]="form.gemMineLevel"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Hydra</mat-label>
+                  <input matInput type="number" formControlName="hydraHeads" placeholder="0" min="0" max="20" />
+                  <mat-error showError [control]="form.hydraHeads"></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-6 d-flex flex-column mt-3">
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Base Stats</mat-label>
+                  <input matInput type="number" formControlName="baseStat" placeholder="0" min="0" />
+                  <mat-error showError [control]="form.baseStat"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Mount</mat-label>
+                  <mat-select formControlName="mountType">
+                    <mat-option *ngFor="let mount of mountType" [value]="mount">{{ mount }}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="form.mountType"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Gold Pit level</mat-label>
+                  <input matInput type="number" formControlName="goldPitLevel" placeholder="0" min="0" max="100" />
+                  <mat-error showError [control]="form.goldPitLevel"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class='mb-1'>
+                  <mat-label>Treasury Level</mat-label>
+                  <input matInput type="number" formControlName="treasuryLevel" placeholder="0" min="0" max="45" />
+                  <mat-error showError [control]="form.treasuryLevel"></mat-error>
+                </mat-form-field>
+              </div>
             </div>
           </ng-template>
         </mat-tab>
@@ -59,37 +72,47 @@
             Bonuses
           </ng-template>
           <ng-template matTabContent>
-            <div class="d-flex flex-column ms-3 mt-3">
-              <mat-form-field appearance="outline">
-                <mat-label for="scrapbookFillness">Scrapbook</mat-label>
-                <input matInput type="number" formControlName="scrapbookFillness" placeholder="0" min="0" max="100" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label for="xpGuildBonus">XP Guild Bonus</mat-label>
-                <input matInput type="number" formControlName="xpGuildBonus" placeholder="0" min="0" max="200" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label for="xpRuneBonus">XP Rune Bonus</mat-label>
-                <input matInput type="number" formControlName="xpRuneBonus" placeholder="0" min="0" max="10" />
-              </mat-form-field>
-              <mat-slide-toggle class="mb-3" formControlName="hasExperienceScroll">
-                Experience Scroll
-              </mat-slide-toggle>
-              <mat-form-field appearance="outline">
-                <mat-label for="tower">Tower</mat-label>
-                <input matInput type="number" formControlName="tower" placeholder="0" min="0" max="100" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label for="goldGuildBonus">Gold Guild Bonus</mat-label>
-                <input matInput type="number" formControlName="goldGuildBonus" placeholder="0" min="0" max="200" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label for="goldRuneBonus">Gold Rune Bonus</mat-label>
-                <input matInput type="number" formControlName="goldRuneBonus" placeholder="0" min="0" max="50" />
-              </mat-form-field>
-              <mat-slide-toggle formControlName="hasGoldScroll">
-                Gold Scroll
-              </mat-slide-toggle>
+            <div class="row gx-1">
+              <div class="col-xl-6 d-flex flex-column mt-3">
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label for="scrapbookFillness">Scrapbook</mat-label>
+                  <input matInput type="number" formControlName="scrapbookFillness" placeholder="0" min="0" max="100" />
+                  <mat-error showError [control]="form.scrapbookFillness"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label for="xpGuildBonus">XP Guild Bonus</mat-label>
+                  <input matInput type="number" formControlName="xpGuildBonus" placeholder="0" min="0" max="200" />
+                  <mat-error showError [control]="form.xpGuildBonus"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label for="xpRuneBonus">XP Rune Bonus</mat-label>
+                  <input matInput type="number" formControlName="xpRuneBonus" placeholder="0" min="0" max="10" />
+                  <mat-error showError [control]="form.xpRuneBonus"></mat-error>
+                </mat-form-field>
+                <check-box class="mb-3" formControlName="hasExperienceScroll">
+                  Experience Scroll
+                </check-box>
+              </div>
+              <div class="col-xl-6 d-flex flex-column mt-3">
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label for="tower">Tower</mat-label>
+                  <input matInput type="number" formControlName="tower" placeholder="0" min="0" max="100" />
+                  <mat-error showError [control]="form.tower"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label for="goldGuildBonus">Gold Guild Bonus</mat-label>
+                  <input matInput type="number" formControlName="goldGuildBonus" placeholder="0" min="0" max="200" />
+                  <mat-error showError [control]="form.goldGuildBonus"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label for="goldRuneBonus">Gold Rune Bonus</mat-label>
+                  <input matInput type="number" formControlName="goldRuneBonus" placeholder="0" min="0" max="50" />
+                  <mat-error showError [control]="form.goldRuneBonus"></mat-error>
+                </mat-form-field>
+                <check-box formControlName="hasGoldScroll">
+                  Gold Scroll
+                </check-box>
+              </div>
             </div>
           </ng-template>
         </mat-tab>
@@ -101,64 +124,80 @@
             Playstyle
           </ng-template>
           <ng-template matTabContent>
-            <div class="d-flex flex-column mt-3 ms-3">
-              <mat-form-field appearance="outline">
-                <mat-label>Daily Thirst</mat-label>
-                <input matInput type="number" formControlName="dailyThirst" placeholder="0" min="0" max="320" step="20" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Quest Priority</mat-label>
-                <mat-select formControlName="questPriority">
-                  <mat-option *ngFor="let priority of questPriority" [value]="priority">{{priority}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Hybrid Ratio</mat-label>
-                <input matInput type="number" formControlName="hybridRatio" placeholder="0" min="0" max="1" step="0.05"
-                       matTooltip="e.g. 1 xp = 4 gold then type 0.25"
-                       [matTooltipPosition]="'right'" />
-              </mat-form-field>
-              <mat-slide-toggle class="mb-3"
-                                formControlName="switchPriority"
-                                matTooltip="Determines if character switches quest priority after X level"
-                                [matTooltipPosition]="'right'">
-                Should switch priority?
-              </mat-slide-toggle>
-              <mat-form-field appearance="outline">
-                <mat-label>Switch level</mat-label>
-                <input type="number" matInput formControlName="switchLevel" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Priority after switch</mat-label>
-                <mat-select formControlName="priorityAfterSwitch">
-                  <mat-option *ngFor="let priority of questPriority" [value]="priority">{{priority}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-slide-toggle formControlName="drinkBeerOneByOne">
-                Drink Beer One By One
-              </mat-slide-toggle>
-              <mat-slide-toggle class="mt-3" formControlName="skipCalendar">
-                Skip Calendar
-              </mat-slide-toggle>
-              <mat-form-field class="mt-3" appearance="outline">
-                <mat-label>Spin Amount</mat-label>
-                <mat-select formControlName='spinAmount'>
-                  <mat-option *ngFor="let spin of spinTactics" [value]="spin.value">{{spin.label}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Hours of Guard</mat-label>
-                <input matInput formControlName="dailyGuard"/>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Schedule</mat-label>
-                <mat-select [value]="defaultScheduleOption" formControlName="schedule">
-                  <mat-option *ngFor="let schedule of savedSchedules" [value]="schedule">
-                    {{schedule.name}}
-                  </mat-option>
-                  <p class="pt-3 ps-2">You can add other schedules in Custom Schedule tab</p>
-                </mat-select>
-              </mat-form-field>
+            <div class="row gx-1">
+              <div class="col-xl-6 d-flex flex-column mt-3">
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Daily Thirst</mat-label>
+                  <input matInput type="number" formControlName="dailyThirst" placeholder="0" min="0" max="320" step="20" />
+                  <mat-error showError [control]="form.dailyThirst"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Quest Priority</mat-label>
+                  <mat-select formControlName="questPriority">
+                    <mat-option *ngFor="let priority of questPriority" [value]="priority">{{priority}}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="form.questPriority"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Hybrid Ratio</mat-label>
+                  <input matInput type="number" formControlName="hybridRatio" placeholder="0" min="0" max="1" step="0.05"
+                         matTooltip="e.g. 1 xp = 4 gold then type 0.25"
+                         [matTooltipPosition]="'right'" />
+                  <mat-error showError [control]="form.hybridRatio"></mat-error>
+                </mat-form-field>
+                <check-box class="mb-3"
+                                  formControlName="switchPriority"
+                                  matTooltip="Determines if character switches quest priority after X level"
+                                  [matTooltipPosition]="'right'">
+                  Should switch priority?
+                </check-box>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Switch level</mat-label>
+                  <input type="number" matInput formControlName="switchLevel" />
+                  <mat-error showError [control]="form.switchLevel"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Priority after switch</mat-label>
+                  <mat-select formControlName="priorityAfterSwitch">
+                    <mat-option *ngFor="let priority of questPriority" [value]="priority">{{priority}}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="form.priorityAfterSwitch"></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-6 d-flex flex-column mt-3">
+                <mat-form-field class="mb-2" appearance="outline">
+                  <mat-label>Spin Amount</mat-label>
+                  <mat-select formControlName='spinAmount'>
+                    <mat-option *ngFor="let spin of spinTactics" [value]="spin.value">{{spin.label}}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="form.spinAmount"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Hours of Guard</mat-label>
+                  <input matInput formControlName="dailyGuard"/>
+                  <mat-error showError [control]="form.dailyGuard"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Schedule</mat-label>
+                  <mat-select [value]="defaultScheduleOption" formControlName="schedule">
+                    <mat-option *ngFor="let schedule of savedSchedules" [value]="schedule">
+                      {{schedule.name}}
+                    </mat-option>
+                    <p class="pt-3 ps-2">You can add other schedules in Custom Schedule tab</p>
+                  </mat-select>
+                  <mat-error showError [control]="form.schedule"></mat-error>
+                </mat-form-field>
+                <check-box formControlName="drinkBeerOneByOne">
+                  Drink Beer One By One
+                </check-box>
+                <check-box class="mt-3" formControlName="skipCalendar">
+                  Skip Calendar
+                </check-box>
+                <!--TO DO--> 
+                <!--<check-box class="mt-3" formControlName="simulateDungeon">
+                  Simulate Dungeon (experimental)
+                </check-box>-->
+              </div>
             </div>
           </ng-template>
         </mat-tab>

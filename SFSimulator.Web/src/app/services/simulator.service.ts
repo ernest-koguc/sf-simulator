@@ -1,10 +1,13 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, ObservableInput, retry, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { SimulationType } from '../dialogs/simulation-options-dialog/simulation-options-dialog.component';
-import { SimulationOptionsForm } from '../models/simulation-options';
-import { SimulationResult } from '../models/simulation-result';
+import { Character } from '../models/character';
+import { Dungeon } from '../models/dungeon';
+import { SimulateDayRequest, SimulateUntilLevelRequest } from '../models/requests';
+import { SimulationConfigForm } from '../models/simulation-configuration';
+import { SimulationOptions } from '../models/simulation-options';
+import { DungeonResult, SimulationResult } from '../models/simulation-result';
 import { SnackbarService } from './snackbar.service';
 
 
@@ -15,34 +18,57 @@ export class SimulatorService {
 
   constructor(private httpClient: HttpClient, private snackbarService: SnackbarService) { }
 
-  simulate(simulationType: SimulationType, simulationOptions: SimulationOptionsForm): Observable<SimulationResult>  {
-    if (simulationType.simulationType == 'Days')
-      return this.simulateDays(simulationOptions, simulationType.simulateUntil);
+  getDungeonList(): Observable<Dungeon[]> {
+    let url = environment.apiUrl + '/api/dungeons';
 
-    return this.simulateLevels(simulationOptions, simulationType.simulateUntil);
-  }
-
-  simulateDays(simulationOptions: SimulationOptionsForm, days: number): Observable<SimulationResult> {
-
-    var url = environment.apiUrl + '/api/simulateUntilDays';
-
-    var options = {
-      params: new HttpParams().set("days", days)
-    };
-
-    var result = this.httpClient.post<SimulationResult>(url, simulationOptions, options).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
+    let result = this.httpClient.get<Dungeon[]>(url).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
 
     return result;
   }
-  simulateLevels(simulationOptions: SimulationOptionsForm, level: number): Observable<SimulationResult> {
 
-    var url = environment.apiUrl + '/api/simulateUntilLevel';
+  simulateDungeon(dungeonPosition: number, dungeonEnemyPosition: number, character: Character, iterations: number, winTreshold?: number): Observable<DungeonResult> {
+    let url = environment.apiUrl + '/api/simulateDungeon';
+    winTreshold = winTreshold ?? iterations;
 
-    var options = {
-      params: new HttpParams().set("level", level)
+    let body = {
+      dungeonPosition, dungeonEnemyPosition, ...character, winTreshold, iterations: iterations
     };
 
-    var result = this.httpClient.post<SimulationResult>(url, simulationOptions, options).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
+    let result = this.httpClient.post<DungeonResult>(url, body).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
+
+    return result;
+  }
+
+  simulate(simulationOptions: SimulationOptions, simulationForm: SimulationConfigForm): Observable<SimulationResult> {
+    if (simulationOptions.simulationType == 'Days')
+      return this.simulateDays(simulationForm, simulationOptions.simulateUntil);
+
+    return this.simulateLevels(simulationForm, simulationOptions.simulateUntil);
+  }
+
+  simulateDays(simulationOptions: SimulationConfigForm, days: number): Observable<SimulationResult> {
+
+    let url = environment.apiUrl + '/api/simulateUntilDays';
+
+    let body = {
+      ...simulationOptions,
+      daysCount: days,
+    };
+
+    let result = this.httpClient.post<SimulationResult>(url, body).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
+
+    return result;
+  }
+  simulateLevels(simulationOptions: SimulationConfigForm, level: number): Observable<SimulationResult> {
+
+    let url = environment.apiUrl + '/api/simulateUntilLevel';
+
+    let body = {
+      ...simulationOptions,
+      untilLevel: level,
+    };
+
+    let result = this.httpClient.post<SimulationResult>(url, body).pipe(retry(3), catchError(e => this.handleError(e, this.snackbarService)));
 
     return result;
   }

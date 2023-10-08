@@ -1,0 +1,58 @@
+<div class="row g-2 justify-content-around h-100">
+
+
+    <div class="col-xl-6">
+      <div class="rounded border px-3 bg-darken">
+        <div class="row">
+          <div align="center" [@slideInOutX]="baseStatChartType == 'Daily' ? 'in' : 'out'">
+            <mat-slider class="p-auto" min="1" [max]="lastDay" step="1" discrete="true">
+              <input matSliderThumb [(ngModel)]="baseStatChartCurrentDay">
+            </mat-slider>
+          </div>
+        </div>
+        <div class="row">
+          <mat-radio-group [(ngModel)]="baseStatChartType" align="center">
+            <mat-radio-button *ngFor="let chartType of chartTypes" [value]="chartType">
+              {{ chartType }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart
+                  [data]="baseStatChart?.data"
+                  [options]="baseStatChart?.options"
+                  [type]="'bar'">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="col-xl-6">
+      <div class="rounded border bg-darken px-3">
+        <div class="row">
+          <div align="center" [@slideInOutX]="xpChartType == 'Daily' ? 'in' : 'out'">
+            <mat-slider min="1" [max]="lastDay" step="1" discrete="true" align="center">
+              <input matSliderThumb [(ngModel)]="xpChartCurrentDay">
+            </mat-slider>
+          </div>
+        </div>
+        <div class="row">
+          <mat-radio-group [(ngModel)]="xpChartType" align="center">
+            <mat-radio-button *ngFor="let chartType of chartTypes" [value]="chartType">
+              {{ chartType }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="chart-wrapper">
+          <canvas baseChart 
+                  [data]="xpChart?.data"
+                  [options]="xpChart?.options"
+                  [type]="'bar'">
+          </canvas>
+        </div>
+      </div>
+    </div>
+</div>

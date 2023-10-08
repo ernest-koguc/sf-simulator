@@ -1,10 +1,5 @@
-.button{
-    height: 3rem;
-    min-height: 3rem;
-    width: 7rem;
-}
 .main {
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 
@@ -16,7 +11,7 @@
   right: 0;
   width: auto;
   color: rgb(190,190,190);
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(255,255,255,0.3);
 }
 
 .credits {

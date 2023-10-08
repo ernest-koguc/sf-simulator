@@ -25,7 +25,6 @@ import { FormsModule } from '@angular/forms';
 import { SimulationConfig } from './components/simulation-config/simulation-config.component';
 import { SFSimulatorComponent } from './sfsimulator.component';
 import { SimulationResultChartsComponent } from './components/simulation-result-charts/simulation-result-charts.component';
-import { CharacterDetailsComponent } from './components/character-details/character-details.component';
 import { InfoDialogComponent } from './dialogs/info-dialog/info-dialog.component';
 import { ToolBarComponent } from './layout/tool-bar/tool-bar.component';
 import { SimulationOptionsDialogComponent } from './dialogs/simulation-options-dialog/simulation-options-dialog.component';
@@ -36,7 +35,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './snackbars/snackbar/snackbar.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SimulatorComponent } from './layout/simulator/simulator.component';
-import { SimulationResultComponent } from './layout/simulation-result/simulation-result.component';
 import { RemoveRecordDialogComponent } from './dialogs/remove-record-dialog/remove-record-dialog.component';
 import { TestComponent } from './layout/test/test.component';
 import { TableModule } from 'primeng/table';
@@ -49,20 +47,27 @@ import { CustomScheduleInfoDialogComponent } from './dialogs/custom-schedule-inf
 import { ConfigurationDialogComponent } from './dialogs/configuration-dialog/configuration-dialog.component';
 import { SaveNewConfigurationDialogComponent } from './dialogs/save-new-configuration-dialog/save-new-configuration-dialog.component';
 import { CreditsDialogComponent } from './dialogs/credits-dialog/credits-dialog.component';
+import { ShowErrorDirective } from './directives/show-error.directive';
+import { SavedResultsComponent } from './layout/simulation-result/saved-simulation-results.component';
+import { SimulationResultComponent } from './components/simulation-result/simulation-result.component';
+import { ResultCardComponent } from './components/result-card/result-card.component';
+import { EnumPipe } from './pipes/enum.pipe';
+import { CheckBoxComponent } from './components/check-box/check-box.component';
+import { WordSpacePipe } from './pipes/word-space.pipe';
 
 @NgModule({
   declarations: [
     SimulationConfig,
     SFSimulatorComponent,
     SimulationResultChartsComponent,
-    CharacterDetailsComponent,
+    SimulationResultComponent,
     InfoDialogComponent,
     SimulationOptionsDialogComponent,
     ToolBarComponent,
     ProgressBarComponent,
     SnackbarComponent,
     SimulatorComponent,
-    SimulationResultComponent,
+    SavedResultsComponent,
     RemoveRecordDialogComponent,
     TestComponent,
     PatchNotesDialogComponent,
@@ -72,7 +77,12 @@ import { CreditsDialogComponent } from './dialogs/credits-dialog/credits-dialog.
     CustomScheduleInfoDialogComponent,
     ConfigurationDialogComponent,
     SaveNewConfigurationDialogComponent,
-    CreditsDialogComponent
+    CreditsDialogComponent,
+    ShowErrorDirective,
+    ResultCardComponent,
+    EnumPipe,
+    CheckBoxComponent,
+    WordSpacePipe
   ],
   imports: [
     AppRoutingModule,

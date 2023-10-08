@@ -14,24 +14,32 @@ export class SimulationResultChartsComponent{
 
   constructor(private chartService: ChartService) { }
 
+  @Input()
+  set simulationResult(value: SimulationResult | undefined) {
+    if (!value)
+      return;
+
+    this._simulationResult = value;
+    this._baseStatChartCurrentDay = 1;
+    this._xpChartCurrentDay = 1;
+    this.lastDay = value.days;
+    this.createCharts('XP', 'Total');
+    this.createCharts('Base Stat', 'Total');
+  }
+
   public chartTypes: string[] = ['Total', 'Daily', 'Average'];
-
-  private _baseStatChartCurrentDay: number = 1;
-  private _xpChartCurrentDay: number = 1;
-
   public lastDay: number = 1;
-
-
-
   public baseStatSliderVisibility: 'hidden' | 'visible' = 'hidden';
-  private _baseStatChartType: ChartType = 'Total';
-
   public xpSliderVisibility: 'hidden' | 'visible' = 'hidden';
-  private _xpChartType: ChartType = 'Total';
   public baseStatChart: ChartConfig | null = null;
   public xpChart: ChartConfig | null = null;
 
+  private _baseStatChartType: ChartType = 'Total';
+  private _xpChartType: ChartType = 'Total';
+  private _baseStatChartCurrentDay: number = 1;
+  private _xpChartCurrentDay: number = 1;
   private _simulationResult?: SimulationResult;
+
 
   set baseStatChartType(value: ChartType) {
     this._baseStatChartType = value;
@@ -65,18 +73,6 @@ export class SimulationResultChartsComponent{
     return this._baseStatChartCurrentDay;
   }
 
-  @Input()
-  set simulationResult(value: SimulationResult | undefined) {
-    if (!value)
-      return;
-
-    this._simulationResult = value;
-    this._baseStatChartCurrentDay = 1;
-    this._xpChartCurrentDay = 1;
-    this.lastDay = value.days;
-    this.createCharts('XP', 'Total');
-    this.createCharts('Base Stat', 'Total');
-  }
 
   // TODO: Split chart component into 2 (1 generic component used for setting up 1 basestat component and 1 xp chart component)
   public createCharts(gainType: 'XP' | 'Base Stat', chartType: ChartType) {

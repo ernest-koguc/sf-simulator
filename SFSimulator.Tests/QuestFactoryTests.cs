@@ -13,7 +13,7 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void Create_returns_quest_with_proper_gold_and_experience_value()
         {
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ValuesReader()), new Random(0));
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
             for (int i = 0; i < 100; i++)
             {
                 var quest = questFactory.Create(new QuestValue(10000000000, 100000000), 1, 1);
@@ -36,7 +36,7 @@ namespace SFSimulator.Tests
         {
             for (int i = 0; i < 100; i++)
             {
-                var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(), new ValuesReader()), new Random());
+                var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
                 var quest = questFactory.Create(new QuestValue(100, 100), 1, 20);
                 Assert.IsTrue(quest.Time <= 10);
                 Assert.IsTrue(quest.Time > 0);
@@ -48,7 +48,7 @@ namespace SFSimulator.Tests
         {
             var random = new Random(0);
             var questList = new List<Quest>();
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
 
             for (int i = 0; i < 100; i++)
             {
@@ -60,10 +60,8 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void Create_returns_quset_with_double_xp_on_XPEvent()
         {
-            var random = new Random(0);
-            var random2 = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
-            var questFactory2 = new QuestFactory(new QuestHelper(), new ItemGenerator(random2, new ValuesReader()), random2);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
+            var questFactory2 = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
 
             for (int i = 0; i < 100; i++)
             {
@@ -76,10 +74,8 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void Create_returns_quset_with_quintuple_gold_on_GoldEvent()
         {
-            var random = new Random(0);
-            var random2 = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
-            var questFactory2 = new QuestFactory(new QuestHelper(), new ItemGenerator(random2, new ValuesReader()), random2);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
+            var questFactory2 = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
 
             for (int i = 0; i < 100; i++)
             {
@@ -96,7 +92,7 @@ namespace SFSimulator.Tests
         public void Create_returns_truncuated_quest()
         {
             var random = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
 
             var questList = new List<Quest>();
 
@@ -110,8 +106,8 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void Create_returns_truncuated_quest_with_proper_xp_and_gold()
         {
-            var normalQuestsFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ValuesReader()), new Random(0));
-            var truncatedQuestsFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ValuesReader()), new Random(0));
+            var normalQuestsFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
+            var truncatedQuestsFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
 
             // Truncated to 2.5min
             for (int i = 0; i < 100; i++)
@@ -159,7 +155,7 @@ namespace SFSimulator.Tests
         public void Create_returns_not_truncuated_quest_if_thirst_is_above_or_equal_10()
         {
             var random = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
 
             var questList = new List<Quest>();
 
@@ -174,10 +170,10 @@ namespace SFSimulator.Tests
         public void CreateBonusQuest_returns_not_truncuated_quest()
         {
             var random = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
             var questList = new List<Quest>();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 2.5M, true, 0.5M);
                 questList.Add(quest);
@@ -189,12 +185,12 @@ namespace SFSimulator.Tests
         public void Create_has_estimated_10percent_to_return_quest_with_item_generated_before_quest()
         {
             var random = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
             var questList = new List<Quest>();
 
             int i = 0;
 
-            for (; i < 1000; i++)
+            for (; i < 10000; i++)
             {
                 var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5M);
                 questList.Add(quest);
@@ -208,12 +204,12 @@ namespace SFSimulator.Tests
         public void Create_has_estimated_9percent_to_return_quest_with_pet_item()
         {
             var random = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
             var questList = new List<Quest>();
 
             int i = 0;
 
-            for (; i < 1000; i++)
+            for (; i < 10000; i++)
             {
                 var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5M);
                 questList.Add(quest);
@@ -227,12 +223,12 @@ namespace SFSimulator.Tests
         public void Create_has_estimated_8percent_to_return_quest_with_item_generated_after_quest()
         {
             var random = new Random(0);
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(random, new ValuesReader()), random);
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(0), new ItemValueProvider(new Random(0))), new Random(0));
             var questList = new List<Quest>();
 
             int i = 0;
 
-            for (; i < 1000; i++)
+            for (; i < 10000; i++)
             {
                 var quest = questFactory.CreateBonusQuest(new QuestValue(1000000000000000, 100), 1, 20, true, 0.5M);
                 questList.Add(quest);

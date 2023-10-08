@@ -1,8 +1,8 @@
 export type SimulationResult = {
-  characterName: string;
   days: number;
-  characterAfter: Character;
-  characterPreviously: Character;
+  level: number;
+  experience: number;
+  baseStat: number;
   simulatedDays: SimulatedGains[];
   totalGains: SimulatedGains;
   averageGains: SimulatedGains;
@@ -12,12 +12,6 @@ export type SimulatedGains = {
   dayId: number;
   experienceGain: ExperienceGain;
   baseStatGain: BaseStatGain;
-}
-
-export type Character = {
-  level: number;
-  experience: number;
-  baseStat: number;
 }
 
 export type ExperienceGain = {
@@ -43,6 +37,13 @@ export type BaseStatGain = {
   ITEM: number;
   DICE_GAME: number;
   TOTAL: number;
+}
+
+export type DungeonResult = {
+  iterations: number,
+  wonFights: number,
+  experience: number,
+  succeeded: boolean
 }
 
 export const BaseStatKeys: (keyof BaseStatGain)[] = ['QUEST', 'CALENDAR', 'TIME_MACHINE', 'WHEEL', 'GOLD_PIT', 'GUARD', 'GEM', 'ITEM', 'DICE_GAME'];

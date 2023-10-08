@@ -136,6 +136,8 @@ export class CustomScheduleComponent {
     if (!actionInfo.toggled)
       return;
 
+    //this.actions.find(a => a.action == actionInfo.action)!.toggled = false;
+
     if (actionInfo.action == 'BuyGriffin') 
       this.actions.find(a => a.action == 'BuyTiger')!.toggled = false;
     
@@ -187,10 +189,7 @@ export class CustomScheduleComponent {
     }
     return size;
   }
-
-
+  
   public daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-
 }
 

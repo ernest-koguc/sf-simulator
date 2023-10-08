@@ -3,20 +3,27 @@
 @import "primeng/resources/primeng.css";
 
 body {
-  background-image: url('assets/background.png');
+  background-image: url('assets/background.jpg');
+  backdrop-filter: brightness(0.45);
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: 100% 100%;
+  background-size: cover;
+  background-position: center;
 }
 
 .toolbar-spacer {
   flex: 1 1 auto;
 }
 
-html, body {
+html, body, sfsimulator, router-outlet + * {
   height: 100%;
   margin: 0;
   padding: 0;
+  display: block;
+}
+router-outlet + * {
+  display: flex;
+  flex-direction: column;
 }
 body { font-family: Roboto, "Helvetica Neue", sans-serif; }
 
@@ -53,14 +60,6 @@ $light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accen
   }
 }
 
-.arrows {
-  background-image: url('assets/arrows.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  width: 4rem;
-  height: 4rem;
-}
-
 .bg-gray {
   background-color: rgb(20, 20, 20) !important;
   color: rgb(200,200,200) !important;
@@ -91,4 +90,31 @@ $light-theme: mat.define-light-theme( ( color: ( primary: $my-app-primary, accen
 
 .mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after, .mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-minimal::after {
     color: #b366ff !important;
+}
+
+.mat-mdc-form-field-error-wrapper {
+    padding: 0 5px !important;
+}
+
+mat-error {
+    font-size: 0.85rem;
+}
+
+.button {
+    height: 3rem;
+    min-height: 3rem;
+    width: 7rem;
+}
+
+.bg-darken {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+button:disabled {
+  border-color: gray !important;
+  color: gray !important;
+}
+
+.cdk-global-scrollblock {
+  overflow-y: hidden !important;
 }

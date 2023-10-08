@@ -18,7 +18,7 @@ export type ScheduleDay = {
 };
 
 
-export type Action = 'BuyGriffin' | 'BuyTiger' | 'SpinMaxTimes' | 'SpinOnce' | 'DrinkAllBeers' | 'DrinkOneBeer' | 'UpgradeTreasury' | 'UpgradeAcademy' | 'UpgradeGoldPit';
+export type Action = 'BuyGriffin' | 'BuyTiger' | 'SpinMaxTimes' | 'SpinOnce' | 'DrinkAllBeers' | 'DrinkOneBeer' | 'UpgradeTreasury' | 'UpgradeAcademy' | 'UpgradeGoldPit' | 'AddOneHydraHead';
 export type ActionCell = { action: Action, tooltip: string, toggled: boolean, group?: number };
 export const Actions: ActionCell[] =
   [
@@ -30,7 +30,8 @@ export const Actions: ActionCell[] =
     { action: 'DrinkOneBeer', tooltip: 'Drink only free beers', toggled: false, group: 3 },
     { action: 'UpgradeTreasury', tooltip: 'Upgrade treasury level by one', toggled: false },
     { action: 'UpgradeAcademy', tooltip: 'Upgrade academy level by one', toggled: false },
-    { action: 'UpgradeGoldPit', tooltip: 'Upgrade gold pit level by one', toggled: false }
+    { action: 'UpgradeGoldPit', tooltip: 'Upgrade gold pit level by one', toggled: false },
+    { action: 'AddOneHydraHead', tooltip: 'Adds one head to guild hydra', toggled: false}
   ]
 
 export type Event = 'Experience' | 'Gold' | 'Witch' | 'LuckyDay';

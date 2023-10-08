@@ -84,14 +84,6 @@ export const ngIfHorizontalSlide =
             style({ transform: "translateX(0)", opacity: 1 }))
         ]
       ),
-      transition(
-        ':leave',
-        [
-          style({ transform: "translateX(0)", opacity: 1 }),
-          animate('300ms ease-in',
-            style({ transform: "translateX(-100%)", opacity: 0 }))
-        ]
-      )
     ]
   )
 
@@ -102,18 +94,11 @@ export const ngIfVerticalSlide =
       transition(
         ':enter',
         [
-          style({ transform: "translateY(-100%)", opacity: 0 }),
+          style({  opacity: 0 }),
           animate('300ms ease-out',
-            style({ transform: "translateY(0)", opacity: 1 }))
+            style({ opacity: 1 }))
         ]
       ),
-      transition(
-        ':leave',
-        [
-          style({ transform: "translateY(0)", opacity: 1 }),
-          animate('300ms ease-in',
-            style({ transform: "translateY(-100%)", opacity: 0 }))
-        ]
-      )
+      
     ]
   )

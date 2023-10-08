@@ -5,18 +5,18 @@ using System.Collections.Generic;
 namespace SFSimulator.Tests
 {
     [TestClass]
-    public class CharacterHelperTests
+    public class GameLogicTests
     {
         [TestMethod]
         public void GetAcademyHourlyProduction_gives_correct_values()
         {
-            var characterHelper = new CharacterHelper(new ValuesReader(), new Curves());
+            var gameLogic = new GameLogic(new Curves());
 
-            var xpValues = new List<int>();
+            var xpValues = new List<long>();
 
             for (var i = 0; i < 10; i++)
             {
-                var xp = characterHelper.GetAcademyHourlyProduction(300 + i, 10 + i, false);
+                var xp = gameLogic.GetAcademyHourlyProduction(300 + i, 10 + i, false);
                 xpValues.Add(xp);
             }
 
@@ -35,14 +35,14 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void GetDailyMissionReward_gives_correct_values()
         {
-            var characterHelper = new CharacterHelper(new ValuesReader(), new Curves());
+            var gameLogic = new GameLogic(new Curves());
 
-            var xpValues = new List<int>();
+            var xpValues = new List<long>();
 
 
             for (var i = 0; i < 10; i++)
             {
-                var xp = characterHelper.GetDailyMissionReward(400 + i, false, i);
+                var xp = gameLogic.GetDailyMissionReward(400 + i, false, i);
                 xpValues.Add(xp);
             }
 

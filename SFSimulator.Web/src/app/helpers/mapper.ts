@@ -1,12 +1,12 @@
 import { ConfigurationCharacter, ConfigurationPlaystyle } from "../models/configuration";
-import { SimulationOptionsForm } from "../models/simulation-options";
+import { SimulationConfigForm } from "../models/simulation-configuration";
 import { SavedSimulationSnapshot, SimulationSnapshotTableRecord } from "../models/simulation-snapshot";
 
 export function mapToSimulationSnapshotTableRecord(data: SavedSimulationSnapshot): SimulationSnapshotTableRecord {
   return { ...data, chartsEnabled: false, avgBaseStatChart: null, totalBaseStatChart: null, avgXPChart: null, totalXPChart: null }
 }
 
-export function mapToConfigurationPlaystyle(data: SimulationOptionsForm) {
+export function mapToConfigurationPlaystyle(data: SimulationConfigForm) {
   var playstyle: ConfigurationPlaystyle = {
     questPriority: data.questPriority,
     hybridRatio: data.hybridRatio,
@@ -22,7 +22,7 @@ export function mapToConfigurationPlaystyle(data: SimulationOptionsForm) {
   return playstyle;
 }
 
-export function mapToConfigurationCharacter(data: SimulationOptionsForm): ConfigurationCharacter {
+export function mapToConfigurationCharacter(data: SimulationConfigForm): ConfigurationCharacter {
   var character: ConfigurationCharacter = {
   characterName: data.characterName,
   level: data.level,
@@ -45,3 +45,16 @@ export function mapToConfigurationCharacter(data: SimulationOptionsForm): Config
   }
   return character;
 }
+
+export function mapToForm(data: any): Partial<SimulationConfigForm> {
+    var key, keys = Object.keys(data);
+    var n = keys.length;
+    var mappedData: any = {};
+    while (n--) {
+      key = keys[n][0].toLowerCase();
+      var lowerCaseName = key + keys[n].substring(1);
+      mappedData[lowerCaseName] = data[keys[n]];
+    }
+
+    return mappedData;
+  }

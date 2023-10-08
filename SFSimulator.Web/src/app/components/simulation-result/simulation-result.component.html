@@ -1,0 +1,32 @@
+<div class="rounded py-2 d-flex flex-column justify-conent-center">
+  <div *ngIf="loading" class="d-flex justify-content-center" @ngIfHorizontalSlide>
+    <div class="bg-darken rounded">
+      <div class='m-3 pb-4 mt-3 border rounded d-flex flex-column align-items-center'>
+        <span class="my-4 mx-3">Might take a while. Be patient.</span>
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+  </div>
+  <div class="d-inline-flex flex-column mx-auto mb-2 p-3 bg-darken rounded" *ngIf="_data" @ngIfHorizontalSlide>
+    <div class="d-flex justify-content-between mb-3 top-pane">
+      <button mat-stroked-button class='button border-success text-success me-2 mb-2 fw-bolder' (click)='saveResult()' [disabled]="isSaved">Save</button>
+      <div class='d-flex flex-grow-1 flex-column flex-sm-row align-items-center border p-2 mb-2 rounded'>
+        <span class="text-2 fw-bolder">Days passed:&nbsp;</span>
+        <span class="flex-grow-1"></span>
+        <span class="text-2 fw-bolder">{{ _data.simulationResult.days }}</span>
+          <mat-icon class="icon-3">hourglass_bottom</mat-icon>
+      </div>
+    </div>
+    <div id="cards" class='d-flex text-white align-items-center'> 
+      <result-card [snapshot]="_data.characterBefore" [date]="from">Previously</result-card>
+      <mat-icon class="icon-5">keyboard_double_arrow_right</mat-icon>
+      <result-card [snapshot]="characterAfter" [date]="to">After</result-card>
+    </div>
+  <hr/>
+    <div class="d-sm-flex justify-content-between">
+      <div>Base Stats gained: {{ characterAfter.baseStat - _data.characterBefore.baseStat }}</div>
+      <div>Levels gained: {{ characterAfter.level - _data.characterBefore.level }}</div>
+    </div>
+  </div>
+  <simulation-result-charts class='w-100' *ngIf="_data" [simulationResult]="_data.simulationResult" @ngIfHorizontalSlide></simulation-result-charts>
+</div>

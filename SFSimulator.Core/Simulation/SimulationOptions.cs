@@ -2,7 +2,6 @@
 {
     public class SimulationOptions
     {
-        public string CharacterName { get; set; } = string.Empty;
         public QuestPriorityType QuestPriority { get; set; } = QuestPriorityType.Experience;
         public decimal? HybridRatio { get; set; } = null;
         public QuestChooserAI QuestChooserAI { get; set; } = QuestChooserAI.Smart;
@@ -16,12 +15,13 @@
         public bool SkipCalendar { get; set; } = false;
         public SpinAmountType SpinAmount { get; set; } = SpinAmountType.Max;
         public decimal DailyGuard { get; set; } = 23;
-
+        public bool SimulateDungeon { get; set; } = false;
         public Dictionary<(int Week, int Day), ScheduleDay> Schedule = new();
-
-        #region DUNG BREAK EXPERIMENTAL
-        public int? SavedDungeonsStart { get; set; } = null;
-        public int SavedLevels { get; set; } = 0;
-        #endregion
+        public int HydraHeads { get; set; }
+        public int GoldPitLevel { get; set; } = 0;
+        public int AcademyLevel { get; set; } = 0;
+        public int GemMineLevel { get; set; } = 0;
+        public int TreasuryLevel { get; set; } = 0;
+        public MountType Mount { get; set; } = MountType.Griffin;
     }
 }

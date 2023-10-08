@@ -12,6 +12,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\app\animation\" />
-    <Folder Include="src\app\helpers\" />
   </ItemGroup>
 </Project>

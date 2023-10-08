@@ -11,5 +11,6 @@
         UpgradeTreasury,
         UpgradeAcademy,
         UpgradeGoldPit,
+        AddOneHydraHead
     }
 }

@@ -1,6 +1,6 @@
 <mat-card appearance="outlined" class="dialog p-2">
-  <mat-card-content align="center" class="row">
-    <mat-radio-group class="d=inline-flex d-flex" [(ngModel)]="data.simulationType" align="center">
+  <mat-card-content align="center" class="row" [formGroup]="simulationOptions">
+    <mat-radio-group class="d=inline-flex d-flex" align="center" formControlName="simulationType">
       <mat-radio-button *ngFor="let type of simulationTypes" [value]="type.value"
                         [matTooltip]="type.tooltip"
                         matTooltipPosition="above"
@@ -10,10 +10,11 @@
     </mat-radio-group>
     <mat-form-field appearance="outline" class="row mt-4" style="width: 84%" align="center">
       <mat-label><strong>Simulate untill</strong></mat-label>
-      <input matInput required type="number" [(ngModel)]="data.simulateUntil" placeholder="1" min="1" [max]="data.simulationType == 'Days' ? 3000 : 800" />
+      <input matInput type="number" formControlName="simulateUntil" placeholder="1" />
+      <mat-error showError [control]="form.simulateUntil"></mat-error>
     </mat-form-field>
   </mat-card-content>
-  <mat-card-actions class="align-self-center">
-    <button [mat-dialog-close]="data" [disabled]="data.simulationType == 'Days' ? data.simulateUntil > 3000 || data.simulateUntil <= 0 : data.simulateUntil > 800 || data.simulateUntil <= 0" mat-stroked-button color="accent">Start Simulation</button>
+  <mat-card-actions class="align-self-center mt-3">
+    <button [mat-dialog-close]="simulationOptions.getRawValue()" mat-stroked-button color="accent" [disabled]="!isValid">Start Simulation</button>
   </mat-card-actions>
 </mat-card>

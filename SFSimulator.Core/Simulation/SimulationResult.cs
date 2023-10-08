@@ -2,12 +2,12 @@
 {
     public class SimulationResult
     {
-        public string CharacterName { get; set; } = null!;
-        public int Days { get; set; }
-        public CharacterDTO CharacterPreviously { get; set; } = null!;
-        public CharacterDTO CharacterAfter { get; set; } = null!;
-        public List<SimulatedGains> SimulatedDays { get; set; } = null!;
-        public SimulatedGains TotalGains { get; set; } = null!;
-        public SimulatedGains AverageGains { get; set; } = null!;
+        public required int Days { get; set; }
+        public required int Level { get; set; }
+        public required long Experience { get; set; }
+        public required int BaseStat { get; set; }
+        public required List<SimulatedGains> SimulatedDays { get; set; }
+        public required SimulatedGains TotalGains { get; set; } = null!;
+        public required SimulatedGains AverageGains { get; set; } = null!;
     }
 }

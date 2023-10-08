@@ -4,7 +4,6 @@ namespace SFSimulator.Core
 {
     public class SimulationOptionsDTO
     {
-        public string CharacterName { get; set; } = string.Empty;
         public int Level { get; set; } = 1;
         public int BaseStat { get; set; } = 0;
         public int Experience { get; set; } = 0;
@@ -33,12 +32,13 @@ namespace SFSimulator.Core
         public string SpinAmount { get; set; } = nameof(SpinAmountType.Max);
         public float DailyGuard { get; set; } = 23;
         public Schedule Schedule { get; set; } = new Schedule();
+        public bool SimulateDungeon { get; set; } = false;
     }
 
     public class Schedule
     {
         public List<ScheduleWeeksDTO> ScheduleWeeks { get; set; } = new();
-    } 
+    }
 
     public class ScheduleWeeksDTO
     {
@@ -49,4 +49,4 @@ namespace SFSimulator.Core
         public List<string> Actions { get; set; } = new();
         public List<string> Events { get; set; } = new();
     }
-} 
+}

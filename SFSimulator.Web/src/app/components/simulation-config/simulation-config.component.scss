@@ -1,6 +1,10 @@
 mat-form-field {
-  width: 25%;
-  min-width: 13em;
+    width: 100%;
+    padding-right: 1px;
+}
+
+mat-tab-body {
+  background-color: rgba(0,0,0,0.6);
 }
 
 mat-slide-toggle {
@@ -9,11 +13,15 @@ mat-slide-toggle {
 }
 
 .btn-ctn {
-  background-color: #673AB7;
   min-width: 48px;
   max-width: 48px;
   margin: 0;
   float: right;
+}
+
+.btn-ctn button {
+  background-color: #673AB7;
+  border-radius: 0 !important;
 }
 
 .form-ctn {

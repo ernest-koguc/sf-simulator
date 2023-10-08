@@ -1,6 +1,10 @@
-﻿using NLog.Extensions.Logging;
+﻿using FluentValidation;
+using NLog.Extensions.Logging;
 using SFSimulator.API.IoC;
 using SFSimulator.API.Mappings;
+using SFSimulator.API.Validation.Validators;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using System.Reflection;
 
 var logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -22,9 +26,11 @@ builder.Services.AddCors(options =>
 
 builder.Services.RegisterQuestSimulator();
 builder.Services.RegisterControllerServices();
-builder.Services.AddAutoMapper(cfg => cfg.AddProfile<SimulatorMappingProfiler>());
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(SimulatorMappingProfiler))));
 
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssemblyContaining<SimulateDungeonRequestValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,7 +45,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-
 app.MapControllers();
 
 try

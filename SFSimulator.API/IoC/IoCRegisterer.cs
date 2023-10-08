@@ -25,7 +25,7 @@ namespace SFSimulator.API.IoC
         }
         public static void RegisterControllerServices(this IServiceCollection services)
         {
-            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IRequestService, RequestService>();
         }
     }
 }

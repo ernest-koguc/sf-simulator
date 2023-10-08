@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using SFSimulator.API.Requests;
 using SFSimulator.API.Services;
 using SFSimulator.Core;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -13,32 +14,26 @@ namespace SFSimulator.API.Controllers
     [ApiController]
     public class SFSimulatorController : ControllerBase
     {
-        private readonly IGameService _gameService;
+        private readonly IRequestService _requestService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public SFSimulatorController(IGameService gameService, IConfiguration configuration, IMapper mapper)
+        public SFSimulatorController(IRequestService gameService, IConfiguration configuration, IMapper mapper)
         {
-            _gameService = gameService;
+            _requestService = gameService;
             _configuration = configuration;
             _mapper = mapper;
         }
         [HttpPost("simulateUntilDays")]
-        public ActionResult<SimulationResult> RunSimulationUntilDay([FromQuery] int? days, [FromBody] SimulationOptionsDTO simulationOptions)
+        public async Task<ActionResult<SimulationResult>> RunSimulationUntilDay([FromBody] SimulateDaysRequest request)
         {
-            if (days > 3000)
-                days = 3000;
-
-            var simulationResult = _gameService.RunSimulationUntilDays(simulationOptions, days ?? 1);
+            var simulationResult = await _requestService.RunSimulationUntilDays(request);
             return Ok(simulationResult);
         }
         [HttpPost("simulateUntilLevel")]
-        public ActionResult<SimulationResult> RunSimulationUntilLevel([FromQuery] int? level, [FromBody] SimulationOptionsDTO simulationOptions)
+        public async Task<ActionResult<SimulationResult>> RunSimulationUntilLevel([FromBody] SimulateUntilLevelRequest request)
         {
-            if (level > 800)
-                level = 800;
-
-            var simulationResult = _gameService.RunSimulationUntilLevel(simulationOptions, level ?? 1);
+            var simulationResult = await _requestService.RunSimulationUntilLevel(request);
 
             return Ok(simulationResult);
         }
@@ -63,6 +58,20 @@ namespace SFSimulator.API.Controllers
             {
                 return PostMessageResult("{error:\"Could not fetch data\"}");
             }
+        }
+
+        [HttpGet("dungeons")]
+        public ActionResult<List<DungeonDTO>> GetDungeons()
+        {
+            var dungeons = _requestService.GetDungeons();
+            return dungeons;
+        }
+
+        [HttpPost("simulateDungeon")]
+        public ActionResult<DungeonSimulationResult> SimulateDungeon([FromBody] SimulateDungeonRequest request)
+        {
+            var result = _requestService.SimulateDungeon(request);
+            return result;
         }
 
         private ActionResult PostMessageResult(string data)

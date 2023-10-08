@@ -11,10 +11,10 @@ namespace SFSimulator.Tests
         [TestMethod]
         public void ChooseBestQuest_gives_correct_values_with_hybrid()
         {
-            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(1), new ValuesReader()), new Random(1));
+            var questFactory = new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(1), new ItemValueProvider(new Random(0))), new Random(1));
             var questChooser = new QuestChooser();
-            var characterHelper = new CharacterHelper(new ValuesReader(), new Curves());
-            var questValues = characterHelper.GetMinimumQuestValue(400, new ExperienceBonus(), new GoldBonus());
+            var gameLogic = new GameLogic(new Curves());
+            var questValues = gameLogic.GetMinimumQuestValue(400, new ExperienceBonus(), new GoldBonus());
 
             for (var i =0; i<100; i++)
             {

@@ -50,37 +50,23 @@ export class ChartService {
       dataSets.push(dataSet);
     }
 
-    return dataSets;
+    return dataSets
   }
 
   private getChartOptions(title?: string, isAnimated?: false, dataLabelColor?: string, labelColor?: string): ChartConfiguration<'bar'>['options'] {
     var options: ChartConfiguration<'bar'>['options'] = {
       indexAxis: "x",
       animation: isAnimated,
+      responsive: true,
+      maintainAspectRatio: false,
+      onResize: (chart, size) => this.onResize(chart, size),
       plugins:
       {
         datalabels: {
           anchor: 'end',
           color: dataLabelColor,
           align: 'top',
-          formatter: (v, _) => {
-            if (v >= 1000000000) {
-              var value = (v / 1000000000).toFixed(0) + "B";
-              return value;
-            }
-
-            if (v >= 1000000) {
-              var value = (v / 1000000).toFixed(0) + "M";
-                return value;
-            }
-
-            if (v >= 1000) {
-              var value = (v/1000).toFixed(0) + "K";
-              return value;
-            }
-
-            return v.toFixed(0);
-          },
+          formatter: (v, _) => this.format(v, false),
           font: {
             weight: 'bold',
             size: 12
@@ -105,7 +91,7 @@ export class ChartService {
           position: 'top',
           labels: {
             color: labelColor ? labelColor : 'white',
-            padding: 8
+            padding: 5
             }
         }
       },
@@ -127,8 +113,13 @@ export class ChartService {
           beginAtZero: true,
           min: 0,
           offset: true,
+          grid: {
+            display: true,
+            color: 'rgba(255,255,255,0.2)'
+          },
           ticks:
           {
+            callback: v => this.format(v, false),
             autoSkip: false,
             color: 'white'
           }
@@ -136,6 +127,35 @@ export class ChartService {
       }
     };
     return options;
+  }
+
+
+  private format(value: number | string, normalize: boolean) {
+    if (typeof value == 'string')
+      value = parseInt(value);
+
+    if (value >= 1000000000) {
+      var formatedValue = (value / 1000000000).toFixed(0) + "B";
+      return formatedValue;
+    }
+
+    if (value >= 1000000) {
+      var formatedValue = (value / 1000000).toFixed(0) + "M";
+      return formatedValue;
+    }
+
+    if (value >= 1000) {
+      var formatedValue = (value/1000).toFixed(0) + "K";
+      return formatedValue;
+    }
+
+    if (normalize)
+      return value.toFixed(0);
+
+    return value;
+  }
+
+  private onResize(chart: Chart, size: any) {
   }
 }
 export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatGain | 'TOTAL'): string {

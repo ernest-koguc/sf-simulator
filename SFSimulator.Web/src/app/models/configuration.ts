@@ -1,15 +1,15 @@
 import { mapToConfigurationCharacter, mapToConfigurationPlaystyle } from "../helpers/mapper";
 import { MountType } from "./mount-type";
 import { QuestPriority } from "./quest-priority";
-import { SimulationOptionsForm } from "./simulation-options";
+import { SimulationConfigForm } from "./simulation-configuration";
 import { SpinTactic } from "./spin-tactics";
 
 export class SavedConfiguration {
-  constructor(name: string, simulationOptions: SimulationOptionsForm, includeCharacter: boolean = false) {
+  constructor(name: string, simulationOptions: SimulationConfigForm, includeCharacter: boolean = false) {
     this.name = name;
     this.timestamp = Date.now();
 
-    this.updateConfiguration(simulationOptions, includeCharacter);
+    updateSavedConfiguration(this, simulationOptions, includeCharacter);
   }
 
   public timestamp: number;
@@ -18,18 +18,19 @@ export class SavedConfiguration {
   public playstyle!: ConfigurationPlaystyle;
   public character: ConfigurationCharacter | undefined;
 
-  public updateConfiguration(simulationOptions: SimulationOptionsForm, includeCharacter: boolean) {
-    this.playstyle = mapToConfigurationPlaystyle(simulationOptions);
+}
+
+export function updateSavedConfiguration(configuration: SavedConfiguration, simulationOptions: SimulationConfigForm, includeCharacter: boolean) {
+    configuration.playstyle = mapToConfigurationPlaystyle(simulationOptions);
 
     if (simulationOptions.schedule)
-      this.scheduleId = simulationOptions.schedule?.timestamp;
+      configuration.scheduleId = simulationOptions.schedule?.timestamp;
     else
-      this.scheduleId = 'Default';
+      configuration.scheduleId = 'Default';
 
     if (includeCharacter)
-      this.character = mapToConfigurationCharacter(simulationOptions);
+      configuration.character = mapToConfigurationCharacter(simulationOptions);
   }
-}
 
 export type ConfigurationPlaystyle = {
   questPriority: QuestPriority | null;

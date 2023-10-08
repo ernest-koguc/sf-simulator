@@ -4,9 +4,9 @@
     {
         public static IEnumerable<TypeMap> Types() => new[]
         {
-            new TypeMap(typeof(CharacterHelper), typeof(ICharacterHelper), TypeMapOption.None),
+            new TypeMap(typeof(GameLogic), typeof(IGameLogic), TypeMapOption.None),
 
-            new TypeMap(typeof(ValuesReader), typeof(IValuesReader), TypeMapOption.None),
+            new TypeMap(typeof(ItemValueProvider), typeof(IItemValueProvider), TypeMapOption.None),
 
             new TypeMap(typeof(GameSimulator), typeof(IGameSimulator), TypeMapOption.None),
             new TypeMap(typeof(CalendarRewardProvider), typeof(ICalendarRewardProvider), TypeMapOption.None),
@@ -22,7 +22,15 @@
             new TypeMap(typeof(Curves), typeof(ICurves), TypeMapOption.None),
             new TypeMap(typeof(Random), typeof(Random), TypeMapOption.None),
 
-            new TypeMap(typeof(ItemGenerator), typeof(IItemGenerator), TypeMapOption.None)
+            new TypeMap(typeof(ItemGenerator), typeof(IItemGenerator), TypeMapOption.None),
+
+            new TypeMap(typeof(DungeonSimulator), typeof(IDungeonSimulator), TypeMapOption.None),
+            new TypeMap(typeof(DungeonProvider), typeof(IDungeonProvider), TypeMapOption.None),
+            new TypeMap(typeof(FightableContextFactory), typeof(IFightableContextFactory), TypeMapOption.None),
+            new TypeMap(typeof(CritChanceProvider), typeof(ICritChanceProvider), TypeMapOption.None),
+            new TypeMap(typeof(DamageProvider), typeof(IDamageProvider), TypeMapOption.None),
+            new TypeMap(typeof(BonusMelodyLengthProvider), typeof(IBonusMelodyLengthProvider), TypeMapOption.None),
+            new TypeMap(typeof(FightStartingBehaviorProvider), typeof(IFightStartingBehaviorProvider), TypeMapOption.None)
         };
     }
-}
+} 

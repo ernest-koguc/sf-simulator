@@ -14,7 +14,7 @@ namespace SFSimulator.Tests
             for (int i = 0; i < 10; i++)
             {
                 var questChooser = new QuestChooser();
-                var thirstSimulator = new ThirstSimulator(new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(), new ValuesReader()), new Random()), new QuestHelper());
+                var thirstSimulator = new ThirstSimulator(new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(), new ItemValueProvider(new Random(0))), new Random()), new QuestHelper());
                 thirstSimulator.ThirstSimulationOptions.Mount = MountType.Griffin;
                 var thirst = 200;
                 var choosenQuestsThirst = 0M;
@@ -47,7 +47,7 @@ namespace SFSimulator.Tests
         public void NextQuests_generates_quests_with_correct_time()
         {
             var questChooser = new QuestChooser();
-            var thirstSimulator = new ThirstSimulator(new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(), new ValuesReader()), new Random()), new QuestHelper());
+            var thirstSimulator = new ThirstSimulator(new QuestFactory(new QuestHelper(), new ItemGenerator(new Random(), new ItemValueProvider(new Random(0))), new Random()), new QuestHelper());
             thirstSimulator.ThirstSimulationOptions.Mount = MountType.Griffin;
             var choosenQuestsThirst = new List<Quest>();
             var quests = thirstSimulator.StartThirst(200, new QuestValue(10000, 10000), 1, new List<EventType>());

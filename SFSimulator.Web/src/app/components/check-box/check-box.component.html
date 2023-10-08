@@ -1,0 +1,9 @@
+<div class="d-flex" (click)="isChecked = !isChecked">
+  <div matRipple class="ctn" [class]="isChecked ? 'checked' : 'unchecked'">
+    <input type="checkbox" [disabled]="isDisabled" [(ngModel)]="isChecked"/>
+    <mat-icon>hourglass_empty</mat-icon>
+  </div>
+  <label class='ms-1'>
+    <ng-content class="ml-1"></ng-content>
+  </label>
+</div>

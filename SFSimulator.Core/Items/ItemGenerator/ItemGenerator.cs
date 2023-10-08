@@ -5,15 +5,12 @@ namespace SFSimulator.Core
     public class ItemGenerator : IItemGenerator
     {
         private readonly Random _random;
-        private readonly IValuesReader _valuesReader;
-        private readonly Dictionary<int, decimal> _itemGoldValues;
+        private readonly IItemValueProvider _itemValueProvider;
 
-        public ItemGenerator(Random random, IValuesReader valuesReader)
+        public ItemGenerator(Random random, IItemValueProvider itemValueProvider)
         {
             _random = random;
-            _valuesReader = valuesReader;
-
-            _itemGoldValues = _valuesReader.ReadItemGoldValues();
+            _itemValueProvider = itemValueProvider;
         }
 
         public Item GenerateItem(int characterLevel, ItemSourceType sourceType)
@@ -45,23 +42,11 @@ namespace SFSimulator.Core
             var item = new Item
             {
                 ItemType = (ItemType)_random.Next(1, 10),
-                GoldValue = GetGoldValueForItem(characterLevel),
+                GoldValue = _itemValueProvider.GetGoldValueForItem(characterLevel),
                 ItemSourceType = ItemSourceType.BeforeQuest
             };
 
             return item;
-        }
-
-        private decimal GetGoldValueForItem(int characterLevel)
-        {
-            if (!_itemGoldValues.TryGetValue(characterLevel, out decimal goldValue))
-                goldValue = 2500000;
-
-            // 20% for item to have half the gold value
-            if (_random.Next(0, 5) == 0)
-                return goldValue * 0.5M;
-
-            return goldValue;
         }
     }
 }

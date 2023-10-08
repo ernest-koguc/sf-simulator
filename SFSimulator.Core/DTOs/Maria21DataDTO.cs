@@ -13,7 +13,7 @@
         public Inventory Inventory { get; set; } = null!;
         public Fortress Fortress { get; set; } = null!;
         public Underworld Underworld { get; set; } = null!;
-        public Dungeons Dungeons { get; set; } = null!;
+        public PlayerModelDungeonData Dungeons { get; set; } = null!;
         public Runes Runes { get; set; } = null!;
         public PlayerAttribute Strength { get; set; } = null!;
         public PlayerAttribute Dexterity { get; set; } = null!;
@@ -62,7 +62,7 @@
         public int Base { get; set; }
     }
 
-    public class Dungeons
+    public class PlayerModelDungeonData
     {
         public int Tower { get; set; }
     }
