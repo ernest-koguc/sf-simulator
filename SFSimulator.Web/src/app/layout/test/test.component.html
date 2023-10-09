@@ -1,3 +1,7 @@
+<div class="toolbar">
+  <button mat-stroked-button class='text-success border-success fw-bolder bg-darken' (click)="copy()">Copy To Clipboard</button>
+  <button mat-stroked-button class="text-primary border-primary fw-bolder bg-darken" (click)="paste()">Paste From Clipboard</button>
+</div>
 <div class="container">
   <div class="row pt-5">
     <div class="col-9 pt-4 bg-darken" [formGroup]="character">
@@ -247,11 +251,10 @@
         </mat-select>
       </mat-form-field>
       <button mat-stroked-button [disabled]='isInProgress === true' (click)="simulateDungeon()">Simulate</button>
-      <div *ngIf="!isInProgress && result">
-        <p>Result: </p>
+      <div *ngIf="!isInProgress && result" class="mt-2">
         <p>Iterations: {{ result.iterations }}</p>
         <p>Won Fights: {{ result.wonFights }}</p>
-        <p>Win Rate: {{ (result.wonFights / result.iterations) | percent }}</p>
+        <p>Win Rate: {{ (result.wonFights / result.iterations) | percent:'1.0-2' }}</p>
       </div>
       <div *ngIf="isInProgress" class="align-self-center mt-2">
         <mat-spinner></mat-spinner>

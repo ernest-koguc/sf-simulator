@@ -34,8 +34,8 @@ export type ResistanceRuneBonuses = {
 
 export enum ClassType {
   Warrior = 1,
-  Scout = 2,
-  Mage = 3,
+  Mage = 2,
+  Scout = 3,
   Assassin = 4,
   Berserker = 5,
   BattleMage = 6,

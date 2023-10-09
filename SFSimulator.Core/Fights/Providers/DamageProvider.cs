@@ -94,7 +94,7 @@ public class DamageProvider : IDamageProvider
         if (weapon == null || weapon.DamageRuneType == DamageRuneType.None)
             return;
 
-        var runeBonus = 1 + weapon.RuneBonus / 100D;
+        var runeBonus = weapon.RuneBonus / 100D;
         var enemyRuneResistance = weapon.DamageRuneType switch
         {
             DamageRuneType.Lightning => Math.Min(75, target.RuneResistance.LightningResistance),
@@ -102,7 +102,8 @@ public class DamageProvider : IDamageProvider
             DamageRuneType.Fire => Math.Min(75, target.RuneResistance.FireResistance),
             _ => throw new ArgumentOutOfRangeException(nameof(weapon.DamageRuneType)),
         };
-        runeBonus *= 1 - enemyRuneResistance / 100D;
+        runeBonus *= (100 - enemyRuneResistance) / 100D;
+        runeBonus++;
 
         damage.Minimum *= runeBonus;
         damage.Maximum *= runeBonus;

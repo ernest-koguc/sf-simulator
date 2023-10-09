@@ -4,8 +4,8 @@
     {
         ShieldlessWarrior = 0,
         Warrior,
-        Scout,
         Mage,
+        Scout,
         Assassin,
         Berserker,
         BattleMage,

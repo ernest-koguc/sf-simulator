@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { MatButtonToggleAppearance } from "@angular/material/button-toggle";
 import { finalize } from "rxjs";
-import { greaterThan, runeDamageBonusValidator, secondWeaponValidator } from "../../helpers/validators";
+import { greaterThanOrEqualTo, runeDamageBonusValidator, secondWeaponValidator } from "../../helpers/validators";
 import { ClassType, DamageRuneType } from "../../models/character";
 import { Dungeon, DungeonEnemy } from "../../models/dungeon";
 import { DungeonResult } from "../../models/simulation-result";
 import { SimulatorService } from "../../services/simulator.service";
+import { SFToolsCharacterModel } from "./test";
 
 @Component({
   selector: 'app-test',
@@ -39,14 +39,14 @@ export class TestComponent implements OnInit {
     soloPortal: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(50)]),
     guildPortal: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(50)]),
     firstWeapon: new FormGroup({
-      minDmg: new FormControl<number | null>(null, [Validators.required]),
-      maxDmg: new FormControl<number | null>(null, [Validators.required, greaterThan('minDmg', 'Minimum Damage')]),
+      minDmg: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(2000000)]),
+      maxDmg: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(2000000), greaterThanOrEqualTo('minDmg', 'Minimum Damage')]),
       damageRuneType: new FormControl<DamageRuneType | null>(DamageRuneType.None, [Validators.required]),
       runeBonus: new FormControl<number | null>(null, [runeDamageBonusValidator(), Validators.min(1), Validators.max(60)]),
     }),
     secondWeapon: new FormGroup({
-      minDmg: new FormControl<number | null>(null),
-      maxDmg: new FormControl<number | null>(null, [Validators.required, greaterThan('minDmg', 'Minimum Damage')]),
+      minDmg: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(2000000)]),
+      maxDmg: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(2000000), greaterThanOrEqualTo('minDmg', 'Minimum Damage')]),
       damageRuneType: new FormControl<DamageRuneType | null>(DamageRuneType.None, [Validators.required]),
       runeBonus: new FormControl<number | null>(null, [runeDamageBonusValidator(), Validators.min(1), Validators.max(60)]),
     }, [secondWeaponValidator()]),
@@ -127,6 +127,124 @@ export class TestComponent implements OnInit {
     }
     return character;
   }
+  copy() {
+    let form = this.character.getRawValue();
+    let character: SFToolsCharacterModel = {
+      Class: form.class ?? 1,
+      Level: form.level ?? 0,
+      Armor: form.armor ?? 0,
+      Runes: {
+        ResistanceFire: form.runeBonuses.fireResistance ?? 0,
+        ResistanceCold: form.runeBonuses.coldResistance ?? 0,
+        ResistanceLightning: form.runeBonuses.lightningResistance ?? 0,
+        Health: form.runeBonuses.healthRune ?? 0
+      },
+      Dungeons: {
+        Player: form.soloPortal ?? 0,
+        Group: form.guildPortal ?? 0
+      },
+      Fortress: {
+        Gladiator: form.gladiatorLevel ?? 0
+      },
+      Potions: {
+        Life: form.hasEternityPotion ? 25 : 0
+      },
+      Items: {
+        Hand: {
+          HasEnchantment: form.hasGlovesScroll ?? false
+        },
+        Wpn1: {
+          DamageMin: form.firstWeapon.minDmg ?? 0,
+          DamageMax: form.firstWeapon.maxDmg ?? 0,
+          HasEnchantment: form.hasWeaponScroll ?? false,
+          AttributeTypes: { "2": this.translateRuneType(form.firstWeapon.damageRuneType) },
+          Attributes: { "2": form.firstWeapon.runeBonus ?? 0 }
+        },
+        Wpn2: {
+          DamageMin: form.secondWeapon.minDmg ?? 0,
+          DamageMax: form.secondWeapon.maxDmg ?? 0,
+          HasEnchantment: form.hasWeaponScroll ?? false,
+          AttributeTypes: { "2": this.translateRuneType(form.secondWeapon.damageRuneType) },
+          Attributes: { "2": form.secondWeapon.runeBonus ?? 0 }
+        },
+      },
+      BlockChance: 25,
+      Strength: { Total: form.strength ?? 0 },
+      Dexterity: { Total: form.dexterity ?? 0 },
+      Intelligence: { Total: form.intelligence ?? 0 },
+      Constitution: { Total: form.constitution ?? 0 },
+      Luck: { Total: form.luck ?? 0 },
+    }
+    let valueToClipboard = JSON.stringify(character);
+    navigator.clipboard.writeText(valueToClipboard);
+  }
+  public paste() {
+    navigator.clipboard.readText().then((value) => {
+      let data: SFToolsCharacterModel = JSON.parse(value);
+
+      this.character.setValue({
+        level: data.Level,
+        class: data.Class as ClassType,
+        strength: data.Strength.Total,
+        dexterity: data.Dexterity.Total,
+        intelligence: data.Intelligence.Total,
+        constitution: data.Constitution.Total,
+        luck: data.Luck.Total,
+        hasGlovesScroll: data.Items.Hand.HasEnchantment,
+        hasWeaponScroll: data.Items.Wpn1.HasEnchantment || data.Items.Wpn2.HasEnchantment,
+        hasEternityPotion: data.Potions.Life === 25,
+        armor: data.Armor,
+        gladiatorLevel: data.Fortress.Gladiator,
+        soloPortal: data.Dungeons.Player,
+        guildPortal: data.Dungeons.Group,
+        firstWeapon: {
+          minDmg: data.Items.Wpn1.DamageMin,
+          maxDmg: data.Items.Wpn1.DamageMax,
+          damageRuneType: this.retranslateRuneType(data.Items.Wpn1.AttributeTypes[2]),
+          runeBonus: data.Items.Wpn1.Attributes[2]
+        },
+        secondWeapon: {
+          minDmg: data.Items.Wpn2.DamageMin,
+          maxDmg: data.Items.Wpn2.DamageMax,
+          damageRuneType: this.retranslateRuneType(data.Items.Wpn2.AttributeTypes[2]),
+          runeBonus: data.Items.Wpn2.Attributes[2]
+        },
+        runeBonuses: {
+          lightningResistance: data.Runes.ResistanceLightning,
+          coldResistance: data.Runes.ResistanceCold,
+          fireResistance: data.Runes.ResistanceLightning,
+          healthRune: data.Runes.Health
+        }
+      })
+      this.character.updateValueAndValidity();
+      this.character.markAllAsTouched();
+    });
+  }
+  private retranslateRuneType(type: number): DamageRuneType {
+    switch (type) {
+      case 40:
+        return DamageRuneType.Fire;
+      case 41:
+        return DamageRuneType.Cold;
+      case 42:
+        return DamageRuneType.Lightning;
+      default:
+        return DamageRuneType.None;
+    }
+  }
+
+  private translateRuneType(type: DamageRuneType | null) {
+  switch (type) {
+    case DamageRuneType.Fire:
+      return 40;
+    case DamageRuneType.Cold:
+      return 41;
+    case DamageRuneType.Lightning:
+      return 42;
+    default:
+      return 0;
+  }
+}
 
   ngOnInit(): void {
     this.firstWeapon.runeBonus.disable();

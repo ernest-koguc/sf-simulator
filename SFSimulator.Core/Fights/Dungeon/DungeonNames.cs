@@ -17,7 +17,7 @@ internal class DungeonNames
     public const string DragonsHoard = "Dragon's Hoard";
     public const string HouseOfHorrors = "House of Horrors";
     public const string ThirteenthFloor = "The 13th floor";
-    public const string ThirdLeagueOfSuperheroes= "The 3rd League of Superheroes";
+    public const string ThirdLeagueOfSuperheroes = "The 3rd League of Superheroes";
     public const string TimeHonoredSchoolOfMagic = "Time-honored School of Magic";
     public const string Hemorridor = "Hemorridor";
     public const string Easteros = "Easteros";
@@ -25,7 +25,7 @@ internal class DungeonNames
     public const string TavernOfDarkDoppelgangers = "Tavern of the Dark Doppelgangers";
     public const string CityOfIntrigues = "City of Intrigues";
     public const string SchoolOfMagicExpress = "School of Magic Express";
-    public const string NordicGods = "Noric Gods";
+    public const string NordicGods = "Nordic Gods";
     public const string AshMountain = "Ash Mountain";
     public const string PlayaHQ = "Playa HQ";
     public const string MountOlympus = "Mount Olympus";

@@ -74,7 +74,7 @@ export function secondWeaponValidator() {
   }
 }
 
-export function greaterThan(field: string, name: string) {
+export function greaterThanOrEqualTo(field: string, name: string) {
   return (control: AbstractControl): ValidationErrors | null => {
     let otherControl = control.parent?.get(field);
     if (otherControl === null || otherControl === undefined) {
