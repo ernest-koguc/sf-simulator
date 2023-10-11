@@ -1,3 +1,4 @@
 export interface UserData {
-  lastSeenPatchNotes: string | undefined;
+  lastSeenPatchNotes?: string | undefined;
+  isAdvancedModeEnabled?: boolean | undefined;
 };

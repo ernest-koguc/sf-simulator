@@ -19,12 +19,19 @@
         public PlayerAttribute Dexterity { get; set; } = null!;
         public PlayerAttribute Intelligence { get; set; } = null!;
         public PlayerAttribute Constitution { get; set; } = null!;
+        public PlayerAttribute Luck { get; set; } = null!;
+        public int Armor { get; set; }
         public Slots Items { get; set; } = null!;
         public GroupData Group { get; set; } = null!;
+        public List<Potion> Potions { get; set; } = null!;
     }
     public class Inventory
     {
         public Slots Dummy { get; set; } = null!;
+    }
+    public class Potion
+    {
+        public int Type { get; set; }
     }
     public class Slots
     {
@@ -36,6 +43,17 @@
         public PlayerItem Belt { get; set; } = null!;
         public PlayerItem Ring { get; set; } = null!;
         public PlayerItem Misc { get; set; } = null!;
+        public WeaponDto Wpn1 { get; set; } = null!;
+        public WeaponDto Wpn2 { get; set; } = null!;
+    }
+    public class WeaponDto
+    {
+        public int DamageMin { get; set; }
+        public int DamageMax { get; set; }
+        public bool HasEnchantment { get; set; }
+        public int RuneType { get; set; }
+        public int RuneValue { get; set; }
+
     }
     public class GroupData
     {
@@ -60,11 +78,14 @@
     public class PlayerAttribute
     {
         public int Base { get; set; }
+        public int Bonus { get; set; }
     }
 
     public class PlayerModelDungeonData
     {
         public int Tower { get; set; }
+        public int Group { get; set; }
+        public int Player { get; set; }
     }
 
     public class Fortress
@@ -74,12 +95,17 @@
         public int GemMine { get; set; }
         public int Academy { get; set; }
         public int Treasury { get; set; }
+        public int Gladiator { get; set; }
     }
 
     public class Runes
     {
         public int Gold { get; set; }
         public int XP { get; set; }
+        public int Health { get; set; }
+        public int ResistanceFire { get; set; }
+        public int ResistanceCold { get; set; }
+        public int ResistanceLightning { get; set; }
     }
 
     public class Underworld

@@ -11,7 +11,7 @@ export class UserService {
 
   public hasUserSeenPatchNotes(): boolean {
     let userData = this.databaseService.getUserData();
-    return userData.lastSeenPatchNotes !== environment.currentVersion; 
+    return userData.lastSeenPatchNotes === environment.currentVersion; 
   }
 
   public updateLastSeenPatchNotes() {

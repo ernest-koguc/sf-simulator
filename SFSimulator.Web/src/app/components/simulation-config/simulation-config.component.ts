@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationDialogComponent } from '../../dialogs/configuration-dialog/configuration-dialog.component';
 import { SaveNewConfigurationDialogComponent } from '../../dialogs/save-new-configuration-dialog/save-new-configuration-dialog.component';
-import { mapToForm } from '../../helpers/mapper';
+import { mapToLowerCase } from '../../helpers/mapper';
 import { maxExperienceValidator } from '../../helpers/validators';
 import { SavedConfiguration, updateSavedConfiguration } from '../../models/configuration';
 import { MountType } from '../../models/mount-type';
@@ -98,8 +98,7 @@ export class SimulationConfig implements OnInit {
     }
 
     try {
-      var form = mapToForm(data);
-      this.simulationOptions.patchValue(form, { emitEvent: true });
+      this.simulationOptions.patchValue(data, { emitEvent: true });
       this.updateConfiguration();
       setTimeout(() => this.snackBar.createSuccessSnackBar("Successfully logged in!"), 200);
       return;

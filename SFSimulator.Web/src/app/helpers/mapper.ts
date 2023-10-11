@@ -46,14 +46,20 @@ export function mapToConfigurationCharacter(data: SimulationConfigForm): Configu
   return character;
 }
 
-export function mapToForm(data: any): Partial<SimulationConfigForm> {
+export function mapToLowerCase(data: any) {
     var key, keys = Object.keys(data);
     var n = keys.length;
     var mappedData: any = {};
     while (n--) {
       key = keys[n][0].toLowerCase();
       var lowerCaseName = key + keys[n].substring(1);
-      mappedData[lowerCaseName] = data[keys[n]];
+      let property = data[keys[n]];
+      if (typeof property !== 'string' && Object.keys(property).length) {
+        mappedData[lowerCaseName] = mapToLowerCase(property)
+      }
+      else {
+        mappedData[lowerCaseName] = property;
+      }
     }
 
     return mappedData;

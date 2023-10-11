@@ -96,6 +96,16 @@ namespace SFSimulator.API.Mappings
             runeBonus = Math.Min(runeMax, runeBonus);
             return runeBonus;
         }
+        public static DamageRuneType GetDamageRuneType(int type)
+        {
+            return type switch
+            {
+                40 => DamageRuneType.Fire,
+                41 => DamageRuneType.Cold,
+                42 => DamageRuneType.Lightning,
+                _ => DamageRuneType.None
+            };
+        }
         public static int GetGuildBonus(Maria21DataDTO dto, BonusType type)
         {
             var raid = dto.Group.Group.Raid * 2;

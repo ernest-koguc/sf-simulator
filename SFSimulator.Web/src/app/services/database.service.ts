@@ -66,7 +66,7 @@ export class DataBaseService {
     if (userData)
       return JSON.parse(userData);
 
-    return { lastSeenPatchNotes: undefined };
+    return { lastSeenPatchNotes: undefined, isAdvancedModeEnabled: undefined };
   }
 
 

@@ -37,10 +37,10 @@ export enum ClassType {
   Mage = 2,
   Scout = 3,
   Assassin = 4,
-  Berserker = 5,
-  BattleMage = 6,
-  Druid = 7,
-  DemonHunter = 8,
+  BattleMage = 5,
+  Berserker = 6,
+  DemonHunter = 7,
+  Druid = 8,
   Bard = 9
 }
 

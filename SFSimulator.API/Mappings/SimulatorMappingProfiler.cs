@@ -30,7 +30,36 @@ public class SimulatorMappingProfiler : Profile
             .ForMember(d => d.BaseStat, m => m.MapFrom(s => SumBaseStats(s)))
             .ForMember(d => d.HydraHeads, m => m.MapFrom(s => s.Group.Group.Hydra))
             .ForMember(d => d.GoldGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.GOLD)))
-            .ForMember(d => d.XpGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.XP)));
+            .ForMember(d => d.XpGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.XP)))
+            .ForMember(d => d.Class, m => m.MapFrom(s => (ClassType)s.Class))
+            .ForMember(d => d.Strength, m => m.MapFrom(s => s.Strength.Bonus + s.Strength.Base))
+            .ForMember(d => d.Dexterity, m => m.MapFrom(s => s.Dexterity.Bonus + s.Dexterity.Base))
+            .ForMember(d => d.Intelligence, m => m.MapFrom(s => s.Intelligence.Bonus + s.Intelligence.Base))
+            .ForMember(d => d.Constitution, m => m.MapFrom(s => s.Constitution.Bonus + s.Constitution.Base))
+            .ForMember(d => d.Luck, m => m.MapFrom(s => s.Luck.Bonus + s.Luck.Base))
+            .ForMember(d => d.Armor, m => m.MapFrom(s => s.Armor))
+            .ForMember(d => d.FirstWeapon, m => m.MapFrom(s => s.Items.Wpn1))
+            .ForMember(d => d.SecondWeapon, m => m.MapFrom(s => s.Items.Wpn2))
+            .ForMember(d => d.RuneBonuses, m => m.MapFrom(s => s.Runes))
+            .ForMember(d => d.HasGlovesScroll, m => m.MapFrom(s => s.Items.Hand.HasEnchantment))
+            .ForMember(d => d.HasWeaponScroll, m => m.MapFrom(s => s.Items.Wpn1.HasEnchantment || s.Items.Wpn2.HasEnchantment))
+            .ForMember(d => d.HasEternityPotion, m => m.MapFrom(s => s.Potions.Any(p => p.Type == 6)))
+            .ForMember(d => d.GladiatorLevel, m => m.MapFrom(s => s.Fortress.Gladiator))
+            .ForMember(d => d.SoloPortal, m => m.MapFrom(s => s.Dungeons.Player))
+            .ForMember(d => d.GuildPortal, m => m.MapFrom(s => s.Dungeons.Group))
+        ;
+
+        CreateMap<WeaponDto, Weapon>()
+            .ForMember(d => d.MinDmg, m => m.MapFrom(s => s.DamageMin))
+            .ForMember(d => d.MaxDmg, m => m.MapFrom(s => s.DamageMax))
+            .ForMember(d => d.RuneBonus, m => m.MapFrom(s => s.RuneValue))
+            .ForMember(d => d.DamageRuneType, m => m.MapFrom(s => GetDamageRuneType(s.RuneType)));
+
+        CreateMap<Runes, ResistanceRuneBonuses>()
+            .ForMember(d => d.HealthRune, m => m.MapFrom(s => s.Health))
+            .ForMember(d => d.FireResistance, m => m.MapFrom(s => s.ResistanceFire))
+            .ForMember(d => d.ColdResistance, m => m.MapFrom(s => s.ResistanceCold))
+            .ForMember(d => d.LightningResistance, m => m.MapFrom(s => s.ResistanceLightning));
 
         CreateMap<Dungeon, DungeonDTO>()
             .ForMember(d => d.Enemies, m => m.MapFrom(s => s.DungeonEnemies));

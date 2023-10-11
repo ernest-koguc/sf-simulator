@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
 import { finalize } from "rxjs";
+import { SftoolsloginComponent } from "../../dialogs/sftools-login-dialog/sftoolslogin.component";
 import { greaterThanOrEqualTo, runeDamageBonusValidator, secondWeaponValidator } from "../../helpers/validators";
 import { ClassType, DamageRuneType } from "../../models/character";
 import { Dungeon, DungeonEnemy } from "../../models/dungeon";
@@ -73,7 +75,15 @@ export class TestComponent implements OnInit {
   public get selectedDungeon() {
     return this.dungeon.valid ? this.dungeon.value : null;
   }
-  constructor(private simulatorService: SimulatorService) { }
+  constructor(private simulatorService: SimulatorService, private dialog: MatDialog) { }
+
+  public loginThroughSFTools() {
+    this.dialog.open(SftoolsloginComponent, { autoFocus: 'dialog', enterAnimationDuration: 200, exitAnimationDuration: 200, restoreFocus: false, width: "80%", height: "80%" }).afterClosed().subscribe(data => {
+      if (data) {
+        this.character.patchValue(data);
+      }
+    });
+  }
 
   public simulateDungeon() {
     this.character.markAllAsTouched();
@@ -180,7 +190,13 @@ export class TestComponent implements OnInit {
   }
   public paste() {
     navigator.clipboard.readText().then((value) => {
-      let data: SFToolsCharacterModel = JSON.parse(value);
+      let data: SFToolsCharacterModel;
+      try {
+        data = JSON.parse(value);
+      }
+      catch {
+        return;
+      }
 
       this.character.setValue({
         level: data.Level,

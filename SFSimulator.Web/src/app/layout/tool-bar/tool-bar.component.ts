@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { environment } from '../../../environments/environment';
 import { InfoDialogComponent } from '../../dialogs/info-dialog/info-dialog.component';
 import { PatchNotesDialogComponent } from '../../dialogs/patch-notes-dialog/patch-notes-dialog.component';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'tool-bar',
@@ -10,12 +10,12 @@ import { PatchNotesDialogComponent } from '../../dialogs/patch-notes-dialog/patc
   styleUrls: ['./tool-bar.component.scss']
 })
 export class ToolBarComponent {
-  constructor(
-    private dialog: MatDialog
-  ) {}
+  constructor(private dialog: MatDialog, private userService: UserService) {}
 
-  production = environment.production;
-  
+  public get isExperimentalTabVisible() {
+    return this.userService.isAdvancedModeEnabled();
+  }
+   
   public openInfoDialog() {
     this.dialog.open(InfoDialogComponent, { autoFocus: 'dialog', enterAnimationDuration: 400 });
   }

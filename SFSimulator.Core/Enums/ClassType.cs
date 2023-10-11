@@ -7,10 +7,10 @@
         Mage,
         Scout,
         Assassin,
-        Berserker,
         BattleMage,
-        Druid,
+        Berserker,
         DemonHunter,
+        Druid,
         Bard,
     }
 }

@@ -2,7 +2,7 @@
   <a mat-tab-link class="nav-link d-flex" routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page"><mat-icon fontIcon="hourglass_top"></mat-icon>SFSimulator</a>
   <a mat-tab-link class="nav-link" routerLink="/results" routerLinkActive="active" ariaCurrentWhenActive="page">Saved Results</a>
   <a mat-tab-link class="nav-link" routerLink="/schedules" routerLinkActive="active" ariaCurrentWhenActive="page">Custom Schedules</a>
-  <a mat-tab-link class="nav-link" routerLink="/test" routerLinkActive="active" ariaCurrentWhenActive="page" *ngIf="!production">Test</a>
+  <a mat-tab-link class="nav-link text-danger" routerLink="/test" routerLinkActive="active" ariaCurrentWhenActive="page" *ngIf="isExperimentalTabVisible">Experimental</a>
   <span class="toolbar-spacer"></span>
   <button (click)="openPatchNotesDialog()" class="nav-link me-2" mat-icon-button><mat-icon fontIcon="description"></mat-icon></button>
   <a class="nav-link me-2" mat-icon-button target="_blank" href="https://github.com/ernest-koguc/sf-simulator">

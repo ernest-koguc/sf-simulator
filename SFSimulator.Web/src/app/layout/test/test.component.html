@@ -1,9 +1,10 @@
 <div class="toolbar">
-  <button mat-stroked-button class='text-success border-success fw-bolder bg-darken' (click)="copy()">Copy To Clipboard</button>
-  <button mat-stroked-button class="text-primary border-primary fw-bolder bg-darken" (click)="paste()">Paste From Clipboard</button>
+  <button mat-stroked-button class='text-success border-success fw-bolder bg-darken me-1' (click)="copy()">Copy To Clipboard</button>
+  <button mat-stroked-button class="text-primary border-primary fw-bolder bg-darken me-1" (click)="paste()">Paste From Clipboard</button>
+  <button mat-stroked-button class="text-warning border-warning fw-bolder bg-darken" (click)="loginThroughSFTools()">Endpoint</button>
 </div>
 <div class="container">
-  <div class="row pt-5">
+  <div class="row pt-3">
     <div class="col-9 pt-4 bg-darken" [formGroup]="character">
       <p>Data of dungeon enemies comes from <a target="blank" href="https://sftools.mar21.eu/">sftools</a> - thank you mar21!</p>
       <div class="d-inline-flex flex-column mt-1">
