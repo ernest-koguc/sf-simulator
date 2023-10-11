@@ -5,7 +5,7 @@ import { finalize } from "rxjs";
 import { SftoolsloginComponent } from "../../dialogs/sftools-login-dialog/sftoolslogin.component";
 import { greaterThanOrEqualTo, runeDamageBonusValidator, secondWeaponValidator } from "../../helpers/validators";
 import { ClassType, DamageRuneType } from "../../models/character";
-import { Dungeon, DungeonEnemy } from "../../models/dungeon";
+import { Dungeon, DungeonEnemy, DungeonType } from "../../models/dungeon";
 import { DungeonResult } from "../../models/simulation-result";
 import { SimulatorService } from "../../services/simulator.service";
 import { SFToolsCharacterModel } from "./test";
@@ -19,6 +19,7 @@ export class TestComponent implements OnInit {
 
   public dungeons!: Dungeon[];
   public dungeon = new FormControl<Dungeon | null>(null);
+  public DungeonType = DungeonType;
   public enemy = new FormControl<DungeonEnemy | null>(null);
   public iterations = new FormControl<number>(1000, [Validators.required, Validators.min(1), Validators.max(10000000)]);
   public class = ClassType;

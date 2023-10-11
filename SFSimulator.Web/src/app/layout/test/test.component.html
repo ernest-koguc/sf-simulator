@@ -242,7 +242,9 @@
       <mat-form-field class="long-form" color='accent' hideRequiredMarker='true' appearance="outline">
         <mat-label>Dungeon</mat-label>
         <mat-select [formControl]="dungeon">
-          <mat-option *ngFor="let dungeon of dungeons" [value]="dungeon">{{ dungeon.name }}</mat-option>
+          <mat-option *ngFor="let dungeon of dungeons"
+                      [class]='dungeon.type === DungeonType.ShadowWorld || dungeon.type === DungeonType.Tower ? "bg-shadow" : ""'
+                      [value]="dungeon">{{ dungeon.name }}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="long-form" color='accent' hideRequiredMarker='true' appearance="outline">
