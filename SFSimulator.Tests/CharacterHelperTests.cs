@@ -33,7 +33,7 @@ namespace SFSimulator.Tests
             Assert.AreEqual(xpValues[9], 341339);
         }
         [TestMethod]
-        public void GetDailyMissionReward_gives_correct_values()
+        public void GetDailyMissionExperience_gives_correct_values()
         {
             var gameLogic = new GameLogic(new Curves());
 
@@ -42,7 +42,7 @@ namespace SFSimulator.Tests
 
             for (var i = 0; i < 10; i++)
             {
-                var xp = gameLogic.GetDailyMissionReward(400 + i, false, i);
+                var xp = gameLogic.GetDailyMissionExperience(400 + i, false, i);
                 xpValues.Add(xp);
             }
 
@@ -57,6 +57,24 @@ namespace SFSimulator.Tests
             Assert.AreEqual(xpValues[8], 14669926);
             Assert.AreEqual(xpValues[9], 15853658);
 
+        }
+
+        [TestMethod]
+        public void GetDailyMissionGold_gives_correct_values()
+        {
+            var gameLogic = new GameLogic(new Curves());
+            var goldValues = new List<decimal>
+            {
+                gameLogic.GetDailyMissionGold(227, false),
+                gameLogic.GetDailyMissionGold(455, false),
+                gameLogic.GetDailyMissionGold(502, false),
+                gameLogic.GetDailyMissionGold(632, false)
+            };
+
+            Assert.AreEqual(goldValues[0], 808852);
+            Assert.AreEqual(goldValues[1], 25978713);
+            Assert.AreEqual(goldValues[2], 44268920);
+            Assert.AreEqual(goldValues[3], 160000000);
         }
     }
 }

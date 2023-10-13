@@ -5,7 +5,7 @@ namespace SFSimulator.Core;
 public class GameSimulator : IGameSimulator
 {
     private readonly IThirstSimulator _thirstSimulator;
-    private readonly IGameLogic _characterHelper;
+    private readonly IGameLogic _gameLogic;
     private readonly ICalendarRewardProvider _calendarRewardProvider;
     private readonly IScheduler _scheduler;
     private readonly IQuestChooser _questChooser;
@@ -25,7 +25,7 @@ public class GameSimulator : IGameSimulator
 
     public GameSimulator(IGameLogic characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IScheduler scheduler, IQuestChooser questChooser, IDungeonSimulator dungeonSimulator, IMapper mapper)
     {
-        _characterHelper = characterHelper;
+        _gameLogic = characterHelper;
         _thirstSimulator = thirstSimulator;
         _calendarRewardProvider = calendarRewardProvider;
         _scheduler = scheduler;
@@ -121,9 +121,6 @@ public class GameSimulator : IGameSimulator
 
         PerformScheduleActions(schedule);
 
-        var calendarReward = _calendarRewardProvider.GetNextReward();
-        GiveCalendarRewardToPlayer(calendarReward);
-
         SellItemsToWitch();
 
         DoThirst();
@@ -132,22 +129,26 @@ public class GameSimulator : IGameSimulator
 
         CollectResourcesFromBuildings();
 
-        var dailyQuestXP = _characterHelper.GetDailyMissionReward(Character.Level, IsExperienceEvent, SimulationOptions.HydraHeads);
-
+        var dailyQuestXP = _gameLogic.GetDailyMissionExperience(Character.Level, IsExperienceEvent, SimulationOptions.HydraHeads);
         GiveXPToCharacter(dailyQuestXP, GainSource.DAILY_MISSION);
 
-        var arenaXP = 10 * _characterHelper.GetExperienceRewardFromArena(Character.Level, IsExperienceEvent);
+        var dailyQuestGold = _gameLogic.GetDailyMissionGold(Character.Level, IsGoldEvent);
+        GiveGoldToCharacter(dailyQuestGold, GainSource.DAILY_MISSION);
 
+        var arenaXP = 10 * _gameLogic.GetExperienceRewardFromArena(Character.Level, IsExperienceEvent);
         GiveXPToCharacter(arenaXP, GainSource.ARENA);
 
-        var goldFromWatch = SimulationOptions.DailyGuard * _characterHelper.GetGoldFromGuardDuty(Character.Level, SimulationOptions.GoldBonus, IsGoldEvent);
+        var goldFromWatch = SimulationOptions.DailyGuard * _gameLogic.GetGoldFromGuardDuty(Character.Level, SimulationOptions.GoldBonus, IsGoldEvent);
         GiveGoldToCharacter(goldFromWatch, GainSource.GUARD);
 
-        var goldFromDiceGame = _characterHelper.GetDailyGoldFromDiceGame(Character.Level, CurrentEvents);
+        var goldFromDiceGame = _gameLogic.GetDailyGoldFromDiceGame(Character.Level, CurrentEvents);
         GiveGoldToCharacter(goldFromDiceGame, GainSource.DICE_GAME);
 
-        var guildFightsXp = (long)(24 / 11.5 * _characterHelper.GetXPFromGuildFight(Character.Level, CurrentEvents));
+        var guildFightsXp = (long)(24 / 11.5 * _gameLogic.GetXPFromGuildFight(Character.Level, CurrentEvents));
         GiveXPToCharacter(guildFightsXp, GainSource.GUILD_FIGHT);
+
+        var calendarReward = _calendarRewardProvider.GetNextReward();
+        GiveCalendarRewardToPlayer(calendarReward);
 
         return Task.CompletedTask;
     }
@@ -182,7 +183,7 @@ public class GameSimulator : IGameSimulator
     private void DoThirst()
     {
         var quests = _thirstSimulator.StartThirst(SimulationOptions.DailyThirst,
-            _characterHelper.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
+            _gameLogic.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
             Character.Level,
             CurrentEvents
             );
@@ -203,7 +204,7 @@ public class GameSimulator : IGameSimulator
 
 
             quests = _thirstSimulator.NextQuests(choosenQuest,
-                _characterHelper.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
+                _gameLogic.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
                 Character.Level);
         }
         var totalXP = questList.Sum(q => q.Experience);
@@ -211,10 +212,10 @@ public class GameSimulator : IGameSimulator
 
     private void SpinAbawuwuWheel()
     {
-        var goldFromWheel = _characterHelper.GetDailyGoldFromWheel(Character.Level, CurrentEvents, SimulationOptions.SpinAmount);
+        var goldFromWheel = _gameLogic.GetDailyGoldFromWheel(Character.Level, CurrentEvents, SimulationOptions.SpinAmount);
         GiveGoldToCharacter(goldFromWheel, GainSource.WHEEL);
 
-        var xpFromWheel = _characterHelper.GetDailyExperienceFromWheel(Character.Level, CurrentEvents, SimulationOptions.SpinAmount);
+        var xpFromWheel = _gameLogic.GetDailyExperienceFromWheel(Character.Level, CurrentEvents, SimulationOptions.SpinAmount);
         GiveXPToCharacter(xpFromWheel, GainSource.WHEEL);
 
         //TODO: PET AND NORMAL ITEMS FROM WHEEL LOGIC
@@ -222,16 +223,16 @@ public class GameSimulator : IGameSimulator
 
     private void CollectResourcesFromBuildings()
     {
-        var goldPitProduction = 24 * _characterHelper.GetHourlyGoldPitProduction(Character.Level, SimulationOptions.GoldPitLevel, IsGoldEvent);
+        var goldPitProduction = 24 * _gameLogic.GetHourlyGoldPitProduction(Character.Level, SimulationOptions.GoldPitLevel, IsGoldEvent);
         GiveGoldToCharacter(goldPitProduction, GainSource.GOLD_PIT);
 
-        var academyExperienceProduction = 24 * _characterHelper.GetAcademyHourlyProduction(Character.Level, SimulationOptions.AcademyLevel, IsExperienceEvent);
+        var academyExperienceProduction = 24 * _gameLogic.GetAcademyHourlyProduction(Character.Level, SimulationOptions.AcademyLevel, IsExperienceEvent);
         GiveXPToCharacter(academyExperienceProduction, GainSource.ACADEMY);
 
-        var goldFromGems = _characterHelper.GetDailyGoldFromGemMine(Character.Level, SimulationOptions.GemMineLevel);
+        var goldFromGems = _gameLogic.GetDailyGoldFromGemMine(Character.Level, SimulationOptions.GemMineLevel);
         GiveGoldToCharacter(goldFromGems, GainSource.GEM);
 
-        var questsFromTimeMachine = _thirstSimulator.GenerateQuestsFromTimeMachine(20, _characterHelper.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus));
+        var questsFromTimeMachine = _thirstSimulator.GenerateQuestsFromTimeMachine(20, _gameLogic.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus));
 
         foreach (var quest in questsFromTimeMachine)
         {
@@ -268,7 +269,7 @@ public class GameSimulator : IGameSimulator
 
         Character.Experience += xp;
 
-        if (Character.Experience >= _characterHelper.GetExperienceForNextLevel(Character.Level))
+        if (Character.Experience >= _gameLogic.GetExperienceForNextLevel(Character.Level))
         {
             LevelUpCharacter();
         }
@@ -280,7 +281,7 @@ public class GameSimulator : IGameSimulator
     }
     private void LevelUpCharacter()
     {
-        Character.Experience -= _characterHelper.GetExperienceForNextLevel(Character.Level);
+        Character.Experience -= _gameLogic.GetExperienceForNextLevel(Character.Level);
         Character.Level++;
 
         if (SimulationOptions.SwitchPriority && Character.Level == SimulationOptions.SwitchLevel)
@@ -290,38 +291,38 @@ public class GameSimulator : IGameSimulator
     {
         if (calendarReward == CalendarRewardType.ONE_BOOK)
         {
-            var xp = _characterHelper.GetExperienceRewardFromCalendar(Character.Level, 1);
+            var xp = _gameLogic.GetExperienceRewardFromCalendar(Character.Level, 1);
             GiveXPToCharacter(xp, GainSource.CALENDAR);
             return;
         }
         if (calendarReward == CalendarRewardType.TWO_BOOKS)
         {
-            var xp = _characterHelper.GetExperienceRewardFromCalendar(Character.Level, 2);
+            var xp = _gameLogic.GetExperienceRewardFromCalendar(Character.Level, 2);
             GiveXPToCharacter(xp, GainSource.CALENDAR);
             return;
         }
         if (calendarReward == CalendarRewardType.THREE_BOOKS)
         {
-            var xp = _characterHelper.GetExperienceRewardFromCalendar(Character.Level, 3);
+            var xp = _gameLogic.GetExperienceRewardFromCalendar(Character.Level, 3);
             GiveXPToCharacter(xp, GainSource.CALENDAR);
             return;
         }
         if (calendarReward == CalendarRewardType.LEVEL_UP)
         {
-            var xp = _characterHelper.GetExperienceForNextLevel(Character.Level);
+            var xp = _gameLogic.GetExperienceForNextLevel(Character.Level);
             GiveXPToCharacter(xp, GainSource.CALENDAR);
             return;
         }
 
         if (calendarReward == CalendarRewardType.ONE_GOLDBAR)
         {
-            var gold = _characterHelper.GetGoldRewardFromCalendar(Character.Level, 1);
+            var gold = _gameLogic.GetGoldRewardFromCalendar(Character.Level, 1);
             GiveGoldToCharacter(gold, GainSource.CALENDAR);
             return;
         }
         if (calendarReward == CalendarRewardType.THREE_GOLDBARS)
         {
-            var gold = _characterHelper.GetGoldRewardFromCalendar(Character.Level, 2);
+            var gold = _gameLogic.GetGoldRewardFromCalendar(Character.Level, 2);
             GiveGoldToCharacter(gold, GainSource.CALENDAR);
             return;
         }

@@ -12,7 +12,7 @@
             if (characterLevel > 393) return 1500000000;
             return Curves.ExperienceCurve[characterLevel];
         }
-        public long GetDailyMissionReward(int characterLevel, bool xpEvent, int hydraHeads = 0)
+        public long GetDailyMissionExperience(int characterLevel, bool xpEvent, int hydraHeads = 0)
         {
             var xp = GetExperienceForNextLevel(characterLevel);
             var multiplier = 1.5 + 0.75 * (characterLevel - 1);
@@ -22,6 +22,13 @@
                 daily *= 2;
 
             return daily;
+        }
+        public decimal GetDailyMissionGold(int level, bool goldEvent)
+        {
+            var gold = Curves.GoldCurve[level] / 100;
+            var reward = gold * 16;
+            reward = Math.Floor(reward);
+            return reward;
         }
         public QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus)
         {

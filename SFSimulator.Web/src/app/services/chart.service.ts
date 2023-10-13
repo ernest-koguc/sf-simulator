@@ -59,14 +59,13 @@ export class ChartService {
       animation: isAnimated,
       responsive: true,
       maintainAspectRatio: false,
-      onResize: (chart, size) => this.onResize(chart, size),
       plugins:
       {
         datalabels: {
           anchor: 'end',
           color: dataLabelColor,
           align: 'top',
-          formatter: (v, _) => this.format(v, false),
+          formatter: (v, _) => this.format(v, 1),
           font: {
             weight: 'bold',
             size: 12
@@ -119,7 +118,7 @@ export class ChartService {
           },
           ticks:
           {
-            callback: v => this.format(v, false),
+            callback: v => this.format(v),
             autoSkip: false,
             color: 'white'
           }
@@ -130,7 +129,7 @@ export class ChartService {
   }
 
 
-  private format(value: number | string, normalize: boolean) {
+  private format(value: number | string, normalizeTo: number = 0) {
     if (typeof value == 'string')
       value = parseInt(value);
 
@@ -149,13 +148,7 @@ export class ChartService {
       return formatedValue;
     }
 
-    if (normalize)
-      return value.toFixed(0);
-
-    return value;
-  }
-
-  private onResize(chart: Chart, size: any) {
+      return value.toFixed(normalizeTo);
   }
 }
 export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatGain | 'TOTAL'): string {

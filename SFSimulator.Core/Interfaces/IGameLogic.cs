@@ -3,10 +3,10 @@
     public interface IGameLogic
     {
         QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus);
-        
+
         #region Experience
         long GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool experienceEvent);
-        long GetDailyMissionReward(int characterLevel, bool experienceEvent, int hydraHeads);
+        long GetDailyMissionExperience(int characterLevel, bool experienceEvent, int hydraHeads);
         long GetExperienceForNextLevel(int characterLevel);
         long GetDailyExperienceFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount);
         long GetExperienceRewardFromCalendar(int characterLevel, int rewardSize);
@@ -17,6 +17,7 @@
 
         #region Gold
         decimal GetGoldFromGuardDuty(int level, GoldBonus? goldBonus, bool goldEvent);
+        decimal GetDailyMissionGold(int level, bool goldEvent);
         decimal GetHourlyGoldPitProduction(int characterLevel, int goldPitLevel, bool goldEvent);
         decimal GetGoldRewardFromCalendar(int characterLevel, int rewardSize);
         decimal GetDailyGoldFromDiceGame(int characterLevel, IEnumerable<EventType> events);

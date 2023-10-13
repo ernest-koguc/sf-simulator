@@ -2,12 +2,12 @@
     width: 100%;
     position: relative;
     aspect-ratio: 2;
-    max-height: 280px;
-    min-height: 280px;
+    min-height: 270px;
+    max-height: 270px;
 }
-@media(max-width: 500) {
+
+@media(max-height: 800px) {
     .chart-wrapper {
-        max-height: 300px;
-        min-height: 300px;
+        max-height: unset;
     }
 }
