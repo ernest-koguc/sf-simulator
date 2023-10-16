@@ -10,4 +10,4 @@ Simulator does not include:
 
 Note that simulation below level 300 are very unrealiable (base stat cost currently starts at 10mln)
 
-If you found a bug or want to leave a suggestion, you can contact me on discord: us3r#2137
+If you found a bug or want to leave a suggestion, you can contact me on discord: abus3r_
