@@ -187,13 +187,23 @@
                   </mat-select>
                   <mat-error showError [control]="form.schedule"></mat-error>
                 </mat-form-field>
-                <check-box formControlName="drinkBeerOneByOne">
+                <check-box class='mb-3' formControlName="drinkBeerOneByOne">
                   Drink Beer One By One
                 </check-box>
-                <check-box class="mt-3" formControlName="skipCalendar">
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Calendar</mat-label>
+                  <input matInput formControlName="calendar"/>
+                  <mat-error showError [control]="form.calendar"></mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Calendar day</mat-label>
+                  <input matInput formControlName="calendarDay"/>
+                  <mat-error showError [control]="form.calendarDay"></mat-error>
+                </mat-form-field>
+                <check-box formControlName="skipCalendar">
                   Skip Calendar
                 </check-box>
-                <!--TO DO--> 
+                <!--TO DO-->
                 <!--<check-box class="mt-3" formControlName="simulateDungeon">
                   Simulate Dungeon (experimental)
                 </check-box>-->

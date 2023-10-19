@@ -3,6 +3,6 @@
     public interface ICalendarRewardProvider
     {
         CalendarRewardType GetNextReward();
-        void SetCalendar(int calendar, int day, bool skipCalendar);
+        void ConfigureCalendar(int calendar, int day, bool skipCalendar);
     }
 }

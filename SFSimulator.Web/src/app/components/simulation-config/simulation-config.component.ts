@@ -32,7 +32,7 @@ export class SimulationConfig implements OnInit {
         this.form.schedule.setValue(this.savedSchedules[0]);
       }
     });
-    
+
   }
   @Output() configEmitter = new EventEmitter<SimulationConfigForm>();
 
@@ -73,7 +73,9 @@ export class SimulationConfig implements OnInit {
     hasGoldScroll: new FormControl(true),
     spinAmount: new FormControl<SpinTactic>('Max', [Validators.required]),
     dailyGuard: new FormControl(23, [Validators.required, Validators.min(0), Validators.max(24)]),
-    simulateDungeon: new FormControl(false, [Validators.required])
+    simulateDungeon: new FormControl(false, [Validators.required]),
+    calendar: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(12)]),
+    calendarDay: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(20)])
   });
 
   get form() {

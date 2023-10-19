@@ -108,7 +108,7 @@ public class GameSimulator : IGameSimulator
         _thirstSimulator.ThirstSimulationOptions.Mount = SimulationOptions.Mount;
         _thirstSimulator.ThirstSimulationOptions.DrinkBeerOneByOne = SimulationOptions.DrinkBeerOneByOne;
 
-        _calendarRewardProvider.SetCalendar(1, 1, simulationOptions.SkipCalendar);
+        _calendarRewardProvider.ConfigureCalendar(SimulationOptions.Calendar, SimulationOptions.CalendarDay, SimulationOptions.SkipCalendar);
 
         _scheduler.SetCustomSchedule(SimulationOptions.Schedule);
 

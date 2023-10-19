@@ -47,6 +47,8 @@ public class SimulatorMappingProfiler : Profile
             .ForMember(d => d.GladiatorLevel, m => m.MapFrom(s => s.Fortress.Gladiator))
             .ForMember(d => d.SoloPortal, m => m.MapFrom(s => s.Dungeons.Player))
             .ForMember(d => d.GuildPortal, m => m.MapFrom(s => s.Dungeons.Group))
+            .ForMember(d => d.Calendar, m => m.MapFrom(s => s.CalendarType))
+            .ForMember(d => d.CalendarDay, m => m.MapFrom(s => s.CalendarDay))
         ;
 
         CreateMap<WeaponDto, Weapon>()

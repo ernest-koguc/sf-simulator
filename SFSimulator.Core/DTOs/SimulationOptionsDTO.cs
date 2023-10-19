@@ -33,6 +33,8 @@ namespace SFSimulator.Core
         public float DailyGuard { get; set; } = 23;
         public Schedule Schedule { get; set; } = new Schedule();
         public bool SimulateDungeon { get; set; } = false;
+        public int Calendar { get; set; }
+        public int CalendaryDay { get; set; }
     }
 
     public class Schedule

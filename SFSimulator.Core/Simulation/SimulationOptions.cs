@@ -23,5 +23,7 @@
         public int GemMineLevel { get; set; } = 0;
         public int TreasuryLevel { get; set; } = 0;
         public MountType Mount { get; set; } = MountType.Griffin;
+        public int Calendar { get; set; }
+        public int CalendarDay { get; set; }
     }
 }

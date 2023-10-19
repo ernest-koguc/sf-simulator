@@ -6,15 +6,16 @@
         private int CurrentDay { get; set; } = 1;
         private bool CalendarSkipping { get; set; } = false;
         private Dictionary<int, List<CalendarRewardType>> CalendarRewards = null!;
+        private List<int> experienceCalendars = new() { 5, 8, 10, 12 };
+
         public CalendarRewardProvider()
         {
-            SetCalendar(1, 1, false);
+            ConfigureCalendar(1, 1, false);
         }
-        public void SetCalendar(int calendar, int day, bool skipCalendar)
+        public void ConfigureCalendar(int calendar, int day, bool skipCalendar)
         {
             CalendarSkipping = skipCalendar;
-
-            CalendarRewards = CalendarSkipping ? SetCalendarSkippingRewards() : SetCalendarRewards();
+            CalendarRewards = SetCalendarRewards();
 
             if (calendar < 1 || calendar > CalendarRewards.Keys.Max())
                 throw new ArgumentOutOfRangeException(nameof(calendar));
@@ -24,18 +25,24 @@
             CurrentCalendar = calendar;
             CurrentDay = day;
         }
+
         public CalendarRewardType GetNextReward()
         {
-            if (CurrentDay > CalendarRewards[CurrentCalendar].Count)
+            if (CurrentDay > CalendarRewards[CurrentCalendar].Count())
             {
                 CurrentDay = 1;
-                CurrentCalendar++;
+                CurrentCalendar = CurrentCalendar == CalendarRewards.Keys.Max() ? 1 : ++CurrentCalendar;
             }
-            if (CurrentCalendar > CalendarRewards.Keys.Max())
-                CurrentCalendar = 1;
 
+            if (CalendarSkipping && CurrentDay == 1 && !experienceCalendars.Contains(CurrentCalendar))
+            {
+                CurrentCalendar = CurrentCalendar == CalendarRewards.Keys.Max() ? CalendarRewards.Keys.Min() : ++CurrentCalendar;
+                return CalendarRewardType.SKIP; 
+            }
+            
             var calendar = CalendarRewards[CurrentCalendar];
             var reward = calendar[CurrentDay - 1];
+
             CurrentDay++;
 
             return reward;
@@ -308,113 +315,6 @@
                     CalendarRewardType.ONE_SOUL,
                     CalendarRewardType.THREE_BOOKS,
                     CalendarRewardType.LEVEL_UP,
-                }},
-            };
-            return rewards;
-        }
-        private Dictionary<int, List<CalendarRewardType>> SetCalendarSkippingRewards()
-        {
-            var rewards = new Dictionary<int, List<CalendarRewardType>>()
-            {
-                // Calendar number 5
-                { 1, new List<CalendarRewardType>() {
-                    CalendarRewardType.DEXTERITY_ATTRIBUTE,
-                    CalendarRewardType.ONE_RUNE,
-                    CalendarRewardType.ONE_BOOK,
-                    CalendarRewardType.DEXTERITY_POTION,
-                    CalendarRewardType.ONE_STONE,
-                    CalendarRewardType.ONE_MUSHROOM,
-                    CalendarRewardType.TWO_BOOKS,
-                    CalendarRewardType.ONE_GOLDBAR,
-                    CalendarRewardType.STRENGTH_POTION,
-                    CalendarRewardType.EARTH_FRUIT,
-                    CalendarRewardType.ONE_SOUL,
-                    CalendarRewardType.ETERNAL_LIFE_POTION,
-                    CalendarRewardType.ONE_SPLINTER,
-                    CalendarRewardType.TWO_SOUL,
-                    CalendarRewardType.TWO_RUNES,
-                    CalendarRewardType.ETERNAL_LIFE_POTION,
-                    CalendarRewardType.TWO_STONES,
-                    CalendarRewardType.TWO_MUSHROOMS,
-                    CalendarRewardType.THREE_BOOKS,
-                    CalendarRewardType.LEVEL_UP,
-                }},
-                // Calendar numbr 8
-                { 2, new List<CalendarRewardType>() {
-                    CalendarRewardType.SKIP,
-                    CalendarRewardType.SKIP,
-                    CalendarRewardType.STRENGTH_POTION,
-                    CalendarRewardType.ONE_RUNE,
-                    CalendarRewardType.ONE_SOUL,
-                    CalendarRewardType.TWO_RUNES,
-                    CalendarRewardType.THREE_RUNES,
-                    CalendarRewardType.LUCK_ATTRIBUTE,
-                    CalendarRewardType.DEXTERITY_POTION,
-                    CalendarRewardType.FIRE_FRUIT,
-                    CalendarRewardType.ONE_MUSHROOM,
-                    CalendarRewardType.INTELIGENCE_POTION,
-                    CalendarRewardType.LUCK_POTION,
-                    CalendarRewardType.HOURGLASSES,
-                    CalendarRewardType.ONE_STONE,
-                    CalendarRewardType.TWO_SOUL,
-                    CalendarRewardType.ETERNAL_LIFE_POTION,
-                    CalendarRewardType.ONE_BOOK,
-                    CalendarRewardType.TWO_BOOKS,
-                    CalendarRewardType.HOURGLASSES,
-                    CalendarRewardType.THREE_SOUL,
-                    CalendarRewardType.LEVEL_UP,
-                }},
-                // Calendar number 10
-                { 3, new List<CalendarRewardType>() {
-                    CalendarRewardType.SKIP,
-                    CalendarRewardType.DEXTERITY_ATTRIBUTE,
-                    CalendarRewardType.DARK_FRUIT,
-                    CalendarRewardType.ONE_STONE,
-                    CalendarRewardType.ONE_BOOK,
-                    CalendarRewardType.ONE_WOOD,
-                    CalendarRewardType.LUCK_POTION,
-                    CalendarRewardType.TWO_STONES,
-                    CalendarRewardType.TWO_BOOKS,
-                    CalendarRewardType.DEXTERITY_POTION,
-                    CalendarRewardType.ONE_GOLDBAR,
-                    CalendarRewardType.HOURGLASSES,
-                    CalendarRewardType.THREE_STONES,
-                    CalendarRewardType.TWO_WOODS,
-                    CalendarRewardType.THREE_WOODS,
-                    CalendarRewardType.ETERNAL_LIFE_POTION,
-                    CalendarRewardType.CONSTITUTION_POTION,
-                    CalendarRewardType.INTELIGENCE_POTION,
-                    CalendarRewardType.HOURGLASSES,
-                    CalendarRewardType.ONE_SOUL,
-                    CalendarRewardType.LEVEL_UP,
-                }},
-                // Calendar number 12
-                { 4, new List<CalendarRewardType>() {
-                    CalendarRewardType.SKIP,
-                    CalendarRewardType.STRENGTH_POTION,
-                    CalendarRewardType.INTELIGENCE_POTION,
-                    CalendarRewardType.LIGHT_FRUIT,
-                    CalendarRewardType.LUCK_POTION,
-                    CalendarRewardType.ONE_SPLINTER,
-                    CalendarRewardType.INTELIGENCE_ATTRIBUTE,
-                    CalendarRewardType.TWO_SPLINTERS,
-                    CalendarRewardType.ONE_BOOK,
-                    CalendarRewardType.ONE_RUNE,
-                    CalendarRewardType.HOURGLASSES,
-                    CalendarRewardType.TWO_RUNES,
-                    CalendarRewardType.ONE_STONE,
-                    CalendarRewardType.ONE_GOLDBAR,
-                    CalendarRewardType.ONE_MUSHROOM,
-                    CalendarRewardType.THREE_SPLINTERS,
-                    CalendarRewardType.TWO_MUSHROOMS,
-                    CalendarRewardType.TWO_BOOKS,
-                    CalendarRewardType.ONE_SOUL,
-                    CalendarRewardType.THREE_BOOKS,
-                    CalendarRewardType.LEVEL_UP,
-                    CalendarRewardType.SKIP,
-                    CalendarRewardType.SKIP,
-                    CalendarRewardType.SKIP,
-                    CalendarRewardType.SKIP,
                 }},
             };
             return rewards;

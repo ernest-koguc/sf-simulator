@@ -51,4 +51,6 @@ public class SimulateDaysRequest
     public int GladiatorLevel { get; set; }
     public int SoloPortal { get; set; }
     public int GuildPortal { get; set; }
+    public int Calendar { get; set; }
+    public int CalendarDay { get; set; }
 }

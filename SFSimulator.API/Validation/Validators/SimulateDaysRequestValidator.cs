@@ -37,5 +37,7 @@ public class SimulateDaysRequestValidator : AbstractValidator<SimulateDaysReques
         RuleFor(o => o.GladiatorLevel).InclusiveBetween(0, 15);
         RuleFor(o => o.SoloPortal).InclusiveBetween(0, 50);
         RuleFor(o => o.GuildPortal).InclusiveBetween(0, 50);
+        RuleFor(o => o.CalendarDay).InclusiveBetween(1, 20);
+        RuleFor(o => o.Calendar).InclusiveBetween(1, 12);
     }
 }

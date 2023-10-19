@@ -9,6 +9,9 @@
         public int Level { get; set; }
         public int Mount { get; set; }
         public int Book { get; set; }
+        public int CalendarDay { get; set; }
+        public int CalendarType { get; set; }
+        public List<Potion> Potions { get; set; } = null!;
 
         public Inventory Inventory { get; set; } = null!;
         public Fortress Fortress { get; set; } = null!;
@@ -23,7 +26,6 @@
         public int Armor { get; set; }
         public Slots Items { get; set; } = null!;
         public GroupData Group { get; set; } = null!;
-        public List<Potion> Potions { get; set; } = null!;
     }
     public class Inventory
     {
