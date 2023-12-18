@@ -2,6 +2,7 @@
 
 public abstract class DelegatableFightableContext : IFightableContext
 {
+    public int Reaction { get; set; }
     public long MaxHealth { get; set; }
     public long Health { get; set; }
     public double MinimumDamage { get; set; }

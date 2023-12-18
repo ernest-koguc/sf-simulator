@@ -15,11 +15,8 @@ export type DungeonEnemy = {
 }
 export enum DungeonType
 {
-    Twister,
-    Tower,
-    LightWorld,
-    ShadowWorld,
-    SoloPortal,
-    GuildPortal,
-    GuildRaid
+    LightWorld = -1,
+    Twister = 1,
+    Tower = 2,
+    ShadowWorld = 4
 }

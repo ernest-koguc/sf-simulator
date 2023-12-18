@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   apiUrl: 'https://localhost:8800',
-  sftoolsLogin: 'https://beta.sftools.mar21.eu/request?scope=default+pets+items&origin=SF%20Simulator&redirect=https://localhost:8800/api/loadFromEndpoint',
-  currentVersion: '1.4'
+  sftoolsLogin: 'https://beta.sftools.mar21.eu/request?scope=default+pets+items+companions&origin=SF%20Simulator',
+  currentVersion: '1.5'
 };
 
 /*

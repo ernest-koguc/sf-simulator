@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationDialogComponent } from '../../dialogs/configuration-dialog/configuration-dialog.component';
 import { SaveNewConfigurationDialogComponent } from '../../dialogs/save-new-configuration-dialog/save-new-configuration-dialog.component';
-import { mapToLowerCase } from '../../helpers/mapper';
 import { maxExperienceValidator } from '../../helpers/validators';
 import { SavedConfiguration, updateSavedConfiguration } from '../../models/configuration';
 import { MountType } from '../../models/mount-type';
@@ -33,6 +32,10 @@ export class SimulationConfig implements OnInit {
       }
     });
 
+    this.databaseService.getAllConfigurations().subscribe(configs => {
+      if (configs?.length === 1)
+        this.loadFormFromConfiguration(configs[0]);
+    })
   }
   @Output() configEmitter = new EventEmitter<SimulationConfigForm>();
 
@@ -67,6 +70,7 @@ export class SimulationConfig implements OnInit {
     xpGuildBonus: new FormControl(200, [Validators.required, Validators.min(0), Validators.max(200)]),
     xpRuneBonus: new FormControl(10, [Validators.required, Validators.min(0), Validators.max(10)]),
     hasExperienceScroll: new FormControl(true),
+    hasArenaGoldScroll: new FormControl(true),
     tower: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(100)]),
     goldGuildBonus: new FormControl(200, [Validators.required, Validators.min(0), Validators.max(200)]),
     goldRuneBonus: new FormControl(50, [Validators.required, Validators.min(0), Validators.max(50)]),
@@ -75,7 +79,8 @@ export class SimulationConfig implements OnInit {
     dailyGuard: new FormControl(23, [Validators.required, Validators.min(0), Validators.max(24)]),
     simulateDungeon: new FormControl(false, [Validators.required]),
     calendar: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(12)]),
-    calendarDay: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(20)])
+    calendarDay: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(20)]),
+    fightsForGold: new FormControl(10, [Validators.required, Validators.min(0), Validators.max(10000)])
   });
 
   get form() {
@@ -120,7 +125,7 @@ export class SimulationConfig implements OnInit {
     });
   }
   public updateConfiguration() {
-    let configuration = this.databaseService.getAllConfigurations().subscribe(v => {
+    this.databaseService.getAllConfigurations().subscribe(v => {
       if (v == undefined || this.form.characterName.value == null)
         return;
 

@@ -2,6 +2,6 @@
 {
     public interface IBonusMelodyLengthProvider
     {
-        int GetBonusMelodyLength(IFightable entity);
+        int GetBonusMelodyLength<T>(IFightable<T> entity) where T : IWeaponable;
     }
 }

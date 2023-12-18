@@ -3,7 +3,6 @@ using SFSimulator.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 
 namespace SFSimulator.Tests
 {

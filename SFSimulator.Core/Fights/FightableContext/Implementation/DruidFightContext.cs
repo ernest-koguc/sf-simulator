@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace SFSimulator.Core;
+﻿namespace SFSimulator.Core;
 
 public class DruidFightContext : DelegatableFightableContext
 {

@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { SimulationResultComponent, SimulationResultComponentData } from '../../components/simulation-result/simulation-result.component';
 import { SimulationConfig } from '../../components/simulation-config/simulation-config.component';
 import { CreditsDialogComponent } from '../../dialogs/credits-dialog/credits-dialog.component';
-import { SftoolsloginComponent } from '../../dialogs/sftools-login-dialog/sftoolslogin.component';
+import { SftoolsloginComponent, DataScope } from '../../dialogs/sftools-login-dialog/sftoolslogin.component';
 import { SimulationOptionsDialogComponent } from '../../dialogs/simulation-options-dialog/simulation-options-dialog.component';
 import { SimulationConfigForm } from '../../models/simulation-configuration';
 import { SimulatorService } from '../../services/simulator.service';
@@ -38,7 +38,7 @@ export class SimulatorComponent {
   }
 
   public loginThroughSFTools() {
-    this.dialog.open(SftoolsloginComponent, { autoFocus: 'dialog', enterAnimationDuration: 200, exitAnimationDuration: 200, restoreFocus: false, width: "80%", height: "80%" }).afterClosed().subscribe(data => {
+    this.dialog.open(SftoolsloginComponent, { autoFocus: 'dialog', enterAnimationDuration: 200, exitAnimationDuration: 200, restoreFocus: false, width: "80%", height: "80%", data: DataScope.All }).afterClosed().subscribe(data => {
       if (data)
         this.simulationConfigComponent.loadForm(data);
     });
@@ -56,10 +56,10 @@ export class SimulatorComponent {
 
     const dialogRef = this.dialog.open(SimulationOptionsDialogComponent, {
       autoFocus: 'dialog', restoreFocus: false, enterAnimationDuration: 400,
-      data: { level: this.simulationConfig.level }
+      data: { level: this.simulationConfig.level, baseStats: this.simulationConfig.baseStat }
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result || !this.simulationConfig || this.simulationBlocked)
+    dialogRef.afterClosed().subscribe(simulationType => {
+      if (!simulationType || !this.simulationConfig || this.simulationBlocked)
         return;
 
       this.simulationBlocked = true;
@@ -69,15 +69,10 @@ export class SimulatorComponent {
       let characterBefore = { level: this.simulationConfig.level!, experience: this.simulationConfig.experience!, baseStat: this.simulationConfig.baseStat! };
 
       let time = Date.now();
-      this.simulatorService.simulate(result, this.simulationConfig)
+      this.simulatorService.simulate(simulationType, this.simulationConfig)
         .pipe(finalize(() => {
           this.simulationBlocked = false;
           this.isLoading = false;
-          let now = Date.now() - time;
-          this.snackbar.createInfoSnackbar(`Simulation successful, elapsed time ${now} ms`);
-          }), catchError((_, caught) => {
-            this.snackbar.createErrorSnackbar('Something went wrong. Please try again.');
-            return caught;
           }))
         .subscribe(v => {
           this.result = {
@@ -85,6 +80,8 @@ export class SimulatorComponent {
             characterBefore: characterBefore,
             characterName: characterName
           };
+          let now = Date.now() - time;
+          this.snackbar.createInfoSnackbar(`Simulation successful, elapsed time ${now} ms`);
       });
     });
   }

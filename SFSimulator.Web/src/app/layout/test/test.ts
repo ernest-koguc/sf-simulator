@@ -5,7 +5,7 @@ export type SFToolsCharacterModel = {
       Runes: {
         ResistanceFire: number,
         ResistanceCold: number,
-        ResistanceLightning: number, 
+        ResistanceLightning: number,
         Health: number
       },
       Dungeons: {

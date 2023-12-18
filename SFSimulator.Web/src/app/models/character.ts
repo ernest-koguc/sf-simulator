@@ -7,32 +7,46 @@ export type Character = {
   constitution: number,
   luck: number,
   armor: number,
-  firstWeapon: Weapon | undefined,
-  secondWeapon: Weapon | undefined
-  runeBonuses: ResistanceRuneBonuses,
-  hasGlovesScroll: boolean,
-  hasWeaponScroll: boolean,
-  hasEternityPotion: boolean,
-  gladiatorLevel: number,
-  soloPortal: number, 
-  guildPortal: number,
-} 
-
-export type Weapon = {
-  minDmg: number,
-  maxDmg: number,
-  damageRuneType: DamageRuneType,
-  runeBonus: number 
-}
-
-export type ResistanceRuneBonuses = {
+  firstWeapon: Weapon | null,
+  secondWeapon: Weapon | null,
   lightningResistance: number,
   fireResistance: number,
   coldResistance: number,
   healthRune: number
+  reaction: boolean | number,
+  hasWeaponScroll: boolean,
+  hasEternityPotion: boolean,
+  gladiatorLevel: number,
+  soloPortal: number,
+  guildPortal: number,
+}
+
+export type Companion = {
+  class: ClassType,
+  strength: number,
+  dexterity: number,
+  intelligence: number,
+  constitution: number,
+  luck: number,
+  armor: number,
+  firstWeapon: Weapon | null,
+  lightningResistance: number,
+  fireResistance: number,
+  coldResistance: number,
+  healthRune: number
+  reaction: boolean | number,
+  hasWeaponScroll: boolean,
+}
+
+export type Weapon = {
+  minDmg: number | null,
+  maxDmg: number | null,
+  runeType: RuneType | null,
+  runeValue: number | null
 }
 
 export enum ClassType {
+  Bert = 0,
   Warrior = 1,
   Mage = 2,
   Scout = 3,
@@ -44,9 +58,9 @@ export enum ClassType {
   Bard = 9
 }
 
-export enum DamageRuneType {
+export enum RuneType {
     None = 0,
-    Lightning = 1,
-    Fire = 2,
-    Cold = 3
+    Fire = 10,
+    Cold = 11,
+    Lightning = 12,
 }

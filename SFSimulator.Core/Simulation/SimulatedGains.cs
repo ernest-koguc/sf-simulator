@@ -29,6 +29,7 @@
             { GainSource.GEM, 0           },
             { GainSource.ITEM, 0          },
             { GainSource.DICE_GAME, 0     },
+            { GainSource.ARENA, 0         },
             { GainSource.TOTAL, 0         }
         };
     }

@@ -26,6 +26,37 @@ namespace SFSimulator.API.Mappings
             return mappedSchedule;
         }
 
+        public static int CalculateRuneValue(Slots items, RuneType runeType)
+        {
+            if (runeType is RuneType.None or RuneType.FireDamage or RuneType.ColdDamage or RuneType.LightningDamage)
+            {
+                return 0;
+            }
+            var itemsList = ResolveItemsAsList(items);
+            int runeValue;
+            if (runeType is RuneType.FireResistance or RuneType.ColdResistance or RuneType.LightningResistance)
+            {
+                runeValue = itemsList.Where(i => i.RuneType == runeType || i.RuneType == RuneType.TotalResistance).Sum(i => i.RuneValue);
+            }
+            else
+            {
+                runeValue = itemsList.Where(i => i.RuneType == runeType).Sum(i => i.RuneValue);
+            }
+
+            return runeType switch
+            {
+                RuneType.GoldBonus => Math.Min(50, runeValue),
+                RuneType.ExperienceBonus => Math.Min(10, runeValue),
+                RuneType.FireResistance => Math.Min(75, runeValue),
+                RuneType.ColdResistance => Math.Min(75, runeValue),
+                RuneType.LightningResistance => Math.Min(75, runeValue),
+                RuneType.EpicChance => Math.Min(50, runeValue),
+                RuneType.ItemQuality => Math.Min(5, runeValue),
+                RuneType.HealthBonus => Math.Min(15, runeValue),
+                _ => 0
+            };
+        }
+
         public static List<EventType> MapEvents(List<string> events)
         {
             var list = new List<EventType>();
@@ -66,18 +97,19 @@ namespace SFSimulator.API.Mappings
             return spinAmount == nameof(SpinAmountType.Max) ? SpinAmountType.Max : SpinAmountType.OnlyFree;
         }
 
-        public static int GetRuneBonus(Maria21DataDTO dto, BonusType type)
+        public static int GetQuestRuneBonus(Maria21DataDTO dto, BonusType type)
         {
-            int runeType, runeBonus, runeMax;
+            int runeBonus, runeMax;
+            RuneType runeType;
             if (type == BonusType.GOLD)
             {
-                runeType = 1;
+                runeType = RuneType.GoldBonus;
                 runeBonus = dto.Runes.Gold;
                 runeMax = 50;
             }
             else
             {
-                runeType = 4;
+                runeType = RuneType.ExperienceBonus;
                 runeBonus = dto.Runes.XP;
                 runeMax = 10;
             }
@@ -88,7 +120,7 @@ namespace SFSimulator.API.Mappings
             foreach (var property in props)
             {
                 var value = property.GetValue(dummy);
-                if (value is PlayerItem item)
+                if (value is SFToolsItem item)
                 {
                     runeBonus += item.RuneType == runeType ? item.RuneValue : 0;
                 }
@@ -96,22 +128,17 @@ namespace SFSimulator.API.Mappings
             runeBonus = Math.Min(runeMax, runeBonus);
             return runeBonus;
         }
-        public static DamageRuneType GetDamageRuneType(int type)
-        {
-            return type switch
-            {
-                40 => DamageRuneType.Fire,
-                41 => DamageRuneType.Cold,
-                42 => DamageRuneType.Lightning,
-                _ => DamageRuneType.None
-            };
-        }
+
         public static int GetGuildBonus(Maria21DataDTO dto, BonusType type)
         {
+            if (dto.Group.Group is null)
+                return 0;
+
             var raid = dto.Group.Group.Raid * 2;
             var guild = type == BonusType.GOLD ? dto.Group.Group.TotalTreasure : dto.Group.Group.TotalInstructor;
             return Math.Min(200, raid + guild);
         }
+
         public static MountType TranslateMountType(string mountType)
         {
             return mountType switch
@@ -123,6 +150,7 @@ namespace SFSimulator.API.Mappings
                 _ => MountType.None,
             };
         }
+
         public static string TranslateMountType(int mountType)
         {
             return mountType switch
@@ -134,17 +162,36 @@ namespace SFSimulator.API.Mappings
                 _ => "None",
             };
         }
+
         public static int SumBaseStats(Maria21DataDTO dto)
         {
             var con = dto.Constitution.Base;
             return dto.Class switch
             {
-                1 or 5 or 6 => con + dto.Strength.Base,
-                2 or 8 or 9 => con + dto.Intelligence.Base,
-                3 or 4 or 7 => con + dto.Dexterity.Base,
+                ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker => con + dto.Strength.Base,
+                ClassType.Mage or ClassType.Druid or ClassType.Bard or ClassType.Necromancer => con + dto.Intelligence.Base,
+                ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter => con + dto.Dexterity.Base,
                 _ => con,
             };
         }
+
+        public static List<SFToolsItem> ResolveItemsAsList(Slots items)
+        {
+            var list = new List<SFToolsItem>
+            {
+                items.Head,
+                items.Body,
+                items.Hand,
+                items.Feet,
+                items.Neck,
+                items.Belt,
+                items.Ring,
+                items.Misc
+            };
+
+            return list;
+        }
+
         public enum BonusType
         {
             GOLD,

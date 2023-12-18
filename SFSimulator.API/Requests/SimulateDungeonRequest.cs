@@ -16,13 +16,18 @@ public class SimulateDungeonRequest
     public int Constitution { get; set; }
     public int Luck { get; set; }
     public int Armor { get; set; }
-    public Weapon? FirstWeapon { get; set; }
-    public Weapon? SecondWeapon { get; set; }
-    public ResistanceRuneBonuses RuneBonuses { get; set; } = new ResistanceRuneBonuses();
+    public RawWeapon? FirstWeapon { get; set; }
+    public RawWeapon? SecondWeapon { get; set; }
     public bool HasGlovesScroll { get; set; }
     public bool HasWeaponScroll { get; set; }
     public bool HasEternityPotion { get; set; }
+    public int Reaction { get; set; }
     public int GladiatorLevel { get; set; }
     public int SoloPortal { get; set; }
     public int GuildPortal { get; set; }
+    public int LightningResistance { get; set; }
+    public int ColdResistance { get; set; }
+    public int FireResistance { get; set; }
+    public int HealthRune { get; set; }
+    public RawCompanion[] Companions { get; set; } = default!;
 }

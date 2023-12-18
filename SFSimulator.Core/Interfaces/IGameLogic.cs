@@ -23,6 +23,7 @@
         decimal GetDailyGoldFromDiceGame(int characterLevel, IEnumerable<EventType> events);
         decimal GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount);
         decimal GetDailyGoldFromGemMine(int characterLevel, int gemMineLevel, int workers = 15);
+        decimal GetGoldRewardFromArena(int characterLevel, int count, bool arenaScroll);
         #endregion
     }
 }

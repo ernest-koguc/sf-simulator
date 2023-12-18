@@ -112,6 +112,9 @@
                 <check-box formControlName="hasGoldScroll">
                   Gold Scroll
                 </check-box>
+                <check-box class='mt-2' formControlName="hasArenaGoldScroll">
+                  Arena Gold Scroll
+                </check-box>
               </div>
             </div>
           </ng-template>
@@ -163,6 +166,14 @@
                   </mat-select>
                   <mat-error showError [control]="form.priorityAfterSwitch"></mat-error>
                 </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-2">
+                  <mat-label>Arena fights for gold</mat-label>
+                  <input matInput type='number' formControlName="fightsForGold" placeholder='0' step='1'
+                        matTooltip='Amount of arena fights with maximum gold as reward (it will not exceed the cap)'
+                        matTooltipPosition='right'/>
+                  <mat-error showError [control]="form.fightsForGold"></mat-error>
+                </mat-form-field>
+
               </div>
               <div class="col-xl-6 d-flex flex-column mt-3">
                 <mat-form-field class="mb-2" appearance="outline">

@@ -2,6 +2,6 @@
 {
     public interface IFightableContextFactory
     {
-        IFightableContext Create(IFightable main, IFightable opponent);
+        IFightableContext Create<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable;
     }
 }

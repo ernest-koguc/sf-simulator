@@ -26,10 +26,10 @@ public static class ClassConfigurationProvider
                 }
             },
             {
-                ClassType.ShieldlessWarrior,
+                ClassType.Bert,
                 new ClassConfiguration
                 {
-                    HealthMultiplier = 5,
+                    HealthMultiplier = 6.099999793822,
                     WeaponMultiplier = 2,
                 }
             },
@@ -97,8 +97,14 @@ public static class ClassConfigurationProvider
                     WeaponMultiplier = 4.5,
                 }
             },
-
+            {
+                ClassType.Necromancer,
+                new ClassConfiguration
+                {
+                    HealthMultiplier = 4,
+                    WeaponMultiplier = 4.5,
+                }
+            },
         };
     }
-
 }

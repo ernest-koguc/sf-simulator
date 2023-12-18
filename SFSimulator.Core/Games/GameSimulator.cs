@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.ComponentModel;
 
 namespace SFSimulator.Core;
 
@@ -33,24 +34,29 @@ public class GameSimulator : IGameSimulator
         _mapper = mapper;
         _dungeonSimulator = dungeonSimulator;
     }
-    public async Task<SimulationResult> RunDays(int days, Character character, SimulationOptions simulationOptions)
-    {
-        SetSimulationOptions(character, simulationOptions);
 
-        for (CurrentDay = 1; CurrentDay <= days; CurrentDay++)
+    public async Task<SimulationResult> Run(int until, Character character, SimulationOptions simulationOptions, SimulationType simulationType)
+    {
+
+        SetSimulationOptions(character, simulationOptions);
+        Func<int> lookUpValue;
+
+        switch (simulationType)
         {
-            SimulatedDays.Add(new() { DayIndex = CurrentDay });
-            await RunDay();
+            case SimulationType.UntilDays:
+                lookUpValue = () => CurrentDay - 1;
+                break;
+            case SimulationType.UntilLevel:
+                lookUpValue = () => Character.Level;
+                break;
+            case SimulationType.UntilBaseStats:
+                lookUpValue = () => Character.BaseStat;
+                break;
+            default:
+                throw new InvalidEnumArgumentException(nameof(simulationType));
         }
 
-        return CreateResult();
-    }
-
-    public async Task<SimulationResult> RunLevels(int level, Character character, SimulationOptions simulationOptions)
-    {
-        SetSimulationOptions(character, simulationOptions);
-
-        for (CurrentDay = 1; Character.Level < level; CurrentDay++)
+        for (CurrentDay = 1; lookUpValue() < until; CurrentDay++)
         {
             SimulatedDays.Add(new() { DayIndex = CurrentDay });
             await RunDay();
@@ -137,6 +143,9 @@ public class GameSimulator : IGameSimulator
 
         var arenaXP = 10 * _gameLogic.GetExperienceRewardFromArena(Character.Level, IsExperienceEvent);
         GiveXPToCharacter(arenaXP, GainSource.ARENA);
+
+        var arenaGold = _gameLogic.GetGoldRewardFromArena(Character.Level, SimulationOptions.FightsForGold, SimulationOptions.GoldBonus.HasArenaGoldScroll);
+        GiveGoldToCharacter(arenaGold, GainSource.ARENA);
 
         var goldFromWatch = SimulationOptions.DailyGuard * _gameLogic.GetGoldFromGuardDuty(Character.Level, SimulationOptions.GoldBonus, IsGoldEvent);
         GiveGoldToCharacter(goldFromWatch, GainSource.GUARD);

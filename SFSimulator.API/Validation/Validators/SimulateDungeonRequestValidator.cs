@@ -26,12 +26,18 @@ public class SimulateDungeonRequestValidator : AbstractValidator<SimulateDungeon
         RuleFor(o => o.Constitution).GreaterThanOrEqualTo(0);
         RuleFor(o => o.Luck).GreaterThanOrEqualTo(0);
         RuleFor(o => o.Armor).GreaterThanOrEqualTo(0);
-        RuleFor(o => o.FirstWeapon).SetValidator(new WeaponValidator());
-        RuleFor(o => o.SecondWeapon).SetValidator(new WeaponValidator());
-        RuleFor(o => o.RuneBonuses).NotNull().SetValidator(new ResistanceRuneBonusesValidator());
         RuleFor(o => o.GladiatorLevel).InclusiveBetween(0, 15);
         RuleFor(o => o.SoloPortal).InclusiveBetween(0, 50);
         RuleFor(o => o.GuildPortal).InclusiveBetween(0, 50);
+        RuleFor(o => o.Reaction).InclusiveBetween(0, 1);
+        RuleFor(o => o.Companions).Custom((_, context) => ValidateCompanions(dungeonProvider, context));
+        RuleForEach(o => o.Companions).SetValidator(new RawCompanionValidator());
+        RuleFor(o => o.FirstWeapon).SetValidator(new WeaponValidator());
+        RuleFor(o => o.SecondWeapon).SetValidator(new WeaponValidator());
+        RuleFor(o => o.LightningResistance).InclusiveBetween(0, 75);
+        RuleFor(o => o.FireResistance).InclusiveBetween(0, 75);
+        RuleFor(o => o.ColdResistance).InclusiveBetween(0, 75);
+        RuleFor(o => o.HealthRune).InclusiveBetween(0, 15);
     }
 
     private static void ValidateDungeonExists(IDungeonProvider dungeonProvider, ValidationContext<SimulateDungeonRequest> context)
@@ -40,6 +46,16 @@ public class SimulateDungeonRequestValidator : AbstractValidator<SimulateDungeon
         if (!dungeonProvider.IsValidEnemy(instance.DungeonPosition, instance.DungeonEnemyPosition))
         {
             context.AddFailure($"Enemy with provided {nameof(instance.DungeonPosition)} and {nameof(instance.DungeonEnemyPosition)} does not exist");
+        }
+    }
+
+    private static void ValidateCompanions(IDungeonProvider dungeonProvider, ValidationContext<SimulateDungeonRequest> context)
+    {
+        var instance = context.InstanceToValidate;
+        var dungeon = dungeonProvider.GetDungeonEnemy(instance.DungeonPosition, instance.DungeonEnemyPosition);
+        if (dungeon.Dungeon.Type.WithCompanions() && context.InstanceToValidate.Companions.Count() == 0)
+        {
+            context.AddFailure($"Specified dungeons requires companions for simulation");
         }
     }
 }

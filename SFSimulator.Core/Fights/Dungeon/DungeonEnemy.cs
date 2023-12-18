@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core
 {
-    public class DungeonEnemy : IFightable
+    public class DungeonEnemy : IFightable<RawWeapon>
     {
         public int Position { get; set; }
         public bool IsDefeated { get; set; }
@@ -14,11 +14,14 @@
         public int Luck { get; set; }
         public long Health { get; set; }
         public int Armor { get; set; }
-        public Weapon? FirstWeapon { get; set; }
-        public Weapon? SecondWeapon { get; set; }
+        public RawWeapon? FirstWeapon { get; set; }
+        public RawWeapon? SecondWeapon { get; set; }
         public int Reaction { get; set; } = 0;
         public double CritMultiplier { get; set; } = 2;
-        public ResistanceRuneBonuses RuneResistance { get; set; }
+        public int LightningResistance { get; set; }
+        public int FireResistance { get; set; }
+        public int ColdResistance { get; set; }
+        public int HealthRune { get; set; }
         public double SoloPortal { get; set; } = 0;
         public double GuildPortal { get; set; } = 0;
         public Dungeon Dungeon { get; set; } = null!;
@@ -49,17 +52,26 @@
             Health = health;
 
             dungeonRuneBonuses ??= new DungeonEnemyRuneBonuses();
-            RuneResistance = new ResistanceRuneBonuses
-            {
-                ColdResistance = dungeonRuneBonuses.ColdResistance,
-                FireResistance = dungeonRuneBonuses.FireResistance,
-                LightningResistance = dungeonRuneBonuses.ColdResistance,
-                HealthRune = 0
-            };
+            ColdResistance = dungeonRuneBonuses.ColdResistance;
+            FireResistance = dungeonRuneBonuses.FireResistance;
+            LightningResistance = dungeonRuneBonuses.ColdResistance;
+            HealthRune = 0;
 
-            FirstWeapon = new Weapon { MinDmg = minWeaponDmg, MaxDmg = maxWeaponDmg, DamageRuneType = dungeonRuneBonuses.DamageRuneType, RuneBonus = dungeonRuneBonuses.DamageBonus };
+            FirstWeapon = new RawWeapon
+            {
+                MinDmg = minWeaponDmg,
+                MaxDmg = maxWeaponDmg,
+                RuneType = dungeonRuneBonuses.DamageRuneType,
+                RuneValue = dungeonRuneBonuses.DamageBonus
+            };
             if (Class == ClassType.Assassin)
-                SecondWeapon = new Weapon { MinDmg = minWeaponDmg, MaxDmg = maxWeaponDmg, DamageRuneType = dungeonRuneBonuses.DamageRuneType, RuneBonus = dungeonRuneBonuses.DamageBonus };
+                SecondWeapon = new RawWeapon
+                {
+                    MinDmg = minWeaponDmg,
+                    MaxDmg = maxWeaponDmg,
+                    RuneType = dungeonRuneBonuses.DamageRuneType,
+                    RuneValue = dungeonRuneBonuses.DamageBonus
+                };
 
             armorMultiplier ??= 1;
             if (armor != null)
@@ -71,7 +83,7 @@
             var maxReduction = Class switch
             {
                 ClassType.Mage => 10,
-                ClassType.Warrior or ClassType.Bard or ClassType.DemonHunter or ClassType.ShieldlessWarrior or ClassType.BattleMage => 50,
+                ClassType.Warrior or ClassType.Bard or ClassType.DemonHunter or ClassType.Bert or ClassType.BattleMage => 50,
                 ClassType.Scout or ClassType.Assassin or ClassType.Berserker => 25,
                 ClassType.Druid => 40,
                 _ => throw new ArgumentOutOfRangeException(nameof(Class)),

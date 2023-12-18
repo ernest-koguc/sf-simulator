@@ -15,7 +15,7 @@ public class FightableContextFactory : IFightableContextFactory
         _bonusMelodyLengthProvider = bonusMelodyLengthProvider;
     }
 
-    public IFightableContext Create(IFightable main, IFightable opponent)
+    public IFightableContext Create<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         var context = main.Class switch
         {
@@ -23,7 +23,7 @@ public class FightableContextFactory : IFightableContextFactory
             ClassType.Mage => CreateMageContext(),
             ClassType.Scout => CreateScoutContext(),
             ClassType.Assassin => CreateAssassinContext(main, opponent),
-            ClassType.ShieldlessWarrior => CreateShieldlessWarriorContext(),
+            ClassType.Bert => CreateShieldlessWarriorContext(),
             ClassType.BattleMage => CreateBattleMageContext(main, opponent),
             ClassType.Berserker => CreateBerserkerContext(),
             ClassType.Druid => CreateDruidContext(main, opponent),
@@ -36,7 +36,7 @@ public class FightableContextFactory : IFightableContextFactory
         return context;
     }
 
-    private void InstantiateSharedProperties(DelegatableFightableContext context, IFightable main, IFightable opponent)
+    private void InstantiateSharedProperties<T, E>(DelegatableFightableContext context, IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         context.Random = _random;
         var (Minimum, Maximum) = _damageProvider.CalculateDamage(main.FirstWeapon, main, opponent);
@@ -46,6 +46,7 @@ public class FightableContextFactory : IFightableContextFactory
         context.MaxHealth = main.Health;
         context.CritMultiplier = main.CritMultiplier;
         context.CritChance = _critChanceProvider.CalculateCritChance(main, opponent);
+        context.Reaction = main.Reaction;
     }
 
     private static DelegatableFightableContext CreateWarriorContext()
@@ -56,6 +57,7 @@ public class FightableContextFactory : IFightableContextFactory
         };
         return context;
     }
+
     private static DelegatableFightableContext CreateShieldlessWarriorContext()
     {
         var context = new WarriorFightContext
@@ -64,17 +66,20 @@ public class FightableContextFactory : IFightableContextFactory
         };
         return context;
     }
+
     private static DelegatableFightableContext CreateMageContext()
     {
         var context = new MageFightContext();
         return context;
     }
+
     private static DelegatableFightableContext CreateScoutContext()
     {
         var context = new ScoutFightContext();
         return context;
     }
-    private DelegatableFightableContext CreateAssassinContext(IFightable main, IFightable opponent)
+
+    private DelegatableFightableContext CreateAssassinContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         var context = new AssassinFightContext();
         var (Minimum, Maximum) = _damageProvider.CalculateDamage(main.SecondWeapon, main, opponent);
@@ -82,7 +87,8 @@ public class FightableContextFactory : IFightableContextFactory
         context.SecondMaximumDamage = Maximum;
         return context;
     }
-    private DelegatableFightableContext CreateBattleMageContext(IFightable main, IFightable opponent)
+
+    private DelegatableFightableContext CreateBattleMageContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         var context = new BattleMageFightContext
         {
@@ -90,12 +96,14 @@ public class FightableContextFactory : IFightableContextFactory
         };
         return context;
     }
+
     private static DelegatableFightableContext CreateBerserkerContext()
     {
         var context = new BerserkerFightContext();
         return context;
     }
-    private DelegatableFightableContext CreateDruidContext(IFightable main, IFightable opponent)
+
+    private DelegatableFightableContext CreateDruidContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         var context = new DruidFightContext
         {
@@ -103,12 +111,14 @@ public class FightableContextFactory : IFightableContextFactory
         };
         return context;
     }
-    private static DelegatableFightableContext CreateDemonHunterContext(IFightable opponent)
+
+    private static DelegatableFightableContext CreateDemonHunterContext<T>(IFightable<T> opponent) where T : IWeaponable
     {
         var context = new DemonHunterFightContext(opponent.Class);
         return context;
     }
-    private DelegatableFightableContext CreateBardContext(IFightable main, IFightable opponent)
+
+    private DelegatableFightableContext CreateBardContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         var bonusLength = _bonusMelodyLengthProvider.GetBonusMelodyLength(main);
         var context = new BardFightContext(opponent.Class, bonusLength);

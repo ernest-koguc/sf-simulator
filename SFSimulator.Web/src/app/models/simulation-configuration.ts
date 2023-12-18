@@ -22,6 +22,7 @@ export interface SimulationConfigForm {
   goldGuildBonus: number | null;
   goldRuneBonus: number | null;
   hasGoldScroll: boolean | null;
+  hasArenaGoldScroll: boolean | null;
   questPriority: QuestPriority | null;
   hybridRatio: number | null;
   switchPriority: boolean | null;
@@ -34,4 +35,5 @@ export interface SimulationConfigForm {
   dailyGuard: number | null;
   schedule: SavedSchedule | null;
   simulateDungeon: boolean | null;
+  fightsForGold: number | null;
 };

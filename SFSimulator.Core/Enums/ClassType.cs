@@ -2,7 +2,7 @@
 {
     public enum ClassType
     {
-        ShieldlessWarrior = 0,
+        Bert = 0,
         Warrior,
         Mage,
         Scout,
@@ -12,5 +12,6 @@
         DemonHunter,
         Druid,
         Bard,
+        Necromancer
     }
 }

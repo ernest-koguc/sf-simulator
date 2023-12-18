@@ -90,6 +90,27 @@
             return arena;
         }
 
+        public decimal GetGoldRewardFromArena(int characterLevel, int count, bool arenaScroll)
+        {
+            decimal scrollMultiplier = arenaScroll ? 1.2M : 1;
+            if (characterLevel <= 95)
+                return Math.Truncate(scrollMultiplier * characterLevel) * count;
+
+            var baseValue = Curves.GoldCurve[characterLevel] / 50;
+
+            var levelMultiplier = characterLevel switch
+            {
+                >= 300 => 10,
+                >= 250 => 15,
+                >= 200 => 20,
+                >= 150 => 24,
+                _ => 28
+            };
+
+            var gold = Math.Truncate(baseValue / levelMultiplier * scrollMultiplier) * count;
+            return Math.Min(gold, 1E8M);
+        }
+
         public long GetExperienceRewardFromCalendar(int characterLevel, int rewardSize)
         {
             if (rewardSize < 1 || rewardSize > 3)

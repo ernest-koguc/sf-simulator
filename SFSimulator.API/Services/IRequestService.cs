@@ -5,8 +5,7 @@ namespace SFSimulator.API.Services
 {
     public interface IRequestService
     {
-        Task<SimulationResult> RunSimulationUntilDays(SimulateDaysRequest request);
-        Task<SimulationResult> RunSimulationUntilLevel(SimulateUntilLevelRequest request);
+        Task<SimulationResult> RunSimulation(SimulateRequest request, SimulationType simulationType);
         List<DungeonDTO> GetDungeons();
         DungeonSimulationResult SimulateDungeon(SimulateDungeonRequest request);
     }

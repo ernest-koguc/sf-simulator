@@ -30,7 +30,6 @@
             new TypeMap(typeof(CritChanceProvider), typeof(ICritChanceProvider), TypeMapOption.None),
             new TypeMap(typeof(DamageProvider), typeof(IDamageProvider), TypeMapOption.None),
             new TypeMap(typeof(BonusMelodyLengthProvider), typeof(IBonusMelodyLengthProvider), TypeMapOption.None),
-            new TypeMap(typeof(FightStartingBehaviorProvider), typeof(IFightStartingBehaviorProvider), TypeMapOption.None)
         };
     }
-} 
+}

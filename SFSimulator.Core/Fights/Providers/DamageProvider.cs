@@ -2,7 +2,7 @@
 
 public class DamageProvider : IDamageProvider
 {
-    public (double Minimum, double Maximum) CalculateDamage(Weapon? weapon, IFightable attacker, IFightable target, bool isSecondWeapon = false)
+    public (double Minimum, double Maximum) CalculateDamage<T, E>(IWeaponable? weapon, IFightable<T> attacker, IFightable<E> target, bool isSecondWeapon = false) where T : IWeaponable where E : IWeaponable
     {
         var damage = GetBaseDmg(weapon, attacker, isSecondWeapon);
 
@@ -20,7 +20,7 @@ public class DamageProvider : IDamageProvider
         return (damage.Minimum, damage.Maximum);
     }
 
-    private static void ProcClassModifiers(IFightable attacker, ref (double Minimum, double Maximum) damage)
+    private static void ProcClassModifiers<T>(IFightable<T> attacker, ref (double Minimum, double Maximum) damage) where T : IWeaponable
     {
         if (attacker.Class == ClassType.Berserker)
         {
@@ -42,9 +42,14 @@ public class DamageProvider : IDamageProvider
             damage.Minimum *= 1 / 3D;
             damage.Maximum *= 1 / 3D;
         }
+        if (attacker.Class == ClassType.Necromancer)
+        {
+            damage.Minimum *= 0.56D;
+            damage.Maximum *= 0.56D;
+        }
     }
 
-    private static void ProcArmorDamageReduction(IFightable attacker, IFightable target, ref (double Minimum, double Maximum) damage)
+    private static void ProcArmorDamageReduction<T, E>(IFightable<T> attacker, IFightable<E> target, ref (double Minimum, double Maximum) damage) where T : IWeaponable where E : IWeaponable
     {
         if (attacker.Class == ClassType.Mage)
             return;
@@ -65,7 +70,7 @@ public class DamageProvider : IDamageProvider
                 break;
             case ClassType.Warrior:
             case ClassType.DemonHunter:
-            case ClassType.ShieldlessWarrior:
+            case ClassType.Bert:
                 damageReduction = Math.Min(damageReduction, 0.5D);
                 break;
             case ClassType.BattleMage:
@@ -81,6 +86,10 @@ public class DamageProvider : IDamageProvider
                 damageReduction = Math.Min(damageReduction, 0.2D);
                 damageReduction *= 2;
                 break;
+            case ClassType.Necromancer:
+                damageReduction *= 2;
+                damageReduction = Math.Min(damageReduction, 0.2D);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(target.Class));
         }
@@ -89,19 +98,19 @@ public class DamageProvider : IDamageProvider
         damage.Maximum *= 1 - damageReduction;
     }
 
-    private static void ProcRuneBonus(Weapon? weapon, IFightable target, ref (double Minimum, double Maximum) damage)
+    private static void ProcRuneBonus<T>(IWeaponable? weapon, IFightable<T> target, ref (double Minimum, double Maximum) damage) where T : IWeaponable
     {
-        if (weapon == null || weapon.DamageRuneType == DamageRuneType.None)
+        if (weapon == null || weapon.RuneType == RuneType.None)
             return;
 
-        var runeBonus = weapon.RuneBonus / 100D;
-        var enemyRuneResistance = weapon.DamageRuneType switch
+        var enemyRuneResistance = weapon.RuneType switch
         {
-            DamageRuneType.Lightning => Math.Min(75, target.RuneResistance.LightningResistance),
-            DamageRuneType.Cold => Math.Min(75, target.RuneResistance.ColdResistance),
-            DamageRuneType.Fire => Math.Min(75, target.RuneResistance.FireResistance),
-            _ => throw new ArgumentOutOfRangeException(nameof(weapon.DamageRuneType)),
+            RuneType.LightningDamage => Math.Min(75, target.LightningResistance),
+            RuneType.ColdDamage => Math.Min(75, target.ColdResistance),
+            RuneType.FireDamage => Math.Min(75, target.FireResistance),
+            _ => throw new ArgumentOutOfRangeException(nameof(weapon.RuneType)),
         };
+        var runeBonus = weapon.RuneValue / 100D;
         runeBonus *= (100 - enemyRuneResistance) / 100D;
         runeBonus++;
 
@@ -109,26 +118,26 @@ public class DamageProvider : IDamageProvider
         damage.Maximum *= runeBonus;
     }
 
-    private static void ProcAttributesBonus(IFightable attacker, IFightable target, ref (double Minimum, double Maximum) damage)
+    private static void ProcAttributesBonus<T, E>(IFightable<T> attacker, IFightable<E> target, ref (double Minimum, double Maximum) damage) where T : IWeaponable where E : IWeaponable
     {
         var attribute = attacker.Class switch
         {
-            ClassType.Mage or ClassType.Bard or ClassType.Druid
-                => Math.Max(attacker.Intelligence / 2, attacker.Intelligence - target.Intelligence / 2),
+            ClassType.Mage or ClassType.Bard or ClassType.Druid or ClassType.Necromancer
+                => Math.Max(attacker.Intelligence / 2D, attacker.Intelligence - target.Intelligence / 2D),
             ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter
-                => Math.Max(attacker.Dexterity / 2, attacker.Dexterity - target.Dexterity / 2),
-            ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker or ClassType.ShieldlessWarrior
-                => (double)Math.Max(attacker.Strength / 2, attacker.Strength - target.Strength / 2),
+                => Math.Max(attacker.Dexterity / 2D, attacker.Dexterity - target.Dexterity / 2D),
+            ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker or ClassType.Bert
+                => (double)Math.Max(attacker.Strength / 2D, attacker.Strength - target.Strength / 2D),
 
             _ => throw new ArgumentOutOfRangeException(nameof(attacker.Class)),
         };
-        var attributeBonus = 1 + attribute / 10;
+        var attributeBonus = 1 + attribute / 10D;
 
         damage.Minimum *= attributeBonus;
         damage.Maximum *= attributeBonus;
     }
 
-    private static (double Minimum, double Maximum) GetBaseDmg(Weapon? weapon, IFightable attacker, bool isSecondWeapon)
+    private static (double Minimum, double Maximum) GetBaseDmg<T>(IWeaponable? weapon, IFightable<T> attacker, bool isSecondWeapon) where T : IWeaponable
     {
         var handDamage = GetHandDamage(attacker, isSecondWeapon);
 
@@ -140,7 +149,7 @@ public class DamageProvider : IDamageProvider
         return (weapon.MinDmg, weapon.MaxDmg);
     }
 
-    private static (double Minimum, double Maximum) GetHandDamage(IFightable attacker, bool isSecondWeapon)
+    private static (double Minimum, double Maximum) GetHandDamage<T>(IFightable<T> attacker, bool isSecondWeapon) where T : IWeaponable
     {
         if (attacker.Level < 10)
             return (1, 2);
@@ -160,11 +169,11 @@ public class DamageProvider : IDamageProvider
         return (min, max);
     }
 
-    public double CalculateFireBallDamage(IFightable main, IFightable opponent)
+    public double CalculateFireBallDamage<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         var multiplier = opponent.Class switch
         {
-            ClassType.Warrior or ClassType.ShieldlessWarrior or ClassType.Druid or ClassType.BattleMage => 5,
+            ClassType.Warrior or ClassType.Bert or ClassType.Druid or ClassType.BattleMage => 5,
             ClassType.Bard => 2,
             ClassType.Mage => 0,
             ClassType.Scout or ClassType.Assassin or ClassType.Berserker or ClassType.DemonHunter => 4,

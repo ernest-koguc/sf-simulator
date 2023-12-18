@@ -54,8 +54,8 @@ export function mapToLowerCase(data: any) {
       key = keys[n][0].toLowerCase();
       var lowerCaseName = key + keys[n].substring(1);
       let property = data[keys[n]];
-      if (typeof property !== 'string' && Object.keys(property).length) {
-        mappedData[lowerCaseName] = mapToLowerCase(property)
+      if (property !== null && typeof property !== 'string' && Object.keys(property).length) {
+        mappedData[lowerCaseName] = mapToLowerCase(property);
       }
       else {
         mappedData[lowerCaseName] = property;
@@ -63,4 +63,4 @@ export function mapToLowerCase(data: any) {
     }
 
     return mappedData;
-  }
+}

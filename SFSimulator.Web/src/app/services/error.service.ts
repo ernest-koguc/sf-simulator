@@ -17,6 +17,8 @@ export class ErrorService {
       return `Maximum ${error['max'].max}`;
     if (error['belowOrEqualCharacterLevel'])
       return `Level must be above character level`;
+    if (error['belowOrEqualCharacterBaseStats'])
+      return `Base stats must be above character base stats`;
     if (error['outOfRange'])
       return `Between ${error['outOfRange'].min} and ${error['outOfRange'].max}`;
     if (error['maxExperience'])

@@ -3,236 +3,747 @@
   <button mat-stroked-button class="text-primary border-primary fw-bolder bg-darken me-1" (click)="paste()">Paste From Clipboard</button>
   <button mat-stroked-button class="text-warning border-warning fw-bolder bg-darken" (click)="loginThroughSFTools()">Endpoint</button>
 </div>
-<div class="container">
+<div class="container bg-darken">
   <div class="row pt-3">
-    <div class="col-9 pt-4 bg-darken" [formGroup]="character">
       <p>Data of dungeon enemies comes from <a target="blank" href="https://sftools.mar21.eu/">sftools</a> - thank you mar21!</p>
-      <div class="d-inline-flex flex-column mt-1">
+    <div class="col-9 pt-4">
+      <mat-tab-group dynamicHeight backgroundColor="primary" mat-stretch-tabs="true" preserveContent="true">
+        <mat-tab label="Character" [formGroup]="character">
 
-        <!--CHARACTER NODE-->
+          <ng-template matTabContent>
 
-        <label for="character" class="mb-1">Character</label>
-        <div id="character" class="d-flex">
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Class</mat-label>
-            <mat-select formControlName="class">
-              <mat-option *ngFor="let classEnum of class | enum" [value]="classEnum.value">{{ classEnum.key | wordSpace }}</mat-option>
-            </mat-select>
-            <mat-error showError [control]="form.class"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Level</mat-label>
-            <input matInput type="number" formControlName="level" placeholder="0"/>
-            <mat-error showError [control]="form.level"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Armor</mat-label>
-            <input matInput type="number" formControlName="armor" placeholder="0"/>
-            <mat-error showError [control]="form.armor"></mat-error>
-          </mat-form-field>
-        </div>
-      </div>
-      
-      <div class="d-inline-flex flex-column mt-1">
+            <div class="d-inline-flex flex-column mt-1">
 
-        <!--ATTRIBUTES NODE-->
+              <!--CHARACTER NODE-->
 
-        <label for="attributes" class="mb-1">Attributes</label>
-        <div id="attributes" class="d-flex">
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Strength</mat-label>
-            <input matInput type="number" formControlName="strength" placeholder="0"/>
-            <mat-error showError [control]="form.strength"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Dexterity</mat-label>
-            <input matInput type="number" formControlName="dexterity" placeholder="0"/>
-            <mat-error showError [control]="form.dexterity"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Intelligence</mat-label>
-            <input matInput type="number" formControlName="intelligence" placeholder="0"/>
-            <mat-error showError [control]="form.intelligence"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Constitution</mat-label>
-            <input matInput type="number" formControlName="constitution" placeholder="0"/>
-            <mat-error showError [control]="form.constitution"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Luck</mat-label>
-            <input matInput type="number" formControlName="luck" placeholder="0"/>
-            <mat-error showError [control]="form.luck"></mat-error>
-          </mat-form-field>
-        </div>
-      </div>
+              <label for="character" class="mb-1">Character</label>
+              <div id="character" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Class</mat-label>
+                  <mat-select formControlName="class">
+                    <mat-option *ngFor="let classEnum of class | enum" [value]="classEnum.value">{{ classEnum.key | wordSpace }}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="characterControls.class"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Level</mat-label>
+                  <input matInput type="number" formControlName="level" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.level"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Armor</mat-label>
+                  <input matInput type="number" formControlName="armor" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.armor"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
 
-      <div class="d-inline-flex flex-column mt-1" [formGroup]="form.firstWeapon">
+            <div class="d-inline-flex flex-column mt-1">
 
-        <!--FIRST WEAPON NODE-->
+              <!--ATTRIBUTES NODE-->
 
-        <label for="first-weapon" class="mb-1">Weapon</label>
-        <div id="first-weapon" class="d-flex">
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Min</mat-label>
-              <input matInput type="number" formControlName="minDmg" placeholder="0"/>
-              <mat-error showError [control]="firstWeapon.minDmg"></mat-error>
-            </mat-form-field>
-          </div>
+              <label for="attributes" class="mb-1">Attributes</label>
+              <div id="attributes" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Strength</mat-label>
+                  <input matInput type="number" formControlName="strength" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.strength"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Dexterity</mat-label>
+                  <input matInput type="number" formControlName="dexterity" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.dexterity"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Intelligence</mat-label>
+                  <input matInput type="number" formControlName="intelligence" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.intelligence"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Constitution</mat-label>
+                  <input matInput type="number" formControlName="constitution" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.constitution"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Luck</mat-label>
+                  <input matInput type="number" formControlName="luck" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.luck"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Max</mat-label>
-              <input matInput type="number" formControlName="maxDmg" placeholder="0"/>
-              <mat-error showError [control]="firstWeapon.maxDmg"></mat-error>
-            </mat-form-field>
-          </div>
+            <div class="d-inline-flex flex-column mt-1" [formGroup]="characterControls.firstWeapon">
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Rune</mat-label>
-              <mat-select formControlName="damageRuneType">
-                <mat-option *ngFor="let type of runeWeaponType | enum" [value]="type.value">{{ type.key }}</mat-option>
-              </mat-select>
-              <mat-error showError [control]="firstWeapon.damageRuneType"></mat-error>
-            </mat-form-field>
-          </div>
+              <!--FIRST WEAPON NODE-->
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Rune Dmg</mat-label>
-              <input matInput type="number" formControlName="runeBonus" placeholder="0"/>
-              <mat-error showError [control]="firstWeapon.runeBonus"></mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
+              <label for="first-weapon" class="mb-1">Weapon</label>
+              <div id="first-weapon" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Min</mat-label>
+                    <input matInput type="number" formControlName="minDmg" placeholder="0"/>
+                    <mat-error showError [control]="firstWeapon.minDmg"></mat-error>
+                  </mat-form-field>
+                </div>
 
-      <div class="d-inline-flex flex-column mt-1" *ngIf='form.class.value===4' [formGroup]="form.secondWeapon">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Max</mat-label>
+                    <input matInput type="number" formControlName="maxDmg" placeholder="0"/>
+                    <mat-error showError [control]="firstWeapon.maxDmg"></mat-error>
+                  </mat-form-field>
+                </div>
 
-        <!--SECOND WEAPON NODE-->
-        
-        <label for="second-weapon" class="mb-1">Second Weapon</label>
-        <div id="second-weapon" class="d-flex">
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Min</mat-label>
-              <input matInput type="number" formControlName="minDmg" placeholder="0"/>
-              <mat-error showError [control]="secondWeapon.minDmg"></mat-error>
-            </mat-form-field>
-          </div>
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune</mat-label>
+                    <mat-select formControlName="runeType">
+                      <mat-option *ngFor="let type of runeWeaponType | enum" [value]="type.value">{{ type.key }}</mat-option>
+                    </mat-select>
+                    <mat-error showError [control]="firstWeapon.runeType"></mat-error>
+                  </mat-form-field>
+                </div>
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Max</mat-label>
-              <input matInput type="number" formControlName="maxDmg" placeholder="0"/>
-              <mat-error showError [control]="secondWeapon.maxDmg"></mat-error>
-            </mat-form-field>
-          </div>
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune Dmg</mat-label>
+                    <input matInput type="number" formControlName="runeValue" placeholder="0"/>
+                    <mat-error showError [control]="firstWeapon.runeValue"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Rune</mat-label>
-              <mat-select formControlName="damageRuneType">
-                <mat-option *ngFor="let type of runeWeaponType | enum" [value]="type.value">{{ type.key }}</mat-option>
-              </mat-select>
-              <mat-error showError [control]="secondWeapon.damageRuneType"></mat-error>
-            </mat-form-field>
-          </div>
+            <div class="d-inline-flex flex-column mt-1" *ngIf='characterControls.class.value===4' [formGroup]="characterControls.secondWeapon">
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Rune Dmg</mat-label>
-              <input matInput type="number" formControlName="runeBonus" placeholder="0"/>
-              <mat-error showError [control]="secondWeapon.runeBonus"></mat-error>
-            </mat-form-field>
-          </div>
+              <!--SECOND WEAPON NODE-->
 
-        </div>
+              <label for="second-weapon" class="mb-1">Second Weapon</label>
+              <div id="second-weapon" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Min</mat-label>
+                    <input matInput type="number" formControlName="minDmg" placeholder="0"/>
+                    <mat-error showError [control]="secondWeapon.minDmg"></mat-error>
+                  </mat-form-field>
+                </div>
 
-      </div>
-      <div class="d-inline-flex flex-column mt-1 mb-3">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Max</mat-label>
+                    <input matInput type="number" formControlName="maxDmg" placeholder="0"/>
+                    <mat-error showError [control]="secondWeapon.maxDmg"></mat-error>
+                  </mat-form-field>
+                </div>
 
-        <!--TOGGLABLES NODE-->
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune</mat-label>
+                    <mat-select formControlName="runeType">
+                      <mat-option *ngFor="let type of runeWeaponType | enum" [value]="type.value">{{ type.key }}</mat-option>
+                    </mat-select>
+                    <mat-error showError [control]="secondWeapon.runeType"></mat-error>
+                  </mat-form-field>
+                </div>
 
-        <label for="witch-scrolls" class="mb-1">Togglables</label>
-        <div id="witch-scrolls" class="d-flex" [formGroup]="character">
-          <check-box class="me-1" formControlName="hasEternityPotion">Eternity Potion</check-box>
-          <check-box class="me-1" formControlName="hasGlovesScroll">Gloves Scroll</check-box>
-          <check-box class="me-1" formControlName="hasWeaponScroll">Weapon Scroll</check-box>
-        </div>
-      </div>
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune Dmg</mat-label>
+                    <input matInput type="number" formControlName="runeValue" placeholder="0"/>
+                    <mat-error showError [control]="secondWeapon.runeValue"></mat-error>
+                  </mat-form-field>
+                </div>
 
-      <div class="d-inline-flex flex-column mt-1">
+              </div>
 
-        <!--EXTRAS NODE-->
+            </div>
+            <div class="d-inline-flex flex-column mt-1 mb-3">
 
-        <label for="extras" class="mb-1">Extras</label>
-        <div id="extras" class="d-flex">
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Gladiator</mat-label>
-            <input matInput type="number" formControlName="gladiatorLevel" placeholder="0"/>
-            <mat-error showError [control]="form.gladiatorLevel"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Portal Solo</mat-label>
-            <input matInput type="number" formControlName="soloPortal" placeholder="0"/>
-            <mat-error showError [control]="form.soloPortal"></mat-error>
-          </mat-form-field>
-          <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-            <mat-label>Portal Guild</mat-label>
-            <input matInput type="number" formControlName="guildPortal" placeholder="0"/>
-            <mat-error showError [control]="form.guildPortal"></mat-error>
-          </mat-form-field>
-          <div [formGroup]="form.runeBonuses">
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Health Rune</mat-label>
-              <input matInput type="number" formControlName="healthRune" placeholder="0"/>
-              <mat-error showError [control]="runeBonuses.healthRune"></mat-error>
-            </mat-form-field>
-          </div>
-        </div>
+              <!--TOGGLABLES NODE-->
 
-      </div>
+              <label for="witch-scrolls" class="mb-1">Togglables</label>
+              <div id="witch-scrolls" class="d-flex">
+                <check-box class="me-1" formControlName="hasEternityPotion">Eternity Potion</check-box>
+                <check-box class="me-1" formControlName="reaction">Gloves Scroll</check-box>
+                <check-box class="me-1" formControlName="hasWeaponScroll">Weapon Scroll</check-box>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--EXTRAS NODE-->
+
+              <label for="extras" class="mb-1">Extras</label>
+              <div id="extras" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Gladiator</mat-label>
+                  <input matInput type="number" formControlName="gladiatorLevel" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.gladiatorLevel"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Portal Solo</mat-label>
+                  <input matInput type="number" formControlName="soloPortal" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.soloPortal"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Portal Guild</mat-label>
+                  <input matInput type="number" formControlName="guildPortal" placeholder="0"/>
+                  <mat-error showError [control]="characterControls.guildPortal"></mat-error>
+                </mat-form-field>
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Health Rune</mat-label>
+                    <input matInput type="number" formControlName="healthRune" placeholder="0"/>
+                    <mat-error showError [control]="characterControls.healthRune"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
 
 
-      <div class="d-inline-flex flex-column mt-1" [formGroup]="form.runeBonuses">
-        
-        <!--RESISTANCE NODE-->
+            <div class="d-inline-flex flex-column mt-1">
 
-        <label for="resistance" class="mb-1">Resistance</label>
-        <div id="resistance" class="d-flex">
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Lightning</mat-label>
-              <input matInput type="number" formControlName="lightningResistance" placeholder="0"/>
-              <mat-error showError [control]="runeBonuses.lightningResistance"></mat-error>
-            </mat-form-field>
-          </div>
+              <!--RESISTANCE NODE-->
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Cold</mat-label>
-              <input matInput type="number" formControlName="coldResistance" placeholder="0"/>
-              <mat-error showError [control]="runeBonuses.coldResistance"></mat-error>
-            </mat-form-field>
-          </div>
+              <label for="resistance" class="mb-1">Resistance</label>
+              <div id="resistance" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Lightning</mat-label>
+                    <input matInput type="number" formControlName="lightningResistance" placeholder="0"/>
+                    <mat-error showError [control]="characterControls.lightningResistance"></mat-error>
+                  </mat-form-field>
+                </div>
 
-          <div>
-            <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
-              <mat-label>Fire</mat-label>
-              <input matInput type="number" formControlName="fireResistance" placeholder="0"/>
-              <mat-error showError [control]="runeBonuses.fireResistance"></mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-          
-      </div>
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Cold</mat-label>
+                    <input matInput type="number" formControlName="coldResistance" placeholder="0"/>
+                    <mat-error showError [control]="characterControls.coldResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Fire</mat-label>
+                    <input matInput type="number" formControlName="fireResistance" placeholder="0"/>
+                    <mat-error showError [control]="characterControls.fireResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+          </ng-template>
+        </mat-tab>
+
+
+        <!-- BERT -->
+        <mat-tab label="Bert" [formGroup]='bert'>
+
+          <ng-template matTabContent>
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--CHARACTER NODE-->
+
+              <label for="character" class="mb-1">Character</label>
+              <div id="character" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Class</mat-label>
+                  <mat-select formControlName="class">
+                    <mat-option *ngFor="let classEnum of class | enum" [value]="classEnum.value">{{ classEnum.key | wordSpace }}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="bertControls.class"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Armor</mat-label>
+                  <input matInput type="number" formControlName="armor" placeholder="0"/>
+                  <mat-error showError [control]="bertControls.armor"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--ATTRIBUTES NODE-->
+
+              <label for="attributes" class="mb-1">Attributes</label>
+              <div id="attributes" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Strength</mat-label>
+                  <input matInput type="number" formControlName="strength" placeholder="0"/>
+                  <mat-error showError [control]="bertControls.strength"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Dexterity</mat-label>
+                  <input matInput type="number" formControlName="dexterity" placeholder="0"/>
+                  <mat-error showError [control]="bertControls.dexterity"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Intelligence</mat-label>
+                  <input matInput type="number" formControlName="intelligence" placeholder="0"/>
+                  <mat-error showError [control]="bertControls.intelligence"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Constitution</mat-label>
+                  <input matInput type="number" formControlName="constitution" placeholder="0"/>
+                  <mat-error showError [control]="bertControls.constitution"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Luck</mat-label>
+                  <input matInput type="number" formControlName="luck" placeholder="0"/>
+                  <mat-error showError [control]="bertControls.luck"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1" [formGroup]="bertControls.firstWeapon">
+
+              <!--FIRST WEAPON NODE-->
+
+              <label for="first-weapon" class="mb-1">Weapon</label>
+              <div id="first-weapon" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Min</mat-label>
+                    <input matInput type="number" formControlName="minDmg" placeholder="0"/>
+                    <mat-error showError [control]="bertWeapon.minDmg"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Max</mat-label>
+                    <input matInput type="number" formControlName="maxDmg" placeholder="0"/>
+                    <mat-error showError [control]="bertWeapon.maxDmg"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune</mat-label>
+                    <mat-select formControlName="runeType">
+                      <mat-option *ngFor="let type of runeWeaponType | enum" [value]="type.value">{{ type.key }}</mat-option>
+                    </mat-select>
+                    <mat-error showError [control]="bertWeapon.runeType"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune Dmg</mat-label>
+                    <input matInput type="number" formControlName="runeValue" placeholder="0"/>
+                    <mat-error showError [control]="bertWeapon.runeValue"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1 mb-3">
+
+              <!--TOGGLABLES NODE-->
+
+              <label for="witch-scrolls" class="mb-1">Togglables</label>
+              <div id="witch-scrolls" class="d-flex">
+                <check-box class="me-1" formControlName="reaction">Gloves Scroll</check-box>
+                <check-box class="me-1" formControlName="hasWeaponScroll">Weapon Scroll</check-box>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column mt-1">
+
+              <!--EXTRAS NODE-->
+
+              <label for="extras" class="mb-1">Extras</label>
+              <div id="extras" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Health Rune</mat-label>
+                    <input matInput type="number" formControlName="healthRune" placeholder="0"/>
+                    <mat-error showError [control]="bertControls.healthRune"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--RESISTANCE NODE-->
+
+              <label for="resistance" class="mb-1">Resistance</label>
+              <div id="resistance" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Lightning</mat-label>
+                    <input matInput type="number" formControlName="lightningResistance" placeholder="0"/>
+                    <mat-error showError [control]="bertControls.lightningResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Cold</mat-label>
+                    <input matInput type="number" formControlName="coldResistance" placeholder="0"/>
+                    <mat-error showError [control]="bertControls.coldResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Fire</mat-label>
+                    <input matInput type="number" formControlName="fireResistance" placeholder="0"/>
+                    <mat-error showError [control]="bertControls.fireResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+
+          </ng-template>
+        </mat-tab>
+        <!-- KUNGIUNDE -->
+
+
+
+        <mat-tab label="Kunigunde" [formGroup]='kunigunde'>
+
+          <ng-template matTabContent>
+
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--CHARACTER NODE-->
+
+              <label for="character" class="mb-1">Character</label>
+              <div id="character" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Class</mat-label>
+                  <mat-select formControlName="class">
+                    <mat-option *ngFor="let classEnum of class | enum" [value]="classEnum.value">{{ classEnum.key | wordSpace }}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="kunigundeControls.class"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Armor</mat-label>
+                  <input matInput type="number" formControlName="armor" placeholder="0"/>
+                  <mat-error showError [control]="kunigundeControls.armor"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--ATTRIBUTES NODE-->
+
+              <label for="attributes" class="mb-1">Attributes</label>
+              <div id="attributes" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Strength</mat-label>
+                  <input matInput type="number" formControlName="strength" placeholder="0"/>
+                  <mat-error showError [control]="kunigundeControls.strength"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Dexterity</mat-label>
+                  <input matInput type="number" formControlName="dexterity" placeholder="0"/>
+                  <mat-error showError [control]="kunigundeControls.dexterity"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Intelligence</mat-label>
+                  <input matInput type="number" formControlName="intelligence" placeholder="0"/>
+                  <mat-error showError [control]="kunigundeControls.intelligence"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Constitution</mat-label>
+                  <input matInput type="number" formControlName="constitution" placeholder="0"/>
+                  <mat-error showError [control]="kunigundeControls.constitution"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Luck</mat-label>
+                  <input matInput type="number" formControlName="luck" placeholder="0"/>
+                  <mat-error showError [control]="kunigundeControls.luck"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1" [formGroup]="kunigundeControls.firstWeapon">
+
+              <!--FIRST WEAPON NODE-->
+
+              <label for="first-weapon" class="mb-1">Weapon</label>
+              <div id="first-weapon" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Min</mat-label>
+                    <input matInput type="number" formControlName="minDmg" placeholder="0"/>
+                    <mat-error showError [control]="kunigundeWeapon.minDmg"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Max</mat-label>
+                    <input matInput type="number" formControlName="maxDmg" placeholder="0"/>
+                    <mat-error showError [control]="kunigundeWeapon.maxDmg"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune</mat-label>
+                    <mat-select formControlName="runeType">
+                      <mat-option *ngFor="let type of runeWeaponType | enum" [value]="type.value">{{ type.key }}</mat-option>
+                    </mat-select>
+                    <mat-error showError [control]="kunigundeWeapon.runeType"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune Dmg</mat-label>
+                    <input matInput type="number" formControlName="runeValue" placeholder="0"/>
+                    <mat-error showError [control]="kunigundeWeapon.runeValue"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1 mb-3">
+
+              <!--TOGGLABLES NODE-->
+
+              <label for="witch-scrolls" class="mb-1">Togglables</label>
+              <div id="witch-scrolls" class="d-flex">
+                <check-box class="me-1" formControlName="reaction">Gloves Scroll</check-box>
+                <check-box class="me-1" formControlName="hasWeaponScroll">Weapon Scroll</check-box>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column mt-1">
+
+              <!--EXTRAS NODE-->
+
+              <label for="extras" class="mb-1">Extras</label>
+              <div id="extras" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Health Rune</mat-label>
+                    <input matInput type="number" formControlName="healthRune" placeholder="0"/>
+                    <mat-error showError [control]="kunigundeControls.healthRune"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--RESISTANCE NODE-->
+
+              <label for="resistance" class="mb-1">Resistance</label>
+              <div id="resistance" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Lightning</mat-label>
+                    <input matInput type="number" formControlName="lightningResistance" placeholder="0"/>
+                    <mat-error showError [control]="kunigundeControls.lightningResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Cold</mat-label>
+                    <input matInput type="number" formControlName="coldResistance" placeholder="0"/>
+                    <mat-error showError [control]="kunigundeControls.coldResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Fire</mat-label>
+                    <input matInput type="number" formControlName="fireResistance" placeholder="0"/>
+                    <mat-error showError [control]="kunigundeControls.fireResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+          </ng-template>
+        </mat-tab>
+
+        <!-- MARC -->
+
+        <mat-tab label="Marc" [formGroup]='marc'>
+
+          <ng-template matTabContent>
+
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--CHARACTER NODE-->
+
+              <label for="character" class="mb-1">Character</label>
+              <div id="character" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Class</mat-label>
+                  <mat-select formControlName="class">
+                    <mat-option *ngFor="let classEnum of class | enum" [value]="classEnum.value">{{ classEnum.key | wordSpace }}</mat-option>
+                  </mat-select>
+                  <mat-error showError [control]="marcControls.class"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Armor</mat-label>
+                  <input matInput type="number" formControlName="armor" placeholder="0"/>
+                  <mat-error showError [control]="marcControls.armor"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--ATTRIBUTES NODE-->
+
+              <label for="attributes" class="mb-1">Attributes</label>
+              <div id="attributes" class="d-flex">
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Strength</mat-label>
+                  <input matInput type="number" formControlName="strength" placeholder="0"/>
+                  <mat-error showError [control]="marcControls.strength"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Dexterity</mat-label>
+                  <input matInput type="number" formControlName="dexterity" placeholder="0"/>
+                  <mat-error showError [control]="marcControls.dexterity"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Intelligence</mat-label>
+                  <input matInput type="number" formControlName="intelligence" placeholder="0"/>
+                  <mat-error showError [control]="marcControls.intelligence"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Constitution</mat-label>
+                  <input matInput type="number" formControlName="constitution" placeholder="0"/>
+                  <mat-error showError [control]="marcControls.constitution"></mat-error>
+                </mat-form-field>
+                <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                  <mat-label>Luck</mat-label>
+                  <input matInput type="number" formControlName="luck" placeholder="0"/>
+                  <mat-error showError [control]="marcControls.luck"></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1" [formGroup]="marcControls.firstWeapon">
+
+              <!--FIRST WEAPON NODE-->
+
+              <label for="first-weapon" class="mb-1">Weapon</label>
+              <div id="first-weapon" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Min</mat-label>
+                    <input matInput type="number" formControlName="minDmg" placeholder="0"/>
+                    <mat-error showError [control]="marcWeapon.minDmg"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Max</mat-label>
+                    <input matInput type="number" formControlName="maxDmg" placeholder="0"/>
+                    <mat-error showError [control]="marcWeapon.maxDmg"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune</mat-label>
+                    <mat-select formControlName="runeType">
+                      <mat-option *ngFor="let type of runeWeaponType | enum" [value]="type.value">{{ type.key }}</mat-option>
+                    </mat-select>
+                    <mat-error showError [control]="marcWeapon.runeType"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Rune Dmg</mat-label>
+                    <input matInput type="number" formControlName="runeValue" placeholder="0"/>
+                    <mat-error showError [control]="marcWeapon.runeValue"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-inline-flex flex-column mt-1 mb-3">
+
+              <!--TOGGLABLES NODE-->
+
+              <label for="witch-scrolls" class="mb-1">Togglables</label>
+              <div id="witch-scrolls" class="d-flex">
+                <check-box class="me-1" formControlName="reaction">Gloves Scroll</check-box>
+                <check-box class="me-1" formControlName="hasWeaponScroll">Weapon Scroll</check-box>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column mt-1">
+
+              <!--EXTRAS NODE-->
+
+              <label for="extras" class="mb-1">Extras</label>
+              <div id="extras" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Health Rune</mat-label>
+                    <input matInput type="number" formControlName="healthRune" placeholder="0"/>
+                    <mat-error showError [control]="marcControls.healthRune"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="d-inline-flex flex-column mt-1">
+
+              <!--RESISTANCE NODE-->
+
+              <label for="resistance" class="mb-1">Resistance</label>
+              <div id="resistance" class="d-flex">
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Lightning</mat-label>
+                    <input matInput type="number" formControlName="lightningResistance" placeholder="0"/>
+                    <mat-error showError [control]="marcControls.lightningResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Cold</mat-label>
+                    <input matInput type="number" formControlName="coldResistance" placeholder="0"/>
+                    <mat-error showError [control]="marcControls.coldResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div>
+                  <mat-form-field color='accent' hideRequiredMarker='true' appearance="outline" class='mb-1'>
+                    <mat-label>Fire</mat-label>
+                    <input matInput type="number" formControlName="fireResistance" placeholder="0"/>
+                    <mat-error showError [control]="marcControls.fireResistance"></mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
 
     </div>
 
-    <div class="col-3 d-flex flex-column pt-4 bg-darken">
+    <div class="col-3 d-flex flex-column pt-4" [formGroup]='character'>
 
       <mat-form-field class="long-form" color='accent' hideRequiredMarker='true' appearance="outline">
         <mat-label>Iterations</mat-label>
@@ -262,6 +773,7 @@
       <div *ngIf="isInProgress" class="align-self-center mt-2">
         <mat-spinner></mat-spinner>
       </div>
+
     </div>
   </div>
 </div>

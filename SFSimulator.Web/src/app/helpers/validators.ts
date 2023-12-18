@@ -1,28 +1,33 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { error } from "jquery";
-import { ClassType, DamageRuneType } from "../models/character";
+import { RuneType } from "../models/character";
+import { SimulationType } from "../models/simulation-options";
 
-export function simulateUntilValidator(characterLevel: number): ValidatorFn {
+export function simulateUntilValidator(characterLevel: number, characterBaseStats: number): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     if (control.value == null)
       return null;
 
-    let simulationType = control.parent?.get('simulationType')?.value;
+    let simulationType = control.parent?.get('simulationType')?.value as SimulationType;
 
     switch (simulationType) {
-      case 'Days':
+      case SimulationType.UntilDays:
         if (control.value < 1 || control.value > 3000)
           return { outOfRange: { min: 1, max: 3000 } };
         break;
-
-      case 'Level':
+      case SimulationType.UntilLevel:
         if (control.value > 800 || control.value < 1)
           return { outOfRange: { min: 1, max: 800 } };
         if (control.value <= characterLevel)
           return { belowOrEqualCharacterLevel: true }
         break;
+      case SimulationType.UntilBaseStats:
+        if (control.value > 1_000_000 || control.value < 1)
+          return { outOfRange: { min: 1, max: 1_000_000 } };
+        if (control.value <= characterBaseStats)
+          return { belowOrEqualCharacterBaseStats: true }
+        break;
     }
-    
+
     return null;
   }
 }
@@ -30,7 +35,7 @@ export function simulateUntilValidator(characterLevel: number): ValidatorFn {
 
 export function maxExperienceValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    let value = control.value; 
+    let value = control.value;
     if (value == null)
       return null;
 
@@ -48,29 +53,17 @@ export function maxExperienceValidator(): ValidatorFn {
 
 export function runeDamageBonusValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    let runeType = control.parent?.get('damageRuneType')?.value;
+    let runeType = control.parent?.get('runeType')?.value;
 
     if (runeType === undefined || runeType === null) {
       return null;
     }
 
-    if (runeType !== DamageRuneType.None && (control.value === undefined || control.value === null)) {
+    if (runeType !== RuneType.None && (control.value === undefined || control.value === null)) {
       return { runeDamage: true }
     }
 
     return null;
-  }
-}
-
-export function secondWeaponValidator() {
-  return (control: AbstractControl): ValidationErrors | null => {
-    let charClass = control.parent?.get('damageRuneType')?.value;
-
-    if (charClass !== ClassType.Assassin) {
-      return null;
-    }
-
-    return { valid: control.valid };
   }
 }
 

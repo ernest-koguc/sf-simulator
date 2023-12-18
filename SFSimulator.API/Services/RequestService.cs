@@ -19,21 +19,12 @@ public class RequestService : IRequestService
         _mapper = mapper;
     }
 
-    public async Task<SimulationResult> RunSimulationUntilDays(SimulateDaysRequest request)
+    public async Task<SimulationResult> RunSimulation(SimulateRequest request, SimulationType simulationType)
     {
         var character = _mapper.Map<Character>(request);
         var simulationOptions = _mapper.Map<SimulationOptions>(request);
 
-        var simulationResult = await _gameSimulator.RunDays(request.DaysCount, character, simulationOptions);
-
-        return simulationResult;
-    }
-    public async Task<SimulationResult> RunSimulationUntilLevel(SimulateUntilLevelRequest request)
-    {
-        var character = _mapper.Map<Character>(request);
-        var simulationOptions = _mapper.Map<SimulationOptions>(request);
-
-        var simulationResult = await _gameSimulator.RunLevels(request.UntilLevel, character, simulationOptions);
+        var simulationResult = await _gameSimulator.Run(request.SimulateUntil, character, simulationOptions, simulationType);
 
         return simulationResult;
     }
@@ -47,7 +38,12 @@ public class RequestService : IRequestService
 
     public DungeonSimulationResult SimulateDungeon(SimulateDungeonRequest request)
     {
-        var character = _mapper.Map<Character>(request);
+        var character = _mapper.Map<RawFightable>(request);
+        foreach (var companion in character.Companions)
+        {
+            companion.Character = character;
+        }
+
         var enemy = _dungeonProvider.GetDungeonEnemy(request.DungeonPosition, request.DungeonEnemyPosition);
 
         var result = _dungeonSimulator.SimulateDungeon(enemy, character, request.Iterations, request.WinTreshold);

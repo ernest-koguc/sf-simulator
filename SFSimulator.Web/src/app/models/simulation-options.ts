@@ -3,4 +3,8 @@ export interface SimulationOptions {
   simulateUntil: number;
 };
 
-export type SimulationType = 'Days' | 'Level';
+export enum SimulationType {
+    UntilDays = 0,
+    UntilLevel = 1,
+    UntilBaseStats = 2
+}
