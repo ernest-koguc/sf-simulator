@@ -28,7 +28,7 @@ public class SimulatorMappingProfiler : Profile
             .ForMember(d => d.HydraHeads, m => m.MapFrom(s => s.Group.Group.Hydra))
             .ForMember(d => d.GoldGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.GOLD)))
             .ForMember(d => d.XpGuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.XP)))
-            .ForMember(d => d.Class, m => m.MapFrom(s => (ClassType)s.Class))
+            .ForMember(d => d.Class, m => m.MapFrom(s => s.Class))
             .ForMember(d => d.Strength, m => m.MapFrom(s => s.Strength.Base))
             .ForMember(d => d.Dexterity, m => m.MapFrom(s => s.Dexterity.Base))
             .ForMember(d => d.Intelligence, m => m.MapFrom(s => s.Intelligence.Base))
@@ -40,7 +40,7 @@ public class SimulatorMappingProfiler : Profile
             .ForMember(d => d.SoloPortal, m => m.MapFrom(s => s.Dungeons.Player))
             .ForMember(d => d.GuildPortal, m => m.MapFrom(s => s.Dungeons.Group))
             .ForMember(d => d.Calendar, m => m.MapFrom(s => s.CalendarType))
-            .ForMember(d => d.CalendarDay, m => m.MapFrom(s => s.CalendarDay))
+            .ForMember(d => d.CalendarDay, m => m.MapFrom(s => s.CalendarDay == 0 ? 1 : s.CalendarDay))
             .ForMember(d => d.Items, m => m.MapFrom(s => ResolveItemsAsList(s.Items)))
             ;
 
