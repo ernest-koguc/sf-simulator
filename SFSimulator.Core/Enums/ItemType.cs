@@ -13,6 +13,5 @@
         Belt,
         Amulet,
         PetFood
-
     }
 }

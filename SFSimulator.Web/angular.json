@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "SFSimulatorWeb:build:production"
+              "buildTarget": "SFSimulatorWeb:build:production"
             },
             "development": {
-              "browserTarget": "SFSimulatorWeb:build:development"
+              "buildTarget": "SFSimulatorWeb:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "SFSimulatorWeb:build"
+            "buildTarget": "SFSimulatorWeb:build"
           }
         }
       }

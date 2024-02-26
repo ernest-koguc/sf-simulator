@@ -29,7 +29,8 @@ public class DungeonSimulator : IDungeonSimulator
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        var lookupContext = new Dictionary<IFightableContext, IFightableContext>();
+        var lookupContext = new (IFightableContext LeftSide, IFightableContext RightSide)[4];
+        var index = 0;
 
         if (dungeonEnemy.Dungeon.Type.WithCompanions())
         {
@@ -37,13 +38,14 @@ public class DungeonSimulator : IDungeonSimulator
             {
                 var context = _dungeonableContextFactory.Create(companion, dungeonEnemy);
                 var companionDungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, companion);
-                lookupContext.Add(context, companionDungeonContext);
+                lookupContext[index] = (context, companionDungeonContext);
+                index++;
             }
         }
 
         var characterContext = _dungeonableContextFactory.Create(character, dungeonEnemy);
         var dungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, character);
-        lookupContext.Add(characterContext, dungeonContext);
+        lookupContext[index] = (characterContext, dungeonContext);
 
         var wonFights = 0;
 
@@ -90,13 +92,13 @@ public class DungeonSimulator : IDungeonSimulator
 
         return result;
     }
-    private bool PerformSingleFight(Dictionary<IFightableContext, IFightableContext> lookupContext)
+    private bool PerformSingleFight((IFightableContext LeftSide, IFightableContext RightSide)[] lookupContext)
     {
         long? leftoverHealth = null;
         foreach (var pair in lookupContext)
         {
-            var charSide = pair.Key;
-            var dungeonSide = pair.Value;
+            var charSide = pair.LeftSide;
+            var dungeonSide = pair.RightSide;
 
             if (leftoverHealth.HasValue)
                 dungeonSide.Health = leftoverHealth.Value;
