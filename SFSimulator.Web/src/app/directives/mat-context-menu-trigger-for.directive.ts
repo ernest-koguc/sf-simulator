@@ -1,5 +1,5 @@
 import { Directive, HostListener, Input } from "@angular/core";
-import { MatMenuPanel, _MatMenuTriggerBase } from "@angular/material/menu";
+import { MatMenuPanel, MatMenuTrigger } from "@angular/material/menu";
 import { fromEvent, merge } from "rxjs";
 
 @Directive({
@@ -9,7 +9,7 @@ import { fromEvent, merge } from "rxjs";
   },
   exportAs: 'matContextMenuTrigger',
 })
-export class MatContextMenuTrigger extends _MatMenuTriggerBase {
+export class MatContextMenuTrigger extends MatMenuTrigger {
 
   @Input('matContextMenuTriggerFor')
   get menu_again() {
