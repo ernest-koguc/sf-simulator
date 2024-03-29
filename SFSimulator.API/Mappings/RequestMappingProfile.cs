@@ -31,7 +31,10 @@ public class RequestMappingProfile : Profile
             .ForMember(d => d.DrinkBeerOneByOne, m => m.MapFrom(s => s.DrinkBeerOneByOne))
             .ForMember(d => d.DailyThirst, m => m.MapFrom(s => s.DailyThirst))
             .ForMember(d => d.SpinAmount, m => m.MapFrom(s => GetSpinAmount(s.SpinAmount)))
-            .ForMember(d => d.Schedule, m => m.MapFrom(s => MapSchedule(s.Schedule)));
+            .ForMember(d => d.Schedule, m => m.MapFrom(s => MapSchedule(s.Schedule)))
+            .ForMember(d => d.WeeklyTasksOptions, m => m.MapFrom(s => new WeeklyTasksOptions(s.DoWeeklyTasks, s.DrinkExtraWeeklyBeer)))
+            ;
+
 
         CreateMap<SimulateDungeonRequest, RawFightable>()
             .ForMember(d => d.GuildPortal, m => m.MapFrom(s => s.GuildPortal / 100D))

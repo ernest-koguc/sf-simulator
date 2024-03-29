@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace SFSimulator.Core;
 
@@ -11,7 +10,7 @@ public class GameSimulator : IGameSimulator
     private readonly IScheduler _scheduler;
     private readonly IQuestChooser _questChooser;
     private readonly IDungeonSimulator _dungeonSimulator;
-    private readonly IMapper _mapper;
+    private readonly IWeeklyTasksRewardProvider _weeklyTasksRewardProvider;
     private readonly List<ItemType> CurrentItemTypesForWitch = new();
     private List<EventType> CurrentEvents = new();
     private IItemBackPack ItemBackPack { get; set; } = null!;
@@ -24,15 +23,16 @@ public class GameSimulator : IGameSimulator
     public Character Character { get; set; } = null!;
     public SimulationOptions SimulationOptions { get; set; } = null!;
 
-    public GameSimulator(IGameLogic characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IScheduler scheduler, IQuestChooser questChooser, IDungeonSimulator dungeonSimulator, IMapper mapper)
+    public GameSimulator(IGameLogic characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IWeeklyTasksRewardProvider weeklyTasksRewardProvider,
+            IScheduler scheduler, IQuestChooser questChooser, IDungeonSimulator dungeonSimulator)
     {
         _gameLogic = characterHelper;
         _thirstSimulator = thirstSimulator;
         _calendarRewardProvider = calendarRewardProvider;
         _scheduler = scheduler;
         _questChooser = questChooser;
-        _mapper = mapper;
         _dungeonSimulator = dungeonSimulator;
+        _weeklyTasksRewardProvider = weeklyTasksRewardProvider;
     }
 
     public async Task<SimulationResult> Run(int until, Character character, SimulationOptions simulationOptions, SimulationType simulationType)
@@ -129,17 +129,19 @@ public class GameSimulator : IGameSimulator
 
         SellItemsToWitch();
 
-        DoThirst();
+        DoThirst(SimulationOptions.DailyThirst);
+
+        CollectWeeklyTasksRewards();
 
         SpinAbawuwuWheel();
 
         CollectResourcesFromBuildings();
 
         var dailyQuestXP = _gameLogic.GetDailyMissionExperience(Character.Level, IsExperienceEvent, SimulationOptions.HydraHeads);
-        GiveXPToCharacter(dailyQuestXP, GainSource.DAILY_MISSION);
+        GiveXPToCharacter(dailyQuestXP, GainSource.DAILY_TASKS);
 
-        var dailyQuestGold = _gameLogic.GetDailyMissionGold(Character.Level, IsGoldEvent);
-        GiveGoldToCharacter(dailyQuestGold, GainSource.DAILY_MISSION);
+        var dailyQuestGold = _gameLogic.GetDailyMissionGold(Character.Level);
+        GiveGoldToCharacter(dailyQuestGold, GainSource.DAILY_TASKS);
 
         var arenaXP = 10 * _gameLogic.GetExperienceRewardFromArena(Character.Level, IsExperienceEvent);
         GiveXPToCharacter(arenaXP, GainSource.ARENA);
@@ -160,6 +162,24 @@ public class GameSimulator : IGameSimulator
         GiveCalendarRewardToPlayer(calendarReward);
 
         return Task.CompletedTask;
+    }
+
+    private void CollectWeeklyTasksRewards()
+    {
+        if (SimulationOptions.WeeklyTasksOptions.DoWeeklyTasks)
+        {
+            if (SimulationOptions.WeeklyTasksOptions.DrinkExtraBeer)
+            {
+                var extraThirst = _weeklyTasksRewardProvider.GetWeeklyThirst(CurrentDay);
+                DoThirst(extraThirst);
+            }
+
+            var weeklyTasksXP = _weeklyTasksRewardProvider.GetWeeklyExperience(Character.Level, SimulationOptions.ExperienceBonus, CurrentDay);
+            GiveXPToCharacter(weeklyTasksXP, GainSource.WEEKLY_TASKS);
+
+            var weeklyTasksGold = _weeklyTasksRewardProvider.GetWeeklyGold(Character.Level, CurrentDay);
+            GiveGoldToCharacter(weeklyTasksGold, GainSource.WEEKLY_TASKS);
+        }
     }
 
     private void PerformScheduleActions(ScheduleDay schedule)
@@ -189,13 +209,14 @@ public class GameSimulator : IGameSimulator
             GiveGoldToCharacter(gold.Value, GainSource.ITEM);
     }
 
-    private void DoThirst()
+    private void DoThirst(int thirst)
     {
-        var quests = _thirstSimulator.StartThirst(SimulationOptions.DailyThirst,
+        var quests = _thirstSimulator.StartThirst(thirst,
             _gameLogic.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
             Character.Level,
             CurrentEvents
             );
+
         var questList = new List<Quest>();
 
         while (quests is not null)
@@ -216,7 +237,6 @@ public class GameSimulator : IGameSimulator
                 _gameLogic.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
                 Character.Level);
         }
-        var totalXP = questList.Sum(q => q.Experience);
     }
 
     private void SpinAbawuwuWheel()

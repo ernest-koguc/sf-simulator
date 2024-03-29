@@ -13,11 +13,13 @@
         long GetXPFromGuildFight(int characterLevel, IEnumerable<EventType> events);
         long GetExperienceForDungeonEnemy(int level, DungeonEnemy dungeonEnemy);
         long GetExperienceRewardFromArena(int characterLevel, bool experienceEvent);
+        long GetWeeklyTasksExperience(int characterLevel, ExperienceBonus experienceBonus);
         #endregion
 
         #region Gold
         decimal GetGoldFromGuardDuty(int level, GoldBonus? goldBonus, bool goldEvent);
-        decimal GetDailyMissionGold(int level, bool goldEvent);
+        decimal GetDailyMissionGold(int level);
+        decimal GetGoblinTasksBaseGold(int characterLevel);
         decimal GetHourlyGoldPitProduction(int characterLevel, int goldPitLevel, bool goldEvent);
         decimal GetGoldRewardFromCalendar(int characterLevel, int rewardSize);
         decimal GetDailyGoldFromDiceGame(int characterLevel, IEnumerable<EventType> events);

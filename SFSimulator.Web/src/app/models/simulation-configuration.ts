@@ -36,4 +36,6 @@ export interface SimulationConfigForm {
   schedule: SavedSchedule | null;
   simulateDungeon: boolean | null;
   fightsForGold: number | null;
+  doWeeklyTasks: boolean | null;
+  drinkExtraWeeklyBeer: boolean | null;
 };

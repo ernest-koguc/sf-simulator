@@ -40,4 +40,6 @@ public class SimulateRequest
     public int Calendar { get; set; }
     public int CalendarDay { get; set; }
     public int FightsForGold { get; set; } 
+    public bool DoWeeklyTasks { get; set; }
+    public bool DrinkExtraWeeklyBeer { get; set; }
 }

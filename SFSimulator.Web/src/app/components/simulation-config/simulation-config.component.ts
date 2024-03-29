@@ -80,7 +80,9 @@ export class SimulationConfig implements OnInit {
     simulateDungeon: new FormControl(false, [Validators.required]),
     calendar: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(12)]),
     calendarDay: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(20)]),
-    fightsForGold: new FormControl(10, [Validators.required, Validators.min(0), Validators.max(10000)])
+    fightsForGold: new FormControl(10, [Validators.required, Validators.min(0), Validators.max(10000)]),
+    doWeeklyTasks: new FormControl(true, [Validators.required]),
+    drinkExtraWeeklyBeer: new FormControl(true, [Validators.required])
   });
 
   get form() {

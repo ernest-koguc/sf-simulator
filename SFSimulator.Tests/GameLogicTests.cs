@@ -65,10 +65,10 @@ namespace SFSimulator.Tests
             var gameLogic = new GameLogic(new Curves());
             var goldValues = new List<decimal>
             {
-                gameLogic.GetDailyMissionGold(227, false),
-                gameLogic.GetDailyMissionGold(455, false),
-                gameLogic.GetDailyMissionGold(502, false),
-                gameLogic.GetDailyMissionGold(632, false)
+                gameLogic.GetDailyMissionGold(227),
+                gameLogic.GetDailyMissionGold(455),
+                gameLogic.GetDailyMissionGold(502),
+                gameLogic.GetDailyMissionGold(632)
             };
 
             Assert.AreEqual(goldValues[0], 808852);

@@ -2,8 +2,8 @@
 {
     public static class TypesMapper
     {
-        public static IEnumerable<TypeMap> Types() => new[]
-        {
+        public static IEnumerable<TypeMap> Types() =>
+        [
             new TypeMap(typeof(GameLogic), typeof(IGameLogic), TypeMapOption.None),
 
             new TypeMap(typeof(ItemValueProvider), typeof(IItemValueProvider), TypeMapOption.None),
@@ -30,6 +30,7 @@
             new TypeMap(typeof(CritChanceProvider), typeof(ICritChanceProvider), TypeMapOption.None),
             new TypeMap(typeof(DamageProvider), typeof(IDamageProvider), TypeMapOption.None),
             new TypeMap(typeof(BonusMelodyLengthProvider), typeof(IBonusMelodyLengthProvider), TypeMapOption.None),
-        };
+            new TypeMap(typeof(WeeklyTasksRewardProvider), typeof(IWeeklyTasksRewardProvider), TypeMapOption.None),
+        ];
     }
 }

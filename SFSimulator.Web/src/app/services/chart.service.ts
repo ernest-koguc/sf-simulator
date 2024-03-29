@@ -179,6 +179,10 @@ export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatG
       return '#8BC34A';
     case 'GUILD_FIGHT':
       return '#EC407A';
+    case 'DAILY_TASKS':
+      return '#50e991';
+    case 'WEEKLY_TASKS':
+      return '#ffffff';
     case 'TOTAL':
       return '#ffa300';
   }

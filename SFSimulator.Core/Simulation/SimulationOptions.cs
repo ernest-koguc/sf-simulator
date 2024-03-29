@@ -26,4 +26,7 @@ public class SimulationOptions
     public int Calendar { get; set; }
     public int CalendarDay { get; set; }
     public int FightsForGold { get; set; } 
+    public WeeklyTasksOptions WeeklyTasksOptions { get; set; } = new (true, true);
 }
+
+public record WeeklyTasksOptions(bool DoWeeklyTasks, bool DrinkExtraBeer);

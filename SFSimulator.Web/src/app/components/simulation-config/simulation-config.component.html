@@ -173,6 +173,9 @@
                         matTooltipPosition='right'/>
                   <mat-error showError [control]="form.fightsForGold"></mat-error>
                 </mat-form-field>
+                <check-box formControlName="doWeeklyTasks">
+                  Do Weekly Tasks
+                </check-box>
 
               </div>
               <div class="col-xl-6 d-flex flex-column mt-3">
@@ -213,6 +216,9 @@
                 </mat-form-field>
                 <check-box formControlName="skipCalendar">
                   Skip Calendar
+                </check-box>
+                <check-box formControlName="drinkExtraWeeklyBeer">
+                  Drink Weekly Task Beer
                 </check-box>
                 <!--TO DO-->
                 <!--<check-box class="mt-3" formControlName="simulateDungeon">

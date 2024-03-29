@@ -5,7 +5,7 @@
         QUEST,
         GUARD,
         ARENA,
-        DAILY_MISSION,
+        DAILY_TASKS,
         ACADEMY,
         GOLD_PIT,
         TIME_MACHINE,
@@ -15,6 +15,7 @@
         ITEM,
         DICE_GAME,
         GUILD_FIGHT,
+        WEEKLY_TASKS,
         TOTAL
     }
 }

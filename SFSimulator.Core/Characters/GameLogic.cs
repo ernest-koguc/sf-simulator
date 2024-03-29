@@ -23,12 +23,28 @@
 
             return daily;
         }
-        public decimal GetDailyMissionGold(int level, bool goldEvent)
+        public decimal GetDailyMissionGold(int characterLevel)
         {
-            var gold = Curves.GoldCurve[level] / 100;
-            var reward = gold * 16;
-            reward = Math.Floor(reward);
-            return reward;
+            var baseGold = GetGoblinTasksBaseGold(characterLevel);
+            return Math.Floor(baseGold * 16);
+        }
+        public decimal GetGoblinTasksBaseGold(int characterLevel)
+        {
+            var gold = Curves.GoldCurve[characterLevel] / 100;
+            return gold;
+        }
+        public long GetWeeklyTasksExperience(int characterLevel, ExperienceBonus experienceBonus)
+        {
+            var baseXp = GetExperienceForNextLevel(characterLevel);
+            var multiplier = 1.5 + 0.75 * (characterLevel - 1);
+            var xp = baseXp / multiplier;
+
+            var xpReward = Math.Truncate(xp / Math.Max(1, Math.Exp(30090.33 / 5000000 * (characterLevel - 99))));
+
+            xpReward *= 2.456D;
+            var xpBonus = 1 + experienceBonus.ScrapbookFillness + experienceBonus.GuildBonus + experienceBonus.RuneBonus;
+
+            return (long)(xpReward*xpBonus);
         }
         public QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus)
         {
