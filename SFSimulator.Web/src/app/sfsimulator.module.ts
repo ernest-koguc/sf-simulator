@@ -30,7 +30,6 @@ import { ToolBarComponent } from './layout/tool-bar/tool-bar.component';
 import { SimulationOptionsDialogComponent } from './dialogs/simulation-options-dialog/simulation-options-dialog.component';
 import { ProgressBarComponent } from './dialogs/progress-bar-dialog/progress-bar.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CookieService } from 'ngx-cookie-service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './snackbars/snackbar/snackbar.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -114,7 +113,7 @@ import { WordSpacePipe } from './pipes/word-space.pipe';
     MatMenuModule,
     MatAutocompleteModule
   ],
-  providers: [CookieService, { provide: Window, useValue: window }],
+  providers: [],
   bootstrap: [SFSimulatorComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

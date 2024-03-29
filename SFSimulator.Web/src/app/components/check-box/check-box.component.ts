@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'check-box',
@@ -12,15 +12,24 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
   }]
 })
 export class CheckBoxComponent implements ControlValueAccessor {
+
+
   @Input()
   public isDisabled = false;
   public _isChecked = false;
-  public onChange = (value: any) => {};
+  public onChange = (value: any) => { };
   public onTouched = () => { };
+
+  public getCheckboxClass() {
+    let elementClass = this.isChecked === true ? 'checked' : 'unchecked';
+    if (this.isDisabled === true) elementClass += ' disabled';
+    return elementClass;
+  }
   public get isChecked() {
     return this._isChecked;
   }
   public set isChecked(value: boolean) {
+    if (this.isDisabled === true) return;
     this._isChecked = value;
     this.onChange(value);
     this.onTouched();

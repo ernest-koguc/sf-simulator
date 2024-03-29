@@ -168,6 +168,13 @@ export class SimulationConfig implements OnInit {
 
     this.form.level.valueChanges.subscribe(() => this.form.experience.updateValueAndValidity())
 
+    this.form.doWeeklyTasks.valueChanges.subscribe(v => {
+      if (v === false)
+        this.form.drinkExtraWeeklyBeer.disable();
+      else
+        this.form.drinkExtraWeeklyBeer.enable();
+    });
+
     if (this.simulationOptions.valid)
       this.configEmitter.emit(this.simulationOptions.getRawValue());
   }
