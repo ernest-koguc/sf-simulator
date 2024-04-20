@@ -24,6 +24,8 @@ public class GameSimulator : IGameSimulator
     public Character Character { get; set; } = null!;
     public SimulationOptions SimulationOptions { get; set; } = null!;
 
+    private SimulatedGains CurrentDayResult { get; set; } = default!;
+
     public GameSimulator(IGameLogic characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IWeeklyTasksRewardProvider weeklyTasksRewardProvider,
             IScheduler scheduler, IQuestChooser questChooser, IDungeonSimulator dungeonSimulator, IExpeditionService expeditionService)
     {
@@ -39,7 +41,6 @@ public class GameSimulator : IGameSimulator
 
     public async Task<SimulationResult> Run(int until, Character character, SimulationOptions simulationOptions, SimulationType simulationType)
     {
-
         SetSimulationOptions(character, simulationOptions);
         Func<int> lookUpValue;
 
@@ -60,7 +61,9 @@ public class GameSimulator : IGameSimulator
 
         for (CurrentDay = 1; lookUpValue() < until; CurrentDay++)
         {
-            SimulatedDays.Add(new() { DayIndex = CurrentDay });
+            var dayResult = new SimulatedGains { DayIndex = CurrentDay };
+            SimulatedDays.Add(dayResult);
+            CurrentDayResult = dayResult;
             await RunDay();
         }
 
@@ -318,7 +321,7 @@ public class GameSimulator : IGameSimulator
             Character.Gold %= 10000000;
         }
 
-        var baseStatGain = SimulatedDays.FirstOrDefault(d => d.DayIndex == CurrentDay)!.BaseStatGain;
+        var baseStatGain = CurrentDayResult.BaseStatGain;
 
         var baseStats = Math.Round(gold / 10000000, 3);
         baseStatGain[source] += baseStats;
@@ -339,7 +342,7 @@ public class GameSimulator : IGameSimulator
             LevelUpCharacter();
         }
 
-        var xpGains = SimulatedDays.FirstOrDefault(d => d.DayIndex == CurrentDay)!.ExperienceGain;
+        var xpGains = CurrentDayResult.ExperienceGain;
 
         xpGains[source] += xp;
         xpGains[GainSource.TOTAL] += xp;

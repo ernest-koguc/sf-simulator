@@ -72,7 +72,7 @@ export class SimulationConfig implements OnInit {
     hydraHeads: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(20)]),
     gemMineLevel: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(100)]),
     treasuryLevel: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(45)]),
-    mountType: new FormControl<MountType>(MountType.Griffin, [Validators.required]),
+    mountType: new FormControl<MountType | null>(MountType.Griffin, [Validators.required]),
     scrapbookFillness: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(100)]),
     xpGuildBonus: new FormControl(200, [Validators.required, Validators.min(0), Validators.max(200)]),
     xpRuneBonus: new FormControl(10, [Validators.required, Validators.min(0), Validators.max(10)]),
@@ -116,8 +116,10 @@ export class SimulationConfig implements OnInit {
   }
 
   public loadFormFromConfiguration(configuration: SavedConfiguration) {
+    let config = this.normalizeConfiguration(configuration);
 
-    this.simulationOptions.patchValue({ ...configuration.playstyle, ...configuration.character }, { emitEvent: true });
+    this.simulationOptions.patchValue({ ...config.playstyle, ...config.character }, { emitEvent: true });
+    this.simulationOptions.updateValueAndValidity();
     var schedule = this.savedSchedules.find(v => v.timestamp == configuration.scheduleId) ?? this.savedSchedules.find(v => v.timestamp == 0);
 
     if (schedule)
@@ -230,5 +232,26 @@ export class SimulationConfig implements OnInit {
       this.expeditionOptionsAfterSwitch.averageAmountOfChests.disable({ emitEvent: false })
       this.expeditionOptionsAfterSwitch.averageStarExperienceBonus.disable({ emitEvent: false })
     }
+  }
+
+  private normalizeConfiguration(configuration: SavedConfiguration) {
+    let spinTactic = configuration.playstyle.spinAmount;
+    if (spinTactic === null || isNaN(Number(spinTactic)))
+      configuration.playstyle.spinAmount = SpinTactic.Max;
+
+    let questPriority = configuration.playstyle.questPriority;
+    if (questPriority === null || isNaN(Number(questPriority)))
+      configuration.playstyle.questPriority = QuestPriority.Experience;
+
+    let priorityAfterSwitch = configuration.playstyle.priorityAfterSwitch;
+    if (priorityAfterSwitch === null || isNaN(Number(priorityAfterSwitch)))
+      configuration.playstyle.priorityAfterSwitch = QuestPriority.Gold;
+
+    if (configuration.character !== undefined) {
+      let mount = configuration.character.mountType;
+      if (mount === null || isNaN(Number(mount)))
+        configuration.character.mountType = MountType.Griffin;
+      }
+    return configuration;
   }
 }
