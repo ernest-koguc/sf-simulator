@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationDialogComponent } from '../../dialogs/configuration-dialog/configuration-dialog.component';
 import { SaveNewConfigurationDialogComponent } from '../../dialogs/save-new-configuration-dialog/save-new-configuration-dialog.component';
@@ -9,7 +9,7 @@ import { MountType } from '../../models/mount-type';
 import { QuestPriority } from '../../models/quest-priority';
 import { defaultSchedule, SavedSchedule } from '../../models/schedule';
 import { SimulationConfigForm } from '../../models/simulation-configuration';
-import { SpinTactic, spinTactics } from '../../models/spin-tactics';
+import { SpinTactic } from '../../models/spin-tactics';
 import { DataBaseService } from '../../services/database.service';
 import { SnackbarService } from '../../services/snackbar.service';
 
@@ -21,7 +21,8 @@ import { SnackbarService } from '../../services/snackbar.service';
 })
 export class SimulationConfig implements OnInit {
 
-  constructor(private snackBar: SnackbarService, private databaseService: DataBaseService, private dialog: MatDialog)
+  constructor(private snackBar: SnackbarService, private databaseService: DataBaseService, private dialog: MatDialog,
+  private formBuilder: FormBuilder)
   {
     this.databaseService.getAllSchedules().subscribe(v => {
       var defaultConfig: SavedSchedule =  defaultSchedule;
@@ -39,21 +40,27 @@ export class SimulationConfig implements OnInit {
   }
   @Output() configEmitter = new EventEmitter<SimulationConfigForm>();
 
-  public questPriority = ['Gold', 'Experience', 'Hybrid'];
-  public mountType = ['None', 'Pig', 'Horse', 'Tiger', 'Griffin'];
+  public questPriority = QuestPriority;
+  public mountType = MountType;
+  public spinTactic = SpinTactic;
+
   public savedSchedules!: SavedSchedule[];
   public defaultScheduleOption: SavedSchedule = defaultSchedule;
-  public spinTactics = spinTactics;
   public savedConfiguration?: SavedConfiguration;
+
+  public get expeditionsEnabled(): boolean {
+    return this.form.expeditionsInsteadOfQuests.value!;
+  }
 
   simulationOptions = new FormGroup({
     characterName: new FormControl(''),
     schedule: new FormControl<SavedSchedule>(this.defaultScheduleOption, [Validators.required]),
-    questPriority: new FormControl<QuestPriority>('Experience', [Validators.required]),
-    hybridRatio: new FormControl<number>({ value: 0, disabled: true }, [Validators.required, Validators.min(0), Validators.max(1)]),
+    questPriority: new FormControl<QuestPriority>(QuestPriority.Experience, [Validators.required]),
+    hybridRatio: new FormControl<number>( 0, [Validators.required, Validators.min(0), Validators.max(1)]),
+    hybridRatioAfterSwitch: new FormControl<number>( 0, [Validators.required, Validators.min(0), Validators.max(1)]),
     switchPriority: new FormControl(false, [Validators.required]),
-    switchLevel: new FormControl<number>({ value: 0, disabled: true }, [Validators.required, Validators.min(0), Validators.max(800)]),
-    priorityAfterSwitch: new FormControl<QuestPriority>({ value: 'Gold', disabled: true }, [Validators.required]),
+    switchLevel: new FormControl<number>(0, [Validators.required, Validators.min(0), Validators.max(800)]),
+    priorityAfterSwitch: new FormControl<QuestPriority>(QuestPriority.Gold, [Validators.required]),
     drinkBeerOneByOne: new FormControl(true, [Validators.required]),
     dailyThirst: new FormControl<number>(320, [Validators.required, Validators.min(0), Validators.max(320)]),
     skipCalendar: new FormControl(true, [Validators.required]),
@@ -65,7 +72,7 @@ export class SimulationConfig implements OnInit {
     hydraHeads: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(20)]),
     gemMineLevel: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(100)]),
     treasuryLevel: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(45)]),
-    mountType: new FormControl<MountType>('Griffin', [Validators.required]),
+    mountType: new FormControl<MountType>(MountType.Griffin, [Validators.required]),
     scrapbookFillness: new FormControl(100, [Validators.required, Validators.min(0), Validators.max(100)]),
     xpGuildBonus: new FormControl(200, [Validators.required, Validators.min(0), Validators.max(200)]),
     xpRuneBonus: new FormControl(10, [Validators.required, Validators.min(0), Validators.max(10)]),
@@ -75,21 +82,41 @@ export class SimulationConfig implements OnInit {
     goldGuildBonus: new FormControl(200, [Validators.required, Validators.min(0), Validators.max(200)]),
     goldRuneBonus: new FormControl(50, [Validators.required, Validators.min(0), Validators.max(50)]),
     hasGoldScroll: new FormControl(true),
-    spinAmount: new FormControl<SpinTactic>('Max', [Validators.required]),
+    spinAmount: new FormControl<SpinTactic>(SpinTactic.Max, [Validators.required]),
     dailyGuard: new FormControl(23, [Validators.required, Validators.min(0), Validators.max(24)]),
     simulateDungeon: new FormControl(false, [Validators.required]),
     calendar: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(12)]),
     calendarDay: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(20)]),
     fightsForGold: new FormControl(10, [Validators.required, Validators.min(0), Validators.max(10000)]),
     doWeeklyTasks: new FormControl(true, [Validators.required]),
-    drinkExtraWeeklyBeer: new FormControl(true, [Validators.required])
+    drinkExtraWeeklyBeer: new FormControl(true, [Validators.required]),
+    expeditionsInsteadOfQuests: new FormControl(true, [Validators.required]),
+    expeditionOptions: this.formBuilder.group({
+      averageAmountOfChests: [1.5, [Validators.required, Validators.min(0), Validators.max(2)]],
+      averageStarExperienceBonus: [1.2, [Validators.required, Validators.min(1), Validators.max(1.3)]],
+    }),
+    expeditionOptionsAfterSwitch: this.formBuilder.group({
+      averageAmountOfChests: [1.5, [Validators.required, Validators.min(0), Validators.max(2)]],
+      averageStarExperienceBonus: [1.2, [Validators.required, Validators.min(1), Validators.max(1.3)]],
+    })
   });
+
 
   get form() {
     return this.simulationOptions.controls;
   }
 
+  get expeditionOptions() {
+
+    return this.form.expeditionOptions.controls;
+  }
+
+  get expeditionOptionsAfterSwitch() {
+    return this.form.expeditionOptionsAfterSwitch.controls;
+  }
+
   public loadFormFromConfiguration(configuration: SavedConfiguration) {
+
     this.simulationOptions.patchValue({ ...configuration.playstyle, ...configuration.character }, { emitEvent: true });
     var schedule = this.savedSchedules.find(v => v.timestamp == configuration.scheduleId) ?? this.savedSchedules.find(v => v.timestamp == 0);
 
@@ -159,6 +186,7 @@ export class SimulationConfig implements OnInit {
 
 
   ngOnInit(): void {
+    this.toggleInputs();
     this.simulationOptions.valueChanges.subscribe(() => {
       this.toggleInputs();
 
@@ -180,20 +208,27 @@ export class SimulationConfig implements OnInit {
   }
 
   private toggleInputs() {
-    if (this.form.questPriority.value != 'Hybrid' && this.form.switchPriority.value == false)
+    if (this.form.questPriority.value != QuestPriority.Hybrid)
       this.form.hybridRatio.disable({emitEvent: false})
-    else if (this.form.questPriority.value != 'Hybrid' && this.simulationOptions.controls.priorityAfterSwitch.value != 'Hybrid')
-      this.form.hybridRatio.disable({ emitEvent: false })
     else
       this.form.hybridRatio.enable({ emitEvent: false })
+
+    if (this.form.priorityAfterSwitch.value != QuestPriority.Hybrid || this.form.switchPriority.value == false)
+      this.form.hybridRatioAfterSwitch.disable({emitEvent: false})
+    else
+      this.form.hybridRatioAfterSwitch.enable({ emitEvent: false })
 
     if (this.form.switchPriority.value == true) {
       this.form.switchLevel.enable({ emitEvent: false })
       this.form.priorityAfterSwitch.enable({ emitEvent: false })
+      this.expeditionOptionsAfterSwitch.averageAmountOfChests.enable({ emitEvent: false })
+      this.expeditionOptionsAfterSwitch.averageStarExperienceBonus.enable({ emitEvent: false })
     }
     else {
       this.form.switchLevel.disable({ emitEvent: false })
       this.form.priorityAfterSwitch.disable({ emitEvent: false })
+      this.expeditionOptionsAfterSwitch.averageAmountOfChests.disable({ emitEvent: false })
+      this.expeditionOptionsAfterSwitch.averageStarExperienceBonus.disable({ emitEvent: false })
     }
   }
 }

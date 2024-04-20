@@ -1,6 +1,5 @@
 ﻿namespace SFSimulator.Core
 {
-    //TODO: Environmental rewards
     public enum MountType
     {
         None = 0,

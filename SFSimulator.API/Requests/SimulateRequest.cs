@@ -15,11 +15,12 @@ public class SimulateRequest
     public int HydraHeads { get; set; } = 0;
     public int GemMineLevel { get; set; } = 0;
     public int TreasuryLevel { get; set; } = 0;
-    public string? QuestPriority { get; set; } = null;
+    public QuestPriorityType QuestPriority { get; set; }
     public float? HybridRatio { get; set; } = null;
+    public float? HybridRatioAfterSwitch { get; set; } = null;
     public bool SwitchPriority { get; set; } = false;
     public int? SwitchLevel { get; set; } = null;
-    public string? PriorityAfterSwitch { get; set; } = null;
+    public QuestPriorityType? PriorityAfterSwitch { get; set; } = null;
     public float ScrapbookFillness { get; set; } = 0;
     public int XpGuildBonus { get; set; } = 0;
     public int XpRuneBonus { get; set; } = 0;
@@ -31,15 +32,18 @@ public class SimulateRequest
     public bool HasArenaGoldScroll { get; set; } = false;
     public bool DrinkBeerOneByOne { get; set; } = false;
     public int DailyThirst { get; set; } = 0;
-    public string MountType { get; set; } = nameof(Mount.Griffin);
+    public MountType MountType { get; set; } = Mount.Griffin;
     public bool SkipCalendar { get; set; } = false;
-    public string SpinAmount { get; set; } = nameof(SpinAmountType.Max);
+    public SpinAmountType SpinAmount { get; set; } = SpinAmountType.Max;
     public float DailyGuard { get; set; } = 0;
     public Schedule Schedule { get; set; } = new Schedule();
     public bool SimulateDungeon { get; set; } = false;
     public int Calendar { get; set; }
     public int CalendarDay { get; set; }
-    public int FightsForGold { get; set; } 
+    public int FightsForGold { get; set; }
     public bool DoWeeklyTasks { get; set; }
     public bool DrinkExtraWeeklyBeer { get; set; }
+    public bool ExpeditionsInsteadOfQuests { get; set; } = true;
+    public ExpeditionOptions? ExpeditionOptions { get; set; } = default!;
+    public ExpeditionOptions? ExpeditionOptionsAfterSwitch { get; set; } = default!;
 }

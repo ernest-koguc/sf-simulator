@@ -4,6 +4,7 @@ public class SimulationOptions
 {
     public QuestPriorityType QuestPriority { get; set; } = QuestPriorityType.Experience;
     public decimal? HybridRatio { get; set; } = null;
+    public decimal? HybridRatioAfterSwitch { get; set; } = null;
     public QuestChooserAI QuestChooserAI { get; set; } = QuestChooserAI.Smart;
     public bool SwitchPriority { get; set; } = false;
     public int? SwitchLevel { get; set; } = null;
@@ -27,6 +28,9 @@ public class SimulationOptions
     public int CalendarDay { get; set; }
     public int FightsForGold { get; set; } 
     public WeeklyTasksOptions WeeklyTasksOptions { get; set; } = new (true, true);
+    public ExpeditionOptions? ExpeditionOptions { get; set; }
+    public ExpeditionOptions? ExpeditionOptionsAfterSwitch { get; set; }
+    public bool ExpeditionsInsteadOfQuests { get; set; } = true;
 }
 
 public record WeeklyTasksOptions(bool DoWeeklyTasks, bool DrinkExtraBeer);

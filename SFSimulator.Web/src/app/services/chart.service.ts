@@ -42,6 +42,9 @@ export class ChartService {
     for (k in gains) {
       var value = gains[k];
 
+      if (value === 0)
+        continue;
+
       var dataSet: ChartDataset<'bar'> = {
         data: [value],
         label: k.replace("_", " "),
@@ -154,6 +157,8 @@ export class ChartService {
 export function getDataSetColor(gainType: keyof ExperienceGain | keyof BaseStatGain | 'TOTAL'): string {
   switch (gainType) {
     case 'QUEST':
+      return '#0bb4ff';
+    case 'EXPEDITION':
       return '#0bb4ff';
     case 'ARENA':
       return '#b3d4ff';

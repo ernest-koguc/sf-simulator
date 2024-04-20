@@ -46,6 +46,7 @@
 
             return (long)(xpReward*xpBonus);
         }
+
         public QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus)
         {
             var xp = GetExperienceForNextLevel(characterLevel) / (1.5 + 0.75 * (characterLevel - 1));
@@ -54,6 +55,7 @@
             var goldMin = goldBonus.CombinedBonus() * (gold / 11);
             return new QuestValue(goldMin, xpMin);
         }
+
         public decimal GetGoldFromGuardDuty(int characterLevel, GoldBonus? goldBonus, bool goldEvent)
         {
             var hourlyGuard = Curves.GoldCurve[characterLevel] * 12 / 1000 / 3;
@@ -69,6 +71,7 @@
 
             return hourlyGuard;
         }
+
         public decimal GetHourlyGoldPitProduction(int characterLevel, int goldPitLevel, bool goldEvent)
         {
             var goldCurveValue = Curves.GoldCurve[characterLevel] * 12 / 1000;
@@ -79,6 +82,7 @@
 
             return goldPitProduction;
         }
+
         public long GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool xpEvent)
         {
             var xp = GetExperienceForNextLevel(characterLevel);

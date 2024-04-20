@@ -74,7 +74,6 @@ export class SimulationResultChartsComponent{
   }
 
 
-  // TODO: Split chart component into 2 (1 generic component used for setting up 1 basestat component and 1 xp chart component)
   public createCharts(gainType: 'XP' | 'Base Stat', chartType: ChartType) {
     if (!this._simulationResult)
       return;

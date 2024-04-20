@@ -20,7 +20,7 @@ public class SimulatorMappingProfiler : Profile
             .ForMember(d => d.Tower, m => m.MapFrom(s => Math.Max(s.Dungeons.Tower, 0)))
             .ForMember(d => d.XpRuneBonus, m => m.MapFrom(s => GetQuestRuneBonus(s, BonusType.XP)))
             .ForMember(d => d.GoldRuneBonus, m => m.MapFrom(s => GetQuestRuneBonus(s, BonusType.GOLD)))
-            .ForMember(d => d.MountType, m => m.MapFrom(s => TranslateMountType(s.Mount)))
+            .ForMember(d => d.MountType, m => m.MapFrom(s => s.Mount))
             .ForMember(d => d.HasGoldScroll, m => m.MapFrom(s => s.Items.Ring.Enchantment == WitchScrollType.QuestGold || s.Inventory.Dummy.Ring.Enchantment == WitchScrollType.QuestGold))
             .ForMember(d => d.HasArenaGoldScroll, m => m.MapFrom(s => s.Items.Misc.Enchantment == WitchScrollType.ArenaGold || s.Inventory.Dummy.Misc.Enchantment == WitchScrollType.ArenaGold))
             .ForMember(d => d.HasExperienceScroll, m => m.MapFrom(s => s.Items.Head.Enchantment == WitchScrollType.QuestExperience || s.Inventory.Dummy.Head.Enchantment == WitchScrollType.QuestExperience))

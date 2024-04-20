@@ -1,1 +1,7 @@
-export type MountType = 'None' | 'Pig' | 'Horse' | 'Tiger' | 'Griffin';
+export enum MountType {
+  None = 0,
+  Pig = 1,
+  Horse = 2,
+  Tiger = 3,
+  Griffin = 4
+}

@@ -52,5 +52,19 @@ public class SimulateRequestValidator : AbstractValidator<SimulateRequest>
                     break;
             }
         });
+        RuleFor(o => o.ExpeditionOptions).Custom((options, context) =>
+        {
+            if (options is null && context.InstanceToValidate.ExpeditionsInsteadOfQuests)
+            {
+                context.AddFailure($"{nameof(context.InstanceToValidate.ExpeditionOptions)} must be provided when {nameof(context.InstanceToValidate.ExpeditionsInsteadOfQuests)} is true");
+            }
+        });
+        RuleFor(o => o.ExpeditionOptionsAfterSwitch).Custom((options, context) =>
+        {
+            if (options is null && context.InstanceToValidate.ExpeditionsInsteadOfQuests && context.InstanceToValidate.SwitchPriority)
+            {
+                context.AddFailure($"{nameof(context.InstanceToValidate.ExpeditionOptionsAfterSwitch)} must be provided when {nameof(context.InstanceToValidate.SwitchPriority)} is true");
+            }
+        });
     }
 }

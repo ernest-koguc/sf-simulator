@@ -16,6 +16,7 @@ export type SimulatedGains = {
 
 export type ExperienceGain = {
   QUEST: number;
+  EXPEDITION: number;
   CALENDAR: number;
   TIME_MACHINE: number;
   WHEEL: number;
@@ -30,6 +31,7 @@ export type ExperienceGain = {
 
 export type BaseStatGain = {
   QUEST: number;
+  EXPEDITION: number;
   CALENDAR: number;
   TIME_MACHINE: number;
   WHEEL: number;

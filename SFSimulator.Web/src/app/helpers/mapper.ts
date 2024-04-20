@@ -17,7 +17,14 @@ export function mapToConfigurationPlaystyle(data: SimulationConfigForm) {
     dailyThirst: data.dailyThirst,
     skipCalendar: data.skipCalendar,
     spinAmount: data.spinAmount,
-    dailyGuard: data.dailyGuard
+    dailyGuard: data.dailyGuard,
+    simulateDungeon: data.simulateDungeon,
+    fightsForGold: data.fightsForGold,
+    doWeeklyTasks: data.doWeeklyTasks,
+    drinkExtraWeeklyBeer: data.drinkExtraWeeklyBeer,
+    expeditionOptions: data.expeditionOptions,
+    expeditionOptionsAfterSwitch: data.expeditionOptionsAfterSwitch,
+    expeditionsInsteadOfQuests: data.expeditionsInsteadOfQuests
   }
   return playstyle;
 }

@@ -5,6 +5,7 @@ namespace SFSimulator.Core;
 public class GameSimulator : IGameSimulator
 {
     private readonly IThirstSimulator _thirstSimulator;
+    private readonly IExpeditionService _expeditionService;
     private readonly IGameLogic _gameLogic;
     private readonly ICalendarRewardProvider _calendarRewardProvider;
     private readonly IScheduler _scheduler;
@@ -24,7 +25,7 @@ public class GameSimulator : IGameSimulator
     public SimulationOptions SimulationOptions { get; set; } = null!;
 
     public GameSimulator(IGameLogic characterHelper, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider, IWeeklyTasksRewardProvider weeklyTasksRewardProvider,
-            IScheduler scheduler, IQuestChooser questChooser, IDungeonSimulator dungeonSimulator)
+            IScheduler scheduler, IQuestChooser questChooser, IDungeonSimulator dungeonSimulator, IExpeditionService expeditionService)
     {
         _gameLogic = characterHelper;
         _thirstSimulator = thirstSimulator;
@@ -33,6 +34,7 @@ public class GameSimulator : IGameSimulator
         _questChooser = questChooser;
         _dungeonSimulator = dungeonSimulator;
         _weeklyTasksRewardProvider = weeklyTasksRewardProvider;
+        _expeditionService = expeditionService;
     }
 
     public async Task<SimulationResult> Run(int until, Character character, SimulationOptions simulationOptions, SimulationType simulationType)
@@ -69,10 +71,13 @@ public class GameSimulator : IGameSimulator
     {
         var totalGains = new SimulatedGains();
         var averageGains = new SimulatedGains();
-        var experienceGains = SimulatedDays.Select(o => o.ExperienceGain);
 
         foreach (var day in SimulatedDays)
         {
+            // Remove empty gains
+            day.BaseStatGain = day.BaseStatGain.Where(pair => pair.Value != 0).ToDictionary(pair => pair.Key, pair => pair.Value);
+            day.ExperienceGain = day.ExperienceGain.Where(pair => pair.Value != 0).ToDictionary(pair => pair.Key, pair => pair.Value);
+
             foreach (var gain in day.BaseStatGain.Keys)
             {
                 totalGains.BaseStatGain[gain] += day.BaseStatGain[gain];
@@ -114,6 +119,11 @@ public class GameSimulator : IGameSimulator
         _thirstSimulator.ThirstSimulationOptions.Mount = SimulationOptions.Mount;
         _thirstSimulator.ThirstSimulationOptions.DrinkBeerOneByOne = SimulationOptions.DrinkBeerOneByOne;
 
+        if (SimulationOptions.ExpeditionsInsteadOfQuests)
+        {
+            _expeditionService.Options = SimulationOptions.ExpeditionOptions ?? throw new ArgumentException("ExpeditionOptions must be set when ExpeditionsInsteadOfQuests is true", nameof(SimulationOptions.ExpeditionOptions));
+        }
+
         _calendarRewardProvider.ConfigureCalendar(SimulationOptions.Calendar, SimulationOptions.CalendarDay, SimulationOptions.SkipCalendar);
 
         _scheduler.SetCustomSchedule(SimulationOptions.Schedule);
@@ -129,7 +139,14 @@ public class GameSimulator : IGameSimulator
 
         SellItemsToWitch();
 
-        DoThirst(SimulationOptions.DailyThirst);
+        if (SimulationOptions.ExpeditionsInsteadOfQuests)
+        {
+            DoExpeditions(SimulationOptions.DailyThirst);
+        }
+        else
+        {
+            DoThirst(SimulationOptions.DailyThirst);
+        }
 
         CollectWeeklyTasksRewards();
 
@@ -166,19 +183,29 @@ public class GameSimulator : IGameSimulator
 
     private void CollectWeeklyTasksRewards()
     {
-        if (SimulationOptions.WeeklyTasksOptions.DoWeeklyTasks)
+
+        if (!SimulationOptions.WeeklyTasksOptions.DoWeeklyTasks)
         {
-            if (SimulationOptions.WeeklyTasksOptions.DrinkExtraBeer)
+            return;
+        }
+
+        var weeklyTasksXP = _weeklyTasksRewardProvider.GetWeeklyExperience(Character.Level, SimulationOptions.ExperienceBonus, CurrentDay);
+        GiveXPToCharacter(weeklyTasksXP, GainSource.WEEKLY_TASKS);
+
+        var weeklyTasksGold = _weeklyTasksRewardProvider.GetWeeklyGold(Character.Level, CurrentDay);
+        GiveGoldToCharacter(weeklyTasksGold, GainSource.WEEKLY_TASKS);
+
+        if (SimulationOptions.WeeklyTasksOptions.DrinkExtraBeer)
+        {
+            var extraThirst = _weeklyTasksRewardProvider.GetWeeklyThirst(CurrentDay);
+            if (SimulationOptions.ExpeditionsInsteadOfQuests)
             {
-                var extraThirst = _weeklyTasksRewardProvider.GetWeeklyThirst(CurrentDay);
+                DoExpeditions(extraThirst);
+            }
+            else
+            {
                 DoThirst(extraThirst);
             }
-
-            var weeklyTasksXP = _weeklyTasksRewardProvider.GetWeeklyExperience(Character.Level, SimulationOptions.ExperienceBonus, CurrentDay);
-            GiveXPToCharacter(weeklyTasksXP, GainSource.WEEKLY_TASKS);
-
-            var weeklyTasksGold = _weeklyTasksRewardProvider.GetWeeklyGold(Character.Level, CurrentDay);
-            GiveGoldToCharacter(weeklyTasksGold, GainSource.WEEKLY_TASKS);
         }
     }
 
@@ -237,6 +264,15 @@ public class GameSimulator : IGameSimulator
                 _gameLogic.GetMinimumQuestValue(Character.Level, SimulationOptions.ExperienceBonus, SimulationOptions.GoldBonus),
                 Character.Level);
         }
+    }
+
+    private void DoExpeditions(int thirst)
+    {
+        // TODO: Maybe do expeditions in smaller segments to account for level ups, especially on lower levels it can make a difference in how much xp you get (e.g. level one character levels up every expedition pretty much)
+        var gold = _expeditionService.GetDailyExpeditionGold(Character.Level, SimulationOptions.GoldBonus, IsGoldEvent, SimulationOptions.Mount, thirst);
+        GiveGoldToCharacter(gold, GainSource.EXPEDITION);
+        var xp = _expeditionService.GetDailyExpeditionExperience(Character.Level, SimulationOptions.ExperienceBonus, IsExperienceEvent, SimulationOptions.Mount, thirst);
+        GiveXPToCharacter(xp, GainSource.EXPEDITION);
     }
 
     private void SpinAbawuwuWheel()
@@ -314,7 +350,12 @@ public class GameSimulator : IGameSimulator
         Character.Level++;
 
         if (SimulationOptions.SwitchPriority && Character.Level == SimulationOptions.SwitchLevel)
+        {
             SimulationOptions.QuestPriority = SimulationOptions.PriorityAfterSwitch;
+            SimulationOptions.HybridRatio = SimulationOptions.HybridRatioAfterSwitch;
+            if (SimulationOptions.ExpeditionOptionsAfterSwitch is not null)
+                _expeditionService.Options = SimulationOptions.ExpeditionOptionsAfterSwitch.Value;
+        }
     }
     private void GiveCalendarRewardToPlayer(CalendarRewardType calendarReward)
     {

@@ -1,7 +1,7 @@
 import { mapToConfigurationCharacter, mapToConfigurationPlaystyle } from "../helpers/mapper";
 import { MountType } from "./mount-type";
 import { QuestPriority } from "./quest-priority";
-import { SimulationConfigForm } from "./simulation-configuration";
+import { ExpeditionOptions, SimulationConfigForm } from "./simulation-configuration";
 import { SpinTactic } from "./spin-tactics";
 
 export class SavedConfiguration {
@@ -43,6 +43,13 @@ export type ConfigurationPlaystyle = {
   skipCalendar: boolean | null;
   spinAmount: SpinTactic | null;
   dailyGuard: number | null;
+  simulateDungeon: boolean | null;
+  fightsForGold: number | null;
+  doWeeklyTasks: boolean | null;
+  drinkExtraWeeklyBeer: boolean | null;
+  expeditionOptions: ExpeditionOptions;
+  expeditionOptionsAfterSwitch: ExpeditionOptions;
+  expeditionsInsteadOfQuests: boolean | null;
 }
 
 export type ConfigurationCharacter = {

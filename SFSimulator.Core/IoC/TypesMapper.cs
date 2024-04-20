@@ -31,6 +31,7 @@
             new TypeMap(typeof(DamageProvider), typeof(IDamageProvider), TypeMapOption.None),
             new TypeMap(typeof(BonusMelodyLengthProvider), typeof(IBonusMelodyLengthProvider), TypeMapOption.None),
             new TypeMap(typeof(WeeklyTasksRewardProvider), typeof(IWeeklyTasksRewardProvider), TypeMapOption.None),
+            new TypeMap(typeof(ExpeditionService), typeof(IExpeditionService), TypeMapOption.None),
         ];
     }
 }

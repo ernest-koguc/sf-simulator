@@ -81,22 +81,6 @@ namespace SFSimulator.API.Mappings
             return list;
         }
 
-        public static QuestPriorityType GetQuestPriorityType(string? priority)
-        {
-            return priority switch
-            {
-                nameof(QuestPriorityType.Gold) => QuestPriorityType.Gold,
-                nameof(QuestPriorityType.Experience) => QuestPriorityType.Experience,
-                nameof(QuestPriorityType.Hybrid) => QuestPriorityType.Hybrid,
-                _ => QuestPriorityType.Experience
-            };
-        }
-
-        public static SpinAmountType GetSpinAmount(string spinAmount)
-        {
-            return spinAmount == nameof(SpinAmountType.Max) ? SpinAmountType.Max : SpinAmountType.OnlyFree;
-        }
-
         public static int GetQuestRuneBonus(Maria21DataDTO dto, BonusType type)
         {
             int runeBonus, runeMax;
@@ -137,30 +121,6 @@ namespace SFSimulator.API.Mappings
             var raid = dto.Group.Group.Raid * 2;
             var guild = type == BonusType.GOLD ? dto.Group.Group.TotalTreasure : dto.Group.Group.TotalInstructor;
             return Math.Min(200, raid + guild);
-        }
-
-        public static MountType TranslateMountType(string mountType)
-        {
-            return mountType switch
-            {
-                nameof(MountType.Griffin) => MountType.Griffin,
-                nameof(MountType.Tiger) => MountType.Tiger,
-                nameof(MountType.Horse) => MountType.Horse,
-                nameof(MountType.Pig) => MountType.Pig,
-                _ => MountType.None,
-            };
-        }
-
-        public static string TranslateMountType(int mountType)
-        {
-            return mountType switch
-            {
-                1 => "Pig",
-                2 => "Horse",
-                3 => "Tiger",
-                4 => "Griffin",
-                _ => "None",
-            };
         }
 
         public static int SumBaseStats(Maria21DataDTO dto)

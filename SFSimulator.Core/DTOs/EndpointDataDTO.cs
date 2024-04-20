@@ -22,7 +22,7 @@ public class EndpointDataDTO
     public int GoldRuneBonus { get; set; } = 0;
     public bool HasGoldScroll { get; set; } = false;
     public bool HasArenaGoldScroll { get; set; } = false;
-    public string MountType { get; set; } = "Griffin";
+    public MountType MountType { get; set; } = MountType.Griffin; 
     public int Calendar { get; set; }
     public int CalendarDay { get; set; }
 

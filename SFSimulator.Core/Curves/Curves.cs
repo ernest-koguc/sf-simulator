@@ -432,6 +432,10 @@
                 1500000000
                 #endregion
             };
+            while (ExperienceCurve.Count < 1001)
+            {
+                ExperienceCurve.Add(1_500_000_000);
+            }
         }
     }
 }

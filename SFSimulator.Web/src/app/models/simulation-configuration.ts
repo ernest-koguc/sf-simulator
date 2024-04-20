@@ -38,4 +38,12 @@ export interface SimulationConfigForm {
   fightsForGold: number | null;
   doWeeklyTasks: boolean | null;
   drinkExtraWeeklyBeer: boolean | null;
+  expeditionOptions: ExpeditionOptions;
+  expeditionOptionsAfterSwitch: ExpeditionOptions;
+  expeditionsInsteadOfQuests: boolean | null;
+};
+
+export type ExpeditionOptions = {
+  averageAmountOfChests: number | null;
+  averageStarExperienceBonus: number | null;
 };

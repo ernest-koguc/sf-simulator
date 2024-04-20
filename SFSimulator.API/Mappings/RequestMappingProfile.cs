@@ -13,9 +13,7 @@ public class RequestMappingProfile : Profile
             ;
 
         CreateMap<SimulateRequest, SimulationOptions>()
-            .ForMember(c => c.Mount, m => m.MapFrom(s => TranslateMountType(s.MountType)))
-            .ForMember(d => d.QuestPriority, m => m.MapFrom(s => GetQuestPriorityType(s.QuestPriority)))
-            .ForMember(d => d.PriorityAfterSwitch, m => m.MapFrom(s => GetQuestPriorityType(s.PriorityAfterSwitch)))
+            .ForMember(d => d.HybridRatioAfterSwitch, m => m.MapFrom(s => s.HybridRatioAfterSwitch))
             .ForMember(d => d.HybridRatio, m => m.MapFrom(s => s.HybridRatio))
             .ForMember(d => d.SwitchPriority, m => m.MapFrom(s => s.SwitchPriority))
             .ForMember(d => d.SwitchLevel, m => m.MapFrom(s => s.SwitchLevel))
@@ -30,9 +28,11 @@ public class RequestMappingProfile : Profile
             }))
             .ForMember(d => d.DrinkBeerOneByOne, m => m.MapFrom(s => s.DrinkBeerOneByOne))
             .ForMember(d => d.DailyThirst, m => m.MapFrom(s => s.DailyThirst))
-            .ForMember(d => d.SpinAmount, m => m.MapFrom(s => GetSpinAmount(s.SpinAmount)))
             .ForMember(d => d.Schedule, m => m.MapFrom(s => MapSchedule(s.Schedule)))
             .ForMember(d => d.WeeklyTasksOptions, m => m.MapFrom(s => new WeeklyTasksOptions(s.DoWeeklyTasks, s.DrinkExtraWeeklyBeer)))
+            .ForMember(d => d.ExpeditionOptions, m => m.MapFrom(s => s.ExpeditionOptions))
+            .ForMember(d => d.ExpeditionOptionsAfterSwitch, m => m.MapFrom(s => s.ExpeditionOptionsAfterSwitch))
+            .ForMember(d => d.ExpeditionsInsteadOfQuests, m => m.MapFrom(s => s.ExpeditionsInsteadOfQuests))
             ;
 
 
