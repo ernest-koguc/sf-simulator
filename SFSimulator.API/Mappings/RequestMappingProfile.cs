@@ -33,6 +33,7 @@ public class RequestMappingProfile : Profile
             .ForMember(d => d.ExpeditionOptions, m => m.MapFrom(s => s.ExpeditionOptions))
             .ForMember(d => d.ExpeditionOptionsAfterSwitch, m => m.MapFrom(s => s.ExpeditionOptionsAfterSwitch))
             .ForMember(d => d.ExpeditionsInsteadOfQuests, m => m.MapFrom(s => s.ExpeditionsInsteadOfQuests))
+            .ForMember(d => d.Mount, m => m.MapFrom(s => s.MountType))
             ;
 
 
