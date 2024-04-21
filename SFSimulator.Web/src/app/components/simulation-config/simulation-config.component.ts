@@ -93,12 +93,12 @@ export class SimulationConfig implements OnInit {
     expeditionsInsteadOfQuests: new FormControl(true, [Validators.required]),
     expeditionOptions: this.formBuilder.group({
       averageAmountOfChests: [1.5, [Validators.required, Validators.min(0), Validators.max(2)]],
-      averageStarExperienceBonus: [1.2, [Validators.required, Validators.min(1), Validators.max(1.3)]],
+      averageStarExperienceBonus: [1.2, [Validators.required, Validators.min(1), Validators.max(1.35)]],
     }),
     expeditionOptionsAfterSwitch: this.formBuilder.group({
       averageAmountOfChests: [1.5, [Validators.required, Validators.min(0), Validators.max(2)]],
-      averageStarExperienceBonus: [1.2, [Validators.required, Validators.min(1), Validators.max(1.3)]],
-    })
+      averageStarExperienceBonus: [1.2, [Validators.required, Validators.min(1), Validators.max(1.35)]],
+    }),
   });
 
 
