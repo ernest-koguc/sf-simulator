@@ -19,12 +19,12 @@ public class RequestService : IRequestService
         _mapper = mapper;
     }
 
-    public async Task<SimulationResult> RunSimulation(SimulateRequest request, SimulationType simulationType)
+    public SimulationResult RunSimulation(SimulateRequest request, SimulationType simulationType)
     {
         var character = _mapper.Map<Character>(request);
         var simulationOptions = _mapper.Map<SimulationOptions>(request);
 
-        var simulationResult = await _gameSimulator.Run(request.SimulateUntil, character, simulationOptions, simulationType);
+        var simulationResult = _gameSimulator.Run(request.SimulateUntil, character, simulationOptions, simulationType);
 
         return simulationResult;
     }

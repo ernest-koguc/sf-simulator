@@ -39,7 +39,7 @@ public class GameSimulator : IGameSimulator
         _expeditionService = expeditionService;
     }
 
-    public async Task<SimulationResult> Run(int until, Character character, SimulationOptions simulationOptions, SimulationType simulationType)
+    public SimulationResult Run(int until, Character character, SimulationOptions simulationOptions, SimulationType simulationType)
     {
         SetSimulationOptions(character, simulationOptions);
         Func<int> lookUpValue;
@@ -64,7 +64,7 @@ public class GameSimulator : IGameSimulator
             var dayResult = new SimulatedGains { DayIndex = CurrentDay };
             SimulatedDays.Add(dayResult);
             CurrentDayResult = dayResult;
-            await RunDay();
+            RunDay();
         }
 
         return CreateResult();
@@ -133,7 +133,7 @@ public class GameSimulator : IGameSimulator
 
         SimulatedDays = new List<SimulatedGains>();
     }
-    private Task RunDay()
+    private void RunDay()
     {
         var schedule = _scheduler.GetCurrentSchedule();
         CurrentEvents = schedule.Events;
@@ -180,8 +180,6 @@ public class GameSimulator : IGameSimulator
 
         var calendarReward = _calendarRewardProvider.GetNextReward();
         GiveCalendarRewardToPlayer(calendarReward);
-
-        return Task.CompletedTask;
     }
 
     private void CollectWeeklyTasksRewards()

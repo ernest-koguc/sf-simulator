@@ -26,24 +26,24 @@ namespace SFSimulator.API.Controllers
         }
 
         [HttpPost("simulateUntilDays")]
-        public async Task<ActionResult<SimulationResult>> RunSimulationUntilDay([FromBody] SimulateRequest request)
+        public ActionResult<SimulationResult> RunSimulationUntilDay([FromBody] SimulateRequest request)
         {
-            var simulationResult = await _requestService.RunSimulation(request, SimulationType.UntilDays);
+            var simulationResult = _requestService.RunSimulation(request, SimulationType.UntilDays);
             return Ok(simulationResult);
         }
 
         [HttpPost("simulateUntilLevel")]
-        public async Task<ActionResult<SimulationResult>> RunSimulationUntilLevel([FromBody] SimulateRequest request)
+        public ActionResult<SimulationResult> RunSimulationUntilLevel([FromBody] SimulateRequest request)
         {
-            var simulationResult = await _requestService.RunSimulation(request, SimulationType.UntilLevel);
+            var simulationResult = _requestService.RunSimulation(request, SimulationType.UntilLevel);
 
             return Ok(simulationResult);
         }
 
         [HttpPost("simulateUntilBaseStats")]
-        public async Task<ActionResult<SimulationResult>> RunSimulationUntilBaseStats([FromBody] SimulateRequest request)
+        public ActionResult<SimulationResult> RunSimulationUntilBaseStats([FromBody] SimulateRequest request)
         {
-            var simulationResult = await _requestService.RunSimulation(request, SimulationType.UntilBaseStats);
+            var simulationResult = _requestService.RunSimulation(request, SimulationType.UntilBaseStats);
 
             return Ok(simulationResult);
         }
