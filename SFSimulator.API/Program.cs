@@ -17,8 +17,7 @@ builder.Logging.AddNLog();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", policy =>
-    policy
+    options.AddPolicy("CorsPolicy", policy => policy
     .AllowAnyMethod()
     .AllowAnyOrigin()
     .AllowAnyHeader());
