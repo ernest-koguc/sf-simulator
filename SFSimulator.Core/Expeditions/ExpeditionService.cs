@@ -14,9 +14,9 @@ public class ExpeditionService(ICurves curves) : IExpeditionService
 
         baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
 
-        var goldWithMount = baseGold * GetMountBonus(mount);
         var goldMultiplier = (1 + Math.Min(3, goldBonus.GuildBonus + goldBonus.Tower * 2) + goldBonus.RuneBonus) * (1 + (goldBonus.HasGoldScroll ? 0.1M : 0));
-        var goldFromFinalReward = goldWithMount * goldMultiplier;
+        var goldWithBonuses = Math.Min(50_000_000, baseGold * goldMultiplier);
+        var goldFromFinalReward = goldWithBonuses * GetMountBonus(mount);
         var goldFromMidMonster = goldFromFinalReward / 10;
         var goldPerChest = goldFromFinalReward / 5;
 
