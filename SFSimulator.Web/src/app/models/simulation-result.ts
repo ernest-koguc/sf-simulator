@@ -52,5 +52,5 @@ export type DungeonResult = {
   succeeded: boolean
 }
 
-export const BaseStatKeys: (keyof BaseStatGain)[] = ['QUEST', 'CALENDAR', 'TIME_MACHINE', 'WHEEL', 'GOLD_PIT', 'DAILY_TASKS', 'WEEKLY_TASKS', 'GUARD', 'GEM', 'ITEM', 'DICE_GAME'];
-export const ExperienceKeys: (keyof ExperienceGain)[] = ['QUEST', 'CALENDAR', 'TIME_MACHINE', 'WHEEL', 'ACADEMY', 'DAILY_MISSION', 'DAILY_TASKS', 'WEEKLY_TASKS', 'ARENA', 'GUILD_FIGHT'];
+export const BaseStatKeys: (keyof BaseStatGain)[] = ['QUEST', 'EXPEDITION', 'CALENDAR', 'TIME_MACHINE', 'WHEEL', 'GOLD_PIT', 'DAILY_TASKS', 'WEEKLY_TASKS', 'GUARD', 'GEM', 'ITEM', 'DICE_GAME'];
+export const ExperienceKeys: (keyof ExperienceGain)[] = ['QUEST', 'EXPEDITION', 'CALENDAR', 'TIME_MACHINE', 'WHEEL', 'ACADEMY', 'DAILY_MISSION', 'DAILY_TASKS', 'WEEKLY_TASKS', 'ARENA', 'GUILD_FIGHT'];
