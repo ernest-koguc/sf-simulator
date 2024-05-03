@@ -1,13 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, finalize } from 'rxjs';
+import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SimulationResultComponent, SimulationResultComponentData } from '../../components/simulation-result/simulation-result.component';
 import { SimulationConfig } from '../../components/simulation-config/simulation-config.component';
 import { CreditsDialogComponent } from '../../dialogs/credits-dialog/credits-dialog.component';
 import { SftoolsloginComponent, DataScope } from '../../dialogs/sftools-login-dialog/sftoolslogin.component';
 import { SimulationOptionsDialogComponent } from '../../dialogs/simulation-options-dialog/simulation-options-dialog.component';
-import { SimulationConfigForm } from '../../models/simulation-configuration';
 import { SimulatorService } from '../../services/simulator.service';
 import { SnackbarService } from '../../services/snackbar.service';
 
@@ -25,29 +24,26 @@ export class SimulatorComponent {
 
   constructor(private simulatorService: SimulatorService, private dialog: MatDialog, private snackbar: SnackbarService) { }
 
-  public simulationConfig?: SimulationConfigForm;
-
   public simulationBlocked = false;
   public isLoading = false;
   public environment = environment;
   public result?: SimulationResultComponentData;
 
-  public saveForm(form?: SimulationConfigForm) {
-    this.simulationConfig = form;
-    this.simulationBlocked = form === undefined;
-  }
 
   public loginThroughSFTools() {
     this.dialog.open(SftoolsloginComponent, { autoFocus: 'dialog', enterAnimationDuration: 200, exitAnimationDuration: 200, restoreFocus: false, width: "80%", height: "80%", data: DataScope.All }).afterClosed().subscribe(data => {
-      if (data)
-        this.simulationConfigComponent.loadForm(data);
+      if (data !== undefined && data !== null && data.error === undefined)
+        this.simulationConfigComponent.loadEndpoint(data);
+      else if (data.error === undefined) {
+        this.snackbar.createErrorSnackbar(data.error);
+        console.log(data.error);
+      }
     });
   }
 
   public showSimulationDialog() {
-    if (!this.simulationConfig) {
-      this.simulationConfigComponent.simulationOptions.markAllAsTouched();
-      this.simulationBlocked = true;
+    let simulationConfig = this.simulationConfigComponent.getSimulationOptions();
+    if (simulationConfig === undefined) {
       return;
     }
 
@@ -56,20 +52,20 @@ export class SimulatorComponent {
 
     const dialogRef = this.dialog.open(SimulationOptionsDialogComponent, {
       autoFocus: 'dialog', restoreFocus: false, enterAnimationDuration: 400,
-      data: { level: this.simulationConfig.level, baseStats: this.simulationConfig.baseStat }
+      data: { level: simulationConfig.account.level, baseStats: simulationConfig.account.baseStat }
     });
     dialogRef.afterClosed().subscribe(simulationType => {
-      if (!simulationType || !this.simulationConfig || this.simulationBlocked)
+      if (!simulationType || !simulationConfig || this.simulationBlocked)
         return;
 
       this.simulationBlocked = true;
       this.isLoading = true;
       this.result = undefined;
-      let characterName = this.simulationConfig.characterName;
-      let characterBefore = { level: this.simulationConfig.level!, experience: this.simulationConfig.experience!, baseStat: this.simulationConfig.baseStat! };
+      let characterName = simulationConfig.account.characterName;
+      let characterBefore = { level: simulationConfig.account.level!, experience: simulationConfig.account.experience!, baseStat: simulationConfig.account.baseStat! };
 
       let time = Date.now();
-      this.simulatorService.simulate(simulationType, this.simulationConfig)
+      this.simulatorService.simulate(simulationType, simulationConfig)
         .pipe(finalize(() => {
           this.simulationBlocked = false;
           this.isLoading = false;

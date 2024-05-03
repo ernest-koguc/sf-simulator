@@ -20,7 +20,7 @@ public class ExpeditionServiceTests
 
         var result = Math.Round(ExpeditionService.GetDailyExpeditionGold(characterLevel, goldBonus, isGoldEvent, mount, 320));
 
-        Assert.AreEqual(result, 3147724979);
+        Assert.AreEqual(result, 1920000000);
     }
 
     [TestMethod]

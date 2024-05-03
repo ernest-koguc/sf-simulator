@@ -40,7 +40,9 @@ export class SimulatorService {
 
   simulate(simulationOptions: SimulationOptions, simulationForm: SimulationConfigForm): Observable<SimulationResult> {
     let body = {
-      ...simulationForm,
+      ...simulationForm.account,
+      ...simulationForm.bonuses,
+      ...simulationForm.playstyle,
       type: simulationOptions.simulationType,
       simulateUntil: simulationOptions.simulateUntil,
     };
@@ -84,8 +86,16 @@ export class SimulatorService {
 
     return result;
   }
-  private handleError(error: HttpErrorResponse, snackbarService: SnackbarService): ObservableInput<any> {
+  private handleError(httpError: HttpErrorResponse, snackbarService: SnackbarService): ObservableInput<any> {
     snackbarService.createErrorSnackbar('Something bad happened with internal API. Please try again.')
+    console.error('An error occured via API client:');
+
+    if (httpError.error.errors !== undefined) {
+      console.error(JSON.stringify(httpError.error.errors));
+    }
+    else {
+      console.error(JSON.stringify(httpError));
+    }
     return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

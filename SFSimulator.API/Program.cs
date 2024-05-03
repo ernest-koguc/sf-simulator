@@ -44,6 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+app.MapSwagger();
 app.MapControllers();
 
 try

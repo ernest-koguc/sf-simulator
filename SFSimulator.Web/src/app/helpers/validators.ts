@@ -87,6 +87,34 @@ export function greaterThanOrEqualTo(field: string, name: string) {
   }
 }
 
+export function numberValidator() {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value === null || control.value === undefined) {
+      return { required: true };
+    }
+
+    if (isNaN(control.value)) {
+      return { required: true };
+    }
+
+    if (typeof control.value === 'string') {
+      return { required: true };
+    }
+
+    return null;
+  }
+}
+
+export function booleanValidator() {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value !== true && control.value !== false) {
+      return { required: true };
+    }
+
+    return null;
+  }
+}
+
 export const EXPERIENCE_CURVE: number[] = [
                 0,
                 400,

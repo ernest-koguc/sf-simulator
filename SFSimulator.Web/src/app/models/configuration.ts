@@ -1,74 +1,25 @@
-import { mapToConfigurationCharacter, mapToConfigurationPlaystyle } from "../helpers/mapper";
-import { MountType } from "./mount-type";
-import { QuestPriority } from "./quest-priority";
-import { ExpeditionOptions, SimulationConfigForm } from "./simulation-configuration";
-import { SpinTactic } from "./spin-tactics";
+import { SimulationConfigForm } from "./simulation-configuration";
 
 export class SavedConfiguration {
-  constructor(name: string, simulationOptions: SimulationConfigForm, includeCharacter: boolean = false) {
+  constructor(name: string, simulationOptions: SimulationConfigForm) {
     this.name = name;
     this.timestamp = Date.now();
-
-    updateSavedConfiguration(this, simulationOptions, includeCharacter);
+    updateSavedConfiguration(this, simulationOptions);
   }
 
   public timestamp: number;
   public name: string;
   public scheduleId!: number | 'Default';
-  public playstyle!: ConfigurationPlaystyle;
-  public character: ConfigurationCharacter | undefined;
-
+  public form!: SimulationConfigForm;
 }
 
-export function updateSavedConfiguration(configuration: SavedConfiguration, simulationOptions: SimulationConfigForm, includeCharacter: boolean) {
-    configuration.playstyle = mapToConfigurationPlaystyle(simulationOptions);
-
-    if (simulationOptions.schedule)
-      configuration.scheduleId = simulationOptions.schedule?.timestamp;
+export function updateSavedConfiguration(savedConfig: SavedConfiguration, simulationOptions: SimulationConfigForm) {
+    if (simulationOptions.playstyle.schedule)
+      savedConfig.scheduleId = simulationOptions.playstyle.schedule.timestamp;
     else
-      configuration.scheduleId = 'Default';
+      savedConfig.scheduleId = 'Default';
 
-    if (includeCharacter)
-      configuration.character = mapToConfigurationCharacter(simulationOptions);
-  }
-
-export type ConfigurationPlaystyle = {
-  questPriority: QuestPriority | null;
-  hybridRatio: number | null;
-  switchPriority: boolean | null;
-  switchLevel: number | null;
-  priorityAfterSwitch: QuestPriority | null;
-  drinkBeerOneByOne: boolean | null;
-  dailyThirst: number | null;
-  skipCalendar: boolean | null;
-  spinAmount: SpinTactic | null;
-  dailyGuard: number | null;
-  simulateDungeon: boolean | null;
-  fightsForGold: number | null;
-  doWeeklyTasks: boolean | null;
-  drinkExtraWeeklyBeer: boolean | null;
-  expeditionOptions: ExpeditionOptions;
-  expeditionOptionsAfterSwitch: ExpeditionOptions;
-  expeditionsInsteadOfQuests: boolean | null;
-}
-
-export type ConfigurationCharacter = {
-  characterName: string | null;
-  level: number | null;
-  baseStat: number | null;
-  experience: number | null;
-  goldPitLevel: number | null;
-  academyLevel: number | null;
-  hydraHeads: number | null;
-  gemMineLevel: number | null;
-  treasuryLevel: number | null;
-  mountType: MountType | null;
-  scrapbookFillness: number | null;
-  xpGuildBonus: number | null;
-  xpRuneBonus: number | null
-  hasExperienceScroll: boolean | null;
-  tower: number | null
-  goldGuildBonus: number | null;
-  goldRuneBonus: number | null;
-  hasGoldScroll: boolean | null;
+    let form = JSON.parse(JSON.stringify(simulationOptions));
+    delete form.playstyle.schedule;
+    savedConfig.form = form;
 }

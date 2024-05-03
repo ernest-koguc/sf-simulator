@@ -2,6 +2,7 @@
 {
     public interface IQuestChooser
     {
-        Quest ChooseBestQuest(IEnumerable<Quest> quests, QuestPriorityType priority, QuestChooserAI questChooserAI, decimal? hybridRatio);
+        public QuestOptions QuestOptions { get; set; }
+        Quest ChooseBestQuest(IEnumerable<Quest> quests);
     }
 }

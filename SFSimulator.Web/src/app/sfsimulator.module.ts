@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
 import { FormsModule } from '@angular/forms';
 import { SimulationConfig } from './components/simulation-config/simulation-config.component';
 import { SFSimulatorComponent } from './sfsimulator.component';
@@ -111,7 +112,9 @@ import { WordSpacePipe } from './pipes/word-space.pipe';
     MatSnackBarModule,
     MatButtonToggleModule,
     MatMenuModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatBadgeModule
+
   ],
   providers: [],
   bootstrap: [SFSimulatorComponent],

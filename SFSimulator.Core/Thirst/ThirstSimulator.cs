@@ -1,4 +1,6 @@
-﻿namespace SFSimulator.Core
+﻿using SFSimulator.Core;
+
+namespace SFSimulator.Core
 {
     public class ThirstSimulator : IThirstSimulator
     {
@@ -95,3 +97,5 @@
         }
     }
 }
+
+public readonly record struct QuestOptions(QuestPriorityType Priority, decimal? HybridRatio);

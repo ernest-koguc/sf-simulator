@@ -15,12 +15,8 @@ public class SimulateRequest
     public int HydraHeads { get; set; } = 0;
     public int GemMineLevel { get; set; } = 0;
     public int TreasuryLevel { get; set; } = 0;
-    public QuestPriorityType QuestPriority { get; set; }
-    public float? HybridRatio { get; set; } = null;
-    public float? HybridRatioAfterSwitch { get; set; } = null;
     public bool SwitchPriority { get; set; } = false;
     public int? SwitchLevel { get; set; } = null;
-    public QuestPriorityType? PriorityAfterSwitch { get; set; } = null;
     public float ScrapbookFillness { get; set; } = 0;
     public int XpGuildBonus { get; set; } = 0;
     public int XpRuneBonus { get; set; } = 0;
@@ -44,6 +40,8 @@ public class SimulateRequest
     public bool DoWeeklyTasks { get; set; }
     public bool DrinkExtraWeeklyBeer { get; set; }
     public bool ExpeditionsInsteadOfQuests { get; set; } = true;
-    public ExpeditionOptions? ExpeditionOptions { get; set; } = default!;
-    public ExpeditionOptions? ExpeditionOptionsAfterSwitch { get; set; } = default!;
+    public QuestOptions? QuestOptions { get; set; } 
+    public QuestOptions? QuestOptionsAfterSwitch { get; set; } 
+    public ExpeditionOptions? ExpeditionOptions { get; set; }
+    public ExpeditionOptions? ExpeditionOptionsAfterSwitch { get; set; }
 }

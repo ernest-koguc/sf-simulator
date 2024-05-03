@@ -13,8 +13,6 @@ public class RequestMappingProfile : Profile
             ;
 
         CreateMap<SimulateRequest, SimulationOptions>()
-            .ForMember(d => d.HybridRatioAfterSwitch, m => m.MapFrom(s => s.HybridRatioAfterSwitch))
-            .ForMember(d => d.HybridRatio, m => m.MapFrom(s => s.HybridRatio))
             .ForMember(d => d.SwitchPriority, m => m.MapFrom(s => s.SwitchPriority))
             .ForMember(d => d.SwitchLevel, m => m.MapFrom(s => s.SwitchLevel))
             .ForMember(d => d.FightsForGold, m => m.MapFrom(s => s.FightsForGold))
@@ -32,6 +30,8 @@ public class RequestMappingProfile : Profile
             .ForMember(d => d.WeeklyTasksOptions, m => m.MapFrom(s => new WeeklyTasksOptions(s.DoWeeklyTasks, s.DrinkExtraWeeklyBeer)))
             .ForMember(d => d.ExpeditionOptions, m => m.MapFrom(s => s.ExpeditionOptions))
             .ForMember(d => d.ExpeditionOptionsAfterSwitch, m => m.MapFrom(s => s.ExpeditionOptionsAfterSwitch))
+            .ForMember(d => d.QuestOptions, m => m.MapFrom(s => s.QuestOptions))
+            .ForMember(d => d.QuestOptionsAfterSwitch, m => m.MapFrom(s => s.QuestOptionsAfterSwitch))
             .ForMember(d => d.ExpeditionsInsteadOfQuests, m => m.MapFrom(s => s.ExpeditionsInsteadOfQuests))
             .ForMember(d => d.Mount, m => m.MapFrom(s => s.MountType))
             ;

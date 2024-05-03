@@ -126,6 +126,10 @@ public class GameSimulator : IGameSimulator
         {
             _expeditionService.Options = SimulationOptions.ExpeditionOptions ?? throw new ArgumentException("ExpeditionOptions must be set when ExpeditionsInsteadOfQuests is true", nameof(SimulationOptions.ExpeditionOptions));
         }
+        else 
+        {
+            _questChooser.QuestOptions = SimulationOptions.QuestOptions ?? throw new ArgumentException("QuestOptions must be set when ExpeditionsInsteadOfQuests is false", nameof(SimulationOptions.QuestOptions));
+        }
 
         _calendarRewardProvider.ConfigureCalendar(SimulationOptions.Calendar, SimulationOptions.CalendarDay, SimulationOptions.SkipCalendar);
 
@@ -249,7 +253,7 @@ public class GameSimulator : IGameSimulator
 
         while (quests is not null)
         {
-            var choosenQuest = _questChooser.ChooseBestQuest(quests, SimulationOptions.QuestPriority, SimulationOptions.QuestChooserAI, SimulationOptions.HybridRatio);
+            var choosenQuest = _questChooser.ChooseBestQuest(quests);
             questList.Add(choosenQuest);
 
             GiveGoldToCharacter(choosenQuest.Gold, GainSource.QUEST);
@@ -352,10 +356,10 @@ public class GameSimulator : IGameSimulator
 
         if (SimulationOptions.SwitchPriority && Character.Level == SimulationOptions.SwitchLevel)
         {
-            SimulationOptions.QuestPriority = SimulationOptions.PriorityAfterSwitch;
-            SimulationOptions.HybridRatio = SimulationOptions.HybridRatioAfterSwitch;
             if (SimulationOptions.ExpeditionOptionsAfterSwitch is not null)
                 _expeditionService.Options = SimulationOptions.ExpeditionOptionsAfterSwitch.Value;
+            if (SimulationOptions.QuestOptionsAfterSwitch is not null)
+                _questChooser.QuestOptions = SimulationOptions.QuestOptionsAfterSwitch.Value;
         }
     }
     private void GiveCalendarRewardToPlayer(CalendarRewardType calendarReward)
