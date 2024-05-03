@@ -15,12 +15,17 @@ export class ToolBarComponent {
   public get isExperimentalTabVisible() {
     return this.userService.isAdvancedModeEnabled();
   }
-   
+  public get patchNotesAreNew() {
+    return !this.userService.hasUserSeenPatchNotes();
+  }
+
   public openInfoDialog() {
     this.dialog.open(InfoDialogComponent, { autoFocus: 'dialog', enterAnimationDuration: 400 });
   }
 
   public openPatchNotesDialog() {
-    this.dialog.open(PatchNotesDialogComponent, { autoFocus: false, enterAnimationDuration: 400 })
+    this.dialog.open(PatchNotesDialogComponent, { autoFocus: false, enterAnimationDuration: 400 }).afterClosed().subscribe(() => {
+      this.userService.updateLastSeenPatchNotes();
+    });
   }
 }

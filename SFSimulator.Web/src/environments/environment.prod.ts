@@ -2,5 +2,5 @@ export const environment = {
   production: true,
   apiUrl: 'https://sfsimulator.xyz',
   sftoolsLogin: 'https://sftools.mar21.eu/request?scope=default+pets+items+companions&origin=SF%20Simulator&redirect=https://sfsimulator.xyz/api/loadFromEndpoint',
-  currentVersion: '1.7'
+  currentVersion: '1.8'
 };
