@@ -228,6 +228,14 @@ export class SimulationConfig implements OnInit {
   public loadConfiguration(configuration: SavedConfiguration) {
     let form = configuration.form as any;
     let validation = typia.validate<DeepPartial<SimulationConfigForm>>(form);
+
+    if (form === undefined) {
+      let errorMessage = 'Data is in unexpected format, most likely saved configuration is outdated!';
+      console.error(errorMessage);
+      this.snackBar.createErrorSnackbar(errorMessage);
+      return;
+    }
+
     validation.errors.forEach((error) => {
       let start = '$input.'.length;
       let path = error.path.slice(start, error.path.length).split('.');
