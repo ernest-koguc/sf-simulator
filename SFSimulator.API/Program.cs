@@ -43,7 +43,6 @@ if (app.Environment.IsDevelopment())
     app.UseCors("CorsPolicy");
 }
 
-app.UseStaticFiles();
 app.UseAuthorization();
 app.MapSwagger();
 app.MapControllers();
