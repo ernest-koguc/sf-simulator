@@ -20,4 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SFSimulator.Core\SFSimulator.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
 </Project>
