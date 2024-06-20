@@ -49,11 +49,10 @@ namespace SFSimulator.Core
 
         private Item GenerateItemBeforeQuest(int characterLevel)
         {
-            var goldFactor = _random.NextDouble() <= 0.15 ? 0.5M : 1;
             var item = new Item
             {
                 ItemType = (ItemType)_random.Next(1, 10),
-                GoldValue = _itemValueProvider.GetGoldValueForItem(characterLevel) * goldFactor,
+                GoldValue = _itemValueProvider.GetGoldValueForItem(characterLevel),
                 ItemSourceType = ItemSourceType.BeforeQuest
             };
 

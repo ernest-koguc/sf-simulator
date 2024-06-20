@@ -23,8 +23,8 @@ public class ItemValueProvider : IItemValueProvider
             goldValue = GoldValues[characterLevel];
         }
 
-        // 20% for item to have half the gold value
-        if (_random.Next(0, 5) == 0)
+        // 15% for item to have half the gold value
+        if (_random.NextDouble() <= 0.15)
             return goldValue * 0.5M;
 
         return goldValue;
