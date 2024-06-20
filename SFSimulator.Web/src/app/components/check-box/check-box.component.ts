@@ -29,7 +29,6 @@ export class CheckBoxComponent implements ControlValueAccessor {
     return this._isChecked;
   }
   public set isChecked(value: boolean) {
-    if (this.isDisabled === true) return;
     this._isChecked = value;
     this.onChange(value);
     this.onTouched();

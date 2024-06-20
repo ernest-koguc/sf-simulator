@@ -1,6 +1,6 @@
 namespace SFSimulator.Core;
 
-public class ExpeditionService(ICurves curves) : IExpeditionService
+public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : IExpeditionService
 {
     public ExpeditionOptions Options { get; set; } = new ExpeditionOptions(1.5M, 1.28M);
     public decimal GetDailyExpeditionGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
@@ -17,7 +17,7 @@ public class ExpeditionService(ICurves curves) : IExpeditionService
         var goldMultiplier = (1 + Math.Min(3, goldBonus.GuildBonus + goldBonus.Tower * 2) + goldBonus.RuneBonus) * (1 + (goldBonus.HasGoldScroll ? 0.1M : 0));
         var goldWithBonuses = Math.Min(50_000_000, baseGold * goldMultiplier);
         var goldFromFinalReward = goldWithBonuses * GetMountBonus(mount);
-        var goldFromMidMonster = goldFromFinalReward / 10;
+        var goldFromMidMonster = goldFromFinalReward / 10 * 0.85M;
         var goldPerChest = goldFromFinalReward / 5;
 
         var totalGold = (goldFromFinalReward + goldFromMidMonster + goldPerChest * Options.AverageAmountOfChests) * thirst / 25M;
@@ -42,6 +42,26 @@ public class ExpeditionService(ICurves curves) : IExpeditionService
         var totalXp = xp * thirst / 25M;
 
         return (long)totalXp;
+    }
+
+    public List<Item> GetDailyExpeditionItems(int characterLevel, int thirst)
+    {
+        var amountOfItems = thirst / 25D * 0.5;
+        var reminder = amountOfItems % 1;
+        amountOfItems = Math.Floor(amountOfItems);
+        if (reminder != 0 && Random.Shared.NextDouble() <= reminder)
+        {
+            amountOfItems++;
+        }
+
+        List<Item> items = new();
+        for (var i = 0; i < amountOfItems; i++)
+        {
+            var item = itemGenerator.GenerateItem(characterLevel, ItemSourceType.Expedition);
+            items.Add(item);
+        }
+
+        return items;
     }
 
     private static decimal GetMountBonus(MountType mount)

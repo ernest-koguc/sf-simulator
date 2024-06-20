@@ -3,6 +3,7 @@
     public enum ItemSourceType
     {
         BeforeQuest,
-        AfterQuest
+        AfterQuest,
+        Expedition
     }
 }

@@ -10,7 +10,7 @@ public class SimulatorMappingProfiler : Profile
     {
         CreateMap<Maria21DataDTO, EndpointDataDTO>()
             .ForMember(d => d.CharacterName, m => m.MapFrom(s => s.Name + "@" + s.Prefix.Replace(" ", string.Empty)))
-            .ForMember(d => d.ScrapbookFillness, m => m.MapFrom(s => Math.Round(s.Book / 2283f * 100, 3)))
+            .ForMember(d => d.ScrapbookFillness, m => m.MapFrom(s => Math.Round(s.Book / 2305f * 100, 3)))
             .ForMember(d => d.Level, m => m.MapFrom(s => s.Level))
             .ForMember(d => d.Experience, m => m.MapFrom(s => s.XP))
             .ForMember(d => d.GoldPitLevel, m => m.MapFrom(s => s.Underworld.GoldPit))

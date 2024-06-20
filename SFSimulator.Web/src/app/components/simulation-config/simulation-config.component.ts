@@ -294,8 +294,11 @@ export class SimulationConfig implements OnInit {
     this.account.level.valueChanges.subscribe(() => this.account.experience.updateValueAndValidity())
 
     this.playstyle.doWeeklyTasks.valueChanges.subscribe(v => {
-      if (v === false)
+      if (v === false) {
+
         this.playstyle.drinkExtraWeeklyBeer.disable();
+        this.playstyle.drinkExtraWeeklyBeer.setValue(false);
+      }
       else
         this.playstyle.drinkExtraWeeklyBeer.enable();
     });

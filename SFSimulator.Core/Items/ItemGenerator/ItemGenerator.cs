@@ -19,8 +19,18 @@ namespace SFSimulator.Core
             {
                 ItemSourceType.AfterQuest => GenerateItemAfterQuest(characterLevel),
                 ItemSourceType.BeforeQuest => GenerateItemBeforeQuest(characterLevel),
+                ItemSourceType.Expedition => GenerateItemFromExpedition(characterLevel),
                 _ => throw new InvalidEnumArgumentException(nameof(sourceType)),
             };
+        }
+
+        private Item GenerateItemFromExpedition(int characterLevel)
+        {
+            var item = GenerateItemBeforeQuest(characterLevel);
+            item.GoldValue *= 4;
+            item.ItemSourceType = ItemSourceType.Expedition;
+
+            return item;
         }
 
         public Item GeneratePetFoodItem()

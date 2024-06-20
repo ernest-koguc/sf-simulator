@@ -126,7 +126,7 @@ public class GameSimulator : IGameSimulator
         {
             _expeditionService.Options = SimulationOptions.ExpeditionOptions ?? throw new ArgumentException("ExpeditionOptions must be set when ExpeditionsInsteadOfQuests is true", nameof(SimulationOptions.ExpeditionOptions));
         }
-        else 
+        else
         {
             _questChooser.QuestOptions = SimulationOptions.QuestOptions ?? throw new ArgumentException("QuestOptions must be set when ExpeditionsInsteadOfQuests is false", nameof(SimulationOptions.QuestOptions));
         }
@@ -278,6 +278,15 @@ public class GameSimulator : IGameSimulator
         GiveGoldToCharacter(gold, GainSource.EXPEDITION);
         var xp = _expeditionService.GetDailyExpeditionExperience(Character.Level, SimulationOptions.ExperienceBonus, IsExperienceEvent, SimulationOptions.Mount, thirst);
         GiveXPToCharacter(xp, GainSource.EXPEDITION);
+
+        var items = _expeditionService.GetDailyExpeditionItems(Character.Level, thirst);
+        foreach (var item in items)
+        {
+            var goldFromItem = ItemBackPack.AddItemToBackPack(item, CurrentItemTypesForWitch);
+
+            if (goldFromItem.HasValue)
+                GiveGoldToCharacter(goldFromItem.Value, GainSource.ITEM);
+        }
     }
 
     private void SpinAbawuwuWheel()
