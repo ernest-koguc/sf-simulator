@@ -34,7 +34,7 @@ export class SimulatorComponent {
     this.dialog.open(SftoolsloginComponent, { autoFocus: 'dialog', enterAnimationDuration: 200, exitAnimationDuration: 200, restoreFocus: false, width: "80%", height: "80%", data: DataScope.All }).afterClosed().subscribe(data => {
       if (data !== undefined && data !== null && data.error === undefined)
         this.simulationConfigComponent.loadEndpoint(data);
-      else if (data.error === undefined) {
+      else if (data?.error !== undefined) {
         this.snackbar.createErrorSnackbar(data.error);
         console.log(data.error);
       }

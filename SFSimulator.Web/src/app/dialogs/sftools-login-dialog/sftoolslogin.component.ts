@@ -20,14 +20,17 @@ export class SftoolsloginComponent implements OnDestroy {
   iframeSource?: SafeResourceUrl;
   eventHandler = (e: MessageEvent) => {
     console.trace(e);
+    if (e.data.event == 'sftools-close') {
+      setTimeout(() => this.dialogRef.close(), 100);
+      return;
+    }
     if (e.origin != environment.apiUrl) {
       return;
     }
-    if (e.data.event == 'sftools-close') {
-      setTimeout(() => this.dialogRef.close(), 100);
-    }
 
-    setTimeout(() => this.dialogRef.close(mapToLowerCase(e.data)), 100);
+    if (e.data.id === 'sfsim') {
+      setTimeout(() => this.dialogRef.close(mapToLowerCase(e.data)), 100);
+    }
   }
   ngOnDestroy(): void {
     window.removeEventListener('message', this.eventHandler);
