@@ -19,6 +19,7 @@ export class SftoolsloginComponent implements OnDestroy {
 
   iframeSource?: SafeResourceUrl;
   eventHandler = (e: MessageEvent) => {
+    console.trace(e);
     if (e.origin != environment.apiUrl) {
       return;
     }
