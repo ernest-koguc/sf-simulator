@@ -15,8 +15,9 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
         baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
 
         var goldMultiplier = (1 + Math.Min(3, goldBonus.GuildBonus + goldBonus.Tower * 2) + goldBonus.RuneBonus) * (1 + (goldBonus.HasGoldScroll ? 0.1M : 0));
-        var goldWithBonuses = Math.Min(50_000_000, baseGold * goldMultiplier);
-        var goldFromFinalReward = goldWithBonuses * GetMountBonus(mount);
+        var goldWithBonuses = Math.Min(40_000_000, baseGold * goldMultiplier) * GetMountBonus(mount);
+        goldWithBonuses += Math.Clamp(characterLevel - 557, 0, 75) * (50_000_000 * GetMountBonus(mount) - goldWithBonuses) / 75;
+        var goldFromFinalReward = goldWithBonuses;
         var goldFromMidMonster = goldFromFinalReward / 10 * 0.85M;
         var goldPerChest = goldFromFinalReward / 5;
 
@@ -77,5 +78,3 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
 }
 
 public readonly record struct ExpeditionOptions(decimal AverageAmountOfChests, decimal AverageStarExperienceBonus);
-
-

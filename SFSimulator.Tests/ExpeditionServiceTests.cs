@@ -7,7 +7,7 @@ namespace SFSimulator.Tests;
 [TestClass]
 public class ExpeditionServiceTests
 {
-    private ExpeditionService ExpeditionService { get; set; } = new ExpeditionService(new Curves());
+    private IExpeditionService ExpeditionService { get; set; } = DepedencyProvider.GetRequiredService<IExpeditionService>();
 
     [TestMethod]
     public void ExpeditionService_GetDailyExpeditionGold_ReturnsCorrectGold()
@@ -20,7 +20,7 @@ public class ExpeditionServiceTests
 
         var result = Math.Round(ExpeditionService.GetDailyExpeditionGold(characterLevel, goldBonus, isGoldEvent, mount, 320));
 
-        Assert.AreEqual(result, 1920000000);
+        Assert.AreEqual(result, 1900800000);
     }
 
     [TestMethod]
@@ -43,6 +43,9 @@ public class ExpeditionServiceTests
     [DataRow(503, 200, 8, false, 2254, "1.2", 25, false, MountType.Tiger, 3336986L)]
     [DataRow(455, 200, 10, true, 2233, "1.2", 25, false, MountType.Griffin, 7648208L)]
     [DataRow(455, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 8604234L)]
+    [DataRow(557, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 3805873L)]
+    [DataRow(561, 200, 10, true, 2233, "1.35", 25, false, MountType.Tiger, 2619124L)]
+    [DataRow(597, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 2791533L)]
     public void ExpeditionService_GetDailyExpeditionExperience_ReturnsCorrectExperience(int characterLevel, int guildBonus, int runeBonus, bool hasScroll, int scrapbookItems, string avgStars, int thirst, bool isExperienceEvent, MountType mount, long expectedResult)
     {
         var stars = Convert.ToDecimal(avgStars);
@@ -51,7 +54,6 @@ public class ExpeditionServiceTests
 
         var result = ExpeditionService.GetDailyExpeditionExperience(characterLevel, experienceBonus, isExperienceEvent, mount, thirst);
 
-        Assert.AreEqual(result, expectedResult);
+        Assert.AreEqual(expectedResult, result);
     }
 }
-
