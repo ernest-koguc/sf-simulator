@@ -9,7 +9,7 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
 
         if (isGoldEvent)
         {
-            baseGold *= 4;
+            baseGold *= 5;
         }
 
         baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
