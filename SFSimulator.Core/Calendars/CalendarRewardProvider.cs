@@ -37,9 +37,9 @@
             if (CalendarSkipping && CurrentDay == 1 && !experienceCalendars.Contains(CurrentCalendar))
             {
                 CurrentCalendar = CurrentCalendar == CalendarRewards.Keys.Max() ? CalendarRewards.Keys.Min() : ++CurrentCalendar;
-                return CalendarRewardType.SKIP; 
+                return CalendarRewardType.SKIP;
             }
-            
+
             var calendar = CalendarRewards[CurrentCalendar];
             var reward = calendar[CurrentDay - 1];
 

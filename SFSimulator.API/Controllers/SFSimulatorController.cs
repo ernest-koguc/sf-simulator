@@ -8,7 +8,6 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFSimulator.API.Controllers;
 
-
 [Route("api")]
 [ApiController]
 public class SFSimulatorController : ControllerBase
@@ -27,14 +26,14 @@ public class SFSimulatorController : ControllerBase
     [HttpPost("simulateUntilDays")]
     public ActionResult<SimulationResult> RunSimulationUntilDay([FromBody] SimulateRequest request)
     {
-        var simulationResult = _requestService.RunSimulation(request, SimulationType.UntilDays);
+        var simulationResult = _requestService.RunSimulation(request, SimulationFinishCondition.UntilDays);
         return Ok(simulationResult);
     }
 
     [HttpPost("simulateUntilLevel")]
     public ActionResult<SimulationResult> RunSimulationUntilLevel([FromBody] SimulateRequest request)
     {
-        var simulationResult = _requestService.RunSimulation(request, SimulationType.UntilLevel);
+        var simulationResult = _requestService.RunSimulation(request, SimulationFinishCondition.UntilLevel);
 
         return Ok(simulationResult);
     }
@@ -42,7 +41,7 @@ public class SFSimulatorController : ControllerBase
     [HttpPost("simulateUntilBaseStats")]
     public ActionResult<SimulationResult> RunSimulationUntilBaseStats([FromBody] SimulateRequest request)
     {
-        var simulationResult = _requestService.RunSimulation(request, SimulationType.UntilBaseStats);
+        var simulationResult = _requestService.RunSimulation(request, SimulationFinishCondition.UntilBaseStats);
 
         return Ok(simulationResult);
     }

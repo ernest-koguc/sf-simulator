@@ -1,7 +1,6 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public interface IGameSimulator
 {
-    public interface IGameSimulator
-    {
-        SimulationResult Run(int until, Character character, SimulationOptions simulationOptions, SimulationType simulationType);
-    }
+    SimulationResult Run(SimulationOptions simulationOptions, SimulationFinishCondition simulationFinishCondition);
 }

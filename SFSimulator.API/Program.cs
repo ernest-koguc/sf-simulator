@@ -25,7 +25,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.RegisterQuestSimulator();
 builder.Services.RegisterControllerServices();
-builder.Services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(SimulatorMappingProfiler))));
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(RequestMappingProfile))));
 
 builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssemblyContaining<SimulateDungeonRequestValidator>();
@@ -56,4 +56,3 @@ catch (Exception ex)
     logger.Error(ex);
     throw;
 }
-

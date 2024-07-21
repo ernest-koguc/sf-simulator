@@ -11,6 +11,15 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "SFSimulator.Web", "SFSimula
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFSimulator.Tests", "SFSimulator.Tests\SFSimulator.Tests.csproj", "{312FC297-4FEB-4BE2-B14E-533DED914C0C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFSteroids", "SFSteroids\SFSteroids.csproj", "{02797090-C50A-4144-BF1F-DE52232D3936}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{650C7296-0DB7-4CD2-9FC9-944C60AB71C6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFSimulator.Frontend", "SFSimulator.Frontend\SFSimulator.Frontend.csproj", "{10EE6631-096D-4CE1-8CC2-4BA4E60C0C93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +44,14 @@ Global
 		{312FC297-4FEB-4BE2-B14E-533DED914C0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{312FC297-4FEB-4BE2-B14E-533DED914C0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{312FC297-4FEB-4BE2-B14E-533DED914C0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02797090-C50A-4144-BF1F-DE52232D3936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02797090-C50A-4144-BF1F-DE52232D3936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02797090-C50A-4144-BF1F-DE52232D3936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02797090-C50A-4144-BF1F-DE52232D3936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10EE6631-096D-4CE1-8CC2-4BA4E60C0C93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10EE6631-096D-4CE1-8CC2-4BA4E60C0C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10EE6631-096D-4CE1-8CC2-4BA4E60C0C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10EE6631-096D-4CE1-8CC2-4BA4E60C0C93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

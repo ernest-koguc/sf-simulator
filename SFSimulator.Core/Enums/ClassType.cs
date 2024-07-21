@@ -1,17 +1,17 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public enum ClassType
 {
-    public enum ClassType
-    {
-        Bert = 0,
-        Warrior,
-        Mage,
-        Scout,
-        Assassin,
-        BattleMage,
-        Berserker,
-        DemonHunter,
-        Druid,
-        Bard,
-        Necromancer
-    }
+    Mirror = -1,
+    Bert = 0,
+    Warrior,
+    Mage,
+    Scout,
+    Assassin,
+    BattleMage,
+    Berserker,
+    DemonHunter,
+    Druid,
+    Bard,
+    Necromancer
 }

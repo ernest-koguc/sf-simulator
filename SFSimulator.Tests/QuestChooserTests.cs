@@ -16,7 +16,7 @@ namespace SFSimulator.Tests
             var gameLogic = new GameLogic(new Curves());
             var questValues = gameLogic.GetMinimumQuestValue(400, new ExperienceBonus(), new GoldBonus());
 
-            for (var i =0; i<100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var quest = questFactory.Create(questValues, 400, 100, true, 50, new List<EventType>(), MountType.Griffin);
 

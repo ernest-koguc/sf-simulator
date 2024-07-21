@@ -1,12 +1,9 @@
 ﻿using SFSimulator.API.Requests;
 using SFSimulator.Core;
 
-namespace SFSimulator.API.Services
+namespace SFSimulator.API.Services;
+
+public interface IRequestService
 {
-    public interface IRequestService
-    {
-        SimulationResult RunSimulation(SimulateRequest request, SimulationType simulationType);
-        List<DungeonDTO> GetDungeons();
-        DungeonSimulationResult SimulateDungeon(SimulateDungeonRequest request);
-    }
+    SimulationResult RunSimulation(SimulateRequest request, SimulationFinishCondition simulationType);
 }

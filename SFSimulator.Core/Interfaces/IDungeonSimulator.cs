@@ -1,9 +1,6 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public interface IDungeonSimulator
 {
-    public interface IDungeonSimulator
-    {
-        DungeonSimulationResult SimulateDungeon(DungeonEnemy dungeonEnemy, Character character, int iterations, int winThreshold);
-        DungeonSimulationResult SimulateDungeon(DungeonEnemy dungeonEnemy, RawFightable character, int iterations, int winThreshold);
-        Task<DungeonSimulationResult> SimulateAllOpenDungeonsAsync(Character character, int iterations, int winThreshold);
-    }
+    DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions, int iterations, int winThreshold) where T : IWeaponable where E : IWeaponable;
 }

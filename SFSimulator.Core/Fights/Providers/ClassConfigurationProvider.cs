@@ -1,20 +1,24 @@
 ﻿namespace SFSimulator.Core;
+
 public static class ClassConfigurationProvider
 {
-    private static Dictionary<ClassType, ClassConfiguration> ClassConfiguration { get; set; } = null!;
+    private static Dictionary<ClassType, ClassConfiguration> ClassConfiguration { get; set; } = default!;
+
+    static ClassConfigurationProvider()
+    {
+        InitClassConfiguration();
+    }
 
     public static ClassConfiguration GetClassConfiguration(ClassType classType)
     {
-        if (ClassConfiguration == null)
-            InitClassConfiguration();
-
         if (!ClassConfiguration!.ContainsKey(classType))
-            throw new ArgumentException($"No configuration for class: {classType}");
+            throw new ArgumentException($"Configuration for class {classType} is not supported");
 
         return ClassConfiguration[classType];
     }
     private static void InitClassConfiguration()
     {
+        // TODO: ADD Kuni and Mark as separate classes?
         ClassConfiguration = new()
         {
             {
@@ -23,6 +27,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 5,
                     WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 1,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 15,
+                    MainAttribute = AttributeType.Strength,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -31,6 +40,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 6.099999793822,
                     WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 1,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 15,
+                    MainAttribute = AttributeType.Strength,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -39,6 +53,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 2,
                     WeaponMultiplier = 4.5,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 2,
+                    ItemArmorMultiplier = 3,
+                    MainAttribute = AttributeType.Intelligence,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -47,6 +66,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 4,
                     WeaponMultiplier = 2.5,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 2,
+                    ItemArmorMultiplier = 7.5,
+                    MainAttribute = AttributeType.Dexterity,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -55,6 +79,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 4,
                     WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 1,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 7.5,
+                    MainAttribute = AttributeType.Dexterity,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -63,6 +92,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 5,
                     WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 3,
+                    MainAttribute = AttributeType.Strength,
+                    ItemBonusMultiplier = 1.11
                 }
             },
             {
@@ -71,6 +105,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 4,
                     WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 1,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 15,
+                    MainAttribute = AttributeType.Strength,
+                    ItemBonusMultiplier = 1.1
                 }
             },
             {
@@ -79,6 +118,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 5,
                     WeaponMultiplier = 4.5,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 2,
+                    ItemArmorMultiplier = 7.5,
+                    MainAttribute = AttributeType.Intelligence,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -87,6 +131,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 5,
                     WeaponMultiplier = 2.5,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 2,
+                    ItemArmorMultiplier = 15,
+                    MainAttribute = AttributeType.Dexterity,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -95,6 +144,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 3,
                     WeaponMultiplier = 4.5,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 2,
+                    ItemArmorMultiplier = 7.5,
+                    MainAttribute = AttributeType.Intelligence,
+                    ItemBonusMultiplier = 1
                 }
             },
             {
@@ -103,6 +157,11 @@ public static class ClassConfigurationProvider
                 {
                     HealthMultiplier = 4,
                     WeaponMultiplier = 4.5,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 2,
+                    ItemArmorMultiplier = 3,
+                    MainAttribute = AttributeType.Intelligence,
+                    ItemBonusMultiplier = 1
                 }
             },
         };

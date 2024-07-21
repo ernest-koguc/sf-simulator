@@ -133,13 +133,13 @@ namespace SFSimulator.Tests
             {
                 var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
                 var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 5, 4);
-                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience*2));
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 2));
             }
             for (int i = 0; i < 100; i++)
             {
                 var quest = normalQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 10, 4);
                 var truncatedQuest = truncatedQuestsFactory.Create(new QuestValue(1000000, 1000000), 1, 5, 3);
-                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience*2));
+                Assert.IsTrue(Math.Round(quest.Experience) == Math.Round(truncatedQuest.Experience * 2));
             }
 
             //Truncated to 7.5min

@@ -50,7 +50,7 @@ public class ExpeditionServiceTests
     {
         var stars = Convert.ToDecimal(avgStars);
         ExpeditionService.Options = new ExpeditionOptions(2M, stars);
-        var experienceBonus = new ExperienceBonus(scrapbookItems / 2283F * 100, guildBonus, runeBonus, hasScroll);
+        var experienceBonus = new ExperienceBonus(scrapbookItems / (decimal)CoreShared.SCRAPBOOK_LIMIT * 100, guildBonus, runeBonus, hasScroll);
 
         var result = ExpeditionService.GetDailyExpeditionExperience(characterLevel, experienceBonus, isExperienceEvent, mount, thirst);
 

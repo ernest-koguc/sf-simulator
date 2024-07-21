@@ -30,8 +30,8 @@ public class SimulateDungeonRequestValidator : AbstractValidator<SimulateDungeon
         RuleFor(o => o.SoloPortal).InclusiveBetween(0, 50);
         RuleFor(o => o.GuildPortal).InclusiveBetween(0, 50);
         RuleFor(o => o.Reaction).InclusiveBetween(0, 1);
-        RuleFor(o => o.Companions).Custom((_, context) => ValidateCompanions(dungeonProvider, context));
-        RuleForEach(o => o.Companions).SetValidator(new RawCompanionValidator());
+        //RuleFor(o => o.Companions).Custom((_, context) => ValidateCompanions(dungeonProvider, context));
+        //RuleForEach(o => o.Companions).SetValidator(new RawCompanionValidator());
         RuleFor(o => o.FirstWeapon).SetValidator(new WeaponValidator());
         RuleFor(o => o.SecondWeapon).SetValidator(new WeaponValidator());
         RuleFor(o => o.LightningResistance).InclusiveBetween(0, 75);
@@ -53,9 +53,9 @@ public class SimulateDungeonRequestValidator : AbstractValidator<SimulateDungeon
     {
         var instance = context.InstanceToValidate;
         var dungeon = dungeonProvider.GetDungeonEnemy(instance.DungeonPosition, instance.DungeonEnemyPosition);
-        if (dungeon.Dungeon.Type.WithCompanions() && context.InstanceToValidate.Companions.Count() == 0)
+        /*if (dungeon.Dungeon.Type.WithCompanions() && context.InstanceToValidate.Companions.Count() == 0)
         {
             context.AddFailure($"Specified dungeons requires companions for simulation");
-        }
+        }*/
     }
 }

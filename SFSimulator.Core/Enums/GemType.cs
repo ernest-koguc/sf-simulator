@@ -2,12 +2,12 @@ namespace SFSimulator.Core;
 
 public enum GemType
 {
-    None,
-    Strength,
-    Dexterity,
-    Intelligence,
-    Constitution,
-    Luck,
-    Black,
-    Legendary
+    None = 0,
+    Strength = 1,
+    Dexterity = 2,
+    Intelligence = 3,
+    Constitution = 4,
+    Luck = 5,
+    Black = 6,
+    Legendary = 7
 }

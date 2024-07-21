@@ -19,34 +19,18 @@ public class RequestService : IRequestService
         _mapper = mapper;
     }
 
-    public SimulationResult RunSimulation(SimulateRequest request, SimulationType simulationType)
+    public SimulationResult RunSimulation(SimulateRequest request, SimulationFinishCondition simulationType)
     {
-        var character = _mapper.Map<Character>(request);
         var simulationOptions = _mapper.Map<SimulationOptions>(request);
 
-        var simulationResult = _gameSimulator.Run(request.SimulateUntil, character, simulationOptions, simulationType);
-
-        return simulationResult;
-    }
-
-    public List<DungeonDTO> GetDungeons()
-    {
-        var dungeons = _dungeonProvider.GetAllDungeons();
-        var dto = _mapper.Map<List<DungeonDTO>>(dungeons);
-        return dto;
-    }
-
-    public DungeonSimulationResult SimulateDungeon(SimulateDungeonRequest request)
-    {
-        var character = _mapper.Map<RawFightable>(request);
-        foreach (var companion in character.Companions)
+        foreach (var companion in simulationOptions.Companions)
         {
-            companion.Character = character;
+            companion.Character = simulationOptions;
+            companion.Class = companion.Class == ClassType.Warrior ? ClassType.Bert : companion.Class;
         }
 
-        var enemy = _dungeonProvider.GetDungeonEnemy(request.DungeonPosition, request.DungeonEnemyPosition);
+        var simulationResult = _gameSimulator.Run(simulationOptions, simulationType);
 
-        var result = _dungeonSimulator.SimulateDungeon(enemy, character, request.Iterations, request.WinTreshold);
-        return result;
+        return simulationResult;
     }
 }

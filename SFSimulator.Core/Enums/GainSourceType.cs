@@ -16,6 +16,7 @@
         DICE_GAME,
         GUILD_FIGHT,
         WEEKLY_TASKS,
+        DUNGEON,
         EXPEDITION,
         TOTAL
     }

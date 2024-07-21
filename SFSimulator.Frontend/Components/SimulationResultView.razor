@@ -1,0 +1,29 @@
+﻿@if (Result is not null)
+{
+        <div style="width:1000px">
+            <RadzenChart ColorScheme="ColorScheme.Pastel">
+                @foreach (var gain in TotalExperienceGains)
+                {
+                    var data = new List<Gain> { gain };
+                    <RadzenColumnSeries Data="@data" ValueProperty="Value" CategoryProperty="Source" Title="@gain.Source" LineType="LineType.Solid">
+                        <RadzenSeriesDataLabels/>
+                        <RadzenValueAxis Formatter="FormatString"/>
+                        <RadzenLegend Visible="false"/>
+                    </RadzenColumnSeries>
+                }
+            </RadzenChart>
+        </div>
+        <div style="width:1000px">
+            <RadzenChart ColorScheme="ColorScheme.Pastel">
+                @foreach (var gain in TotalBaseStatsGains)
+                {
+                    var data = new List<Gain> { gain };
+                        <RadzenColumnSeries Data="@data" ValueProperty="Value" CategoryProperty="Source" Title="@gain.Source" LineType="LineType.Solid" >
+                            <RadzenSeriesDataLabels/>
+                            <RadzenValueAxis Formatter="FormatString" Step="5" Max="20"/>
+                            <RadzenLegend Visible="false"/>
+                        </RadzenColumnSeries>
+                }
+            </RadzenChart>
+        </div>
+}

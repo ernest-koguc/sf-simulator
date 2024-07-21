@@ -9,12 +9,12 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
 
         if (isGoldEvent)
         {
-            baseGold *= 4;
+            baseGold *= 5;
         }
 
         baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
 
-        var goldMultiplier = (1 + Math.Min(3, goldBonus.GuildBonus + goldBonus.Tower * 2) + goldBonus.RuneBonus) * (1 + (goldBonus.HasGoldScroll ? 0.1M : 0));
+        var goldMultiplier = (1 + Math.Min(3, (goldBonus.GuildBonus / 100M) + (goldBonus.Tower / 100M) * 2) + goldBonus.RuneBonus / 100M) * (goldBonus.HasGoldScroll ? 1.1M : 1);
         var goldWithBonuses = Math.Min(40_000_000, baseGold * goldMultiplier) * GetMountBonus(mount);
         goldWithBonuses += Math.Clamp(characterLevel - 557, 0, 75) * (50_000_000 * GetMountBonus(mount) - goldWithBonuses) / 75;
         var goldFromFinalReward = goldWithBonuses;
@@ -32,8 +32,8 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
         baseExperience *= 15.18M;
         var xpWithMount = baseExperience * GetMountBonus(mount);
         var xpWithStarBonus = xpWithMount * Options.AverageStarExperienceBonus;
-        var xpMultiplier = (1 + experienceBonus.GuildBonus + experienceBonus.ScrapbookFillness + experienceBonus.RuneBonus) * (1 + (experienceBonus.HasExperienceScroll ? 0.1 : 0));
-        var xp = xpWithStarBonus * (decimal)xpMultiplier;
+        var xpMultiplier = experienceBonus.CombinedBonus;
+        var xp = xpWithStarBonus * xpMultiplier;
 
         if (isExperienceEvent)
         {
@@ -77,4 +77,8 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
         };
 }
 
-public readonly record struct ExpeditionOptions(decimal AverageAmountOfChests, decimal AverageStarExperienceBonus);
+public class ExpeditionOptions(decimal AverageAmountOfChests, decimal AverageStarExperienceBonus)
+{
+    public decimal AverageAmountOfChests { get; set; } = AverageAmountOfChests;
+    public decimal AverageStarExperienceBonus { get; set; } = AverageStarExperienceBonus;
+}

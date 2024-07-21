@@ -31,4 +31,3 @@ public class WeeklyTasksRewardProvider(IGameLogic _gameLogic) : IWeeklyTasksRewa
 
     public int GetWeeklyThirst(int day) => day % 7 == 1 ? 20 : 0;
 }
-

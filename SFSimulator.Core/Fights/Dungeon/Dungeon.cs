@@ -8,5 +8,6 @@
         public bool IsUnlocked { get; set; } = false;
         public bool IsDefeated { get; set; } = false;
         public DungeonTypeEnum Type { get; set; } = DungeonTypeEnum.Default;
+        public Func<DungeonUnlockContext, bool> UnlockResolve { get; set; } = (_) => true;
     }
 }

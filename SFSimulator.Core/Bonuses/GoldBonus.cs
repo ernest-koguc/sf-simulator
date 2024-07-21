@@ -1,20 +1,19 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public class GoldBonus
 {
-    public class GoldBonus
+    public int Tower { get; set; }
+    public decimal GuildBonus { get; set; }
+    public int RuneBonus { get; set; }
+    public bool HasGoldScroll { get; set; }
+    public bool HasArenaGoldScroll { get; set; }
+    public GoldBonus(int tower = 100, int guildBonus = 200, int runeBonus = 50, bool questScroll = true, bool arenaScroll = true)
     {
-        public decimal Tower { get; set; }
-        public decimal GuildBonus { get; set; }
-        public decimal RuneBonus { get; set; }
-        public bool HasGoldScroll { get; set; }
-        public bool HasArenaGoldScroll { get; set; }
-        public GoldBonus(int tower = 100, int guildBonus = 200, int runeBonus = 50, bool questScroll = true, bool arenaScroll = true)
-        {
-            Tower = tower / 100M;
-            GuildBonus = guildBonus / 100M;
-            RuneBonus = runeBonus / 100M;
-            HasGoldScroll = questScroll;
-            HasArenaGoldScroll = arenaScroll;
-        }
-        public decimal CombinedBonus() => 1 + Tower + GuildBonus;
+        Tower = tower;
+        GuildBonus = guildBonus;
+        RuneBonus = runeBonus;
+        HasGoldScroll = questScroll;
+        HasArenaGoldScroll = arenaScroll;
     }
+    public decimal TowerPlusGuildBonus => 1 + ((Tower + GuildBonus) / 100M);
 }

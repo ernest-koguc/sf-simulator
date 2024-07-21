@@ -1,0 +1,246 @@
+﻿@page "/"
+@using SFSimulator.Core
+@using SFSimulator.Frontend.Dialogs
+
+<PageTitle>@Constants.PageTitle</PageTitle>
+<RadzenRow>
+
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal"> 
+            <RadzenPanelMenu>
+                <RadzenPanelMenuItem Icon="person" Text="Account" Click="_ => CurrentTab = FormTab.Account"/>
+                <RadzenPanelMenuItem Icon="import_contacts" Text="Bonuses" Click="_ => CurrentTab = FormTab.Bonuses"/>
+                <RadzenPanelMenuItem Icon="flaky" Text="Playstyle" Click="_ => CurrentTab = FormTab.Playstyle"/>
+                <RadzenPanelMenuItem Icon="whatshot" Text="Dungeon" Click="_ => CurrentTab = FormTab.Dungeon"/>
+                <RadzenPanelMenuItem Icon="sync_alt" Text="Endpoint" Click="OpenEndpoint"/>
+                <RadzenPanelMenuItem Icon="arrow_right_alt" Text="Load"/>
+            </RadzenPanelMenu>
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenTemplateForm TItem="SimulationOptions" Data="SimulationOptions" Submit="Simulate">
+                    <ChildContent>
+                    @if (CurrentTab == FormTab.Account)
+                    {
+        @*                     TODO: Bind the value*@
+                        <RadzenRow>
+
+                            <RadzenStack>
+                                <RadzenFormField Component="Level" Text="Level">
+                                    <RadzenNumeric Min="1" Max="800" TValue="int" Name="Level" @bind-Value=@SimulationOptions.Level/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="Experience" Text="Experience">
+                                    <RadzenNumeric Min="0" TValue="long" Name="Experience" @bind-Value=@SimulationOptions.Experience/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="AcademyLevel" Text="Academy level">
+                                    <RadzenNumeric Min="0" Max="20" TValue="int" Name="AcademyLevel" @bind-Value=@SimulationOptions.AcademyLevel/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="GemMineLevel" Text="Gem Mine level">
+                                    <RadzenNumeric Min="0" Max="100" TValue="int" Name="GemMineLevel" @bind-Value=@SimulationOptions.GemMineLevel/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="Hydra" Text="Hydra">
+                                    <RadzenNumeric Min="0" Max="20" TValue="int" Name="Hydra" @bind-Value=@SimulationOptions.HydraHeads  />
+                                </RadzenFormField>
+                            </RadzenStack>
+                            <RadzenStack>
+                                <RadzenFormField Component="BaseStats" Text="Base stats">
+                                    <RadzenNumeric Min="0" Max="1_000_000" TValue="int" Name="BaseStats" @bind-Value=@SimulationOptions.BaseStat/>
+                                </RadzenFormField>
+                                 <RadzenFormField Component="Mount" Text="Mount">
+                                    <RadzenDropDown TValue="MountType" Data=@(Enum.GetValues<MountType>().Select(m => new { Text = m.ToString(), Value = m })) 
+                                        TextProperty="Text" ValueProperty="Value" Name="Mount" @bind-Value=@SimulationOptions.Mount />
+                                </RadzenFormField>
+                                <RadzenFormField Component="GoldPitLevel" Text="Gold Pit level">
+                                    <RadzenNumeric Min="0" Max="100" TValue="int" Name="GoldPitLevel" @bind-Value=@SimulationOptions.GoldPitLevel/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="TreasuryLevel" Text="Treasury level">
+                                    <RadzenNumeric Min="0" Max="45" TValue="int" Name="TreasuryLevel" @bind-Value=@SimulationOptions.TreasuryLevel/>
+                                </RadzenFormField>
+                            </RadzenStack>
+                        </RadzenRow>
+
+                    }
+                    else if (CurrentTab == FormTab.Bonuses)
+                    {
+                        <RadzenRow>
+                            <RadzenStack>
+                                <RadzenFormField Component="Scrapbook" Text="Scrapbook">
+                                    <RadzenNumeric Min="0" Max="100" TValue="decimal" Name="Scrapbook" @bind-Value=SimulationOptions.ExperienceBonus.ScrapbookFillness />
+                                </RadzenFormField>
+                                <RadzenFormField Component="ExperienceGuildBonus" Text="XP Guild Bonus">
+                                    <RadzenNumeric Min="0" Max="200" TValue="decimal" Name="ExperienceGuildBonus" @bind-Value=SimulationOptions.ExperienceBonus.GuildBonus/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="ExperienceRuneBonus" Text="ExperienceRuneBonus">
+                                    <RadzenNumeric Min="0" Max="10" TValue="int" Name="ExperienceRuneBonus" @bind-Value=SimulationOptions.ExperienceBonus.RuneBonus/>
+                                </RadzenFormField>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="ExperienceScroll" @bind-Value=SimulationOptions.ExperienceBonus.HasExperienceScroll/>
+                                    <RadzenLabel Component="ExperienceScroll" Text="Experience Scroll"/>
+                                </RadzenRow>
+                            </RadzenStack>
+                            <RadzenStack>
+                                <RadzenFormField Component="Scrapbook" Text="Scrapbook">
+                                    <RadzenNumeric Min="0" Max="100" TValue="int" Name="Scrapbook" @bind-Value=SimulationOptions.GoldBonus.Tower />
+                                </RadzenFormField>
+                                <RadzenFormField Component="GoldGuildBonus" Text="Gold Guild Bonus">
+                                    <RadzenNumeric Min="0" Max="200" TValue="decimal" Name="GoldGuildBonus" @bind-Value=SimulationOptions.GoldBonus.GuildBonus/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="GoldRuneBonus" Text="GoldRuneBonus">
+                                    <RadzenNumeric Min="0" Max="50" TValue="int" Name="GoldRuneBonus" @bind-Value=SimulationOptions.GoldBonus.RuneBonus/>
+                                </RadzenFormField>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="GoldScroll" @bind-Value=SimulationOptions.GoldBonus.HasGoldScroll/>
+                                    <RadzenLabel Component="GoldScroll" Text="Gold Scroll"/>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="ArenaGoldScroll" @bind-Value=SimulationOptions.GoldBonus.HasArenaGoldScroll/>
+                                    <RadzenLabel Component="ArenaGoldScroll" Text="Arena Gold Scroll"/>
+                                </RadzenRow>
+                            </RadzenStack>
+                        </RadzenRow>
+                        
+                    }
+                    else if (CurrentTab == FormTab.Playstyle)
+                    {
+                        <RadzenRow>
+                            
+                            <RadzenStack>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="ExpeditionsInsteadOfQuests" @bind-Value=SimulationOptions.ExpeditionsInsteadOfQuests/>
+                                    <RadzenLabel Component="ExpeditionsInsteadOfQuests" Text="Expeditions instead of quests"/>
+                                </RadzenRow>
+                                <RadzenFormField Component="DailyThirst" Text="Daily Thirst">
+                                    <RadzenNumeric Min="0" Max="320" TValue="int" Name="DailyThirst" @bind-Value=SimulationOptions.DailyThirst/>
+                                </RadzenFormField>
+                                @if(SimulationOptions.ExpeditionsInsteadOfQuests)
+                                {
+                                    <RadzenFormField Component="AvgAmountOfChests" Text="Avg Amount of Chests">
+                                        <RadzenNumeric Min="0" Max="2" TValue="decimal" Name="AvgAmountOfChests" @bind-Value=SimulationOptions.ExpeditionOptions.AverageAmountOfChests/>
+                                    </RadzenFormField>
+                                    <RadzenFormField Component="AvgStarBonus" Text="Avg Star Bonus">
+                                        <RadzenNumeric Min="1" Max="1.35M" TValue="decimal" Name="AvgStarBonus" @bind-Value=SimulationOptions.ExpeditionOptions.AverageStarExperienceBonus/>
+                                    </RadzenFormField>
+                                }
+                                else
+                                {
+                                     <RadzenFormField Component="QuestPriority" Text="Quest Priority">
+                                        <RadzenDropDown TValue="QuestPriorityType" Data=@(Enum.GetValues<QuestPriorityType>().Select(m => new { Text = m.ToString(), Value = m })) 
+                                            TextProperty="Text" ValueProperty="Value" Name="QuestPriority" @bind-Value=@SimulationOptions.QuestOptions.Priority/>
+                                    </RadzenFormField>
+                                    <RadzenFormField Component="HybridRatio" Text="Hybrid Ratio">
+                                        <RadzenNumeric Disabled="SimulationOptions.QuestOptions.Priority != QuestPriorityType.Hybrid" Min="0" Max="1" Step="0.05" 
+                                        TValue="decimal?" Name="HybridRatio" @bind-Value=SimulationOptions.QuestOptions.HybridRatio />
+                                    </RadzenFormField>
+                                }
+                                 <RadzenFormField Component="SpinAmount" Text="Spin Amount">
+                                    <RadzenDropDown TValue="SpinAmountType" Data=@(Enum.GetValues<SpinAmountType>().Select(m => new { Text = m.ToString(), Value = m })) 
+                                        TextProperty="Text" ValueProperty="Value" Name="SpinAmount" @bind-Value=@SimulationOptions.SpinAmount/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="DailyGuard" Text="Hours of Guard">
+                                    <RadzenNumeric Min="0" Max="24" TValue="decimal" Name="DailyGuard" @bind-Value=SimulationOptions.DailyGuard/>
+                                </RadzenFormField>
+                                
+                                @* // TODO SCHEDULE *@
+
+
+                                <RadzenFormField Component="FightsForGold" Text="Daily Fights For Gold">
+                                    <RadzenNumeric Min="0" Max="10_000" TValue="int" Name="FightsForGold" @bind-Value=SimulationOptions.FightsForGold/>
+                                </RadzenFormField>
+                                </RadzenStack>
+                            <RadzenStack>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="SwitchPriority" @bind-Value=SimulationOptions.SwitchPriority/>
+                                    <RadzenLabel Component="SwitchPriority" Text="Switch Priority"/>
+                                </RadzenRow>
+                                <RadzenFormField Component="SwitchLevel" Text="Switch Level">
+                                    @* TODO Validate it is above or equal current character level *@
+                                    <RadzenNumeric Min="1" Max="800" TValue="int?" Name="SwitchLevel" @bind-Value=SimulationOptions.SwitchLevel/>
+                                </RadzenFormField>
+                                @if(SimulationOptions.ExpeditionsInsteadOfQuests)
+                                {
+                                    <RadzenFormField Component="AvgAmountOfChestsAfterSwitch" Text="Avg Amount of Chests (After Switch)">
+                                        <RadzenNumeric Disabled="!SimulationOptions.SwitchPriority" Min="0" Max="2" TValue="decimal" Name="AvgAmountOfChestsAfterSwitch" 
+                                            @bind-Value=SimulationOptions.ExpeditionOptionsAfterSwitch.AverageAmountOfChests/>
+                                    </RadzenFormField>
+                                    <RadzenFormField Component="AvgStarBonusAfterSwitch" Text="Avg Star Bonus (After Switch)">
+                                        <RadzenNumeric Disabled="!SimulationOptions.SwitchPriority" Min="1" Max="1.35M" TValue="decimal" Name="AvgStarBonusAfterSwitch" 
+                                        @bind-Value=SimulationOptions.ExpeditionOptionsAfterSwitch.AverageStarExperienceBonus/>
+                                    </RadzenFormField>
+                                }
+                                else
+                                {
+                                     <RadzenFormField Component="QuestPriorityAfterSwitch" Text="Quest Priority (After Switch)">
+                                        <RadzenDropDown Disabled="!SimulationOptions.SwitchPriority" TValue="QuestPriorityType" Data=@(Enum.GetValues<QuestPriorityType>().Select(m => new { Text = m.ToString(), Value = m })) 
+                                            TextProperty="Text" ValueProperty="Value" Name="QuestPriorityAfterSwitch" @bind-Value=@SimulationOptions.QuestOptionsAfterSwitch.Priority/>
+                                    </RadzenFormField>
+                                    <RadzenFormField Disabled="!SimulationOptions.SwitchPriority" Component="HybridRatioAfterSwitch" Text="Hybrid Ratio (After Switch)">
+                                        <RadzenNumeric Disabled="SimulationOptions.QuestOptions.Priority != QuestPriorityType.Hybrid" 
+                                        Min="0" Max="1" Step="0.05" TValue="decimal?" Name="HybridRatioAfterSwitch" @bind-Value=SimulationOptions.QuestOptionsAfterSwitch.HybridRatio />
+                                    </RadzenFormField>
+                                }
+                                <RadzenFormField Component="Calendar" Text="Calendar">
+                                    <RadzenNumeric Min="1" Max="12" TValue="int" Name="Calendar" @bind-Value=SimulationOptions.Calendar/>
+                                </RadzenFormField>
+                                <RadzenFormField Component="CalendarDay" Text="Calendar Day">
+                                    <RadzenNumeric Min="1" Max="20" TValue="int" Name="CalendarDay" @bind-Value=SimulationOptions.CalendarDay />
+                                </RadzenFormField>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="SkipCalendar" @bind-Value=SimulationOptions.SkipCalendar/>
+                                    <RadzenLabel Component="SkipCalendar" Text="Skip Calendar"/>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="DrinkBeerOneByOne" @bind-Value=SimulationOptions.DrinkBeerOneByOne/>
+                                    <RadzenLabel Component="DrinkBeerOneByOne" Text="Drink Beer One By One"/>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox class="rz-me-2" Name="DoWeeklyTasks" @bind-Value=SimulationOptions.WeeklyTasksOptions.DoWeeklyTasks/>
+                                    <RadzenLabel Component="DoWeeklyTasks" Text="Do Weekly Tasks"/>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenCheckBox Disabled="!SimulationOptions.WeeklyTasksOptions.DoWeeklyTasks" class="rz-me-2" Name="DrinkExtraBeer" @bind-Value=SimulationOptions.WeeklyTasksOptions.DrinkExtraBeer/>
+                                    <RadzenLabel Component="DrinkExtraBeer" Text="Drink Weekly Task Beer"/>
+                                </RadzenRow>
+                            </RadzenStack>
+                        </RadzenRow>   
+                    }
+                    else
+                    {
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenCheckBox Disabled="SimulationOptions.DungeonsData is null" class="rz-me-2" Name="DoDungeons" @bind-Value=SimulationOptions.DoDungeons />
+                            <RadzenLabel Component="DoDungeons" Text="Do Dungeons"/>
+                        </RadzenRow>
+
+                        if (SimulationOptions.DungeonsData is null)
+                        {
+                            <RadzenText class="rz-mt-2">
+                                Currently dungeon can be enabled only if data is polled via endpoint.
+                            </RadzenText>
+                        }
+                    }
+                    </ChildContent>
+                </RadzenTemplateForm>
+                <RadzenStack>
+
+                    <hr />
+                    <RadzenRow>
+                        <RadzenTemplateForm Data="SimulationFinishCondition">
+                            <RadzenFormField Component="Until" Text="Simulate until">
+                                @* TODO Validate the max value based on selected type *@
+                                <RadzenNumeric Name="Until" Min="1" @bind-Value=@SimulationFinishCondition.Until />
+                            </RadzenFormField>
+                            <RadzenFormField Component="FinishCondition">
+                                <RadzenDropDown TValue="SimulationFinishConditionType" Data=@(Enum.GetValues<SimulationFinishConditionType>().Select(m => new { Text = m.ToString(), Value = m })) 
+                                    TextProperty="Text" ValueProperty="Value" Name="FinishCondition" @bind-Value=@SimulationFinishCondition.FinishCondition/>
+                            </RadzenFormField>
+                        </RadzenTemplateForm>
+                    </RadzenRow>
+                    <RadzenRow>
+                        <RadzenButton ButtonType="ButtonType.Submit" Click="_ => Simulate(SimulationOptions)" Text="Simulate"/>
+                    </RadzenRow>
+                </RadzenStack>
+
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenCard>
+</RadzenRow>
+    <RadzenCard class="rz-ms-12">
+        <SimulationResultView Result="@SimulationResult"></SimulationResultView>
+    </RadzenCard>

@@ -7,11 +7,10 @@ namespace SFSimulator.Tests
 {
     public static class DepedencyProvider
     {
-        public static T GetRequiredService<T>()  where T : notnull
+        private static IServiceProvider Provider { get; set; } = GetProvider();
+        public static T GetRequiredService<T>() where T : notnull
         {
-            var provider = GetProvider();
-
-            return provider.GetRequiredService<T>();
+            return Provider.GetRequiredService<T>();
         }
         private static IServiceProvider GetProvider()
         {

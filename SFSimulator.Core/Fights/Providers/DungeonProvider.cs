@@ -2,23 +2,30 @@
 
 public class DungeonProvider : IDungeonProvider
 {
-    private List<Dungeon> Dungeons { get; set; } = null!;
+    private List<Dungeon> Dungeons { get; set; } = default!;
+
     public DungeonProvider()
     {
         InitDungeons();
     }
 
-    public List<DungeonEnemy> GetFightablesDungeonEnemies()
+    public List<DungeonEnemy> GetFightablesDungeonEnemies(SimulationOptions simulationOptions)
     {
-        return Dungeons.Where(d => d.IsUnlocked && !d.IsDefeated).SelectMany(d => d.DungeonEnemies).Where(e => !e.IsDefeated).ToList();
+        return Dungeons
+            .Where(d => d.IsUnlocked && !d.IsDefeated)
+            .Select(d => d.DungeonEnemies.OrderBy(e => e.Position).First(e => !e.IsDefeated))
+            .InitMirrorEnemy(simulationOptions)
+            .ToList();
     }
-    public List<Dungeon> GetAllDungeons()
-    {
-        return Dungeons;
-    }
+
+    public List<Dungeon> GetAllDungeons(SimulationOptions simulationOptions) => Dungeons.InitMirrorEnemy(simulationOptions).ToList();
+
     public bool IsValidEnemy(int dungeonPosition, int dungeonEnemyPosition)
     {
-        return Dungeons.FirstOrDefault(d => d.Position == dungeonPosition)?.DungeonEnemies.FirstOrDefault(e => e.Position == dungeonEnemyPosition) is not null;
+        return Dungeons
+            .FirstOrDefault(d => d.Position == dungeonPosition)
+            ?.DungeonEnemies
+            .FirstOrDefault(e => e.Position == dungeonEnemyPosition) is not null;
     }
 
     public DungeonEnemy GetDungeonEnemy(int dungeonPositon, int dungeonEnemyPosition)
@@ -39,6 +46,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 1,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 10,
                 DungeonEnemies = new List<DungeonEnemy>()
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Mage, level: 10, strength: 48, dexterity: 52, intelligence: 104, constitution: 77, luck: 47, health: 1694, minWeaponDmg: 29, maxWeaponDmg: 52 ),
@@ -59,6 +67,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 2,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 20,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 20, strength: 101, dexterity: 264, intelligence: 101, constitution: 174, luck: 119, health: 14616, minWeaponDmg: 35, maxWeaponDmg: 58 ),
@@ -79,6 +88,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 3,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 30,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 32, strength: 155, dexterity: 486, intelligence: 161, constitution: 276, luck: 205, health: 36432, minWeaponDmg: 58, maxWeaponDmg: 95 ),
@@ -99,6 +109,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 4,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 40,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 52, strength: 230, dexterity: 880, intelligence: 220, constitution: 601, luck: 315, health: 127412, minWeaponDmg: 88, maxWeaponDmg: 154 ),
@@ -119,6 +130,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 5,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 50,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 72, strength: 330, dexterity: 1280, intelligence: 320, constitution: 1000, luck: 465, health: 292000, minWeaponDmg: 108, maxWeaponDmg: 184 ),
@@ -139,6 +151,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 6,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 70,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 92, strength: 1680, dexterity: 550, intelligence: 525, constitution: 1400, luck: 450, health: 651000, minWeaponDmg: 107, maxWeaponDmg: 165 ),
@@ -159,6 +172,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 7,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 80,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 112, strength: 530, dexterity: 2080, intelligence: 520, constitution: 1800, luck: 765, health: 813600, minWeaponDmg: 148, maxWeaponDmg: 244 ),
@@ -179,6 +193,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 8,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 95,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 132, strength: 2480, dexterity: 850, intelligence: 825, constitution: 2200, luck: 650, health: 1463000, minWeaponDmg: 147, maxWeaponDmg: 204 ),
@@ -199,6 +214,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 9,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 110,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 152, strength: 2880, dexterity: 1000, intelligence: 975, constitution: 2600, luck: 750, health: 1989000, minWeaponDmg: 167, maxWeaponDmg: 225 ),
@@ -209,7 +225,8 @@ public class DungeonProvider : IDungeonProvider
                     new DungeonEnemy(position: 6, @class: ClassType.Warrior, level: 174, strength: 3320, dexterity: 1165, intelligence: 1140, constitution: 3040, luck: 860, health: 2660000, minWeaponDmg: 189, maxWeaponDmg: 247 ),
                     new DungeonEnemy(position: 7, @class: ClassType.Scout, level: 176, strength: 850, dexterity: 3360, intelligence: 840, constitution: 3080, luck: 1245, health: 2180640, minWeaponDmg: 212, maxWeaponDmg: 340 ),
                     new DungeonEnemy(position: 8, @class: ClassType.Scout, level: 178, strength: 860, dexterity: 3400, intelligence: 850, constitution: 3120, luck: 1260, health: 2233920, minWeaponDmg: 214, maxWeaponDmg: 343 ),
-                    new DungeonEnemy(position: 9, @class: ClassType.Mage, level: 190, strength: 900, dexterity: 920, intelligence: 3720, constitution: 3280, luck: 1340, health: 1252960, minWeaponDmg: 439, maxWeaponDmg: 621 )
+                    new DungeonEnemy(position: 9, @class: ClassType.Mage, level: 190, strength: 900, dexterity: 920, intelligence: 3720, constitution: 3280, luck: 1340, health: 1252960, minWeaponDmg: 439, maxWeaponDmg: 621 ),
+                    new DungeonEnemy(position: 10, @class: ClassType.Mirror, level: 195, strength: 0, dexterity: 0, intelligence: 0, constitution: 0, luck: 0, health: 0, minWeaponDmg: 0, maxWeaponDmg: 0, armor: 0)
                 }
             },
             new Dungeon
@@ -218,6 +235,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 10,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.Where(d => d.Position <= 9).All(d => d.IsDefeated),
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 205, strength: 995, dexterity: 3940, intelligence: 985, constitution: 3660, luck: 1450, health: 3015840, minWeaponDmg: 241, maxWeaponDmg: 386 ),
@@ -238,6 +256,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 11,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 10).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 255, strength: 4940, dexterity: 1735, intelligence: 1710, constitution: 4660, luck: 1190, health: 5964800, minWeaponDmg: 270, maxWeaponDmg: 339 ),
@@ -258,6 +277,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 12,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 11).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Mage, level: 305, strength: 1475, dexterity: 1495, intelligence: 6020, constitution: 5580, luck: 2145, health: 3414960, minWeaponDmg: 669, maxWeaponDmg: 1150 ),
@@ -278,6 +298,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 13,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 210,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 210, strength: 3100, dexterity: 6200, intelligence: 3100, constitution: 10500, luck: 3100, health: 16000000, minWeaponDmg: 559, maxWeaponDmg: 787, dungeonRuneBonuses: new DungeonEnemyRuneBonuses { DamageRuneType = RuneType.FireDamage, FireResistance = 25, ColdResistance = 25, LightningResistance = 25, DamageBonus = 25 }, armor: 10750 ),
@@ -298,6 +319,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 14,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 240,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Mage, level: 240, strength: 4900, dexterity: 4900, intelligence: 9800, constitution: 25500, luck: 4900, health: 61000000, minWeaponDmg: 662, maxWeaponDmg: 908, dungeonRuneBonuses: new DungeonEnemyRuneBonuses { DamageRuneType = RuneType.ColdDamage, FireResistance = 25, ColdResistance = 25, LightningResistance = 25, DamageBonus = 25 }, armor: 13250 ),
@@ -318,6 +340,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 15,
                 IsDefeated = false,
                 IsUnlocked = true,
+                //UnlockResolve = c => c.Dungeons.First(d => d.Position == 12).IsUnlocked>=,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 355, strength: 7570, dexterity: 2655, intelligence: 2630, constitution: 7290, luck: 1716, health: 12976200, minWeaponDmg: 401, maxWeaponDmg: 733 ),
@@ -338,6 +361,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 16,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 280,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Mage, level: 280, strength: 7300, dexterity: 7300, intelligence: 14600, constitution: 45500, luck: 7300, health: 121000000, minWeaponDmg: 820, maxWeaponDmg: 1069, dungeonRuneBonuses: new DungeonEnemyRuneBonuses { DamageRuneType = RuneType.LightningDamage, FireResistance = 25, ColdResistance = 25, LightningResistance = 25, DamageBonus = 25 }, armor: 16500 ),
@@ -358,6 +382,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 17,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 200,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 250, strength: 1400, dexterity: 11000, intelligence: 1400, constitution: 35000, luck: 4500, health: 62500000, minWeaponDmg: 600, maxWeaponDmg: 649 ),
@@ -378,6 +403,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 18,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 11).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
             {
                 new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 200, strength: 8800, dexterity: 1120, intelligence: 1120, constitution: 28000, luck: 3600, health: 28140000, minWeaponDmg: 684, maxWeaponDmg: 1154 ),
@@ -398,6 +424,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 19,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 11).IsUnlocked,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 310, strength: 6040, dexterity: 2120, intelligence: 2095, constitution: 5760, luck: 1410, health: 8956800, minWeaponDmg: 325, maxWeaponDmg: 504 ),
@@ -418,6 +445,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 20,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 340,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 313, strength: 18560, dexterity: 9280, intelligence: 9280, constitution: 62000, luck: 9280, health: 170500000, minWeaponDmg: 953, maxWeaponDmg: 1199, dungeonRuneBonuses: new DungeonEnemyRuneBonuses { DamageRuneType = RuneType.LightningDamage, FireResistance = 25, ColdResistance = 25, LightningResistance = 25, DamageBonus = 25 }, armor: 19000 ),
@@ -438,6 +466,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 21,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 270,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Mage, level: 410, strength: 7000, dexterity: 7000, intelligence: 20000, constitution: 18000, luck: 4000, health: 10000000, minWeaponDmg: 1416, maxWeaponDmg: 2290, armorMultiplier: 0.5 ),
@@ -458,6 +487,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 22,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 19).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 410, strength: 8720, dexterity: 34720, intelligence: 8680, constitution: 33600, luck: 12436, health: 55238400, minWeaponDmg: 671, maxWeaponDmg: 1034 ),
@@ -478,6 +508,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 23,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 17).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Mage, level: 325, strength: 3221, dexterity: 3221, intelligence: 16577, constitution: 61790, luck: 8964, health: 64459324, minWeaponDmg: 861, maxWeaponDmg: 2432 ),
@@ -498,6 +529,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 24,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 180,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 210, strength: 8000, dexterity: 2000, intelligence: 2000, constitution: 36000, luck: 4000, health: 43560000, dungeonRuneBonuses: new DungeonEnemyRuneBonuses { DamageRuneType = RuneType.ColdDamage, FireResistance = 0, ColdResistance = 5, LightningResistance = 0, DamageBonus = 30 }, minWeaponDmg: 728, maxWeaponDmg: 1229 ),
@@ -518,6 +550,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 25,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 18).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.BattleMage, level: 348, strength: 17737, dexterity: 3446, intelligence: 3446, constitution: 66115, luck: 9591, health: 115370672, minWeaponDmg: 1187, maxWeaponDmg: 2007, armor: 7000 ),
@@ -538,6 +571,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 26,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 15).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 410, strength: 7080, dexterity: 20200, intelligence: 7050, constitution: 18210, luck: 4280, health: 29937240, minWeaponDmg: 1299, maxWeaponDmg: 3185 ),
@@ -558,6 +592,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 27,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 200,
                 DungeonEnemies = new List<DungeonEnemy>
             {
                     new DungeonEnemy(position: 1, @class: ClassType.Mage, level: 210, strength: 2000, dexterity: 2000, intelligence: 8000, constitution: 80000, luck: 4000, health: 52800000, dungeonRuneBonuses: new DungeonEnemyRuneBonuses { DamageRuneType = RuneType.ColdDamage, FireResistance = 5, ColdResistance = 60, LightningResistance = 5, DamageBonus = 30 }, minWeaponDmg: 630, maxWeaponDmg: 1265 ),
@@ -578,6 +613,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 28,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 480,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 480, strength: 66000, dexterity: 35000, intelligence: 35000, constitution: 174000, luck: 35000, health: 540000000, minWeaponDmg: 1901, maxWeaponDmg: 2144, dungeonRuneBonuses: new DungeonEnemyRuneBonuses { DamageRuneType = RuneType.LightningDamage, FireResistance = 0, ColdResistance = 0, LightningResistance = 25, DamageBonus = 25 } ),
@@ -603,6 +639,7 @@ public class DungeonProvider : IDungeonProvider
                 IsDefeated = false,
                 IsUnlocked = true,
                 Type = DungeonTypeEnum.Tower,
+                UnlockResolve = c => c.Dungeons.Where(d => d.Position <= 9).All(d => d.IsDefeated),
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 200, strength: 4194, dexterity: 1697, intelligence: 1665, constitution: 15940, luck: 2589, health: 16019700, minWeaponDmg: 268, maxWeaponDmg: 534, armorMultiplier: 1.5),
@@ -719,6 +756,7 @@ public class DungeonProvider : IDungeonProvider
                 IsDefeated = false,
                 IsUnlocked = true,
                 Type = DungeonTypeEnum.Twister,
+                UnlockResolve = c => c.Dungeons.First(d => d.Type == DungeonTypeEnum.Tower).IsUnlocked,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 486,  @class: ClassType.Warrior, level: 385, strength: 56327, dexterity: 19741, intelligence: 19625, constitution: 76759, luck: 12247, health: 148144864, minWeaponDmg: 426, maxWeaponDmg: 808 ),
@@ -759,6 +797,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 101,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Type == DungeonTypeEnum.Tower).IsUnlocked && c.CharacterLevel >= 140,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -780,6 +819,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 102,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 101).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -802,6 +842,7 @@ public class DungeonProvider : IDungeonProvider
                 IsDefeated = false,
                 IsUnlocked = true,
                 Type = DungeonTypeEnum.Shadow,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 102).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Scout, level: 212, strength: 1026, dexterity: 3219, intelligence: 1066, constitution: 10054, luck: 1358, health: 8566008, minWeaponDmg: 2876, maxWeaponDmg: 5648, armor: 1070 ),
@@ -822,6 +863,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 104,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 103).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -843,6 +885,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 105,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 104).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -864,6 +907,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 106,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 106).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -885,6 +929,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 107,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 106).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -906,6 +951,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 108,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 107).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -927,6 +973,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 109,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 108).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -938,7 +985,8 @@ public class DungeonProvider : IDungeonProvider
                     new DungeonEnemy(position: 6, @class: ClassType.Warrior, level: 342, strength: 6525, dexterity: 2289, intelligence: 2240, constitution: 32862, luck: 1690, health: 56358328, minWeaponDmg: 3659, maxWeaponDmg: 7313, armor: 8711 ),
                     new DungeonEnemy(position: 7, @class: ClassType.Scout, level: 344, strength: 1661, dexterity: 6567, intelligence: 1641, constitution: 33110, luck: 2433, health: 45691800, minWeaponDmg: 4600, maxWeaponDmg: 9187, armor: 4427 ),
                     new DungeonEnemy(position: 8, @class: ClassType.Scout, level: 346, strength: 1671, dexterity: 6608, intelligence: 1652, constitution: 33352, luck: 2449, health: 46292576, minWeaponDmg: 4636, maxWeaponDmg: 9250, armor: 4462 ),
-                    new DungeonEnemy(position: 9, @class: ClassType.Mage, level: 348, strength: 1648, dexterity: 1685, intelligence: 6813, constitution: 33038, luck: 2454, health: 23060524, minWeaponDmg: 8377, maxWeaponDmg: 16743, armor: 1932 )
+                    new DungeonEnemy(position: 9, @class: ClassType.Mage, level: 348, strength: 1648, dexterity: 1685, intelligence: 6813, constitution: 33038, luck: 2454, health: 23060524, minWeaponDmg: 8377, maxWeaponDmg: 16743, armor: 1932 ),
+                    new DungeonEnemy(position: 10, @class: ClassType.Mirror, level: 350, strength: 0, dexterity: 0, intelligence: 0, constitution: 0, luck: 0, health: 0, minWeaponDmg: 0, maxWeaponDmg: 0, armor: 0)
                 }
             },
             new Dungeon
@@ -947,6 +995,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 110,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 109).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -968,6 +1017,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 111,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 110).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -989,6 +1039,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 112,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 111).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1010,6 +1061,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 113,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 320,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1031,6 +1083,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 114,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 350,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1052,6 +1105,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 115,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 112).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1073,6 +1127,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 116,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 370,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1094,6 +1149,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 117,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 350,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1115,6 +1171,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 118,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 112).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1136,6 +1193,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 119,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 115).DungeonEnemies.First(e => e.Position == 5).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1157,6 +1215,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 120,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 500,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1178,6 +1237,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 121,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 350,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1199,6 +1259,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 122,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 119).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1220,6 +1281,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 123,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 117).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1241,6 +1303,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 124,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 280,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1262,6 +1325,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 125,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 118).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1283,6 +1347,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 126,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 115).IsDefeated,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1304,6 +1369,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 127,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 300,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1325,6 +1391,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 128,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.CharacterLevel >= 600,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1350,6 +1417,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 130,
                 IsDefeated = false,
                 IsUnlocked = true,
+                UnlockResolve = c => c.Dungeons.First(d => d.Type == DungeonTypeEnum.Tower).IsUnlocked && c.CharacterLevel >= 222,
                 Type = DungeonTypeEnum.Shadow,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
@@ -1387,5 +1455,41 @@ public class DungeonProvider : IDungeonProvider
                 dungeonEnemy.Dungeon = dungeon;
             }
         }
+    }
+}
+
+internal static class DungeonProviderExtensions
+{
+    internal static IEnumerable<Dungeon> InitMirrorEnemy(this IEnumerable<Dungeon> dungeons, SimulationOptions simulationOptions)
+    {
+        _ = dungeons.SelectMany(d => d.DungeonEnemies).InitMirrorEnemy(simulationOptions);
+        return dungeons;
+    }
+
+    internal static IEnumerable<DungeonEnemy> InitMirrorEnemy(this IEnumerable<DungeonEnemy> dungeonEnemies, SimulationOptions simulationOptions)
+    {
+        var mirrorEnemies = dungeonEnemies.Where(e => e.IsDefeated == false && e.Dungeon.Position is 9 or 109 && e.Position is 10);
+        foreach (var mirrorEnemy in mirrorEnemies)
+        {
+            mirrorEnemy.Class = simulationOptions.Class;
+            mirrorEnemy.Strength = simulationOptions.Strength;
+            mirrorEnemy.Dexterity = simulationOptions.Dexterity;
+            mirrorEnemy.Intelligence = simulationOptions.Intelligence;
+            mirrorEnemy.Constitution = simulationOptions.Constitution;
+            mirrorEnemy.Luck = simulationOptions.Luck;
+            if (simulationOptions.FirstWeapon is not null)
+                mirrorEnemy.FirstWeapon = EquipmentBuilder.ToRawWeapon(simulationOptions.FirstWeapon);
+            if (simulationOptions.SecondWeapon is not null)
+                mirrorEnemy.SecondWeapon = EquipmentBuilder.ToRawWeapon(simulationOptions.SecondWeapon);
+            mirrorEnemy.Armor = simulationOptions.Armor;
+            mirrorEnemy.Reaction = simulationOptions.Reaction;
+            mirrorEnemy.HealthRune = simulationOptions.HealthRune;
+            mirrorEnemy.LightningResistance = simulationOptions.LightningResistance;
+            mirrorEnemy.ColdResistance = simulationOptions.ColdResistance;
+            mirrorEnemy.FireResistance = simulationOptions.FireResistance;
+            mirrorEnemy.Health = simulationOptions.Health / (simulationOptions.Level + 1) * (mirrorEnemy.Level + 1);
+        }
+
+        return dungeonEnemies;
     }
 }

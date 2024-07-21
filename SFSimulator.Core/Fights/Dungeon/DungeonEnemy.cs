@@ -16,14 +16,14 @@
         public int Armor { get; set; }
         public RawWeapon? FirstWeapon { get; set; }
         public RawWeapon? SecondWeapon { get; set; }
-        public int Reaction { get; set; } = 0;
+        public int Reaction { get; set; }
         public double CritMultiplier { get; set; } = 2;
         public int LightningResistance { get; set; }
         public int FireResistance { get; set; }
         public int ColdResistance { get; set; }
         public int HealthRune { get; set; }
-        public double SoloPortal { get; set; } = 0;
-        public double GuildPortal { get; set; } = 0;
+        public double SoloPortal { get; } = 0;
+        public double GuildPortal { get; } = 0;
         public Dungeon Dungeon { get; set; } = null!;
 
         public DungeonEnemy(int position,
@@ -86,7 +86,8 @@
                 ClassType.Warrior or ClassType.Bard or ClassType.DemonHunter or ClassType.Bert or ClassType.BattleMage => 50,
                 ClassType.Scout or ClassType.Assassin or ClassType.Berserker => 25,
                 ClassType.Druid => 40,
-                _ => throw new ArgumentOutOfRangeException(nameof(Class)),
+                ClassType.Necromancer => 20,
+                _ => throw new ArgumentOutOfRangeException(nameof(@class), "Provided class is unsupported"),
             };
             Armor = (int)(Level * maxReduction * armorMultiplier);
         }

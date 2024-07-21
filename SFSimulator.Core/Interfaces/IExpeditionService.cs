@@ -7,4 +7,3 @@ public interface IExpeditionService
     long GetDailyExpeditionExperience(int characterLevel, ExperienceBonus experienceBonus, bool isExperienceEvent, MountType mount, int thirst);
     List<Item> GetDailyExpeditionItems(int characterLevel, int thirst);
 }
-

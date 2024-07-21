@@ -31,11 +31,11 @@
                 CurrentWeek++;
             }
 
-            if (CurrentWeek > Schedule.Keys.Max(s=>s.Week))
+            if (CurrentWeek > Schedule.Keys.Max(s => s.Week))
             {
                 CurrentWeek = 1;
             }
-            
+
             var schedule = Schedule[(CurrentWeek, CurrentDay)];
             CurrentDay++;
             return schedule;
@@ -52,7 +52,7 @@
                 return;
             }
 
-            var weeks = schedule.Keys.Select(s=>s.Week);
+            var weeks = schedule.Keys.Select(s => s.Week);
             var min = weeks.Min();
             var max = weeks.Max();
             var weeksBetween = Enumerable.Range(min, max);

@@ -17,24 +17,17 @@ public class DungeonSimulator : IDungeonSimulator
         _random = random;
     }
 
-    public async Task<DungeonSimulationResult> SimulateAllOpenDungeonsAsync(Character character, int iterations, int winThreshold)
-    {
-        if (iterations <= 0)
-            throw new ArgumentOutOfRangeException(nameof(iterations));
-        var dungeonEnemy = _dungeonProvider.GetDungeonEnemy(1, 1);
-        return CreateResult(1, winThreshold, character, dungeonEnemy);
-    }
-    public DungeonSimulationResult SimulateDungeon(DungeonEnemy dungeonEnemy, RawFightable character, int iterations, int winThreshold)
+    public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions, int iterations, int winThreshold) where T : IWeaponable where E : IWeaponable
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        var lookupContext = new (IFightableContext LeftSide, IFightableContext RightSide)[4];
+        var lookupContext = new (IFightableContext LeftSide, IFightableContext RightSide)[1 + companions.Length];
         var index = 0;
 
         if (dungeonEnemy.Dungeon.Type.WithCompanions())
         {
-            foreach (var companion in character.Companions)
+            foreach (var companion in companions)
             {
                 var context = _dungeonableContextFactory.Create(companion, dungeonEnemy);
                 var companionDungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, companion);
@@ -54,7 +47,7 @@ public class DungeonSimulator : IDungeonSimulator
             if (PerformSingleFight(lookupContext))
                 wonFights++;
 
-            if (wonFights >= winThreshold)
+            if (wonFights >= winThreshold && !Debugger.IsAttached)
                 break;
         }
 
@@ -62,15 +55,13 @@ public class DungeonSimulator : IDungeonSimulator
 
         if (Debugger.IsAttached)
         {
-            Console.WriteLine(wonFights / (float)iterations * 100 + "%" + $" ({wonFights})" + $", elapsed time: {stopwatch.Elapsed}");
+            var winratio = wonFights / (float)iterations;
+            //var currentColor = Console.ForegroundColor;
+            //Console.ForegroundColor = ConsoleColor.Blue;
+            //Console.WriteLine($"{winratio:P} WR, {wonFights} WF, {stopwatch.Elapsed.TotalMilliseconds} ms: ({dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name})");
+            //Console.ForegroundColor = currentColor;
         }
 
-        return CreateResult(wonFights, winThreshold, character, dungeonEnemy);
-    }
-
-    public DungeonSimulationResult SimulateDungeon(DungeonEnemy dungeonEnemy, Character character, int iterations, int winThreshold)
-    {
-        var wonFights = 0;
         return CreateResult(wonFights, winThreshold, character, dungeonEnemy);
     }
 
@@ -92,6 +83,7 @@ public class DungeonSimulator : IDungeonSimulator
 
         return result;
     }
+
     private bool PerformSingleFight((IFightableContext LeftSide, IFightableContext RightSide)[] lookupContext)
     {
         long? leftoverHealth = null;
@@ -116,29 +108,19 @@ public class DungeonSimulator : IDungeonSimulator
 
     private bool PerformFight(IFightableContext charSide, IFightableContext dungeonSide)
     {
-        var leftSideStarts = charSide.Reaction > dungeonSide.Reaction ? true : _random.NextDouble() >= 0.5D;
-        IFightableContext attacker;
-        IFightableContext defender;
-        if (leftSideStarts)
-        {
-            attacker = charSide;
-            defender = dungeonSide;
-        }
-        else
-        {
-            attacker = dungeonSide;
-            defender = charSide;
-        }
+        var charSideStarts = charSide.Reaction > dungeonSide.Reaction ? true : _random.NextDouble() >= 0.5D;
+        var (attacker, defender) = charSideStarts ? (charSide, dungeonSide) : (dungeonSide, charSide);
+
         var round = 0;
 
         if (attacker is IBeforeFightAttackable attackerImpl && attackerImpl.AttackBeforeFight(defender, ref round))
         {
-            return leftSideStarts;
+            return charSideStarts;
         }
 
         if (defender is IBeforeFightAttackable defenderImpl && defenderImpl.AttackBeforeFight(defender, ref round))
         {
-            return !leftSideStarts;
+            return !charSideStarts;
         }
 
         bool? result = null;
@@ -147,19 +129,19 @@ public class DungeonSimulator : IDungeonSimulator
         {
             if (attacker.Attack(defender, ref round))
             {
-                result = leftSideStarts;
+                result = charSideStarts;
                 break;
             }
 
             if (defender.Attack(attacker, ref round))
             {
-                result = !leftSideStarts;
+                result = !charSideStarts;
                 break;
             }
         }
         if (result is null)
         {
-            throw new Exception("Dungeon simulation exceeded max iterations");
+            throw new Exception("Internal error in dungeon simulator causing infinite rounds in fight");
         }
 
         return result.Value;

@@ -29,5 +29,4 @@ public class SimulateDungeonRequest
     public int ColdResistance { get; set; }
     public int FireResistance { get; set; }
     public int HealthRune { get; set; }
-    public RawCompanion[] Companions { get; set; } = default!;
 }
