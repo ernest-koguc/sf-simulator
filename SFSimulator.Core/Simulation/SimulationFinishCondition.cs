@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 public class SimulationFinishCondition
 {
-    public SimulationFinishConditionType FinishCondition { get; set; }
-    public int Until { get; set; }
+    public SimulationFinishConditionType FinishWhen { get; set; }
+    public int Until { get; set; } = 1;
 }

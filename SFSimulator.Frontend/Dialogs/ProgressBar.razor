@@ -1,0 +1,46 @@
+﻿@if (Visible)
+{
+    <div class="overlay">
+        <div class="progressbar">
+            <RadzenText Text="@Text" TextStyle="TextStyle.H6"/>        
+            <RadzenProgressBar ShowValue="false" Min=0 Max=100 Value=Current Style="width: max(300px, 30vw); height: 35px; border-radius: 0.25rem;" ProgressBarStyle="ProgressBarStyle.Primary"/>
+        </div>
+    </div>
+}
+
+
+<style>
+    .overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.8);
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .progressbar {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+</style>
+
+@code {
+    [Parameter, EditorRequired]
+    public bool Visible { get; set; }
+    [Parameter, EditorRequired]
+    public int Current { get; set; }
+    [Parameter, EditorRequired]
+    public string Text { get; set; } = default!;
+}

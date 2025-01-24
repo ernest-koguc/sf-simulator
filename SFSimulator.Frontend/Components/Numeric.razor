@@ -1,0 +1,54 @@
+﻿@typeparam TValue
+
+<RadzenFormField Component="@Name" Text="@Label" Variant="Variant.Text">
+    <Start>
+    @if (Icon != null)
+        {
+            <SfIcon Icon="@Icon"/>
+        }
+    </Start>
+    <ChildContent>
+        <RadzenNumeric AutoCompleteType="AutoCompleteType.Off" TValue="@TValue" Disabled="@Disabled" Min="@Min" Max="@Max" Step="@Step" Name="@Name" @bind-Value:get="@Value" @bind-Value:set="ValueChanged" Variant="Variant.Text" ShowUpDown="false"/>
+    </ChildContent>
+</RadzenFormField>
+<RadzenCustomValidator Component="@Name" Validator="Validate" Text="@ValidationError"/>
+@code 
+{
+    [Parameter]
+    public required TValue? Value { get; set; }
+    [Parameter]
+    public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter]
+    public string? Label { get; set; }
+    [Parameter, EditorRequired]
+    public required string Name { get; set; }
+    [Parameter]
+    public decimal? Min { get; set; }
+    [Parameter]
+    public decimal? Max { get; set; }
+    [Parameter]
+    public string? Step { get; set; }
+    [Parameter]
+    public string Icon { get; set; } = default!;
+    [Parameter]
+    public bool Disabled { get; set; }
+    [Parameter]
+    public Func<ValidationResult>? Validator { get; set; }
+
+    private string ValidationError { get; set; } = string.Empty;
+
+    public bool Validate()
+    {
+        var result = Validator?.Invoke();
+        if (result is FailedValidationResult failedResult)
+        {
+            ValidationError = failedResult.ValidationMessage;
+            return false;
+        }
+        else
+        {
+            ValidationError = string.Empty;
+            return true;
+        }
+    }
+}

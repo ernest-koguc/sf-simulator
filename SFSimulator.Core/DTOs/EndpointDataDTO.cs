@@ -2,7 +2,7 @@
 
 public class EndpointDataDTO
 {
-    public string CharacterName { get; set; } = null!;
+    public string CharacterName { get; set; } = default!;
     public int Level { get; set; } = 1;
     public int Experience { get; set; } = 0;
 
@@ -42,5 +42,5 @@ public class EndpointDataDTO
     public int GuildKnights { get; set; }
     public ICollection<CompanionSimple> Companions { get; set; } = [];
     public PetsState Pets { get; set; } = default!;
-    public BlackSmithResources BlackSmithResources { get; set; }
+    public BlackSmithResources BlackSmithResources { get; set; } = default!;
 }

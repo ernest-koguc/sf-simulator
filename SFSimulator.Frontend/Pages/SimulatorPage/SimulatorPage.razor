@@ -1,0 +1,18 @@
+﻿@page "/"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<PageTitle>@Constants.PageTitle</PageTitle>
+
+<RadzenRow>
+    <RadzenColumn SizeLG="5" SizeMD="4" Size="12" >
+        <SimulationOptions @bind-Options:set="Simulate" @bind-Options:get="Options"/>
+    </RadzenColumn>
+    @if (SimulationResult is not null)
+    {
+        <RadzenColumn SizeLG="7" SizeMD="8" Size="12">
+            <SimulationResultView Result="@SimulationResult"/>
+        </RadzenColumn>
+    }
+</RadzenRow>
+
+<ProgressBar Visible="@IsSimulating" Current="@ProgressValue" Text=@ProgressText />

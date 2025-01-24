@@ -10,7 +10,17 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
     private static int DefaultDungeonIterations => Debugger.IsAttached ? 1000 : 1000;
     public ReequipOptions ReequipOptions { set => itemReequiper.Options = value; }
 
-    public void ProgressThrough(SimulationOptions simulationOptions, OnDungeonKill onDungeonKill, int day, List<DungeonEnemy>? dungeonEnemies = null)
+    public IEnumerable<Dungeon> GetDungeons(SimulationContext simulationContext)
+    {
+        return dungeonProvider.GetAllDungeons(simulationContext);
+    }
+
+    public void ResetProgress()
+    {
+        dungeonProvider.InitDungeons();
+    }
+
+    public void ProgressThrough(SimulationContext simulationOptions, OnDungeonKill onDungeonKill, int day, List<DungeonEnemy>? dungeonEnemies = null)
     {
         Reequip(simulationOptions, day);
 
@@ -21,6 +31,8 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
 
         foreach (var enemy in enemiesToIterate)
         {
+            // If the enemy was actually defeated in a side loop then skip
+            if (enemy.IsDefeated) continue;
             var winTreshold = (int)(Options.DungeonIterations * Options.InstaKillPercentage);
             var result = dungeonSimulator.SimulateDungeon(enemy, simulationOptions, simulationOptions.Companions, Options.DungeonIterations, winTreshold);
 
@@ -41,13 +53,13 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
         ProgressThrough(simulationOptions, onDungeonKill, day);
     }
 
-    private void Reequip(SimulationOptions simulationOptions, int day)
+    private void Reequip(SimulationContext simulationOptions, int day)
     {
         if (itemReequiper.ShouldReequip(simulationOptions.Level)) itemReequiper.ReequipCharacter(simulationOptions, day);
         if (itemReequiper.ShouldReequipCompanions(simulationOptions.Level)) itemReequiper.ReequipCompanions(simulationOptions, day);
     }
 
-    private void UnlockDungeons(SimulationOptions simulationOptions)
+    private void UnlockDungeons(SimulationContext simulationOptions)
     {
         var dungeons = dungeonProvider.GetAllDungeons(simulationOptions);
         var lockedDungeons = dungeons.Where(d => !d.IsUnlocked);
@@ -69,11 +81,10 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
         onDungeonKill(result);
     }
 
-    public void InitCharacterDungeonState(SimulationOptions simulationOptions)
+    public void InitCharacterDungeonState(SimulationContext simulationOptions)
     {
         var dungeonData = simulationOptions.DungeonsData;
         if (dungeonData is null) return;
-
 
         var lightWorld = dungeonData.Normal.Select((currentPosition, dungeonIndex) => (currentPosition, MapDungeonIndex(dungeonIndex, false)));
         var shadowWorld = dungeonData.Shadow.Select((currentPosition, dungeonIndex) => (currentPosition, MapDungeonIndex(dungeonIndex, true)));
@@ -127,6 +138,7 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
             28 => 26,
             _ => 0
         };
+
         return isShadow ? index + 100 : index;
     }
 }

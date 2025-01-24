@@ -8,7 +8,7 @@ public static class IHealthCalculatableExtensions
 
         var health = healthCalculatable.Constitution * (healthCalculatable.Level + 1D);
         health *= healthMultiplier;
-        var portalBonus = 1 + healthCalculatable.SoloPortal;
+        var portalBonus = 1 + (healthCalculatable.SoloPortal / 100);
         var runeBonus = 1 + (Math.Min(15, healthCalculatable.HealthRune) / 100D);
         health = health * portalBonus * runeBonus;
 

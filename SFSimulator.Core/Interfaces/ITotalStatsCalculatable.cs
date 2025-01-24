@@ -13,9 +13,7 @@ public interface ITotalStatsCalculatable
     int BaseLuck { get; }
 
     PetsState Pets { get; }
-    EquipmentItem? FirstWeapon { get; }
-    EquipmentItem? SecondWeapon { get; }
-    FightableItems Items { get; }
+    List<EquipmentItem> Items { get; }
     List<Potion> Potions { get; }
 }
 
@@ -23,7 +21,7 @@ public static class ITotalStatsCalculatableExtensions
 {
     public static int GetTotalStatsFor(this ITotalStatsCalculatable totalStatsCalculatable, AttributeType attributeType)
     {
-        var items = totalStatsCalculatable.Items.SimpleList;
+        var items = totalStatsCalculatable.Items;
 
         var attributesFromItems = items.Sum(i => GetSumOfItem(attributeType, i, totalStatsCalculatable.Class, totalStatsCalculatable.IsCompanion));
         attributesFromItems = (int)(attributesFromItems * ClassConfigurationProvider.GetClassConfiguration(totalStatsCalculatable.Class).ItemBonusMultiplier);

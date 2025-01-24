@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SFSimulator.API.Requests;
 using SFSimulator.API.Services;
+using SFSimulator.API.Validation.Validators;
 using SFSimulator.Core;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -33,6 +33,8 @@ public class SFSimulatorController : ControllerBase
     [HttpPost("simulateUntilLevel")]
     public ActionResult<SimulationResult> RunSimulationUntilLevel([FromBody] SimulateRequest request)
     {
+        var validation = new SimulateRequestValidator(null);
+        validation.
         var simulationResult = _requestService.RunSimulation(request, SimulationFinishCondition.UntilLevel);
 
         return Ok(simulationResult);

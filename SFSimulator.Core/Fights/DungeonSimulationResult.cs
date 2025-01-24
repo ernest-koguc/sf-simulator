@@ -1,12 +1,19 @@
-﻿namespace SFSimulator.Core
-{
-    public class DungeonSimulationResult
-    {
-        public bool Succeeded { get; set; }
-        public long Experience { get; set; }
-        public decimal Gold { get; set; }
-        public int WonFights { get; set; }
+﻿namespace SFSimulator.Core;
 
-        public static DungeonSimulationResult FailedResult(int wonFights) => new() { Succeeded = false, Experience = 0, Gold = 0, WonFights = wonFights };
-    }
+public class DungeonSimulationResult
+{
+    public required bool Succeeded { get; set; }
+    public required long Experience { get; set; }
+    public required decimal Gold { get; set; }
+    public required int WonFights { get; set; }
+    public required DungeonEnemy DungeonEnemy { get; set; }
+
+    public static DungeonSimulationResult FailedResult(int wonFights, DungeonEnemy dungeonEnemy) => new()
+    {
+        Succeeded = false,
+        Experience = 0,
+        Gold = 0,
+        WonFights = wonFights,
+        DungeonEnemy = dungeonEnemy
+    };
 }

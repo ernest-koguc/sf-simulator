@@ -1,0 +1,32 @@
+﻿<button @attributes="CapturedAttributes" id="@Id" class="bubbly-button">@ChildContent</button>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? CapturedAttributes { get; set; }
+    private Guid Id { get; set; } = Guid.NewGuid();
+}
+
+<script>
+    function init() {
+        function animateButton (e) {
+
+            e.preventDefault;
+            //reset animation
+            e.target.classList.remove('animate');
+
+            e.target.classList.add('animate');
+            setTimeout(function () {
+                e.target.classList.remove('animate');
+            }, 700);
+        };
+
+        let bubblyButtons = document.getElementsByClassName("bubbly-button");
+
+        for (var i = 0; i < bubblyButtons.length; i++) {
+            bubblyButtons[i].addEventListener('mouseover', animateButton, false);
+        }
+    }
+    init();
+</script>

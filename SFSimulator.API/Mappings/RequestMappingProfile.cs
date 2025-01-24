@@ -9,7 +9,7 @@ public class RequestMappingProfile : Profile
 {
     public RequestMappingProfile()
     {
-        _ = CreateMap<SimulateRequest, SimulationOptions>()
+        _ = CreateMap<SimulateRequest, SimulationContext>()
             .ForMember(d => d.SwitchPriority, m => m.MapFrom(s => s.SwitchPriority))
             .ForMember(d => d.SwitchLevel, m => m.MapFrom(s => s.SwitchLevel))
             .ForMember(d => d.FightsForGold, m => m.MapFrom(s => s.FightsForGold))
@@ -68,7 +68,7 @@ public class RequestMappingProfile : Profile
             .ForMember(d => d.HasArenaGoldScroll, m => m.MapFrom(s => s.Items.Misc.Enchantment == WitchScrollType.ArenaGold || s.Inventory.Dummy.Misc.Enchantment == WitchScrollType.ArenaGold))
             ;
 
-        _ = CreateMap<Maria21DataDTO, SimulationOptions>()
+        _ = CreateMap<Maria21DataDTO, SimulationContext>()
             .ForMember(d => d.ExperienceBonus, m => m.MapFrom(s => s))
             .ForMember(d => d.GoldBonus, m => m.MapFrom(s => s))
             .ForMember(d => d.Level, m => m.MapFrom(s => s.Level))

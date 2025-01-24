@@ -81,10 +81,10 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
         var nextItem = itemPriority.FirstOrDefault();
 
         if (nextItem == null)
-            return default;
+            return new(0, 0);
 
         if (nextItem.UpgradeCosts > resources)
-            return default;
+            return new(0, 0);
 
         nextItem.Item.UpgradeLevel++;
 
@@ -93,7 +93,7 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
 
     private BlackSmithResources GetUpgradeCostRefund(EquipmentItem item)
     {
-        BlackSmithResources refund = default;
+        BlackSmithResources refund = new(0, 0);
 
         var baseAttributes = item.Attributes.Max();
         var attributesWithUpgrades = (int)Math.Round(baseAttributes * Math.Pow(1.03D, item.UpgradeLevel));
@@ -113,7 +113,7 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
         ArgumentOutOfRangeException.ThrowIfGreaterThan(upgradeToLevel, 20, nameof(upgradeToLevel));
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(upgradeToLevel, upgradeFromLevel, nameof(upgradeToLevel));
 
-        BlackSmithResources cost = default;
+        BlackSmithResources cost = new(0, 0);
 
         for (var currentUpgradeLevel = upgradeFromLevel + 1; currentUpgradeLevel <= upgradeToLevel; currentUpgradeLevel++)
         {
@@ -171,15 +171,16 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
                 splinterCost *= multiplier;
             }
 
-            cost = cost with { Metal = cost.Metal + metalCost, Splinters = cost.Splinters + splinterCost };
+            cost = cost with { Splinters = cost.Splinters + splinterCost, Metal = cost.Metal + metalCost };
         }
 
         return cost;
     }
 }
 
-public readonly record struct BlackSmithResources(int Splinters, int Metal)
+public record BlackSmithResources(int Splinters, int Metal)
 {
+    public BlackSmithResources() : this(0, 0) { }
     public static bool operator >=(BlackSmithResources a, BlackSmithResources b) => a.Splinters >= b.Splinters && a.Metal >= b.Metal;
     public static bool operator <=(BlackSmithResources a, BlackSmithResources b) => a.Splinters <= b.Splinters && a.Metal <= b.Metal;
     public static bool operator >(BlackSmithResources a, BlackSmithResources b) => a.Splinters > b.Splinters || a.Metal > b.Metal;

@@ -2,7 +2,7 @@
 {
     public static class CharacterExtension
     {
-        public static void PerformAction(this SimulationOptions simulationOptions, ThirstSimulationOptions thirstOptions, ActionType action)
+        public static void PerformAction(this SimulationContext simulationOptions, ThirstSimulationOptions thirstOptions, ActionType action)
         {
             switch (action)
             {
@@ -41,40 +41,40 @@
             }
         }
 
-        private static void AddOneHydraHead(SimulationOptions simulationOptions)
+        private static void AddOneHydraHead(SimulationContext simulationOptions)
         {
             if (simulationOptions.HydraHeads < 20)
                 simulationOptions.HydraHeads++;
         }
 
-        private static void UpgradeAcademy(SimulationOptions simulationOptions)
+        private static void UpgradeAcademy(SimulationContext simulationOptions)
         {
             if (simulationOptions.AcademyLevel < 20)
                 simulationOptions.AcademyLevel++;
         }
 
-        private static void UpgradeTreasury(SimulationOptions simulationOptions)
+        private static void UpgradeTreasury(SimulationContext simulationOptions)
         {
             if (simulationOptions.TreasuryLevel < 45)
                 simulationOptions.TreasuryLevel++;
         }
-        private static void UpgradeGoldPit(SimulationOptions simulationOptions)
+        private static void UpgradeGoldPit(SimulationContext simulationOptions)
         {
             if (simulationOptions.GoldPitLevel < 100)
                 simulationOptions.GoldPitLevel++;
         }
 
-        private static void ChangeDailySpins(SimulationOptions simulationOptions, SpinAmountType spinAmount)
+        private static void ChangeDailySpins(SimulationContext simulationOptions, SpinAmountType spinAmount)
         {
             simulationOptions.SpinAmount = spinAmount;
         }
 
-        private static void ChangeDailyBeers(SimulationOptions simulationOptions, int beers)
+        private static void ChangeDailyBeers(SimulationContext simulationOptions, int beers)
         {
             simulationOptions.DailyThirst = 100 + beers * 20;
         }
 
-        private static void ChangeMount(SimulationOptions simulationOptions, ThirstSimulationOptions thirstOptions, MountType mount)
+        private static void ChangeMount(SimulationContext simulationOptions, ThirstSimulationOptions thirstOptions, MountType mount)
         {
             simulationOptions.Mount = mount;
             thirstOptions.Mount = mount;

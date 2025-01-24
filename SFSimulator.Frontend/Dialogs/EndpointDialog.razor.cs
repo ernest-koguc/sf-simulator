@@ -24,7 +24,7 @@ public partial class EndpointDialog : ComponentBase, IDisposable
     {
         var data = endpointDataMessage.Data;
         DialogService.Close(data);
-        NotificationService.Notify(NotificationSeverity.Info, "Data polled from SFTools successfully");
+        NotificationService.Info("Data polled from SFTools successfully");
     }
 
     protected override void OnInitialized()

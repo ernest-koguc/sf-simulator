@@ -22,8 +22,7 @@ public class DungeonSimulator : IDungeonSimulator
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        var lookupContext = new (IFightableContext LeftSide, IFightableContext RightSide)[1 + companions.Length];
-        var index = 0;
+        var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
 
         if (dungeonEnemy.Dungeon.Type.WithCompanions())
         {
@@ -31,14 +30,13 @@ public class DungeonSimulator : IDungeonSimulator
             {
                 var context = _dungeonableContextFactory.Create(companion, dungeonEnemy);
                 var companionDungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, companion);
-                lookupContext[index] = (context, companionDungeonContext);
-                index++;
+                lookupContext.Add((context, companionDungeonContext));
             }
         }
 
         var characterContext = _dungeonableContextFactory.Create(character, dungeonEnemy);
         var dungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, character);
-        lookupContext[index] = (characterContext, dungeonContext);
+        lookupContext.Add((characterContext, dungeonContext));
 
         var wonFights = 0;
 
@@ -53,14 +51,8 @@ public class DungeonSimulator : IDungeonSimulator
 
         stopwatch.Stop();
 
-        if (Debugger.IsAttached)
-        {
-            var winratio = wonFights / (float)iterations;
-            //var currentColor = Console.ForegroundColor;
-            //Console.ForegroundColor = ConsoleColor.Blue;
-            //Console.WriteLine($"{winratio:P} WR, {wonFights} WF, {stopwatch.Elapsed.TotalMilliseconds} ms: ({dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name})");
-            //Console.ForegroundColor = currentColor;
-        }
+        var winratio = wonFights / (float)iterations;
+        Console.WriteLine($"{winratio:P} WR, {wonFights} WF, {stopwatch.Elapsed.TotalMilliseconds} ms: ({dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name})");
 
         return CreateResult(wonFights, winThreshold, character, dungeonEnemy);
     }
@@ -68,23 +60,28 @@ public class DungeonSimulator : IDungeonSimulator
     private DungeonSimulationResult CreateResult<T>(int wonFights, int winTreshold, IFightable<T> character, DungeonEnemy dungeonEnemy) where T : IWeaponable
     {
         if (wonFights < winTreshold)
-            return DungeonSimulationResult.FailedResult(wonFights);
+            return DungeonSimulationResult.FailedResult(wonFights, dungeonEnemy);
 
         var xp = _gameLogic.GetExperienceForDungeonEnemy(character.Level, dungeonEnemy);
+        if (Debugger.IsAttached)
+        {
+            Console.WriteLine($"Won fight against {dungeonEnemy.Name} for {xp} XP with {wonFights} won fights");
+        }
 
         var result = new DungeonSimulationResult
         {
             Succeeded = true,
             Experience = xp,
             WonFights = wonFights,
-            // TODO: Add logic for gold calculations
+            DungeonEnemy = dungeonEnemy,
+            // TODO: Add logic for gold calculations or possibly just skip it? Does it even matter?
             Gold = 0
         };
 
         return result;
     }
 
-    private bool PerformSingleFight((IFightableContext LeftSide, IFightableContext RightSide)[] lookupContext)
+    private bool PerformSingleFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext)
     {
         long? leftoverHealth = null;
         foreach (var pair in lookupContext)

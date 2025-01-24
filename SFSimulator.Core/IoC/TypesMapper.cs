@@ -15,7 +15,6 @@ public static class TypesMapper
 
         new TypeMap(typeof(QuestHelper), typeof(IQuestHelper), TypeMapOption.None),
         new TypeMap(typeof(QuestFactory), typeof(IQuestFactory), TypeMapOption.None),
-        new TypeMap(typeof(QuestChooser), typeof(IQuestChooser), TypeMapOption.None),
 
         new TypeMap(typeof(ThirstSimulator), typeof(IThirstSimulator), TypeMapOption.None),
 
@@ -40,5 +39,7 @@ public static class TypesMapper
         new TypeMap(typeof(GuildKnightsProvider), typeof(GuildKnightsProvider), TypeMapOption.None),
         new TypeMap(typeof(GemTypeUsageProvider), typeof(GemTypeUsageProvider), TypeMapOption.None),
         new TypeMap(typeof(RuneValueProvider), typeof(RuneValueProvider), TypeMapOption.None),
+        new TypeMap(typeof(BaseStatsIncreasingService), typeof(BaseStatsIncreasingService), TypeMapOption.None),
+        new TypeMap(typeof(ScrapbookService), typeof(ScrapbookService), TypeMapOption.None),
     ];
 }

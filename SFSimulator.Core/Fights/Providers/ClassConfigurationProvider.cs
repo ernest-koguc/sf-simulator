@@ -18,7 +18,6 @@ public static class ClassConfigurationProvider
     }
     private static void InitClassConfiguration()
     {
-        // TODO: ADD Kuni and Mark as separate classes?
         ClassConfiguration = new()
         {
             {
@@ -38,7 +37,7 @@ public static class ClassConfigurationProvider
                 ClassType.Bert,
                 new ClassConfiguration
                 {
-                    HealthMultiplier = 6.099999793822,
+                    HealthMultiplier = 6.1,
                     WeaponMultiplier = 2,
                     WeaponGemMultiplier = 1,
                     WeaponAttributeMultiplier = 1,

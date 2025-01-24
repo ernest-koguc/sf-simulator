@@ -10,11 +10,19 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="SFSimulator.Frontend.styles.css" rel="stylesheet" />
-    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=5.2.2"></script>
+    <script src="_content/BlazorAnimation/blazorAnimationInterop.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script src="chart-scripts.js"></script>
+    <!--this should be deleted in case of going to production TODO TODO TODO-->
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" style="height: 100%; width: 100%;">
         <svg class="loading-progress">
             <circle r="40%" cx="50%" cy="50%" />
             <circle r="40%" cx="50%" cy="50%" />
@@ -27,12 +35,19 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <script src="_framework/blazor.webassembly.js"></script>
 </body>
 </html>
+
 <script>
     window.addEventListener('message', event => {
         if (event.origin.indexOf('sftools.mar21.eu') != -1)
             DotNet.invokeMethodAsync('SFSimulator.Frontend', 'PostSfToolsMessage', event.data)
     });
+    window.getDimensions = function() {
+        return {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+    };
+
 </script>

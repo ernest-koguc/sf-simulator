@@ -58,7 +58,7 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
         List<Item> items = new();
         for (var i = 0; i < amountOfItems; i++)
         {
-            var item = itemGenerator.GenerateItem(characterLevel, ItemSourceType.Expedition);
+            var item = itemGenerator.GenerateItem(characterLevel);
             items.Add(item);
         }
 
@@ -79,6 +79,7 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
 
 public class ExpeditionOptions(decimal AverageAmountOfChests, decimal AverageStarExperienceBonus)
 {
+    public ExpeditionOptions() : this(1.28M, 1.2M) { }
     public decimal AverageAmountOfChests { get; set; } = AverageAmountOfChests;
     public decimal AverageStarExperienceBonus { get; set; } = AverageStarExperienceBonus;
 }

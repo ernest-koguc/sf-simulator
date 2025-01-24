@@ -10,7 +10,54 @@ public class PetsState
     public Pet[] Fire { get; init; } = default!;
     public Pet[] Water { get; init; } = default!;
 
-    public PetsState() { }
+    public PetsState()
+    {
+        Shadow = Enumerable.Range(1, 20)
+            .Select(i => new Pet
+            {
+                Level = 0,
+                Position = i,
+                LockType = PetUnlockType.Locked,
+                ElementType = PetElementType.Shadow
+            })
+            .ToArray();
+        Light = Enumerable.Range(1, 20)
+            .Select(i => new Pet
+            {
+                Level = 0,
+                Position = i,
+                LockType = PetUnlockType.Locked,
+                ElementType = PetElementType.Light
+            })
+            .ToArray();
+        Earth = Enumerable.Range(1, 20)
+            .Select(i => new Pet
+            {
+                Level = 0,
+                Position = i,
+                LockType = PetUnlockType.Locked,
+                ElementType = PetElementType.Earth
+            })
+            .ToArray();
+        Fire = Enumerable.Range(1, 20)
+            .Select(i => new Pet
+            {
+                Level = 0,
+                Position = i,
+                LockType = PetUnlockType.Locked,
+                ElementType = PetElementType.Fire
+            })
+            .ToArray();
+        Water = Enumerable.Range(1, 20)
+            .Select(i => new Pet
+            {
+                Level = 0,
+                Position = i,
+                LockType = PetUnlockType.Locked,
+                ElementType = PetElementType.Water
+            })
+            .ToArray();
+    }
 
     public PetsState(Pets pets)
     {

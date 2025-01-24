@@ -1,14 +1,16 @@
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace SFSimulator.Core;
 
 public class Companion : IFightable<EquipmentItem>, IHealthCalculatable, ITotalStatsCalculatable
 {
-    public SimulationOptions Character { get; set; } = null!;
+    [JsonIgnore]
+    public SimulationContext Character { get; set; } = null!;
 
     public int Level => Character.Level;
     public ClassType Class { get; set; }
-    public int Armor => Items.SimpleList.Sum(i => i.Armor);
+    public int Armor => Items.Sum(i => i.Armor);
 
     public bool IsCompanion => true;
 
@@ -25,31 +27,31 @@ public class Companion : IFightable<EquipmentItem>, IHealthCalculatable, ITotalS
     public int Constitution => this.GetTotalStatsFor(AttributeType.Constitution);
     public int Luck => this.GetTotalStatsFor(AttributeType.Luck);
 
-    public EquipmentItem? FirstWeapon => Items.FirstWeapon;
-    public EquipmentItem? SecondWeapon => Items.SecondWeapon;
-    public required FightableItems Items { get; set; }
+    public EquipmentItem? FirstWeapon => Items.FirstOrDefault(e => e.ItemType == ItemType.Weapon);
+    public EquipmentItem? SecondWeapon => null;
+    public List<EquipmentItem> Items { get; set; } = [];
     public List<Potion> Potions => Character.Potions;
     public PetsState Pets => Character.Pets;
 
-    public int LightningResistance => Items.SimpleList.Where(i => i.RuneType is RuneType.LightningResistance or RuneType.TotalResistance).Sum(i => i.RuneValue);
-    public int FireResistance => Items.SimpleList.Where(i => i.RuneType is RuneType.FireResistance or RuneType.TotalResistance).Sum(i => i.RuneValue);
-    public int ColdResistance => Items.SimpleList.Where(i => i.RuneType is RuneType.ColdResistance or RuneType.TotalResistance).Sum(i => i.RuneValue);
-    public int HealthRune => Items.SimpleList.Where(i => i.RuneType == RuneType.HealthBonus).Sum(i => i.RuneValue);
+    public int LightningResistance => Items.Where(i => i.RuneType is RuneType.LightningResistance or RuneType.TotalResistance).Sum(i => i.RuneValue);
+    public int FireResistance => Items.Where(i => i.RuneType is RuneType.FireResistance or RuneType.TotalResistance).Sum(i => i.RuneValue);
+    public int ColdResistance => Items.Where(i => i.RuneType is RuneType.ColdResistance or RuneType.TotalResistance).Sum(i => i.RuneValue);
+    public int HealthRune => Items.Where(i => i.RuneType == RuneType.HealthBonus).Sum(i => i.RuneValue);
 
-    public bool HasGlovesScroll => Items.SimpleList.Any(i => i.ScrollType == WitchScrollType.Reaction);
+    public bool HasGlovesScroll => Items.Any(i => i.ScrollType == WitchScrollType.Reaction);
     public bool HasWeaponScroll => FirstWeapon?.HasEnchantment == true || SecondWeapon?.HasEnchantment == true;
     public bool HasEternityPotion => Potions.Any(p => p.Type == PotionType.Eternity);
 
     public double SoloPortal => Character.SoloPortal;
     public double GuildPortal => Character.GuildPortal;
     public double CritMultiplier => 2 + (0.11 * Character.GladiatorLevel) + (HasWeaponScroll ? 0.05 : 0);
-    public int Reaction => Items.SimpleList.Any(i => i.ScrollType == WitchScrollType.Reaction) ? 1 : 0;
+    public int Reaction => Items.Any(i => i.ScrollType == WitchScrollType.Reaction) ? 1 : 0;
     public long Health => this.GetHealth();
 }
 
 public static class CompanionMappings
 {
-    public static int MapCompanionAttribute(AttributeType attributeType, SimulationOptions character, ClassType companionClass)
+    public static int MapCompanionAttribute(AttributeType attributeType, SimulationContext character, ClassType companionClass)
     {
         var characterMainAttribute = ClassConfigurationProvider.GetClassConfiguration(character.Class).MainAttribute;
 
@@ -62,7 +64,7 @@ public static class CompanionMappings
             : character.GetBaseAttributesOf(companionMainAttribute);
     }
 
-    private static int GetBaseAttributesOf(this SimulationOptions character, AttributeType attributeType)
+    private static int GetBaseAttributesOf(this SimulationContext character, AttributeType attributeType)
     {
         return attributeType switch
         {

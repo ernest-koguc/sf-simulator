@@ -6,8 +6,8 @@ public class DamageProvider : IDamageProvider
     {
         var damage = GetBaseDmg(weapon, attacker, isSecondWeapon);
 
-        damage.Minimum *= 1 + attacker.GuildPortal;
-        damage.Maximum *= 1 + attacker.GuildPortal;
+        damage.Minimum *= 1 + (attacker.GuildPortal / 100);
+        damage.Maximum *= 1 + (attacker.GuildPortal / 100);
 
         ProcAttributesBonus(attacker, target, ref damage);
 

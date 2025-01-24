@@ -1,9 +1,7 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public class Item
 {
-    public class Item
-    {
-        public ItemType ItemType { get; set; }
-        public ItemSourceType ItemSourceType { get; set; }
-        public decimal GoldValue { get; set; }
-    }
+    public ItemType ItemType { get; set; }
+    public decimal GoldValue { get; set; }
 }

@@ -6,10 +6,10 @@ public class DungeonProvider : IDungeonProvider
 
     public DungeonProvider()
     {
-        InitDungeons();
+        Dungeons = InitDungeons();
     }
 
-    public List<DungeonEnemy> GetFightablesDungeonEnemies(SimulationOptions simulationOptions)
+    public List<DungeonEnemy> GetFightablesDungeonEnemies(SimulationContext simulationOptions)
     {
         return Dungeons
             .Where(d => d.IsUnlocked && !d.IsDefeated)
@@ -18,7 +18,7 @@ public class DungeonProvider : IDungeonProvider
             .ToList();
     }
 
-    public List<Dungeon> GetAllDungeons(SimulationOptions simulationOptions) => Dungeons.InitMirrorEnemy(simulationOptions).ToList();
+    public List<Dungeon> GetAllDungeons(SimulationContext simulationOptions) => Dungeons.InitMirrorEnemy(simulationOptions).ToList();
 
     public bool IsValidEnemy(int dungeonPosition, int dungeonEnemyPosition)
     {
@@ -35,9 +35,9 @@ public class DungeonProvider : IDungeonProvider
         return enemy;
     }
 
-    private void InitDungeons()
+    public List<Dungeon> InitDungeons()
     {
-        Dungeons = new List<Dungeon>
+        var dungeons = new List<Dungeon>()
         {
             #region Light World
             new Dungeon
@@ -340,7 +340,7 @@ public class DungeonProvider : IDungeonProvider
                 Position = 15,
                 IsDefeated = false,
                 IsUnlocked = true,
-                //UnlockResolve = c => c.Dungeons.First(d => d.Position == 12).IsUnlocked>=,
+                UnlockResolve = c => c.Dungeons.First(d => d.Position == 12).IsUnlocked,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 355, strength: 7570, dexterity: 2655, intelligence: 2630, constitution: 7290, luck: 1716, health: 12976200, minWeaponDmg: 401, maxWeaponDmg: 733 ),
@@ -1418,7 +1418,7 @@ public class DungeonProvider : IDungeonProvider
                 IsDefeated = false,
                 IsUnlocked = true,
                 UnlockResolve = c => c.Dungeons.First(d => d.Type == DungeonTypeEnum.Tower).IsUnlocked && c.CharacterLevel >= 222,
-                Type = DungeonTypeEnum.Shadow,
+                Type = DungeonTypeEnum.LoopOfIdols,
                 DungeonEnemies = new List<DungeonEnemy>
                 {
                     new DungeonEnemy(position: 1, @class: ClassType.Warrior, level: 222, strength: 90000, dexterity: 2000, intelligence: 2000, constitution: 74000, luck: 5000, health: 80000000, minWeaponDmg: 2000, maxWeaponDmg: 2996 ),
@@ -1448,25 +1448,27 @@ public class DungeonProvider : IDungeonProvider
             #endregion
         };
 
-        foreach (var dungeon in Dungeons)
+        foreach (var dungeon in dungeons)
         {
             foreach (var dungeonEnemy in dungeon.DungeonEnemies)
             {
                 dungeonEnemy.Dungeon = dungeon;
             }
         }
+
+        return dungeons;
     }
 }
 
 internal static class DungeonProviderExtensions
 {
-    internal static IEnumerable<Dungeon> InitMirrorEnemy(this IEnumerable<Dungeon> dungeons, SimulationOptions simulationOptions)
+    internal static IEnumerable<Dungeon> InitMirrorEnemy(this IEnumerable<Dungeon> dungeons, SimulationContext simulationOptions)
     {
         _ = dungeons.SelectMany(d => d.DungeonEnemies).InitMirrorEnemy(simulationOptions);
         return dungeons;
     }
 
-    internal static IEnumerable<DungeonEnemy> InitMirrorEnemy(this IEnumerable<DungeonEnemy> dungeonEnemies, SimulationOptions simulationOptions)
+    internal static IEnumerable<DungeonEnemy> InitMirrorEnemy(this IEnumerable<DungeonEnemy> dungeonEnemies, SimulationContext simulationOptions)
     {
         var mirrorEnemies = dungeonEnemies.Where(e => e.IsDefeated == false && e.Dungeon.Position is 9 or 109 && e.Position is 10);
         foreach (var mirrorEnemy in mirrorEnemies)

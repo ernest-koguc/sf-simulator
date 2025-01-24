@@ -12,6 +12,7 @@ html, body {
     background-attachment: fixed;
     background-size: cover;
     background-position: bottom;
+    overflow-x: hidden;
 }
 
 .bg-dark-trans {
@@ -23,35 +24,44 @@ html, body {
     padding: 0 !important;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+.p-abso {
+    position: absolute;
 }
 
-.invalid {
-    outline: 1px solid red;
+:root {
+    --rz-text-font-family: Poppins, sans-serif !important;
+    --bs-body-color: white !important;
+    --rz-primary: #7b2db8 !important;
+    --rz-primary-50: #7b2db850;
+    --rz-primary-light: #8932cd !important;
+    --rz-on-primary-lighter: var(--rz-primary) !important;
+    --rz-primary-lighter: #9547d230 !important;
+    --rz-primary-dark: #6d28a4 !important;
+    --rz-primary-darker: #60238f !important;
+    --rz-secondary: #4acf8c !important;
+    --rz-secondary-50: #4acf8c50 !important;
+    --rz-secondary-light: #5ed499 !important;
+    --rz-secondary-lighter: #72daa530 !important;
+    --rz-secondary-dark: #35ca7f !important;
+    --rz-secondary-darker: #30b572 !important;
+    --rz-form-field-label-focus-color: var(--rz-secondary) !important;
+    --rz-input-focus-border: 1px solid var(--rz-secondary) !important;
 }
 
-.validation-message {
-    color: red;
+.rz-dropdown-item.rz-state-highlight {
+    background-color: var(--rz-secondary-lighter) !important;
+    color: var(--rz-secondary) !important;
+}
+
+.rz-chkbox-box.rz-state-active:not(.rz-state-disabled) {
+    background-color: var(--rz-secondary-light) !important;
+    border: var(--rz-border-secondary) !important;
+}
+
+.rz-form-field {
+    width: 180px;
+    max-width: 180px;
+    margin-bottom: 5px;
 }
 
 #blazor-error-ui {
@@ -114,4 +124,36 @@ html, body {
 
 .loading-progress-text:after {
     content: var(--blazor-load-percentage-text, "Loading");
+}
+.menuitem-secondary {
+    border-color: var(--rz-secondary) !important;
+}
+
+.menuitem-secondary > .rz-navigation-item-wrapper-active {
+    color: var(--rz-secondary) !important;
+    background-color: var(--rz-secondary-lighter) !important;
+}
+
+.menuitem-secondary > .rz-navigation-item-wrapper:hover {
+    color: var(--rz-secondary-darker) !important;
+}
+
+.rz-panel-menu .rz-navigation-item-link:not(.rz-state-disabled):active {
+    background: transparent !important;
+}
+
+.rz-series-data-label {
+    font-size: 10px;
+}
+
+ul[role=tablist] {
+    flex-wrap: wrap;
+    justify-content: center !important;
+}
+
+@media (min-width: 576px){
+    .rz-justify-content-xs-end
+    {
+        justify-content: end !important;
+    }
 }

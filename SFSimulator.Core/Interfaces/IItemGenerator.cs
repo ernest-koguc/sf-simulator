@@ -1,8 +1,7 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public interface IItemGenerator
 {
-    public interface IItemGenerator
-    {
-        Item GenerateItem(int characterLevel, ItemSourceType sourceType);
-        Item GeneratePetFoodItem();
-    }
+    Item GenerateItem(int characterLevel);
+    Item GeneratePetFoodItem();
 }

@@ -21,7 +21,7 @@ public class RequestService : IRequestService
 
     public SimulationResult RunSimulation(SimulateRequest request, SimulationFinishCondition simulationType)
     {
-        var simulationOptions = _mapper.Map<SimulationOptions>(request);
+        var simulationOptions = _mapper.Map<SimulationContext>(request);
 
         foreach (var companion in simulationOptions.Companions)
         {

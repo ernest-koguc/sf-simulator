@@ -2,5 +2,5 @@
 
 public interface IGameSimulator
 {
-    SimulationResult Run(SimulationOptions simulationOptions, SimulationFinishCondition simulationFinishCondition);
+    Task<SimulationResult?> Run(SimulationContext simulationContext, Action<SimulationProgress> progressCallback);
 }

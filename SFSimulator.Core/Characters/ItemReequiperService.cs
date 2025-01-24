@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace SFSimulator.Core;
 
 public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, RuneValueProvider runeValueProvider,
@@ -13,45 +11,67 @@ public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, Run
     public bool ShouldReequipCompanions(int characterLevel)
         => characterLevel >= Options.CompanionLevelOnLastEquipmentChange + Options.CompanionReequipLevelOffset;
 
-    public void ReequipCharacter(SimulationOptions simulationOptions, int day)
+    public void ReequipCharacter(SimulationContext simulationContext, int day)
     {
-        Options = Options with { CharacterLevelOnLastEquipmentChange = simulationOptions.Level };
-        ReequipItems(simulationOptions.Class, simulationOptions.Level, simulationOptions.Aura, simulationOptions.Items, simulationOptions, day, simulationOptions.BlackSmithResources, true);
+        Options = Options with { CharacterLevelOnLastEquipmentChange = simulationContext.Level };
+        simulationContext.Items = ReequipItems(simulationContext.Class, simulationContext.Items, simulationContext, day, true);
     }
 
-    public void ReequipCompanions(SimulationOptions simulationOptions, int day)
+    public void ReequipCompanions(SimulationContext simulationContext, int day)
     {
-        Options = Options with { CompanionLevelOnLastEquipmentChange = simulationOptions.Level };
-        foreach (var companion in simulationOptions.Companions)
+        Options = Options with { CompanionLevelOnLastEquipmentChange = simulationContext.Level };
+        foreach (var companion in simulationContext.Companions)
         {
-            ReequipItems(companion.Class, simulationOptions.Level, simulationOptions.Aura, companion.Items, simulationOptions, day, simulationOptions.BlackSmithResources, false);
+            companion.Items = ReequipItems(companion.Class, companion.Items, simulationContext, day, false);
         }
     }
 
-    private void ReequipItems(ClassType classType, int level, int aura, FightableItems items, SimulationOptions simulationOptions, int day, BlackSmithResources blackSmithResources, bool upgradeItems)
+    private List<EquipmentItem> ReequipItems(ClassType classType, List<EquipmentItem> oldItems, SimulationContext simulationContext, int day, bool upgradeItems)
     {
         var itemComparer = new ClassAwareItemComparer(classType);
         var runesQuantity = runeQuantityProvider.GetRunesQuantity(day);
         var itemQualityRune = runeValueProvider.GetRuneValue(RuneType.ItemQuality, runesQuantity);
-        var gemType = gemTypeUsageProvider.GetGemTypeToUse(day, classType, items.SimpleList.Select(i => i.GemType));
+        var gemType = gemTypeUsageProvider.GetGemTypeToUse(day, classType, oldItems.Select(i => i.GemType));
         var knights = guildKnightsProvider.GetKnightsAmount(day);
         var isSecondWeaponSlot = false;
 
-        foreach (var (Item, ItemType) in items)
-        {
-            var itemBuilder = new EquipmentBuilder(ItemAttributeType.Epic, level, classType, aura,
-                    simulationOptions.ScrollsUnlocked, itemQualityRune, ItemType).WithAttributes();
+        var newItems = new List<EquipmentItem>();
 
-            if (itemBuilder.Compare(Item, itemComparer) < 1)
+        foreach (var itemType in GetPossibleItems(classType))
+        {
+            var itemBuilder = new EquipmentBuilder(ItemAttributeType.Epic, simulationContext.Level, classType, simulationContext.Aura,
+                    simulationContext.ScrollsUnlocked, itemQualityRune, itemType).WithAttributes();
+
+            EquipmentItem? currentItem;
+            if (itemType != ItemType.Weapon)
             {
+                currentItem = oldItems.FirstOrDefault(i => i.ItemType == itemType);
+            }
+            else if (!isSecondWeaponSlot)
+            {
+                currentItem = oldItems.FirstOrDefault(i => i.ItemType == ItemType.Weapon);
+            }
+            else
+            {
+                currentItem = oldItems.LastOrDefault(i => i.ItemType == ItemType.Weapon);
+            }
+
+            if (currentItem is not null && itemBuilder.Compare(currentItem, itemComparer) < 1)
+            {
+                newItems.Add(currentItem);
                 continue;
             }
 
-            var runeType = ItemType != ItemType.Weapon ? GetRuneForItem(items.SimpleList) : RuneType.FireDamage;
+            var runeType = itemType switch
+            {
+                ItemType.Weapon => RuneType.FireDamage,
+                ItemType.Shield => RuneType.None,
+                _ => GetRuneForItem(oldItems)
+            };
             var runeValue = runeValueProvider.GetRuneValue(runeType, runesQuantity);
 
-            _ = itemBuilder.WithGem(gemType, simulationOptions.GemMineLevel, knights).WithRune(runeType, runeValue);
-            switch (ItemType)
+            _ = itemBuilder.WithGem(gemType, simulationContext.GemMineLevel, knights).WithRune(runeType, runeValue);
+            switch (itemType)
             {
                 case ItemType.Weapon:
                     _ = itemBuilder.AsWeapon(Options.PreferredWeaponRange);
@@ -73,22 +93,19 @@ public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, Run
                     break;
             }
 
-            if (ItemType == ItemType.Weapon)
-            {
-                items.ChangeWeapon(itemBuilder.Build(), isSecondWeaponSlot);
-                isSecondWeaponSlot = true;
-            }
-            else
-            {
-                items.ChangeItem(itemBuilder.Build());
-            }
+            newItems.Add(itemBuilder.Build());
 
-            if (Item is not null)
-                blackSmithResources += blackSmithAdvisor.DismantleItem(Item);
+            if (currentItem is not null)
+                //adjust this in the future, looks like we cant have our own + and - operators
+                simulationContext.BlackSmithResources += blackSmithAdvisor.DismantleItem(currentItem);
+
         }
 
         if (upgradeItems)
-            blackSmithResources -= blackSmithAdvisor.UpgradeItems(items.SimpleList, blackSmithResources);
+            //adjust this in the future, looks like we cant have our own + and - operators
+            simulationContext.BlackSmithResources -= blackSmithAdvisor.UpgradeItems(newItems, simulationContext.BlackSmithResources);
+
+        return newItems;
     }
 
     private static RuneType GetRuneForItem(List<EquipmentItem> items)
@@ -98,77 +115,34 @@ public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, Run
         var resistance = items.Where(i => i.RuneType == RuneType.TotalResistance).Sum(i => i.RuneValue);
         return resistance < 75 ? RuneType.TotalResistance : RuneType.None;
     }
+
+    private static List<ItemType> GetPossibleItems(ClassType classType)
+    {
+        var possibleItems = new List<ItemType>
+        {
+            ItemType.Headgear,
+            ItemType.Breastplate,
+            ItemType.Gloves,
+            ItemType.Boots,
+            ItemType.Weapon,
+            ItemType.Amulet,
+            ItemType.Belt,
+            ItemType.Ring,
+            ItemType.Trinket
+        };
+
+
+        if (classType is ClassType.Assassin)
+        {
+            possibleItems.Add(ItemType.Weapon);
+        }
+        if (classType is ClassType.Warrior)
+        {
+            possibleItems.Add(ItemType.Shield);
+        }
+
+        return possibleItems;
+    }
 }
 public readonly record struct ReequipOptions(int CharacterReequipLevelOffset, int CharacterLevelOnLastEquipmentChange,
         int CompanionReequipLevelOffset, int CompanionLevelOnLastEquipmentChange, double PreferredWeaponRange);
-
-public class FightableItems : IEnumerable<(EquipmentItem? Item, ItemType ItemType)>
-{
-    private EquipmentItem?[] Items { get; set; }
-    private ClassType Class { get; set; }
-    private ClassAwareItemComparer Comparer { get; set; }
-
-    public List<EquipmentItem> SimpleList => Items.Where(i => i is not null).Select(i => i!).ToList();
-    public EquipmentItem? FirstWeapon => Items[(int)ItemType.Weapon - 1];
-    public EquipmentItem? SecondWeapon => Class == ClassType.Assassin ? Items[(int)ItemType.Shield - 1] : null;
-
-    public FightableItems(ClassType classType, List<EquipmentItem>? items = null)
-    {
-        Class = classType;
-        Items = new EquipmentItem[10];
-        Comparer = new ClassAwareItemComparer(classType);
-        if (items is not null)
-        {
-            InitItems(items);
-        }
-    }
-
-    public void ChangeItem(EquipmentItem item)
-    {
-        if (item.ItemType == ItemType.Weapon)
-            throw new InvalidOperationException($"Weapon changing is not supported for this method, consider using {nameof(ChangeWeapon)} method to change weapon!");
-
-        var index = (int)item.ItemType;
-
-        Items[index - 1] = item;
-    }
-
-    public void ChangeWeapon(EquipmentItem item, bool isSecondSlot)
-    {
-        var index = isSecondSlot ? (int)ItemType.Shield : (int)ItemType.Weapon;
-        Items[index - 1] = item;
-    }
-
-    public IEnumerator<(EquipmentItem? Item, ItemType ItemType)> GetEnumerator()
-    {
-        for (var i = 0; i < Items.Length; i++)
-        {
-            var item = Items[i];
-            if (i + 1 == (int)ItemType.Shield && Class == ClassType.Assassin) yield return (item, ItemType.Weapon);
-            else if (i + 1 == (int)ItemType.Shield && Class == ClassType.Warrior) yield return (item, ItemType.Shield);
-            else continue;
-
-            yield return (item, (ItemType)(i + 1));
-        }
-    }
-
-    private void InitItems(List<EquipmentItem> items)
-    {
-        items = items.Where(i => i.ItemType is not ItemType.None or ItemType.PetFood).ToList();
-        var isSecondWeaponSlot = false;
-        foreach (var item in items)
-        {
-            if (item.ItemType != ItemType.Weapon)
-            {
-                ChangeItem(item);
-            }
-            else
-            {
-                ChangeWeapon(item, isSecondWeaponSlot);
-                isSecondWeaponSlot = true;
-            }
-        }
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-}

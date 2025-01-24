@@ -13,5 +13,6 @@ public enum ClassType
     DemonHunter,
     Druid,
     Bard,
-    Necromancer
+    Necromancer,
+    Paladin
 }

@@ -23,7 +23,7 @@ public class SimulatorMappingProfile : Profile
             .ForMember(d => d.HasArenaGoldScroll, m => m.MapFrom(s => s.Items.Misc.Enchantment == WitchScrollType.ArenaGold || s.Inventory.Dummy.Misc.Enchantment == WitchScrollType.ArenaGold))
             ;
 
-        _ = CreateMap<Maria21DataDTO, SimulationOptions>()
+        _ = CreateMap<Maria21DataDTO, SimulationContext>()
             .ForMember(d => d.ExperienceBonus, m => m.MapFrom(s => s))
             .ForMember(d => d.GoldBonus, m => m.MapFrom(s => s))
             .ForMember(d => d.Level, m => m.MapFrom(s => s.Level))
@@ -46,11 +46,13 @@ public class SimulatorMappingProfile : Profile
             .ForMember(d => d.GuildPortal, m => m.MapFrom(s => s.Dungeons.Group))
             .ForMember(d => d.Calendar, m => m.MapFrom(s => s.CalendarType))
             .ForMember(d => d.CalendarDay, m => m.MapFrom(s => s.CalendarDay == 0 ? 1 : s.CalendarDay))
-            .ForMember(d => d.Items, m => m.MapFrom(s => new FightableItems(s.Class, MapItems(s.Class, s.Items))))
+            .ForMember(d => d.Items, m => m.MapFrom(s => MapItems(s.Class, s.Items)))
             .ForMember(d => d.DungeonsData, m => m.MapFrom(s => s.Dungeons))
             .ForMember(d => d.Potions, m => m.MapFrom(s => s.Potions))
             .ForMember(d => d.Aura, m => m.MapFrom(s => s.Toilet.Aura))
+            // Is it guild knights or just player knights???
             .ForMember(d => d.GuildKnights, m => m.MapFrom(s => s.Fortress.Knights))
+            .ForMember(d => d.GuildRaids, m => m.MapFrom(s => s.Group.Group.Raid))
             .ForMember(d => d.Companions, m => m.MapFrom(s => new List<SFToolsCompanion>() { s.Companions.Bert, s.Companions.Mark, s.Companions.Kunigunde }))
             .ForMember(d => d.Pets, m => m.MapFrom(s => new PetsState(s.Pets)))
             .AfterMap((s, d) =>
@@ -65,7 +67,7 @@ public class SimulatorMappingProfile : Profile
 
         _ = CreateMap<SFToolsCompanion, Companion>()
             .ForMember(d => d.Class, m => m.MapFrom(s => s.Class))
-            .ForMember(d => d.Items, m => m.MapFrom(s => new FightableItems(s.Class, MapItems(s.Class, s.Items))))
+            .ForMember(d => d.Items, m => m.MapFrom(s => MapItems(s.Class, s.Items)))
             ;
 
         _ = CreateMap<SFToolsItem, RawWeapon>()

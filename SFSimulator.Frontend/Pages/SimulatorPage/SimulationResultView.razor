@@ -1,0 +1,138 @@
+﻿<RadzenCard class="rz-p-0 rz-w-fit-content" Style="max-width: 100%; width: 100% !important;">
+    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="rz-background-color-base-900" 
+    Style="padding: 0.5rem 1rem; border-radius: var(--rz-card-border-radius);">
+        <RadzenText TextStyle="TextStyle.H5" Text="Result" Style="align-self: center; margin-bottom: 0;"/>
+        <div>
+            <RadzenButton Variant="Variant.Text" ButtonStyle="ButtonStyle.Base"><SfIcon Icon="Load"/><span class="rz-ms-2">Copy to options</span></RadzenButton>
+            <RadzenButton Click="SaveResult" Variant="Variant.Text" ButtonStyle="ButtonStyle.Base"><SfIcon Icon="Load"/><span class="rz-ms-2">Save</span></RadzenButton>
+        </div>
+    </RadzenRow>
+    <RadzenTabs RenderMode="TabRenderMode.Client" TabPosition="TabPosition.Top" >
+        <Tabs>
+            <RadzenTabsItem>
+                <Template>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <SfIcon Icon="Quickview"/>
+                        <div class="rz-ms-2">
+                            Quickview
+                        </div>
+                    </div>
+                </Template>
+                <ChildContent>
+                        <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" class="rz-background-color-base-900 rz-p-4 rz-border-radius-2" Gap="0">
+                            <RadzenColumn Size="12" SizeLG="5" class="rz-background-color-base-800 rz-p-4 rz-border-radius-2">
+                                <RadzenText TextStyle="TextStyle.H4" class="rz-m-0">Before</RadzenText>
+                                <hr class="rz-my-2"/>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Level:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@Result.BeforeSimulation.Level</RadzenText>
+                                </RadzenRow>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Experience:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@Result.BeforeSimulation.Experience</RadzenText>
+                                </RadzenRow>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Base stats:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@Result.BeforeSimulation.BaseStat</RadzenText>
+                                </RadzenRow>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Date:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@DateTime.Today.ToShortDateString()</RadzenText>
+                                </RadzenRow>
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeLG="2" class="d-flex justify-content-center align-items-center">
+                                <RadzenIcon Icon="double_arrow" Style="font-size: 120px;" class="rz-display-none rz-display-lg-block"/>
+                                <RadzenIcon Icon="double_arrow" Style="font-size: 120px; rotate: 90deg;" class="rz-display-lg-none"/>
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeLG="5" class="rz-background-color-base-800 rz-p-4 rz-border-radius-2">
+                                <RadzenText TextStyle="TextStyle.H4" class="rz-m-0">After</RadzenText>
+                                <hr class="rz-my-2"/>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Level:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@Result.AfterSimulation.Level</RadzenText>
+                                </RadzenRow>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Experience:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@Result.AfterSimulation.Experience</RadzenText>
+                                </RadzenRow>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Base stats:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@Result.AfterSimulation.BaseStat</RadzenText>
+                                </RadzenRow>
+                                <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Body1">Date:</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1">@DateTime.Today.AddDays(Result.Days).ToShortDateString()</RadzenText>
+                                </RadzenRow>
+                            </RadzenColumn>
+                        </RadzenRow>
+                        <hr />
+                        <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="4" class="d-flex justify-content-center align-items-center">
+                                <RadzenText>
+                                    Days passed: @Result.Days
+                                </RadzenText>
+                            </RadzenColumn>
+                            <RadzenColumn Size="4" class="d-flex justify-content-center align-items-center">
+                                <RadzenText>
+                                    Base stats: @Result.AfterSimulation.BaseStat (+@(Result.AfterSimulation.BaseStat - Result.BeforeSimulation.BaseStat))
+                                </RadzenText>
+                            </RadzenColumn>
+                            <RadzenColumn Size="4" class="d-flex justify-content-center align-items-center">
+                                <RadzenText>
+                                    Level: @Result.AfterSimulation.Level (+@(Result.AfterSimulation.Level - Result.BeforeSimulation.Level))
+                                </RadzenText>
+                            </RadzenColumn>
+                        </RadzenRow>
+                        <hr/>
+                        @if(Result.Achievements.Count > 0)
+                        {
+                            <RadzenRow>
+                                <RadzenColumn Size="12">
+                                    <RadzenTimeline Orientation="Orientation.Horizontal" Style="overflow: auto; height: 275px;">
+                                        <Items>
+                                            @foreach(var achievement in Result.Achievements)
+                                            {
+                                                <RadzenTimelineItem PointStyle="@achievement.Type.ToPointStyle()" >
+                                                    <LabelContent>
+                                                        <RadzenStack Gap="0">
+                                                            <div>Day @achievement.Day</div>
+                                                            <div>(@DateTime.Today.AddDays(achievement.Day).ToShortDateString())</div>
+                                                        </RadzenStack>
+                                                    </LabelContent>
+                                                    <ChildContent>
+                                                        @achievement.Type.GetDisplayName()
+                                                    </ChildContent>
+                                                </RadzenTimelineItem>
+                                            }
+                                        </Items>
+                                    </RadzenTimeline>
+                                </RadzenColumn>
+                            </RadzenRow>
+                        }
+                </ChildContent>
+            </RadzenTabsItem>
+            <RadzenTabsItem>
+                <Template>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <SfIcon Icon="Chart"/>
+                        <div class="rz-ms-2">
+                            Charts 
+                        </div>
+                    </div>
+                </Template>
+                <ChildContent>
+                    <RadzenStack>
+                        <RadzenRow>
+                            <RadzenColumn Size="12" SizeSM="6" Style="aspect-ratio: 1;">
+                                <Chart Records="TotalExperienceGains" Title="Total Experience"/>
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeSM="6" Style="aspect-ratio: 1;">
+                                <Chart Records="TotalBaseStatGains" Title="Total Base Stats"/>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenStack>
+                </ChildContent>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenCard>
