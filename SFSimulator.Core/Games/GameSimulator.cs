@@ -5,7 +5,8 @@ namespace SFSimulator.Core;
 
 public class GameSimulator(IGameLogic gameLogic, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider,
     IWeeklyTasksRewardProvider weeklyTasksRewardProvider, IScheduler scheduler, CharacterDungeonProgressionService characterDungeonProgressionService,
-    IExpeditionService expeditionService, BaseStatsIncreasingService baseStatsIncreasingService, ScrapbookService scrapbookService) : IGameSimulator
+    IExpeditionService expeditionService, BaseStatsIncreasingService baseStatsIncreasingService, ScrapbookService scrapbookService,
+    IPotionService potionService) : IGameSimulator
 {
     private readonly IThirstSimulator _thirstSimulator = thirstSimulator;
     private readonly IExpeditionService _expeditionService = expeditionService;
@@ -15,6 +16,7 @@ public class GameSimulator(IGameLogic gameLogic, IThirstSimulator thirstSimulato
     private readonly CharacterDungeonProgressionService _characterDungeonProgressionService = characterDungeonProgressionService;
     private readonly IWeeklyTasksRewardProvider _weeklyTasksRewardProvider = weeklyTasksRewardProvider;
     private readonly ScrapbookService _scrapbookService = scrapbookService;
+    private readonly IPotionService _potionService = potionService;
     private readonly List<ItemType> CurrentItemTypesForWitch = [];
     private List<EventType> CurrentEvents { get; set; } = [];
     private ItemBackPack ItemBackPack { get; set; } = null!;
@@ -127,6 +129,8 @@ public class GameSimulator(IGameLogic gameLogic, IThirstSimulator thirstSimulato
         _calendarRewardProvider.ConfigureCalendar(SimulationContext.Calendar, SimulationContext.CalendarDay, SimulationContext.SkipCalendar);
 
         _scheduler.SetCustomSchedule(SimulationContext.Schedule);
+
+        SimulationContext.Potions = _potionService.GetPotions(SimulationContext.Class);
 
 
         if (SimulationContext.DoDungeons)

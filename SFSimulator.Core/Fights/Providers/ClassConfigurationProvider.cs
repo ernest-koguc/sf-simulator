@@ -163,6 +163,19 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1
                 }
             },
+            {
+                ClassType.Paladin,
+                new ClassConfiguration
+                {
+                    HealthMultiplier = 6,
+                    WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 15,
+                    MainAttribute = AttributeType.Strength,
+                    ItemBonusMultiplier = 1
+                }
+            },
         };
     }
 }

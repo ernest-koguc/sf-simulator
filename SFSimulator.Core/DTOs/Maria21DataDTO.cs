@@ -28,7 +28,7 @@ public class Maria21DataDTO
     public Slots Items { get; set; } = null!;
     public GroupData Group { get; set; } = null!;
     public SFCompanions Companions { get; set; } = null!;
-    public Pets Pets { get; set; } = null!;
+    public SFToolsPets Pets { get; set; } = null!;
 }
 
 public class Toilet
@@ -38,7 +38,7 @@ public class Toilet
     public int Capacity { get; set; }
 }
 
-public class Pets
+public class SFToolsPets
 {
     public int ShadowFood { get; set; }
     public int LightFood { get; set; }

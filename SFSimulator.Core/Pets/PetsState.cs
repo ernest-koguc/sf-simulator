@@ -59,7 +59,7 @@ public class PetsState
             .ToArray();
     }
 
-    public PetsState(Pets pets)
+    public PetsState(SFToolsPets pets)
     {
         Shadow = pets.ShadowLevels
             .Select((level, index) =>

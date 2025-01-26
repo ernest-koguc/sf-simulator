@@ -51,28 +51,28 @@ public class Companion : IFightable<EquipmentItem>, IHealthCalculatable, ITotalS
 
 public static class CompanionMappings
 {
-    public static int MapCompanionAttribute(AttributeType attributeType, SimulationContext character, ClassType companionClass)
+    public static int MapCompanionAttribute(AttributeType attributeType, SimulationContext simulationContext, ClassType companionClass)
     {
-        var characterMainAttribute = ClassConfigurationProvider.GetClassConfiguration(character.Class).MainAttribute;
+        var characterMainAttribute = ClassConfigurationProvider.GetClassConfiguration(simulationContext.Class).MainAttribute;
 
         var companionMainAttribute = ClassConfigurationProvider.GetClassConfiguration(companionClass).MainAttribute;
 
         return attributeType == companionMainAttribute
-            ? character.GetBaseAttributesOf(characterMainAttribute)
+            ? simulationContext.GetBaseAttributesOf(characterMainAttribute)
             : attributeType != characterMainAttribute
-            ? character.GetBaseAttributesOf(attributeType)
-            : character.GetBaseAttributesOf(companionMainAttribute);
+            ? simulationContext.GetBaseAttributesOf(attributeType)
+            : simulationContext.GetBaseAttributesOf(companionMainAttribute);
     }
 
-    private static int GetBaseAttributesOf(this SimulationContext character, AttributeType attributeType)
+    private static int GetBaseAttributesOf(this SimulationContext simulationContext, AttributeType attributeType)
     {
         return attributeType switch
         {
-            AttributeType.Strength => character.BaseStrength,
-            AttributeType.Dexterity => character.BaseDexterity,
-            AttributeType.Intelligence => character.BaseIntelligence,
-            AttributeType.Constitution => character.BaseConstitution,
-            AttributeType.Luck => character.BaseLuck,
+            AttributeType.Strength => simulationContext.BaseStrength,
+            AttributeType.Dexterity => simulationContext.BaseDexterity,
+            AttributeType.Intelligence => simulationContext.BaseIntelligence,
+            AttributeType.Constitution => simulationContext.BaseConstitution,
+            AttributeType.Luck => simulationContext.BaseLuck,
             _ => throw new InvalidEnumArgumentException(nameof(attributeType))
         };
     }

@@ -41,5 +41,6 @@ public static class TypesMapper
         new TypeMap(typeof(RuneValueProvider), typeof(RuneValueProvider), TypeMapOption.None),
         new TypeMap(typeof(BaseStatsIncreasingService), typeof(BaseStatsIncreasingService), TypeMapOption.None),
         new TypeMap(typeof(ScrapbookService), typeof(ScrapbookService), TypeMapOption.None),
+        new TypeMap(typeof(PotionService), typeof(IPotionService), TypeMapOption.None),
     ];
 }

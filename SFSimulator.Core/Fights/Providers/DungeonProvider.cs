@@ -9,16 +9,16 @@ public class DungeonProvider : IDungeonProvider
         Dungeons = InitDungeons();
     }
 
-    public List<DungeonEnemy> GetFightablesDungeonEnemies(SimulationContext simulationOptions)
+    public List<DungeonEnemy> GetFightablesDungeonEnemies(SimulationContext simulationContext)
     {
         return Dungeons
             .Where(d => d.IsUnlocked && !d.IsDefeated)
             .Select(d => d.DungeonEnemies.OrderBy(e => e.Position).First(e => !e.IsDefeated))
-            .InitMirrorEnemy(simulationOptions)
+            .InitMirrorEnemy(simulationContext)
             .ToList();
     }
 
-    public List<Dungeon> GetAllDungeons(SimulationContext simulationOptions) => Dungeons.InitMirrorEnemy(simulationOptions).ToList();
+    public List<Dungeon> GetAllDungeons(SimulationContext simulationContext) => Dungeons.InitMirrorEnemy(simulationContext).ToList();
 
     public bool IsValidEnemy(int dungeonPosition, int dungeonEnemyPosition)
     {
@@ -1462,34 +1462,34 @@ public class DungeonProvider : IDungeonProvider
 
 internal static class DungeonProviderExtensions
 {
-    internal static IEnumerable<Dungeon> InitMirrorEnemy(this IEnumerable<Dungeon> dungeons, SimulationContext simulationOptions)
+    internal static IEnumerable<Dungeon> InitMirrorEnemy(this IEnumerable<Dungeon> dungeons, SimulationContext simulationContext)
     {
-        _ = dungeons.SelectMany(d => d.DungeonEnemies).InitMirrorEnemy(simulationOptions);
+        _ = dungeons.SelectMany(d => d.DungeonEnemies).InitMirrorEnemy(simulationContext);
         return dungeons;
     }
 
-    internal static IEnumerable<DungeonEnemy> InitMirrorEnemy(this IEnumerable<DungeonEnemy> dungeonEnemies, SimulationContext simulationOptions)
+    internal static IEnumerable<DungeonEnemy> InitMirrorEnemy(this IEnumerable<DungeonEnemy> dungeonEnemies, SimulationContext simulationContext)
     {
         var mirrorEnemies = dungeonEnemies.Where(e => e.IsDefeated == false && e.Dungeon.Position is 9 or 109 && e.Position is 10);
         foreach (var mirrorEnemy in mirrorEnemies)
         {
-            mirrorEnemy.Class = simulationOptions.Class;
-            mirrorEnemy.Strength = simulationOptions.Strength;
-            mirrorEnemy.Dexterity = simulationOptions.Dexterity;
-            mirrorEnemy.Intelligence = simulationOptions.Intelligence;
-            mirrorEnemy.Constitution = simulationOptions.Constitution;
-            mirrorEnemy.Luck = simulationOptions.Luck;
-            if (simulationOptions.FirstWeapon is not null)
-                mirrorEnemy.FirstWeapon = EquipmentBuilder.ToRawWeapon(simulationOptions.FirstWeapon);
-            if (simulationOptions.SecondWeapon is not null)
-                mirrorEnemy.SecondWeapon = EquipmentBuilder.ToRawWeapon(simulationOptions.SecondWeapon);
-            mirrorEnemy.Armor = simulationOptions.Armor;
-            mirrorEnemy.Reaction = simulationOptions.Reaction;
-            mirrorEnemy.HealthRune = simulationOptions.HealthRune;
-            mirrorEnemy.LightningResistance = simulationOptions.LightningResistance;
-            mirrorEnemy.ColdResistance = simulationOptions.ColdResistance;
-            mirrorEnemy.FireResistance = simulationOptions.FireResistance;
-            mirrorEnemy.Health = simulationOptions.Health / (simulationOptions.Level + 1) * (mirrorEnemy.Level + 1);
+            mirrorEnemy.Class = simulationContext.Class;
+            mirrorEnemy.Strength = simulationContext.Strength;
+            mirrorEnemy.Dexterity = simulationContext.Dexterity;
+            mirrorEnemy.Intelligence = simulationContext.Intelligence;
+            mirrorEnemy.Constitution = simulationContext.Constitution;
+            mirrorEnemy.Luck = simulationContext.Luck;
+            if (simulationContext.FirstWeapon is not null)
+                mirrorEnemy.FirstWeapon = EquipmentBuilder.ToRawWeapon(simulationContext.FirstWeapon);
+            if (simulationContext.SecondWeapon is not null)
+                mirrorEnemy.SecondWeapon = EquipmentBuilder.ToRawWeapon(simulationContext.SecondWeapon);
+            mirrorEnemy.Armor = simulationContext.Armor;
+            mirrorEnemy.Reaction = simulationContext.Reaction;
+            mirrorEnemy.HealthRune = simulationContext.HealthRune;
+            mirrorEnemy.LightningResistance = simulationContext.LightningResistance;
+            mirrorEnemy.ColdResistance = simulationContext.ColdResistance;
+            mirrorEnemy.FireResistance = simulationContext.FireResistance;
+            mirrorEnemy.Health = simulationContext.Health / (simulationContext.Level + 1) * (mirrorEnemy.Level + 1);
         }
 
         return dungeonEnemies;
