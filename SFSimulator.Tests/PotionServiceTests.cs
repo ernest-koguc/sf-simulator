@@ -21,7 +21,7 @@ public class PotionServiceTests
     [TestMethod]
     public void GetPotions_gives_correct_main_attribute_potion(ClassType classType, PotionType expectedMainAttributePotion)
     {
-        var potionService = DependencyProvider.GetRequiredService<IPotionService>();
+        var potionService = DependencyProvider.Get<IPotionService>();
 
         var potions = potionService.GetPotions(classType);
 
@@ -31,7 +31,7 @@ public class PotionServiceTests
     [TestMethod]
     public void GetPotions_gives_no_more_than_3_potions()
     {
-        var potionService = DependencyProvider.GetRequiredService<IPotionService>();
+        var potionService = DependencyProvider.Get<IPotionService>();
 
         var potions = potionService.GetPotions(ClassType.Mage);
 
@@ -41,7 +41,7 @@ public class PotionServiceTests
     [TestMethod]
     public void GetPotions_gives_constitution_and_eternity_potions()
     {
-        var potionService = DependencyProvider.GetRequiredService<IPotionService>();
+        var potionService = DependencyProvider.Get<IPotionService>();
 
         var potions = potionService.GetPotions(ClassType.Mage);
 

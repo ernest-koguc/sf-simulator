@@ -3,20 +3,24 @@ using System.Diagnostics;
 
 namespace SFSimulator.Core;
 
-public class GameSimulator(IGameLogic gameLogic, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider,
+
+// Quite a lot of services huh?
+public class GameLoopService(IGameFormulasService gameLogic, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider,
     IWeeklyTasksRewardProvider weeklyTasksRewardProvider, IScheduler scheduler, CharacterDungeonProgressionService characterDungeonProgressionService,
     IExpeditionService expeditionService, BaseStatsIncreasingService baseStatsIncreasingService, ScrapbookService scrapbookService,
-    IPotionService potionService) : IGameSimulator
+    IPotionService potionService, IPortalService portalService, IGuildRaidService guildRaidService) : IGameLoopService
 {
     private readonly IThirstSimulator _thirstSimulator = thirstSimulator;
     private readonly IExpeditionService _expeditionService = expeditionService;
-    private readonly IGameLogic _gameLogic = gameLogic;
+    private readonly IGameFormulasService _gameLogic = gameLogic;
     private readonly ICalendarRewardProvider _calendarRewardProvider = calendarRewardProvider;
     private readonly IScheduler _scheduler = scheduler;
     private readonly CharacterDungeonProgressionService _characterDungeonProgressionService = characterDungeonProgressionService;
     private readonly IWeeklyTasksRewardProvider _weeklyTasksRewardProvider = weeklyTasksRewardProvider;
     private readonly ScrapbookService _scrapbookService = scrapbookService;
     private readonly IPotionService _potionService = potionService;
+    private readonly IPortalService _portalService = portalService;
+    private readonly IGuildRaidService _guildRaidService = guildRaidService;
     private readonly List<ItemType> CurrentItemTypesForWitch = [];
     private List<EventType> CurrentEvents { get; set; } = [];
     private ItemBackPack ItemBackPack { get; set; } = null!;
@@ -140,6 +144,8 @@ public class GameSimulator(IGameLogic gameLogic, IThirstSimulator thirstSimulato
 
         _scrapbookService.InitScrapbook(dungeons, simulationContext);
 
+        _portalService.SetUpPortalState(simulationContext);
+
         SimulatedDays = [];
     }
 
@@ -182,6 +188,9 @@ public class GameSimulator(IGameLogic gameLogic, IThirstSimulator thirstSimulato
 
         var calendarReward = _calendarRewardProvider.GetNextReward();
         GiveCalendarRewardToPlayer(calendarReward);
+
+        _portalService.Progress(CurrentDay, SimulationContext);
+        _guildRaidService.Progress(CurrentDay, SimulationContext);
     }
 
     private void DoDungeonProgression()

@@ -1,5 +1,5 @@
 ﻿namespace SFSimulator.Core;
-public class ScrapbookService
+public class ScrapbookService : IScrapbookService
 {
     private Dictionary<int, int> LevelItemsMap = new()
     {
@@ -40,7 +40,6 @@ public class ScrapbookService
         { 350, 22 },
     };
 
-    // TODO: We need to test this shit 
     public void InitScrapbook(IEnumerable<Dungeon> dungeons, SimulationContext simulationContext)
     {
         var temp = LevelItemsMap.Sum(d => d.Value);

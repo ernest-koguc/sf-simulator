@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 
-public interface IGameLogic
+public interface IGameFormulasService
 {
     QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus);
 
@@ -12,6 +12,7 @@ public interface IGameLogic
     long GetExperienceRewardFromCalendar(int characterLevel, int rewardSize);
     long GetXPFromGuildFight(int characterLevel, IEnumerable<EventType> events);
     long GetExperienceForDungeonEnemy(int level, DungeonEnemy dungeonEnemy);
+    long GetExperienceForPetDungeonEnemy(int characterLevel);
     long GetExperienceRewardFromArena(int characterLevel, bool experienceEvent);
     long GetWeeklyTasksExperience(int characterLevel, ExperienceBonus experienceBonus);
     #endregion

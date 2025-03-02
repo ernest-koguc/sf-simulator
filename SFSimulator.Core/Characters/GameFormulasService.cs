@@ -1,9 +1,9 @@
 ﻿namespace SFSimulator.Core;
 
-public class GameLogic : IGameLogic
+public class GameFormulasService : IGameFormulasService
 {
     private ICurves Curves { get; init; }
-    public GameLogic(ICurves curves)
+    public GameFormulasService(ICurves curves)
     {
         Curves = curves ?? throw new ArgumentNullException(nameof(curves));
     }
@@ -341,5 +341,15 @@ public class GameLogic : IGameLogic
             xp /= 10;
 
         return xp;
+    }
+
+    public long GetExperienceForPetDungeonEnemy(int characterLevel)
+    {
+        var xpBase = characterLevel >= 393 ? 1_500_000_000D : (double)Curves.ExperienceCurve[characterLevel];
+        var xpReducedBase = Math.Max(1, Math.Exp(30090.33 / 5000000 * (characterLevel - 99)));
+
+        var xp = 6 * xpBase / xpReducedBase / 30;
+
+        return (long)xp;
     }
 }

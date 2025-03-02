@@ -35,7 +35,7 @@ public partial class SimulatorPage
             ProgressText = "Current day: 1";
 
             StateHasChanged();
-            var service = webWorker.GetService<IGameSimulator>();
+            var service = webWorker.GetService<IGameLoopService>();
             SimulationResult = await service.Run(copy, simulationProgress =>
             {
                 ProgressValue = simulationProgress.Progress;

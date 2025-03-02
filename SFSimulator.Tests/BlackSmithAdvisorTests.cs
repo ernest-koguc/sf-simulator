@@ -8,7 +8,7 @@ namespace SFSimulator.Tests;
 [TestClass]
 public class BlackSmithAdvisorTests
 {
-    public IBlackSmithAdvisor BlackSmithAdvisor { get; set; } = DependencyProvider.GetRequiredService<IBlackSmithAdvisor>();
+    public IBlackSmithAdvisor BlackSmithAdvisor { get; set; } = DependencyProvider.Get<IBlackSmithAdvisor>();
 
     [TestMethod]
     [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 1126, 2253)]

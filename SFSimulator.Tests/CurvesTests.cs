@@ -10,7 +10,7 @@ namespace SFSimulator.Tests
 
         public CurvesTests()
         {
-            _curves = DependencyProvider.GetRequiredService<ICurves>();
+            _curves = DependencyProvider.Get<ICurves>();
         }
         [TestMethod]
         public void GoldCurve_has_correct_values()

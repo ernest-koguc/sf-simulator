@@ -8,7 +8,7 @@ namespace SFSimulator.Tests;
 public static class DependencyProvider
 {
     private static IServiceProvider Provider { get; set; } = GetProvider();
-    public static T GetRequiredService<T>() where T : notnull
+    public static T Get<T>() where T : notnull
     {
         using var scope = Provider.CreateScope();
         return scope.ServiceProvider.GetRequiredService<T>();

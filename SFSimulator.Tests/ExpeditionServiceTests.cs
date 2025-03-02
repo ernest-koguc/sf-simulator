@@ -7,7 +7,7 @@ namespace SFSimulator.Tests;
 [TestClass]
 public class ExpeditionServiceTests
 {
-    private IExpeditionService ExpeditionService { get; set; } = DependencyProvider.GetRequiredService<IExpeditionService>();
+    private IExpeditionService ExpeditionService { get; set; } = DependencyProvider.Get<IExpeditionService>();
 
     [TestMethod]
     public void ExpeditionService_GetDailyExpeditionGold_ReturnsCorrectGold()

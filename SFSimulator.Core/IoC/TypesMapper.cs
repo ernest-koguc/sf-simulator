@@ -4,11 +4,11 @@ public static class TypesMapper
 {
     public static IEnumerable<TypeMap> Types() =>
     [
-        new TypeMap(typeof(GameLogic), typeof(IGameLogic), TypeMapOption.None),
+        new TypeMap(typeof(GameFormulasService), typeof(IGameFormulasService), TypeMapOption.None),
 
         new TypeMap(typeof(ItemValueProvider), typeof(IItemValueProvider), TypeMapOption.None),
 
-        new TypeMap(typeof(GameSimulator), typeof(IGameSimulator), TypeMapOption.None),
+        new TypeMap(typeof(GameLoopService), typeof(IGameLoopService), TypeMapOption.None),
         new TypeMap(typeof(CalendarRewardProvider), typeof(ICalendarRewardProvider), TypeMapOption.None),
         new TypeMap(typeof(Scheduler), typeof(IScheduler), TypeMapOption.None),
 
@@ -40,7 +40,9 @@ public static class TypesMapper
         new TypeMap(typeof(GemTypeUsageProvider), typeof(GemTypeUsageProvider), TypeMapOption.None),
         new TypeMap(typeof(RuneValueProvider), typeof(RuneValueProvider), TypeMapOption.None),
         new TypeMap(typeof(BaseStatsIncreasingService), typeof(BaseStatsIncreasingService), TypeMapOption.None),
-        new TypeMap(typeof(ScrapbookService), typeof(ScrapbookService), TypeMapOption.None),
+        new TypeMap(typeof(ScrapbookService), typeof(IScrapbookService), TypeMapOption.None),
         new TypeMap(typeof(PotionService), typeof(IPotionService), TypeMapOption.None),
+        new TypeMap(typeof(PortalService), typeof(IPortalService), TypeMapOption.None),
+        new TypeMap(typeof(GuildRaidService), typeof(IGuildRaidService), TypeMapOption.None),
     ];
 }

@@ -15,8 +15,8 @@ public class ScrapbookServiceTests
     public void InitScrapbook_gives_correct_count(int level, double expectedFillness)
     {
         //TODO: Move to interface
-        var scrapbookService = DependencyProvider.GetRequiredService<ScrapbookService>();
-        var dungeonProvider = DependencyProvider.GetRequiredService<IDungeonProvider>();
+        var scrapbookService = DependencyProvider.Get<IScrapbookService>();
+        var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
         var simulationContext = new SimulationContext();
         simulationContext.Level = level;
         simulationContext.ExperienceBonus.ScrapbookFillness = 0;
@@ -30,8 +30,8 @@ public class ScrapbookServiceTests
     [TestMethod]
     public void InitScrapbook_gives_full_scrapbook_when_dungeons_are_finished()
     {
-        var scrapbookService = DependencyProvider.GetRequiredService<ScrapbookService>();
-        var dungeonProvider = DependencyProvider.GetRequiredService<IDungeonProvider>();
+        var scrapbookService = DependencyProvider.Get<IScrapbookService>();
+        var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
         var simulationContext = new SimulationContext();
         simulationContext.Level = 700;
         simulationContext.SoloPortal = 50;
