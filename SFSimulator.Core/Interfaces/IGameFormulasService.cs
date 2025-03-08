@@ -27,5 +27,8 @@ public interface IGameFormulasService
     decimal GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount);
     decimal GetDailyGoldFromGemMine(int characterLevel, int gemMineLevel, int workers = 15);
     decimal GetGoldRewardFromArena(int characterLevel, int count, bool arenaScroll);
+    decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
+    decimal GetExpeditionMidwayGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
+    decimal GetExpeditionFinalGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
     #endregion
 }

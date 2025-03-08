@@ -352,4 +352,73 @@ public class GameFormulasService : IGameFormulasService
 
         return (long)xp;
     }
+    public decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    {
+        var baseGold = Curves.GoldCurve[characterLevel];
+
+        if (isGoldEvent)
+        {
+            baseGold *= 5;
+        }
+
+        baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
+
+        var goldMultiplier = (1 + Math.Min(3, (goldBonus.GuildBonus / 100M) + (goldBonus.Tower / 100M) * 2) + goldBonus.RuneBonus / 100M) * (goldBonus.HasGoldScroll ? 1.1M : 1);
+        var goldWithBonuses = Math.Min(40_000_000, baseGold * goldMultiplier) * GetExpeditionMountBonus(mount);
+        goldWithBonuses += Math.Clamp(characterLevel - 557, 0, 75) * (50_000_000 * GetExpeditionMountBonus(mount) - goldWithBonuses) / 75;
+        var goldPerChest = goldWithBonuses / 5 * thirst / 25M;
+
+        return goldPerChest;
+    }
+
+    public decimal GetExpeditionMidwayGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    {
+        var baseGold = Curves.GoldCurve[characterLevel];
+
+        if (isGoldEvent)
+        {
+            baseGold *= 5;
+        }
+
+        baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
+
+        var goldMultiplier = (1 + Math.Min(3, (goldBonus.GuildBonus / 100M) + (goldBonus.Tower / 100M) * 2) + goldBonus.RuneBonus / 100M) * (goldBonus.HasGoldScroll ? 1.1M : 1);
+        var goldWithBonuses = Math.Min(40_000_000, baseGold * goldMultiplier) * GetExpeditionMountBonus(mount);
+        goldWithBonuses += Math.Clamp(characterLevel - 557, 0, 75) * (50_000_000 * GetExpeditionMountBonus(mount) - goldWithBonuses) / 75;
+        var goldFromMidMonster = goldWithBonuses / 10 * thirst / 25M;
+
+        return goldFromMidMonster;
+    }
+
+    public decimal GetExpeditionFinalGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    {
+        var baseGold = Curves.GoldCurve[characterLevel];
+
+        if (isGoldEvent)
+        {
+            baseGold *= 5;
+        }
+
+        baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
+
+        var goldMultiplier = (1 + Math.Min(3, (goldBonus.GuildBonus / 100M) + (goldBonus.Tower / 100M) * 2) + goldBonus.RuneBonus / 100M) * (goldBonus.HasGoldScroll ? 1.1M : 1);
+        var goldWithBonuses = Math.Min(40_000_000, baseGold * goldMultiplier) * GetExpeditionMountBonus(mount);
+        goldWithBonuses += Math.Clamp(characterLevel - 557, 0, 75) * (50_000_000 * GetExpeditionMountBonus(mount) - goldWithBonuses) / 75;
+        var goldFromFinalReward = goldWithBonuses * thirst / 25M;
+
+        return goldFromFinalReward;
+    }
+
+
+    private static decimal GetExpeditionMountBonus(MountType mount)
+    => mount switch
+    {
+        MountType.None => 1,
+        MountType.Pig => 1.11M,
+        MountType.Horse => 1.25M,
+        MountType.Tiger => 1.42M,
+        MountType.Griffin => 2,
+        _ => throw new ArgumentOutOfRangeException(nameof(mount))
+    };
+
 }

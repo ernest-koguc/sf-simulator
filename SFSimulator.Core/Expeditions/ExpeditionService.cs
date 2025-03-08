@@ -1,27 +1,61 @@
 namespace SFSimulator.Core;
 
-public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : IExpeditionService
+public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGameFormulasService gameFormulasService) : IExpeditionService
 {
     public ExpeditionOptions Options { get; set; } = new ExpeditionOptions(1.5M, 1.28M);
-    public decimal GetDailyExpeditionGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    private const decimal MidwayGoldChance = 0.85M;
+    private const decimal MidwayFruitBasketChance = 0.3M;
+    public double GetDailyExpeditionPetFood(int characterLevel, GoldBonus goldBonus, List<EventType> events, MountType mount, int thirst)
     {
-        var baseGold = curves.GoldCurve[characterLevel];
+        var midWayGoldReward = gameFormulasService.GetExpeditionMidwayGold(characterLevel, goldBonus, events.Contains(EventType.Gold), mount, thirst);
 
-        if (isGoldEvent)
+        // if the gold reward is less than 5 mln than it is better to pick the fruits instead of gold
+        var fruitMultiplier = midWayGoldReward < 5_000_000 ? MidwayFruitBasketChance : (1 - MidwayGoldChance) * MidwayFruitBasketChance;
+        int expeditions;
+        if (thirst > 100)
         {
-            baseGold *= 5;
+            expeditions = 4 + (int)Math.Ceiling((thirst - 100) / 20D);
+        }
+        else
+        {
+            expeditions = (int)Math.Ceiling(thirst / 25D);
         }
 
-        baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
+        var midWayBaskets = expeditions * fruitMultiplier;
+        var fruits = midWayBaskets * 5;
 
-        var goldMultiplier = (1 + Math.Min(3, (goldBonus.GuildBonus / 100M) + (goldBonus.Tower / 100M) * 2) + goldBonus.RuneBonus / 100M) * (goldBonus.HasGoldScroll ? 1.1M : 1);
-        var goldWithBonuses = Math.Min(40_000_000, baseGold * goldMultiplier) * GetMountBonus(mount);
-        goldWithBonuses += Math.Clamp(characterLevel - 557, 0, 75) * (50_000_000 * GetMountBonus(mount) - goldWithBonuses) / 75;
-        var goldFromFinalReward = goldWithBonuses;
-        var goldFromMidMonster = goldFromFinalReward / 10 * 0.85M;
-        var goldPerChest = goldFromFinalReward / 5;
+        if (events.Contains(EventType.Pets))
+        {
+            var finalMidWayBaskets = expeditions / 50;
+            if (mount == MountType.Griffin)
+            {
+                finalMidWayBaskets *= 2;
+            }
 
-        var totalGold = (goldFromFinalReward + goldFromMidMonster + goldPerChest * Options.AverageAmountOfChests) * thirst / 25M;
+            fruits += finalMidWayBaskets * 5;
+        }
+
+        return (double)fruits;
+    }
+
+    public decimal GetDailyExpeditionGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    {
+        var goldFromFinalReward = gameFormulasService.GetExpeditionFinalGold(characterLevel, goldBonus, isGoldEvent, mount, thirst);
+
+        var goldFromMidMonster = gameFormulasService.GetExpeditionMidwayGold(characterLevel, goldBonus, isGoldEvent, mount, thirst);
+        if (goldFromMidMonster < 5_000_000)
+        {
+            // If the gold is less than 5 mln than it is better to pick pet fruits so we reduce the gold by the chance of getting the fruit basket
+            goldFromMidMonster *= (1 - MidwayFruitBasketChance) * MidwayGoldChance;
+        }
+        else
+        {
+            goldFromMidMonster *= MidwayGoldChance;
+        }
+
+        var goldPerChest = gameFormulasService.GetExpeditionChestGold(characterLevel, goldBonus, isGoldEvent, mount, thirst);
+
+        var totalGold = (goldFromFinalReward + goldFromMidMonster + goldPerChest * Options.AverageAmountOfChests);
 
         return totalGold;
     }
@@ -32,7 +66,11 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator) : I
         baseExperience *= 15.18M;
         var xpWithMount = baseExperience * GetMountBonus(mount);
         var xpWithStarBonus = xpWithMount * Options.AverageStarExperienceBonus;
-        var xpMultiplier = experienceBonus.CombinedBonus;
+        var xpMultiplier = (1 + (experienceBonus.GuildBonus + experienceBonus.ScrapbookFillness + experienceBonus.RuneBonus) / 100M);
+        if (experienceBonus.HasExperienceScroll)
+        {
+            xpMultiplier *= 1.1M;
+        }
         var xp = xpWithStarBonus * xpMultiplier;
 
         if (isExperienceEvent)
