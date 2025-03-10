@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace SFSimulator.Core;
 
 public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider,
-        IDungeonSimulator dungeonSimulator, ItemReequiperService itemReequiper)
+        IDungeonSimulator dungeonSimulator, IItemReequiperService itemReequiper) : ICharacterDungeonProgressionService
 {
     public delegate void OnDungeonKill(DungeonSimulationResult result);
     public DungeonProgressionOptions Options { get; set; } = new DungeonProgressionOptions(0.01D, DefaultDungeonIterations);

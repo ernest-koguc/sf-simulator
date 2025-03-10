@@ -1,5 +1,5 @@
 ﻿namespace SFSimulator.Core;
-public class BaseStatsIncreasingService(ICurves curves)
+public class BaseStatsIncreasingService(ICurves curves) : IBaseStatsIncreasingService
 {
     public void IncreaseBaseStats(SimulationContext simulationContext)
     {

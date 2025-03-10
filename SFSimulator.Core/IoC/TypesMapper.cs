@@ -2,47 +2,42 @@
 
 public static class TypesMapper
 {
-    public static IEnumerable<TypeMap> Types() =>
+    public static IEnumerable<TypeMap> Types =>
     [
-        new TypeMap(typeof(GameFormulasService), typeof(IGameFormulasService), TypeMapOption.None),
-
-        new TypeMap(typeof(ItemValueProvider), typeof(IItemValueProvider), TypeMapOption.None),
-
-        new TypeMap(typeof(GameLoopService), typeof(IGameLoopService), TypeMapOption.None),
-        new TypeMap(typeof(CalendarRewardProvider), typeof(ICalendarRewardProvider), TypeMapOption.None),
-        new TypeMap(typeof(Scheduler), typeof(IScheduler), TypeMapOption.None),
-
-
-        new TypeMap(typeof(QuestHelper), typeof(IQuestHelper), TypeMapOption.None),
-        new TypeMap(typeof(QuestFactory), typeof(IQuestFactory), TypeMapOption.None),
-
-        new TypeMap(typeof(ThirstSimulator), typeof(IThirstSimulator), TypeMapOption.None),
-
-        new TypeMap(typeof(Curves), typeof(ICurves), TypeMapOption.None),
-        new TypeMap(typeof(Random), typeof(Random), TypeMapOption.None),
-
-        new TypeMap(typeof(ItemGenerator), typeof(IItemGenerator), TypeMapOption.None),
-
-        new TypeMap(typeof(DungeonSimulator), typeof(IDungeonSimulator), TypeMapOption.None),
-        new TypeMap(typeof(DungeonProvider), typeof(IDungeonProvider), TypeMapOption.None),
-        new TypeMap(typeof(FightableContextFactory), typeof(IFightableContextFactory), TypeMapOption.None),
-        new TypeMap(typeof(CritChanceProvider), typeof(ICritChanceProvider), TypeMapOption.None),
-        new TypeMap(typeof(DamageProvider), typeof(IDamageProvider), TypeMapOption.None),
-        new TypeMap(typeof(BonusMelodyLengthProvider), typeof(IBonusMelodyLengthProvider), TypeMapOption.None),
-        new TypeMap(typeof(WeeklyTasksRewardProvider), typeof(IWeeklyTasksRewardProvider), TypeMapOption.None),
-        new TypeMap(typeof(ExpeditionService), typeof(IExpeditionService), TypeMapOption.None),
-        new TypeMap(typeof(BlackSmithAdvisor), typeof(IBlackSmithAdvisor), TypeMapOption.None),
-        // TODO: Use/Extract the interfaces
-        new TypeMap(typeof(CharacterDungeonProgressionService), typeof(CharacterDungeonProgressionService), TypeMapOption.None),
-        new TypeMap(typeof(ItemReequiperService), typeof(ItemReequiperService), TypeMapOption.None),
-        new TypeMap(typeof(RuneQuantityProvider), typeof(RuneQuantityProvider), TypeMapOption.None),
-        new TypeMap(typeof(GuildKnightsProvider), typeof(GuildKnightsProvider), TypeMapOption.None),
-        new TypeMap(typeof(GemTypeUsageProvider), typeof(GemTypeUsageProvider), TypeMapOption.None),
-        new TypeMap(typeof(RuneValueProvider), typeof(RuneValueProvider), TypeMapOption.None),
-        new TypeMap(typeof(BaseStatsIncreasingService), typeof(BaseStatsIncreasingService), TypeMapOption.None),
-        new TypeMap(typeof(ScrapbookService), typeof(IScrapbookService), TypeMapOption.None),
-        new TypeMap(typeof(PotionService), typeof(IPotionService), TypeMapOption.None),
-        new TypeMap(typeof(PortalService), typeof(IPortalService), TypeMapOption.None),
-        new TypeMap(typeof(GuildRaidService), typeof(IGuildRaidService), TypeMapOption.None),
+        new (typeof(GameFormulasService), typeof(IGameFormulasService)),
+        new (typeof(ItemValueProvider), typeof(IItemValueProvider)),
+        new (typeof(GameLoopService), typeof(IGameLoopService)),
+        new (typeof(CalendarRewardProvider), typeof(ICalendarRewardProvider)),
+        new (typeof(Scheduler), typeof(IScheduler)),
+        new (typeof(QuestHelper), typeof(IQuestHelper)),
+        new (typeof(QuestFactory), typeof(IQuestFactory)),
+        new (typeof(ThirstSimulator), typeof(IThirstSimulator)),
+        new (typeof(Curves), typeof(ICurves)),
+        new (typeof(Random), typeof(Random)),
+        new (typeof(ItemGenerator), typeof(IItemGenerator)),
+        new (typeof(DungeonSimulator), typeof(IDungeonSimulator)),
+        new (typeof(DungeonProvider), typeof(IDungeonProvider)),
+        new (typeof(FightableContextFactory), typeof(IFightableContextFactory)),
+        new (typeof(CritChanceProvider), typeof(ICritChanceProvider)),
+        new (typeof(DamageProvider), typeof(IDamageProvider)),
+        new (typeof(BonusMelodyLengthProvider), typeof(IBonusMelodyLengthProvider)),
+        new (typeof(WeeklyTasksRewardProvider), typeof(IWeeklyTasksRewardProvider)),
+        new (typeof(ExpeditionService), typeof(IExpeditionService)),
+        new (typeof(BlackSmithAdvisor), typeof(IBlackSmithAdvisor)) ,
+        new (typeof(GuildKnightsProvider), typeof(IGuildKnightsProvider)),
+        new (typeof(BaseStatsIncreasingService), typeof(IBaseStatsIncreasingService)),
+        new (typeof(RuneQuantityProvider), typeof(IRuneQuantityProvider)),
+        new (typeof(RuneValueProvider), typeof(IRuneValueProvider)),
+        new (typeof(GemTypeUsageProvider), typeof(IGemTypeUsageProvider)),
+        new (typeof(CharacterDungeonProgressionService), typeof(ICharacterDungeonProgressionService)),
+        new (typeof(ItemReequiperService), typeof(IItemReequiperService)),
+        new (typeof(ScrapbookService), typeof(IScrapbookService)),
+        new (typeof(PotionService), typeof(IPotionService)),
+        new (typeof(PortalService), typeof(IPortalService)),
+        new (typeof(GuildRaidService), typeof(IGuildRaidService)),
+        new (typeof(PetFightableFactory), typeof(IPetFightableFactory)),
+        new (typeof(PetPathProvider), typeof(IPetPathProvider)),
+        new (typeof(PetProgressionService), typeof(IPetProgressionService)),
+        new (typeof(PetUnlockerService), typeof(IPetUnlockerService)),
     ];
 }

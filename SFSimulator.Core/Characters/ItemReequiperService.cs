@@ -1,7 +1,7 @@
 namespace SFSimulator.Core;
 
-public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, RuneValueProvider runeValueProvider,
-        GemTypeUsageProvider gemTypeUsageProvider, IBlackSmithAdvisor blackSmithAdvisor, GuildKnightsProvider guildKnightsProvider)
+public class ItemReequiperService(IRuneQuantityProvider runeQuantityProvider, IRuneValueProvider runeValueProvider,
+        IGemTypeUsageProvider gemTypeUsageProvider, IBlackSmithAdvisor blackSmithAdvisor, IGuildKnightsProvider guildKnightsProvider) : IItemReequiperService
 {
     public ReequipOptions Options { get; set; } = new(10, 1, 10, 1, 1.5D);
 
@@ -31,7 +31,6 @@ public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, Run
         var itemComparer = new ClassAwareItemComparer(classType);
         var runesQuantity = runeQuantityProvider.GetRunesQuantity(day);
         var itemQualityRune = runeValueProvider.GetRuneValue(RuneType.ItemQuality, runesQuantity);
-        var gemType = gemTypeUsageProvider.GetGemTypeToUse(day, classType, oldItems.Select(i => i.GemType));
         var knights = guildKnightsProvider.GetKnightsAmount(day);
         var isSecondWeaponSlot = false;
 
@@ -70,6 +69,7 @@ public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, Run
             };
             var runeValue = runeValueProvider.GetRuneValue(runeType, runesQuantity);
 
+            var gemType = gemTypeUsageProvider.GetGemTypeToUse(day, classType, newItems.Select(i => i.GemType));
             _ = itemBuilder.WithGem(gemType, simulationContext.GemMineLevel, knights).WithRune(runeType, runeValue);
             switch (itemType)
             {
@@ -88,7 +88,6 @@ public class ItemReequiperService(RuneQuantityProvider runeQuantityProvider, Run
                 case ItemType.Ring:
                 case ItemType.Amulet:
                 case ItemType.Shield:
-                case ItemType.PetFood:
                 default:
                     break;
             }
