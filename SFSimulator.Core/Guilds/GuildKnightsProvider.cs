@@ -2,7 +2,7 @@ namespace SFSimulator.Core;
 
 public class GuildKnightsProvider : IGuildKnightsProvider
 {
-    private DayKnightsQuantity[]? KnightsQuantity { get; set; }
+    private DayKnightsQuantity[] KnightsQuantity { get; set; } = GetDefaultKnightsQuantity();
 
     public void Setup(int currentKnights, ICollection<DayKnightsQuantity>? knightsQuantity = null)
     {
@@ -22,7 +22,7 @@ public class GuildKnightsProvider : IGuildKnightsProvider
         KnightsQuantity = quantitiesForCurrentKnights.ToArray();
     }
 
-    public int GetKnightsAmount(int day) => (KnightsQuantity ??= GetDefaultKnightsQuantity()).LastOrDefault((e) => e.Day <= day).Quantity;
+    public int GetKnightsAmount(int day) => KnightsQuantity.LastOrDefault((e) => e.Day <= day).Quantity;
 
     private static DayKnightsQuantity[] GetDefaultKnightsQuantity()
     {
