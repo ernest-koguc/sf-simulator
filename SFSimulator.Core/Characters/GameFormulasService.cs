@@ -324,17 +324,19 @@ public class GameFormulasService : IGameFormulasService
         };
     }
 
-    public long GetExperienceForDungeonEnemy(int characterLevel, DungeonEnemy dungeonEnemy)
+    public long GetExperienceForDungeonEnemy(DungeonEnemy dungeonEnemy)
     {
-        var level = characterLevel < dungeonEnemy.Level ? characterLevel : dungeonEnemy.Level;
+        if (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Tower)
+            return 0;
+
         long xp;
-        if (level >= 393)
+        if (dungeonEnemy.Level >= 393)
         {
             xp = 300_000_000;
         }
         else
         {
-            xp = Curves.ExperienceCurve[level] / 5;
+            xp = Curves.ExperienceCurve[dungeonEnemy.Level] / 5;
         }
 
         if (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Twister)
