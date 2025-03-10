@@ -49,7 +49,7 @@ public class ScrapbookService : IScrapbookService
             return;
         }
 
-        var initialPictures = (int)simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT;
+        var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
 
         var monsterPictures = dungeons
             .SelectMany(d => d.DungeonEnemies)
@@ -86,9 +86,9 @@ public class ScrapbookService : IScrapbookService
 
     public void UpdateScrapbook(SimulationContext simulationContext)
     {
-        var initialPictures = (int)simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT;
+        var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
         var picturesToAdd = LevelItemsMap.Where(x => x.Key <= simulationContext.Level).Sum(x => x.Value);
-        simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + picturesToAdd) / CoreShared.SCRAPBOOK_LIMIT);
+        simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(1, (decimal)(initialPictures + picturesToAdd) / CoreShared.SCRAPBOOK_LIMIT);
         LevelItemsMap = LevelItemsMap.Where(x => x.Key > simulationContext.Level).ToDictionary();
     }
     public void UpdateScrapbook(SimulationContext simulationContext, DungeonSimulationResult dungeonResult)
@@ -97,7 +97,7 @@ public class ScrapbookService : IScrapbookService
             && IsViablePictureDungeon(dungeonResult.DungeonEnemy)
             && IsNotMirrorDungeon(dungeonResult.DungeonEnemy))
         {
-            var initialPictures = (int)simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT;
+            var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
             simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + 1) / CoreShared.SCRAPBOOK_LIMIT);
         }
     }
