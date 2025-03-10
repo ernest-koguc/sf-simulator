@@ -354,6 +354,32 @@ public class GameFormulasService : IGameFormulasService
 
         return (long)xp;
     }
+
+    public double GetDailyPetFoodFromWheel(int characterLevel, List<EventType> events, SpinAmountType spinAmount)
+    {
+        if (characterLevel < 125)
+        {
+            return 0;
+        }
+
+        var isLuckyDay = events.Contains(EventType.LuckyDay);
+
+        var spins = 1;
+
+        if (isLuckyDay && spinAmount == SpinAmountType.Max)
+            spins = 40;
+        else if (spinAmount == SpinAmountType.Max)
+            spins = 20;
+
+        var foodChance = 0.1;
+
+        var food = spins * foodChance;
+        if (events.Contains(EventType.Pets))
+            food *= 3;
+
+        return food;
+    }
+
     public decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
     {
         var baseGold = Curves.GoldCurve[characterLevel];
@@ -422,5 +448,4 @@ public class GameFormulasService : IGameFormulasService
         MountType.Griffin => 2,
         _ => throw new ArgumentOutOfRangeException(nameof(mount))
     };
-
 }

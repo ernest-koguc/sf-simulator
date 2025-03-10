@@ -1,6 +1,6 @@
 namespace SFSimulator.Core;
 
-public enum PetUnlockType
+public enum PetUnlockStatusType
 {
     Locked,
     Unlocked,

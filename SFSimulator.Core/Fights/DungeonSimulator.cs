@@ -4,39 +4,67 @@ namespace SFSimulator.Core;
 
 public class DungeonSimulator : IDungeonSimulator
 {
-    private readonly IDungeonProvider _dungeonProvider;
-    private readonly IFightableContextFactory _dungeonableContextFactory;
-    private readonly IGameLogic _gameLogic;
+    private readonly IFightableContextFactory _fightableContextFactory;
+    private readonly IGameFormulasService _gameFormulasService;
     private readonly Random _random;
 
-    public DungeonSimulator(IDungeonProvider dungeonProvider, IFightableContextFactory dungeonableContextFactory, IGameLogic gameLogic, Random random)
+    public DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService, Random random)
     {
-        _dungeonProvider = dungeonProvider;
-        _dungeonableContextFactory = dungeonableContextFactory;
-        _gameLogic = gameLogic;
+        _fightableContextFactory = dungeonableContextFactory;
+        _gameFormulasService = gameFormulasService;
         _random = random;
     }
 
-    public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions, int iterations, int winThreshold) where T : IWeaponable where E : IWeaponable
+    public PetSimulationResult SimulatePetDungeon(PetFightable petDungeonEnemy, PetFightable playerPet, int simulationContextLevel, int iterations, int winThreshold)
     {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
+        var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
+        var playerPetContext = _fightableContextFactory.Create(playerPet, petDungeonEnemy);
+        var petDungeonContext = _fightableContextFactory.Create(petDungeonEnemy, playerPet);
+        lookupContext.Add((playerPetContext, petDungeonContext));
 
+        Console.WriteLine($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
+        var result = SimulateFight(lookupContext, iterations, winThreshold);
+
+        if (result.Succeeded)
+        {
+            var xp = _gameFormulasService.GetExperienceForPetDungeonEnemy(simulationContextLevel);
+            return new PetSimulationResult(result.WonFights, result.Succeeded, xp);
+        }
+        else
+        {
+            return PetSimulationResult.FailedResult(result.WonFights);
+        }
+    }
+
+    public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions, int iterations, int winThreshold)
+        where T : IWeaponable where E : IWeaponable
+    {
         var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
 
         if (dungeonEnemy.Dungeon.Type.WithCompanions())
         {
             foreach (var companion in companions)
             {
-                var context = _dungeonableContextFactory.Create(companion, dungeonEnemy);
-                var companionDungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, companion);
+                var context = _fightableContextFactory.Create(companion, dungeonEnemy);
+                var companionDungeonContext = _fightableContextFactory.Create(dungeonEnemy, companion);
                 lookupContext.Add((context, companionDungeonContext));
             }
         }
 
-        var characterContext = _dungeonableContextFactory.Create(character, dungeonEnemy);
-        var dungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, character);
+        var characterContext = _fightableContextFactory.Create(character, dungeonEnemy);
+        var dungeonContext = _fightableContextFactory.Create(dungeonEnemy, character);
         lookupContext.Add((characterContext, dungeonContext));
+
+        Console.WriteLine($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
+        var result = SimulateFight(lookupContext, iterations, winThreshold);
+
+        return CreateDungeonSimulationResult(result.WonFights, result.Succeeded, dungeonEnemy);
+    }
+
+    private FightSimulationResult SimulateFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext, int iterations, int winThreshold)
+    {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
 
         var wonFights = 0;
 
@@ -52,31 +80,21 @@ public class DungeonSimulator : IDungeonSimulator
         stopwatch.Stop();
 
         var winratio = wonFights / (float)iterations;
-        Console.WriteLine($"{winratio:P} WR, {wonFights} WF, {stopwatch.Elapsed.TotalMilliseconds} ms: ({dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name})");
 
-        return CreateResult(wonFights, winThreshold, character, dungeonEnemy);
+        Console.WriteLine($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
+
+        return new FightSimulationResult(wonFights, wonFights >= winThreshold);
     }
 
-    private DungeonSimulationResult CreateResult<T>(int wonFights, int winTreshold, IFightable<T> character, DungeonEnemy dungeonEnemy) where T : IWeaponable
+    private DungeonSimulationResult CreateDungeonSimulationResult(int wonFights, bool suceeded, DungeonEnemy dungeonEnemy)
     {
-        if (wonFights < winTreshold)
+        if (!suceeded)
             return DungeonSimulationResult.FailedResult(wonFights, dungeonEnemy);
 
-        var xp = _gameLogic.GetExperienceForDungeonEnemy(character.Level, dungeonEnemy);
-        if (Debugger.IsAttached)
-        {
-            Console.WriteLine($"Won fight against {dungeonEnemy.Name} for {xp} XP with {wonFights} won fights");
-        }
+        var xp = _gameFormulasService.GetExperienceForDungeonEnemy(dungeonEnemy);
 
-        var result = new DungeonSimulationResult
-        {
-            Succeeded = true,
-            Experience = xp,
-            WonFights = wonFights,
-            DungeonEnemy = dungeonEnemy,
-            // TODO: Add logic for gold calculations or possibly just skip it? Does it even matter?
-            Gold = 0
-        };
+        // TODO: Add logic for gold calculations or possibly just skip it? Does it even matter? Might matter a bit for the tower and twister
+        var result = new DungeonSimulationResult(true, xp, 0, wonFights, dungeonEnemy);
 
         return result;
     }
@@ -105,7 +123,7 @@ public class DungeonSimulator : IDungeonSimulator
 
     private bool PerformFight(IFightableContext charSide, IFightableContext dungeonSide)
     {
-        var charSideStarts = charSide.Reaction > dungeonSide.Reaction ? true : _random.NextDouble() >= 0.5D;
+        var charSideStarts = charSide.Reaction > dungeonSide.Reaction ? true : _random.NextDouble() < 0.5;
         var (attacker, defender) = charSideStarts ? (charSide, dungeonSide) : (dungeonSide, charSide);
 
         var round = 0;

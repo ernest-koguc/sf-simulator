@@ -33,18 +33,27 @@ public partial class SimulatorPage
         {
             IsSimulating = true;
             ProgressText = "Current day: 1";
-
+            SimulationResult = null;
             StateHasChanged();
-            var service = webWorker.GetService<IGameLoopService>();
-            SimulationResult = await service.Run(copy, simulationProgress =>
+            try
             {
-                ProgressValue = simulationProgress.Progress;
-                ProgressText = $"Current day: {simulationProgress.CurrentDay}";
-                StateHasChanged();
-            });
+                var service = webWorker.GetService<IGameLoopService>();
+                SimulationResult = await service.Run(copy, simulationProgress =>
+                {
+                    ProgressValue = simulationProgress.Progress;
+                    ProgressText = $"Current day: {simulationProgress.CurrentDay}";
+                    StateHasChanged();
+                });
+                Console.WriteLine(SimulationResult?.AfterSimulation.BaseStat);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
             IsSimulating = false;
             ProgressValue = 0;
             ProgressText = string.Empty;
+            StateHasChanged();
         }
     }
 }

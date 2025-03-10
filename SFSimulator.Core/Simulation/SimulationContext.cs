@@ -1,4 +1,6 @@
-﻿namespace SFSimulator.Core;
+﻿using System.Text.Json;
+
+namespace SFSimulator.Core;
 
 public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable, ITotalStatsCalculatable
 {
@@ -6,7 +8,6 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public int? SwitchLevel { get; set; } = null;
     public GoldBonus GoldBonus { get; set; } = new();
     public ExperienceBonus ExperienceBonus { get; set; } = new();
-    public bool DrinkBeerOneByOne { get; set; } = true;
     public int DailyThirst { get; set; } = 320;
     public bool SkipCalendar { get; set; } = true;
     public SpinAmountType SpinAmount { get; set; } = SpinAmountType.Max;
@@ -161,6 +162,11 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
                 default: throw new ArgumentOutOfRangeException($"{attribute} is not a supported attribute");
             }
         }
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
     }
 }
 

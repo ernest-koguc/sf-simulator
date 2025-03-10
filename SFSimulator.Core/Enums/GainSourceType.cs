@@ -34,6 +34,8 @@ public enum GainSource
     WeeklyTasks = 13,
     [Display(Name = "Dungeon")]
     Dungeon = 14,
+    [Display(Name = "Pets")]
+    Pets = 15,
     [Display(Name = "Total")]
-    Total = 15
+    Total = 1000
 }

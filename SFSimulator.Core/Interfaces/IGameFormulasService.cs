@@ -3,6 +3,7 @@
 public interface IGameFormulasService
 {
     QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus);
+    public double GetDailyPetFoodFromWheel(int characterLevel, List<EventType> events, SpinAmountType spinAmount);
 
     #region Experience
     long GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool experienceEvent);
@@ -11,7 +12,7 @@ public interface IGameFormulasService
     long GetDailyExperienceFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount);
     long GetExperienceRewardFromCalendar(int characterLevel, int rewardSize);
     long GetXPFromGuildFight(int characterLevel, IEnumerable<EventType> events);
-    long GetExperienceForDungeonEnemy(int level, DungeonEnemy dungeonEnemy);
+    long GetExperienceForDungeonEnemy(DungeonEnemy dungeonEnemy);
     long GetExperienceForPetDungeonEnemy(int characterLevel);
     long GetExperienceRewardFromArena(int characterLevel, bool experienceEvent);
     long GetWeeklyTasksExperience(int characterLevel, ExperienceBonus experienceBonus);

@@ -21,7 +21,4 @@ public class ItemGenerator : IItemGenerator
 
         return item;
     }
-
-    public Item GeneratePetFoodItem()
-        => new() { ItemType = ItemType.PetFood, GoldValue = 0 };
 }

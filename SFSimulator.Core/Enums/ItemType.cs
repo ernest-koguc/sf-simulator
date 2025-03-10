@@ -13,5 +13,4 @@ public enum ItemType
     Amulet = 8,
     Ring = 9,
     Trinket = 10,
-    PetFood = 11,
 }

@@ -4,129 +4,117 @@ namespace SFSimulator.Core;
 
 public class PetsState
 {
-    public Pet[] Shadow { get; init; } = default!;
-    public Pet[] Light { get; init; } = default!;
-    public Pet[] Earth { get; init; } = default!;
-    public Pet[] Fire { get; init; } = default!;
-    public Pet[] Water { get; init; } = default!;
+    public List<Pet> AllPets => Elements.Values.SelectMany(p => p).ToList();
+    public Dictionary<PetElementType, Pet[]> Elements { get; set; } = new();
+    public Dictionary<PetElementType, double> Food { get; set; } = new()
+    {
+        {PetElementType.Shadow, 0},
+        {PetElementType.Light, 0},
+        {PetElementType.Earth, 0},
+        {PetElementType.Fire, 0},
+        {PetElementType.Water, 0}
+    };
 
     public PetsState()
     {
-        Shadow = Enumerable.Range(1, 20)
-            .Select(i => new Pet
+        foreach (var element in Enum.GetValues<PetElementType>())
+        {
+            Elements.Add(element, Enumerable.Range(1, 20).Select(i => new Pet
             {
                 Level = 0,
                 Position = i,
-                LockType = PetUnlockType.Locked,
-                ElementType = PetElementType.Shadow
-            })
-            .ToArray();
-        Light = Enumerable.Range(1, 20)
-            .Select(i => new Pet
-            {
-                Level = 0,
-                Position = i,
-                LockType = PetUnlockType.Locked,
-                ElementType = PetElementType.Light
-            })
-            .ToArray();
-        Earth = Enumerable.Range(1, 20)
-            .Select(i => new Pet
-            {
-                Level = 0,
-                Position = i,
-                LockType = PetUnlockType.Locked,
-                ElementType = PetElementType.Earth
-            })
-            .ToArray();
-        Fire = Enumerable.Range(1, 20)
-            .Select(i => new Pet
-            {
-                Level = 0,
-                Position = i,
-                LockType = PetUnlockType.Locked,
-                ElementType = PetElementType.Fire
-            })
-            .ToArray();
-        Water = Enumerable.Range(1, 20)
-            .Select(i => new Pet
-            {
-                Level = 0,
-                Position = i,
-                LockType = PetUnlockType.Locked,
-                ElementType = PetElementType.Water
-            })
-            .ToArray();
+                ElementType = element,
+                IsDefeated = false,
+                IsObtained = false,
+                CanBeObtained = i <= 3
+            }).ToArray());
+        }
     }
 
     public PetsState(SFToolsPets pets)
     {
-        Shadow = pets.ShadowLevels
+        Elements.Add(PetElementType.Shadow, pets.ShadowLevels
             .Select((level, index) =>
                     new Pet
                     {
                         Level = level,
                         Position = index + 1,
-                        LockType = level > 0 ? PetUnlockType.Obtained : pets.Dungeons[0] >= index + 1 ? PetUnlockType.Unlocked : PetUnlockType.Locked,
-                        ElementType = PetElementType.Shadow
+                        ElementType = PetElementType.Shadow,
+                        IsDefeated = pets.Dungeons[0] >= index + 1,
+                        IsObtained = level > 0,
+                        CanBeObtained = index + 1 <= 3
                     })
-            .ToArray();
-        Light = pets.LightLevels
+            .ToArray());
+        Elements.Add(PetElementType.Light, pets.LightLevels
             .Select((level, index) =>
                     new Pet
                     {
                         Level = level,
                         Position = index + 1,
-                        LockType = level > 0 ? PetUnlockType.Obtained : pets.Dungeons[1] >= index + 1 ? PetUnlockType.Unlocked : PetUnlockType.Locked,
-                        ElementType = PetElementType.Light
+                        ElementType = PetElementType.Light,
+                        IsDefeated = pets.Dungeons[1] >= index + 1,
+                        IsObtained = level > 0,
+                        CanBeObtained = index + 1 <= 3
                     })
-            .ToArray();
-        Earth = pets.EarthLevels
+            .ToArray());
+        Elements.Add(PetElementType.Earth, pets.EarthLevels
             .Select((level, index) =>
                     new Pet
                     {
                         Level = level,
                         Position = index + 1,
-                        LockType = level > 0 ? PetUnlockType.Obtained : pets.Dungeons[2] >= index + 1 ? PetUnlockType.Unlocked : PetUnlockType.Locked,
-                        ElementType = PetElementType.Earth
+                        ElementType = PetElementType.Earth,
+                        IsDefeated = pets.Dungeons[2] >= index + 1,
+                        IsObtained = level > 0,
+                        CanBeObtained = index + 1 <= 3
                     })
-            .ToArray();
-        Fire = pets.FireLevels
+            .ToArray());
+        Elements.Add(PetElementType.Fire, pets.FireLevels
             .Select((level, index) =>
                     new Pet
                     {
                         Level = level,
                         Position = index + 1,
-                        LockType = level > 0 ? PetUnlockType.Obtained : pets.Dungeons[3] >= index + 1 ? PetUnlockType.Unlocked : PetUnlockType.Locked,
-                        ElementType = PetElementType.Fire
+                        ElementType = PetElementType.Fire,
+                        IsDefeated = pets.Dungeons[3] >= index + 1,
+                        IsObtained = level > 0,
+                        CanBeObtained = index + 1 <= 3
                     })
-            .ToArray();
-        Water = pets.WaterLevels
+            .ToArray());
+        Elements.Add(PetElementType.Water, pets.WaterLevels
             .Select((level, index) =>
                     new Pet
                     {
                         Level = level,
                         Position = index + 1,
-                        LockType = level > 0 ? PetUnlockType.Obtained : pets.Dungeons[4] >= index + 1 ? PetUnlockType.Unlocked : PetUnlockType.Locked,
-                        ElementType = PetElementType.Water
+                        ElementType = PetElementType.Water,
+                        IsDefeated = pets.Dungeons[4] >= index + 1,
+                        IsObtained = level > 0,
+                        CanBeObtained = index + 1 <= 3
                     })
-            .ToArray();
+            .ToArray());
+
+        Food[PetElementType.Shadow] = pets.ShadowFood;
+        Food[PetElementType.Light] = pets.LightFood;
+        Food[PetElementType.Earth] = pets.EarthFood;
+        Food[PetElementType.Fire] = pets.FireFood;
+        Food[PetElementType.Water] = pets.WaterFood;
     }
 
     public double GetPetBonusFor(AttributeType attributeType)
     {
-        var elementToLookup = attributeType switch
+        var element = attributeType switch
         {
-            AttributeType.Strength => Water,
-            AttributeType.Dexterity => Light,
-            AttributeType.Intelligence => Earth,
-            AttributeType.Constitution => Shadow,
-            AttributeType.Luck => Fire,
+            AttributeType.Strength => PetElementType.Water,
+            AttributeType.Dexterity => PetElementType.Light,
+            AttributeType.Intelligence => PetElementType.Earth,
+            AttributeType.Constitution => PetElementType.Shadow,
+            AttributeType.Luck => PetElementType.Fire,
             _ => throw new InvalidEnumArgumentException(nameof(attributeType))
         };
 
-        var bonusFromObtainedPets = elementToLookup.Count(p => p.LockType == PetUnlockType.Obtained);
-        var bonusFromPetsLevel = elementToLookup.Where(p => p.LockType == PetUnlockType.Obtained && p.Level >= 100).Sum(p => p.Level / 50D * 0.25D);
+        var bonusFromObtainedPets = Elements[element].Count(p => p.IsObtained);
+        var bonusFromPetsLevel = Elements[element].Where(p => p.Level >= 100).Sum(p => p.Level / 50D * 0.25D);
         var totalBonus = 1 + ((bonusFromObtainedPets + Math.Floor(bonusFromPetsLevel)) / 100);
 
         return totalBonus;

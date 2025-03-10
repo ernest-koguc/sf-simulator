@@ -10,7 +10,7 @@ public class GuildRaidService : IGuildRaidService
             throw new ArgumentException("Insufficeint amount of guild raid levels", nameof(guildRaidRequirements));
         }
 
-        var guildRaid = (int)simulationContext.GuildRaids;
+        var guildRaid = simulationContext.GuildRaids;
         GuildRaidRequirements = GuildRaidRequirements
             .SkipWhile(e => e.GuildRaidLevel < guildRaid)
             .Iterate((prev, next) => next with { MinimumDays = next.MinimumDays - prev.MinimumDays })
@@ -19,8 +19,9 @@ public class GuildRaidService : IGuildRaidService
 
     public void Progress(int currentDay, SimulationContext simulationContext)
     {
-        var guildRaids = (int)simulationContext.GuildRaids + 1;
-        var newGuildRaidLvel = GuildRaidRequirements.FirstOrDefault(r => r.GuildRaidLevel == guildRaids && r.MinimumDays <= currentDay && r.MinimumLevel <= simulationContext.Level);
+        var guildRaids = simulationContext.GuildRaids + 1;
+        var newGuildRaidLvel = GuildRaidRequirements
+            .FirstOrDefault(r => r.GuildRaidLevel == guildRaids && r.MinimumDays <= currentDay && r.MinimumLevel <= simulationContext.Level);
         if (newGuildRaidLvel != default)
         {
             simulationContext.GuildRaids = newGuildRaidLvel.GuildRaidLevel;
