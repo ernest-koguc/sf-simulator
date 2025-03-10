@@ -18,24 +18,21 @@ public class GemTypeUsageProvider : IGemTypeUsageProvider
 
     public GemType GetGemTypeToUse(int day, ClassType classType, IEnumerable<GemType> currentGems)
     {
-        var dayGemType = DayGemTypes.First(d => d.Day <= day);
+        var dayGemType = DayGemTypes.FirstOrDefault(d => d.Day <= day);
 
         if (dayGemType == default)
-            return GetCoinMainGemType(classType, currentGems);
+            return GetConMainGemType(classType, currentGems);
 
-        if (dayGemType.Day >= day)
-            return dayGemType.GemType;
-
-        return GetCoinMainGemType(classType, currentGems);
+        return dayGemType.GemType;
     }
 
-    private GemType GetCoinMainGemType(ClassType classType, IEnumerable<GemType> currentGems)
+    private GemType GetConMainGemType(ClassType classType, IEnumerable<GemType> currentGems)
     {
         var mainGemType = GetMainGemType(classType);
         if (currentGems.Count(g => g == mainGemType) > currentGems.Count(g => g == GemType.Constitution))
-            return mainGemType;
+            return GemType.Constitution;
 
-        return GemType.Constitution;
+        return mainGemType;
     }
 
     private GemType GetMainGemType(ClassType classType)
@@ -53,11 +50,9 @@ public class GemTypeUsageProvider : IGemTypeUsageProvider
     {
         return
         [
-            new(1, GemType.Black),
             new(45, GemType.Legendary),
         ];
     }
-
 }
 
 public readonly record struct DayGemType(int Day, GemType GemType);
