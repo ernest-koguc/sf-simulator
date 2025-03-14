@@ -43,11 +43,4 @@
         if (event.origin.indexOf('sftools.mar21.eu') != -1)
             DotNet.invokeMethodAsync('SFSimulator.Frontend', 'PostSfToolsMessage', event.data)
     });
-    window.getDimensions = function() {
-        return {
-                width: window.innerWidth,
-                height: window.innerHeight
-            };
-    };
-
 </script>
