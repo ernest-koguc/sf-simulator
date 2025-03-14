@@ -1,5 +1,4 @@
-﻿using Magic.IndexedDb;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 using SFSimulator.Core;
 
@@ -10,11 +9,7 @@ public partial class SimulationResultView
     [Parameter, EditorRequired]
     public required SimulationResult Result { get; set; }
     [Inject]
-    public IMagicDbFactory DbFactory { get; set; } = default!;
-    [Inject]
     public NotificationService NotificationService { get; set; } = default!;
-    [Inject]
-    public BrowserService BrowserService { get; set; } = default!;
     private int ChosenDay { get; set; }
     private List<ChartRecord> TotalExperienceGains { get; set; } = default!;
     private List<ChartRecord> AverageExperienceGains { get; set; } = default!;
@@ -33,13 +28,13 @@ public partial class SimulationResultView
 
     private async Task SaveResult()
     {
-        var db = await DbFactory.GetDbManager(Constants.DatabaseName);
-        await db.Add(new SavedResultEntity
-        {
-            Saved = DateTime.Now,
-            Result = Result.Copy()
-        });
-        NotificationService.Success("Simulation result saved successfully");
+        //var db = await DbFactory.GetDbManager(Constants.DatabaseName);
+        //await db.Add(new SavedResultEntity
+        //{
+        //    Saved = DateTime.Now,
+        //    Result = Result.Copy()
+        //});
+        NotificationService.Error("Saving result not implemented yet.");
     }
 
     protected override void OnParametersSet()
