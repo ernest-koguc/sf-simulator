@@ -11,7 +11,8 @@ public partial class SavedResultsPage
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        var db = await DbFactory.GetDbManager(Constants.DatabaseName);
-        var records = await db.GetAll<SavedResultEntity>();
+
+        //var db = await DbFactory.GetDbManagerAsync(Constants.DatabaseName);
+        //var records = await db.GetAll<SavedResultEntity>();
     }
 }

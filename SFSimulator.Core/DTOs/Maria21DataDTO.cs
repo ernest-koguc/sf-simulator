@@ -8,7 +8,7 @@ public class Maria21DataDTO
     public ClassType Class { get; set; }
     public int XP { get; set; }
     public int Level { get; set; }
-    public int Mount { get; set; }
+    public MountType Mount { get; set; }
     public int Book { get; set; }
     public int CalendarDay { get; set; }
     public int CalendarType { get; set; }
@@ -27,7 +27,7 @@ public class Maria21DataDTO
     public int Armor { get; set; }
     public Slots Items { get; set; } = null!;
     public GroupData Group { get; set; } = null!;
-    public SFCompanions Companions { get; set; } = null!;
+    public SFCompanions? Companions { get; set; } = null!;
     public SFToolsPets Pets { get; set; } = null!;
 }
 
@@ -112,7 +112,7 @@ public class Slots
 
 public class GroupData
 {
-    public InnerGroupData Group { get; set; } = null!;
+    public InnerGroupData? Group { get; set; } = null!;
 }
 
 public class InnerGroupData
