@@ -8,24 +8,27 @@ public class SimulatorMappingProfile : Profile
 {
     public SimulatorMappingProfile()
     {
-        _ = CreateMap<Maria21DataDTO, ExperienceBonus>()
+        CreateMap<Maria21DataDTO, ExperienceBonus>()
             .ForMember(d => d.ScrapbookFillness, m => m.MapFrom(s => Math.Round(s.Book / (decimal)CoreShared.SCRAPBOOK_LIMIT * 100, 2)))
             .ForMember(d => d.GuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.XP)))
             .ForMember(d => d.RuneBonus, m => m.MapFrom(s => GetQuestRuneBonus(s, BonusType.XP)))
             .ForMember(d => d.HasExperienceScroll, m => m.MapFrom(s => s.Items.Head.Enchantment == WitchScrollType.QuestExperience || s.Inventory.Dummy.Head.Enchantment == WitchScrollType.QuestExperience))
+            .ForMember(d => d.ScrapbookPlusGuildPlusRuneBonus, m => m.Ignore())
+            .ForMember(d => d.CombinedBonus, m => m.Ignore())
             ;
 
-        _ = CreateMap<Maria21DataDTO, GoldBonus>()
+        CreateMap<Maria21DataDTO, GoldBonus>()
             .ForMember(d => d.Tower, m => m.MapFrom(s => Math.Max(s.Dungeons.Tower, 0)))
             .ForMember(d => d.GuildBonus, m => m.MapFrom(s => GetGuildBonus(s, BonusType.GOLD)))
             .ForMember(d => d.RuneBonus, m => m.MapFrom(s => GetQuestRuneBonus(s, BonusType.GOLD)))
             .ForMember(d => d.HasGoldScroll, m => m.MapFrom(s => s.Items.Ring.Enchantment == WitchScrollType.QuestGold || s.Inventory.Dummy.Ring.Enchantment == WitchScrollType.QuestGold))
             .ForMember(d => d.HasArenaGoldScroll, m => m.MapFrom(s => s.Items.Misc.Enchantment == WitchScrollType.ArenaGold || s.Inventory.Dummy.Misc.Enchantment == WitchScrollType.ArenaGold))
+            .ForMember(d => d.TowerPlusGuildBonus, m => m.Ignore())
             ;
 
-        _ = CreateMap<Maria21DataDTO, SimulationContext>()
-            .ForMember(d => d.ExperienceBonus, m => m.MapFrom(s => s))
+        CreateMap<Maria21DataDTO, SimulationContext>()
             .ForMember(d => d.GoldBonus, m => m.MapFrom(s => s))
+            .ForMember(d => d.ExperienceBonus, m => m.MapFrom(s => s))
             .ForMember(d => d.Level, m => m.MapFrom(s => s.Level))
             .ForMember(d => d.Experience, m => m.MapFrom(s => s.XP))
             .ForMember(d => d.GoldPitLevel, m => m.MapFrom(s => s.Underworld.GoldPit))
@@ -65,14 +68,16 @@ public class SimulatorMappingProfile : Profile
             })
             ;
 
-        _ = CreateMap<SFToolsCompanion, Companion>()
+        CreateMap<SFToolsCompanion, Companion>()
             .ForMember(d => d.Class, m => m.MapFrom(s => s.Class))
             .ForMember(d => d.Items, m => m.MapFrom(s => MapItems(s.Class, s.Items)))
             ;
 
-        _ = CreateMap<SFToolsItem, RawWeapon>()
+        CreateMap<SFToolsItem, RawWeapon>()
             .ForMember(d => d.MinDmg, m => m.MapFrom(s => s.DamageMin))
             .ForMember(d => d.MaxDmg, m => m.MapFrom(s => s.DamageMax))
             ;
+
+        this.DisableConstructorMapping();
     }
 }

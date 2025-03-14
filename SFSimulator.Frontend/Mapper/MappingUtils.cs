@@ -117,7 +117,7 @@ public static class MappingUtils
         if (dto.Group.Group is null)
             return 0;
 
-        var raid = dto.Group.Group.Raid * 2;
+        var raid = Math.Min(100, dto.Group.Group.Raid * 2);
         var guild = type == BonusType.GOLD ? dto.Group.Group.TotalTreasure : dto.Group.Group.TotalInstructor;
         return Math.Min(200, raid + guild);
     }
