@@ -94,6 +94,8 @@ public class DungeonSimulator : IDungeonSimulator
         var xp = _gameFormulasService.GetExperienceForDungeonEnemy(dungeonEnemy);
 
         // TODO: Add logic for gold calculations or possibly just skip it? Does it even matter? Might matter a bit for the tower and twister
+        // remeber about items as well - Even number is normal item, 5th and 10th are epics, otherwise gold (twister/sandstorm 50th is epic item).
+        // for tower shadow world and loop of idols it is epic without gold value guaranteed.
         var result = new DungeonSimulationResult(true, xp, 0, wonFights, dungeonEnemy);
 
         return result;

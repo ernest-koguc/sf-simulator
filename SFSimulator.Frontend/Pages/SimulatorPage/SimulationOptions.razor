@@ -1,6 +1,5 @@
-﻿<RadzenCard class="rz-w-fit-content rz-p-0" Style="max-width: 100%;">
-    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="rz-background-color-base-900" 
-    Style="padding: 0.5rem 1rem; border-radius: var(--rz-card-border-radius);">
+﻿<RadzenCard class="rz-w-fit-content rz-p-0 bg-card" Style="max-width: 100%;">
+    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" Style="padding: 0.5rem 1rem; border-radius: var(--rz-card-border-radius);">
         <RadzenText TextStyle="TextStyle.H5" Text="Simulator" Style="align-self: center; margin-bottom: 0;"/>
         <div>
             <RadzenButton Variant="Variant.Text" ButtonStyle="ButtonStyle.Base" Click="OpenEndpoint"><SfIcon Icon="Endpoint"/><span class="rz-ms-2">Endpoint</span></RadzenButton>
@@ -15,14 +14,14 @@
                         @* TODO: Adjust the validation *@
                         <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Dark" Text="Simulate"/>
                         <RadzenText>until</RadzenText>
-                        <Numeric Min="1" Name="Until" @bind-Value="@Options.FinishCondition.Until"/>
-                        <DropDown Name="FinishCondition" @bind-Value="@Options.FinishCondition.FinishWhen"/>
+                        <Numeric Variant="Variant.Outlined" Min="1" Name="Until" @bind-Value="@Options.FinishCondition.Until"/>
+                        <DropDown Variant="Variant.Outlined" Name="FinishCondition" @bind-Value="@Options.FinishCondition.FinishWhen"/>
                         <RadzenText>reached</RadzenText>
                     </RadzenRow>
                 </RadzenStack>
-                <RadzenTabs TabPosition="TabPosition.Top" RenderMode="TabRenderMode.Client">
-                    <Tabs>
-                        <RadzenTabsItem>
+                <RadzenAccordion Multiple="true">
+                    <Items>
+                        <RadzenAccordionItem>
                             <Template>
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <SfIcon Icon="Character"/>
@@ -33,7 +32,7 @@
                             </Template>
                             <ChildContent>
                                 <RadzenRow>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex rz-justify-content-center">
+                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
                                             <Numeric Icon="Level" Name="Level" Label="Level" Min="1" Max="800" @bind-Value="@Options.Level" Validator="() => ValidateField(o => o.Level)"/>
                                             <Numeric Icon="XP" Name="Experience" Label="Experience" Min="0" Max="1_500_000_000" @bind-Value="@Options.Experience"/>
@@ -42,7 +41,7 @@
                                             <Numeric Icon="Hydra" Name="Hydra" Label="Hydra" Min="0" Max="20" @bind-Value="@Options.HydraHeads"/>
                                         </div>
                                     </RadzenColumn>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex rz-justify-content-center">
+                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
                                             <Numeric Icon="BaseStat" Name="BaseStats" Label="Base Stats" Min="0" Max="2_000_000" @bind-Value="@Options.BaseStat"/>
                                             <DropDown Icon="Mount" Name="Mount" Label="Mount" @bind-Value="@Options.Mount" />
@@ -52,8 +51,8 @@
                                     </RadzenColumn>
                                 </RadzenRow>
                             </ChildContent>
-                        </RadzenTabsItem>
-                        <RadzenTabsItem>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
                             <Template>
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <SfIcon Icon="Bonuses"/>
@@ -64,7 +63,7 @@
                             </Template>
                             <ChildContent>
                                 <RadzenRow>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex rz-justify-content-center">
+                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
                                             <Numeric Icon="Scrapbook" Name="Scrapbook" Label="Scrapbook" Min="0" Max="100" @bind-Value="@Options.ExperienceBonus.ScrapbookFillness"/>
                                             <Numeric Icon="Instructor" Name="Instructor" Label="Instructor" Min="0" Max="200" @bind-Value="@Options.ExperienceBonus.GuildBonus"/>
@@ -72,7 +71,7 @@
                                             <CheckBox Name="ExperienceScroll" Label="Experience Scroll" @bind-Value="@Options.ExperienceBonus.HasExperienceScroll"/>
                                         </div>
                                     </RadzenColumn>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex rz-justify-content-center">
+                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
                                             <Numeric Icon="Tower" Name="Tower" Label="Tower" Min="0" Max="100" @bind-Value="@Options.GoldBonus.Tower"/>
                                             <Numeric Icon="Treasure" Name="Treasure" Label="Treasure" Min="0" Max="200" @bind-Value="@Options.GoldBonus.GuildBonus"/>
@@ -83,8 +82,8 @@
                                     </RadzenColumn>
                                 </RadzenRow>
                             </ChildContent>
-                        </RadzenTabsItem>
-                        <RadzenTabsItem>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
                             <Template>
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <SfIcon Icon="Playstyle"/>
@@ -95,7 +94,7 @@
                             </Template>
                             <ChildContent>
                                 <RadzenRow>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex rz-justify-content-center">
+                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
                                             <Numeric Icon="Thirst" Name="DailyThirst" Label="Daily Thirst" Min="0" Max="320" @bind-Value="@Options.DailyThirst"/>
                                             <Numeric Icon="ExpeditionChest" Name="AvgAmountOfChests" Label="Avg Amount of Chests" 
@@ -110,7 +109,7 @@
 
                                         </div>
                                     </RadzenColumn>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex rz-justify-content-center">
+                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
                                             <CheckBox Name="SwitchPriority" Label="Switch Priority" @bind-Value="@Options.SwitchPriority"/>
                                             @* TODO Validate it is above or equal current character level *@
@@ -125,12 +124,13 @@
                                             <CheckBox Name="SkipCalendar" Label="Skip Calendar" @bind-Value="@Options.SkipCalendar"/>
                                             <CheckBox Name="DoWeeklyTasks" Label="Do Weekly Tasks" @bind-Value="@Options.WeeklyTasksOptions.DoWeeklyTasks"/>
                                             <CheckBox Name="DrinkExtraBeer" Label="Drink Weekly Task Beer" @bind-Value="@Options.WeeklyTasksOptions.DrinkExtraBeer"/>
+                                            <CheckBox Name="SellPetFood" Label="Sell Pet Food" @bind-Value="@Options.SellPetFood"/>
                                         </div>
                                     </RadzenColumn>
                                 </RadzenRow>
                             </ChildContent>
-                        </RadzenTabsItem>
-                        <RadzenTabsItem>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
                             <Template>
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <SfIcon Icon="Dungeon"/>
@@ -153,9 +153,44 @@
                                     </RadzenColumn>
                                 </RadzenRow>
                             </ChildContent>
-                        </RadzenTabsItem>
-                    </Tabs>
-                </RadzenTabs>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <SfIcon Icon="Pets"/>
+                                    <div class="rz-ms-2">
+                                        Pets 
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <RadzenRow>
+                                    <RadzenColumn class="d-flex">
+                                        <div class="d-flex flex-column">
+                                            <CheckBox Name="SellPetFood" Label="Sell Pet Food" @bind-Value="@Options.SellPetFood"/>
+                                            <Numeric Icon="ShadowFruit" Name="ShadowFood" Label="Shadow Food" Min="0" Step="1" @bind-Value="@Options.Pets.Food[PetElementType.Shadow]"/>
+                                            <Numeric Icon="LightFruit" Name="LightFood" Label="Light Food" Min="0" Step="1" @bind-Value="@Options.Pets.Food[PetElementType.Light]"/>
+                                            <Numeric Icon="EarthFruit" Name="EarthFood" Label="Earth Food" Min="0" Step="1" @bind-Value="@Options.Pets.Food[PetElementType.Earth]"/>
+                                            <Numeric Icon="FireFruit" Name="FireFood" Label="Fire Food" Min="0" Step="1" @bind-Value="@Options.Pets.Food[PetElementType.Fire]"/>
+                                            <Numeric Icon="WaterFruit" Name="WaterFood" Label="Water Food" Min="0" Step="1" @bind-Value="@Options.Pets.Food[PetElementType.Water]"/>
+                                        </div>
+                                    </RadzenColumn>
+                                    <RadzenColumn class="d-flex">
+                                        <div class="d-flex flex-column">
+                                            <CheckBox Name="DoPetsDungeons" Label="Do Pets Dungeons" @bind-Value="Options.DoPetsDungeons"/>
+                                            <p>Poll the pets data via sftools</p>
+                                            <p>Shadow Total Level: @Options.Pets.Elements[PetElementType.Shadow].Sum(p => p.Level)</p>
+                                            <p>Light Total Level: @Options.Pets.Elements[PetElementType.Light].Sum(p => p.Level)</p>
+                                            <p>Earth Total Level: @Options.Pets.Elements[PetElementType.Earth].Sum(p => p.Level)</p>
+                                            <p>Fire Total Level: @Options.Pets.Elements[PetElementType.Fire].Sum(p => p.Level)</p>
+                                            <p>Water Total Level: @Options.Pets.Elements[PetElementType.Water].Sum(p => p.Level)</p>
+                                        </div>
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
             </RadzenStack>
         </ChildContent>
     </RadzenTemplateForm>

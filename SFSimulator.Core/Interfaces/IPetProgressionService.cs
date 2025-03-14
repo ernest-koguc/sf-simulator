@@ -3,6 +3,7 @@
 public interface IPetProgressionService
 {
     void GivePetFood(PetsState pets, double amount, PetElementType? elementType = null);
-    void ProgressThrough(int currentDay, SimulationContext simulationContext, List<EventType> events, Action<PetSimulationResult> onWonFight);
+    void DoPetArenaFights(int currentDay, PetsState pets, bool isPetEvent);
+    void ProgressThroughDungeons(int currentDay, SimulationContext simulationContext, List<EventType> events, Action<PetSimulationResult> onWonFight);
     decimal SellPetFood(PetsState pets, int characterLevel);
 }

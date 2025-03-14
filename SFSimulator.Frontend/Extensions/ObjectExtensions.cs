@@ -4,7 +4,7 @@ namespace SFSimulator.Frontend;
 
 public static class ObjectExtensions
 {
-    private static readonly MethodInfo CloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
+    private static readonly MethodInfo CloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
     public static bool IsPrimitive(this Type type)
     {

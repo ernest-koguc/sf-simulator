@@ -19,7 +19,8 @@ public class PetProgressionServiceTests
         var events = Enum.GetValues<EventType>().ToList();
         for (var i = 1; i < 1000; i++)
         {
-            service.ProgressThrough(i, simulationContext, events, _ => { });
+            service.DoPetArenaFights(i, simulationContext.Pets, true);
+            service.ProgressThroughDungeons(i, simulationContext, events, _ => { });
         }
 
         foreach (var pet in simulationContext.Pets.AllPets)
@@ -44,7 +45,7 @@ public class PetProgressionServiceTests
             simulationContext.Pets.Food[element] = 1000;
         }
 
-        service.ProgressThrough(1, simulationContext, [], _ => Assert.Fail("No pet dungeon should be beaten when pets aren't unlocked"));
+        service.ProgressThroughDungeons(1, simulationContext, [], _ => Assert.Fail("No pet dungeon should be beaten when pets aren't unlocked"));
 
         foreach (var pet in simulationContext.Pets.AllPets)
         {
@@ -73,7 +74,7 @@ public class PetProgressionServiceTests
             pet.Level = 1;
         }
 
-        service.ProgressThrough(1, simulationContext, [EventType.Pets], _ => { });
+        service.ProgressThroughDungeons(1, simulationContext, [EventType.Pets], _ => { });
 
         foreach (var pet in simulationContext.Pets.AllPets.Where(p => p.Position == 20))
         {

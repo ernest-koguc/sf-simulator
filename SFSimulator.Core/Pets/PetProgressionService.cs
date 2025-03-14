@@ -6,7 +6,7 @@ public class PetProgressionService(IPetFightableFactory petFightableFactory, IPe
     private bool PetsUnlocked { get; set; }
 
 
-    public void ProgressThrough(int currentDay, SimulationContext simulationContext, List<EventType> events, Action<PetSimulationResult> onWonFight)
+    public void ProgressThroughDungeons(int currentDay, SimulationContext simulationContext, List<EventType> events, Action<PetSimulationResult> onWonFight)
     {
         if (simulationContext.Level < PetUnlockLevel)
             return;
@@ -22,7 +22,6 @@ public class PetProgressionService(IPetFightableFactory petFightableFactory, IPe
 
         petUnlockerService.UnlockPets(currentDay, simulationContext, events);
         var isPetEvent = events.Contains(EventType.Pets);
-        DoPetArenaFights(currentDay, simulationContext.Pets, isPetEvent);
         FeedPets(currentDay, simulationContext.Pets, isPetEvent);
 
         var openPetDungeons = new List<Pet>();
@@ -154,7 +153,7 @@ public class PetProgressionService(IPetFightableFactory petFightableFactory, IPe
         }
     }
 
-    private void DoPetArenaFights(int currentDay, PetsState pets, bool isPetEvent)
+    public void DoPetArenaFights(int currentDay, PetsState pets, bool isPetEvent)
     {
         var petType = GetCurrentArenaElement(currentDay);
         var food = isPetEvent ? 7.5 : 2.5;

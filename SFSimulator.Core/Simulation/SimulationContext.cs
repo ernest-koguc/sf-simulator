@@ -85,6 +85,8 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
 
     public Companion[] Companions { get; set; } = [];
 
+    public bool SellPetFood { get; set; } = true;
+    public bool DoPetsDungeons { get; set; } = false;
     public PetsState Pets { get; set; } = new();
     public int Aura { get; set; }
     public BlackSmithResources BlackSmithResources { get; set; } = new(0, 0);

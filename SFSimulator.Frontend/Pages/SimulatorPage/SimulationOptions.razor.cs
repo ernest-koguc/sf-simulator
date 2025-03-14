@@ -29,10 +29,12 @@ public partial class SimulationOptions
     {
         var result = await DialogService.OpenAsync<EndpointDialog>(string.Empty, options: EndpointDialog.PreferredDialogOptions);
         if (result is Maria21DataDTO data)
+        {
             Options = MappingUtils.MapToSimulationContext(Options, data);
+        }
     }
 
-    private ValidationResult ValidateField(Expression<Func<SimulationContext, object>> fieldToValidate)
+    private ValidationResult ValidateField(Expression<Func<SimulationContext, object?>> fieldToValidate)
     {
         var result = Validator.Validate(Options, options =>
         {
@@ -47,4 +49,3 @@ public partial class SimulationOptions
         return ValidationResult.Success;
     }
 }
-

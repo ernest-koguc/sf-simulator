@@ -168,3 +168,7 @@ ul[role=tablist] {
 .rz-form-field-label {
     color: white !important;
 }
+
+.rz-accordion-header {
+    background-color: rgba(0,0,0,0.2) !important;
+}

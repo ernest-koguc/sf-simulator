@@ -192,13 +192,26 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         _portalService.Progress(CurrentDay, SimulationContext);
         _guildRaidService.Progress(CurrentDay, SimulationContext);
 
-        _petProgressionService.ProgressThrough(CurrentDay, SimulationContext, CurrentEvents, result =>
-        {
-            GiveXPToCharacter(result.Experience, GainSource.Pets);
-        });
+        DoPetsProgression();
+    }
 
-        var soldFoodGold = _petProgressionService.SellPetFood(SimulationContext.Pets, SimulationContext.Level);
-        GiveGoldToCharacter(soldFoodGold, GainSource.Pets);
+    private void DoPetsProgression()
+    {
+        _petProgressionService.DoPetArenaFights(CurrentDay, SimulationContext.Pets, CurrentEvents.Contains(EventType.Pets));
+
+        if (SimulationContext.DoPetsDungeons)
+        {
+            _petProgressionService.ProgressThroughDungeons(CurrentDay, SimulationContext, CurrentEvents, result =>
+            {
+                GiveXPToCharacter(result.Experience, GainSource.Pets);
+            });
+        }
+
+        if (SimulationContext.SellPetFood)
+        {
+            var soldFoodGold = _petProgressionService.SellPetFood(SimulationContext.Pets, SimulationContext.Level);
+            GiveGoldToCharacter(soldFoodGold, GainSource.Pets);
+        }
     }
 
     private void DoDungeonProgression()
