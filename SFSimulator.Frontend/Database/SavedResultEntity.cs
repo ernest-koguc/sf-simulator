@@ -1,17 +1,15 @@
-﻿using Magic.IndexedDb;
-using Magic.IndexedDb.SchemaAnnotations;
-using SFSimulator.Core;
+﻿using SFSimulator.Core;
 
 namespace SFSimulator.Frontend;
 
-[MagicTable("SimulationResult", Constants.DatabaseName)]
+//[MagicTable("SimulationResult", Constants.DatabaseName)]
 public class SavedResultEntity
 {
-    [MagicPrimaryKey("Id")]
+    //[MagicPrimaryKey("Id")]
     public int Id { get; set; }
-    [MagicIndex("Saved")]
+    //[MagicIndex("Saved")]
     public required DateTime Saved { get; set; }
-    [MagicIndex("Result")]
+    //[MagicIndex("Result")]
     public required SimulationResult Result { get; set; }
 }
 

@@ -1,4 +1,6 @@
-﻿namespace SFSimulator.Core;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SFSimulator.Core;
 
 public enum ClassType
 {
@@ -8,8 +10,10 @@ public enum ClassType
     Mage,
     Scout,
     Assassin,
+    [Display(Name = "Battle Mage")]
     BattleMage,
     Berserker,
+    [Display(Name = "Demon Hunter")]
     DemonHunter,
     Druid,
     Bard,

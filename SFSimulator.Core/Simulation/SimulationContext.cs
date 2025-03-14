@@ -29,22 +29,11 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public int GuildKnights { get; set; }
     public int GuildRaids { get; set; } = 0;
     public int Level { get; set; } = 1;
-    public ClassType Class { get; set; }
+    public ClassType Class { get; set; } = ClassType.BattleMage;
     public long Experience { get; set; }
     public int BaseStat
     {
         get => BaseConstitution + BaseMainAttribute;
-        set
-        {
-            if (value == 0)
-            {
-                BaseConstitution = 0;
-                SetBaseMainAttribute(0);
-            }
-            var main = (int)Math.Ceiling(value / 2M);
-            SetBaseMainAttribute(main);
-            BaseConstitution = value - main;
-        }
     }
     public decimal Gold { get; set; }
 

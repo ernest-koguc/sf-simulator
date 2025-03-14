@@ -1,12 +1,9 @@
-﻿using Magic.IndexedDb;
-using Microsoft.AspNetCore.Components;
-
-namespace SFSimulator.Frontend.Pages.SavedResultsPage;
+﻿namespace SFSimulator.Frontend.Pages.SavedResultsPage;
 
 public partial class SavedResultsPage
 {
-    [Inject]
-    private IMagicDbFactory DbFactory { get; set; } = default!;
+    //[Inject]
+    //private IMagicDbFactory DbFactory { get; set; } = default!;
 
     protected override async Task OnParametersSetAsync()
     {

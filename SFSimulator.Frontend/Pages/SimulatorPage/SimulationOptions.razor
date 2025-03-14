@@ -33,19 +33,20 @@
                                 <RadzenRow>
                                     <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
+                                            <DropDown Name="Class" Label="Class" @bind-Value="@Options.Class" Filter="(e) => e != ClassType.Bert && e != ClassType.Mirror"/>
                                             <Numeric Icon="Level" Name="Level" Label="Level" Min="1" Max="800" @bind-Value="@Options.Level" Validator="() => ValidateField(o => o.Level)"/>
                                             <Numeric Icon="XP" Name="Experience" Label="Experience" Min="0" Max="1_500_000_000" @bind-Value="@Options.Experience"/>
-                                            <Numeric Icon="Academy" Name="Academy" Label="Academy Level" Min="0" Max="20" @bind-Value="@Options.AcademyLevel"/>
-                                            <Numeric Icon="GemMine" Name="GemMine" Label="Gem Mine Level" Min="0" Max="100" @bind-Value="@Options.GemMineLevel"/>
+                                            <DropDown Icon="Mount" Name="Mount" Label="Mount" @bind-Value="@Options.Mount" />
                                             <Numeric Icon="Hydra" Name="Hydra" Label="Hydra" Min="0" Max="20" @bind-Value="@Options.HydraHeads"/>
                                         </div>
                                     </RadzenColumn>
                                     <RadzenColumn Size="12" SizeXS="6" class="d-flex">
                                         <div class="d-flex flex-column">
-                                            <Numeric Icon="BaseStat" Name="BaseStats" Label="Base Stats" Min="0" Max="2_000_000" @bind-Value="@Options.BaseStat"/>
-                                            <DropDown Icon="Mount" Name="Mount" Label="Mount" @bind-Value="@Options.Mount" />
-                                            <Numeric Icon="GoldPit" Name="GoldPit" Label="Gold Pit Level" Min="0" Max="100" @bind-Value="@Options.GoldPitLevel"/>
-                                            <Numeric Icon="Treasury" Name="Treasury" Label="Treasury Level" Min="0" Max="45" @bind-Value="@Options.TreasuryLevel"/>
+                                            <Numeric Name="BaseStrength" Label="Base Strength" Min="0" Max="2_000_000" @bind-Value="@Options.BaseStrength"/>
+                                            <Numeric Name="BaseDexterity" Label="Base Dexterity" Min="0" Max="2_000_000" @bind-Value="@Options.BaseDexterity"/>
+                                            <Numeric Name="BaseIntelligence" Label="Base Intelligence" Min="0" Max="2_000_000" @bind-Value="@Options.BaseIntelligence"/>
+                                            <Numeric Name="BaseConstitution" Label="Base Constitution" Min="0" Max="2_000_000" @bind-Value="@Options.BaseConstitution"/>
+                                            <Numeric Name="BaseLuck" Label="Base Luck" Min="0" Max="2_000_000" @bind-Value="@Options.BaseLuck"/>
                                         </div>
                                     </RadzenColumn>
                                 </RadzenRow>
@@ -124,6 +125,32 @@
                                             <CheckBox Name="DoWeeklyTasks" Label="Do Weekly Tasks" @bind-Value="@Options.WeeklyTasksOptions.DoWeeklyTasks"/>
                                             <CheckBox Name="DrinkExtraBeer" Label="Drink Weekly Task Beer" @bind-Value="@Options.WeeklyTasksOptions.DrinkExtraBeer"/>
                                             <CheckBox Name="SellPetFood" Label="Sell Pet Food" @bind-Value="@Options.SellPetFood"/>
+                                        </div>
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <SfIcon Icon="Fortress"/>
+                                    <div class="rz-ms-2">
+                                        Fortress
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <RadzenRow>
+                                    <RadzenColumn class="d-flex">
+                                        <div class="d-flex flex-column">
+                                            <Numeric Icon="Academy" Name="Academy" Label="Academy Level" Min="0" Max="20" @bind-Value="@Options.AcademyLevel"/>
+                                            <Numeric Icon="GemMine" Name="GemMine" Label="Gem Mine Level" Min="0" Max="100" @bind-Value="@Options.GemMineLevel"/>
+                                        </div>
+                                    </RadzenColumn>
+                                    <RadzenColumn class="d-flex">
+                                        <div class="d-flex flex-column">
+                                            <Numeric Icon="GoldPit" Name="GoldPit" Label="Gold Pit Level" Min="0" Max="100" @bind-Value="@Options.GoldPitLevel"/>
+                                            <Numeric Icon="Treasury" Name="Treasury" Label="Treasury Level" Min="0" Max="45" @bind-Value="@Options.TreasuryLevel"/>
                                         </div>
                                     </RadzenColumn>
                                 </RadzenRow>

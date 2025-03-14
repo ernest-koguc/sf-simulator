@@ -3,13 +3,13 @@
 <RadzenFormField Component="@Name" Text="@Label" Variant="Variant ?? Radzen.Variant.Flat">
     <Start>
     @if (Icon != null)
-    {
-        <SfIcon Icon="@Icon"/>
-    }
+        {
+            <SfIcon Icon="@Icon"/>
+        }
     </Start>
     <ChildContent>
-        <RadzenDropDown Disabled="@Disabled" Data="@(DropDownFactory.ToDropDown<TValue>())" TValue="@TValue" 
-            TextProperty="Text" ValueProperty="Value" Name="@Name" @bind-Value:get="@Value" @bind-Value:set="ValueChanged">
+        <RadzenDropDown Disabled="@Disabled" Data="@(DropDownFactory.ToDropDown<TValue>(Filter))" TValue="@TValue" 
+        TextProperty="Text" ValueProperty="Value" Name="@Name" @bind-Value:get="@Value" @bind-Value:set="ValueChanged">
         </RadzenDropDown>
     </ChildContent>
 </RadzenFormField>
@@ -24,6 +24,8 @@
     public string? Label { get; set; }
     [Parameter, EditorRequired]
     public required string Name { get; set; }
+    [Parameter]
+    public Func<TValue, bool>? Filter { get; set; }
     [Parameter]
     public Variant? Variant { get; set; }
     [Parameter]
