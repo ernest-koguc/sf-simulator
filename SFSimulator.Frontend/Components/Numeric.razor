@@ -1,6 +1,6 @@
 ﻿@typeparam TValue
 
-<RadzenFormField Component="@Name" Text="@Label" Variant="Variant.Text">
+<RadzenFormField Component="@Name" Text="@Label" Variant="Variant ?? Radzen.Variant.Flat">
     <Start>
     @if (Icon != null)
         {
@@ -17,11 +17,13 @@
     [Parameter]
     public required TValue? Value { get; set; }
     [Parameter]
-    public EventCallback<TValue> ValueChanged { get; set; }
+    public EventCallback<TValue?> ValueChanged { get; set; }
     [Parameter]
     public string? Label { get; set; }
     [Parameter, EditorRequired]
     public required string Name { get; set; }
+    [Parameter]
+    public Variant? Variant { get; set; }
     [Parameter]
     public decimal? Min { get; set; }
     [Parameter]

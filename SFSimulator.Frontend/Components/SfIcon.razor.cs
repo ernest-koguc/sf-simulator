@@ -11,8 +11,8 @@ public partial class SfIcon
     public required string Icon { get; set; }
     private string Style =>
     @$"
-    width: 30px; 
-    height: 30px; 
+    width: 25px; 
+    height: 25px; 
     background-size: contain; 
     background-image: url(./icons/{IconPaths[Icon]});
     ";
@@ -52,5 +52,11 @@ public partial class SfIcon
        { "Load", "load_icon.png" },
        { "Chart", "chart_icon.png" },
        { "Quickview", "Quickview_icon.png" },
+       { "Pets", "pets_icon.png" },
+       { "ShadowFruit", "shadowfruit_icon.png" },
+       { "LightFruit", "lightfruit_icon.png" },
+       { "EarthFruit", "earthfruit_icon.png" },
+       { "FireFruit", "firefruit_icon.png" },
+       { "WaterFruit", "waterfruit_icon.png" },
     };
 }

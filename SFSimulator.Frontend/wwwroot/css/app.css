@@ -28,6 +28,11 @@ html, body {
     position: absolute;
 }
 
+.bg-card {
+    background-color: rgba(30, 30, 30, 0.7) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
 :root {
     --rz-text-font-family: Poppins, sans-serif !important;
     --bs-body-color: white !important;
@@ -46,6 +51,8 @@ html, body {
     --rz-secondary-darker: #30b572 !important;
     --rz-form-field-label-focus-color: var(--rz-secondary) !important;
     --rz-input-focus-border: 1px solid var(--rz-secondary) !important;
+    --rz-accordion-item-background-color: unsert !important;
+    --rz-input-background-color: rgba(0,0,0,0.3);
 }
 
 .rz-dropdown-item.rz-state-highlight {
@@ -156,4 +163,8 @@ ul[role=tablist] {
     {
         justify-content: end !important;
     }
+}
+
+.rz-form-field-label {
+    color: white !important;
 }
