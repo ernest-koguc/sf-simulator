@@ -167,15 +167,21 @@
                             </Template>
                             <ChildContent>
                                 <RadzenRow>
-                                    <RadzenColumn>
-                                        <CheckBox Disabled="Options.DungeonsData is null" Name="DoDungeons" Label="Do Dungeons" @bind-Value="@Options.DoDungeons"/>
-                                        @if (Options.DungeonsData is null)
-                                        {
-                                            <RadzenText class="rz-mt-2">
-                                                Currently dungeon can be enabled<br/> 
-                                                only if data is polled via endpoint.
-                                            </RadzenText>
-                                        }
+                                    <RadzenColumn class="d-flex">
+                                        <div class="d-flex flex-column">
+                                            <CheckBox Disabled="Options.DungeonsData is null" Name="DoDungeons" Label="Do Dungeons" @bind-Value="@Options.DoDungeons"/>
+                                            @if (Options.DungeonsData is null)
+                                            {
+                                                <RadzenText class="rz-mt-2">
+                                                    Currently dungeon can be enabled<br/> 
+                                                    only if data is polled via endpoint.
+                                                </RadzenText>
+                                            }
+                                            @* TODO: Maybe this should be disabled if we don't do dungeon progression, also add dynamic validation for Mana level based on the aura level *@
+                                            <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
+                                            <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="66"/>
+                                            <Numeric Icon="Mana" Name="AuraFillLevel" Label="Aura Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
+                                        </div>
                                     </RadzenColumn>
                                 </RadzenRow>
                             </ChildContent>

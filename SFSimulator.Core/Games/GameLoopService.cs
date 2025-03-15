@@ -6,7 +6,8 @@ namespace SFSimulator.Core;
 public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSimulator thirstSimulator, ICalendarRewardProvider calendarRewardProvider,
     IWeeklyTasksRewardProvider weeklyTasksRewardProvider, IScheduler scheduler, ICharacterDungeonProgressionService characterDungeonProgressionService,
     IExpeditionService expeditionService, IBaseStatsIncreasingService baseStatsIncreasingService, IScrapbookService scrapbookService,
-    IPotionService potionService, IPortalService portalService, IGuildRaidService guildRaidService, IPetProgressionService petProgressionService) : IGameLoopService
+    IPotionService potionService, IPortalService portalService, IGuildRaidService guildRaidService, IPetProgressionService petProgressionService,
+    IAuraProgressService auraProgressService) : IGameLoopService
 {
     private readonly IThirstSimulator _thirstSimulator = thirstSimulator;
     private readonly IExpeditionService _expeditionService = expeditionService;
@@ -21,6 +22,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private readonly IPortalService _portalService = portalService;
     private readonly IGuildRaidService _guildRaidService = guildRaidService;
     private readonly IPetProgressionService _petProgressionService = petProgressionService;
+    private readonly IAuraProgressService _auraProgressService = auraProgressService;
 
     private readonly List<ItemType> CurrentItemTypesForWitch = [];
     private List<EventType> CurrentEvents { get; set; } = [];
@@ -157,6 +159,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         PerformScheduleActions(schedule);
 
         SellItemsToWitch();
+
+        _auraProgressService.IncreaseAuraProgress(SimulationContext, CurrentEvents.Contains(EventType.Toilet));
 
         DoDungeonProgression();
 

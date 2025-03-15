@@ -23,14 +23,14 @@ public static class ObjectExtensions
         if (IsPrimitive(typeToReflect)) return originalObject;
         if (visited.ContainsKey(originalObject)) return visited[originalObject];
         if (typeof(Delegate).IsAssignableFrom(typeToReflect)) return null;
-        var cloneObject = CloneMethod.Invoke(originalObject, null);
+        var cloneObject = CloneMethod.Invoke(originalObject, null)!;
         if (typeToReflect.IsArray)
         {
             var arrayType = typeToReflect.GetElementType();
-            if (IsPrimitive(arrayType) == false)
+            if (IsPrimitive(arrayType!) == false)
             {
                 Array clonedArray = (Array)cloneObject;
-                clonedArray.ForEach((array, indices) => array.SetValue(InternalCopy(clonedArray.GetValue(indices), visited), indices));
+                clonedArray.ForEach((array, indices) => array.SetValue(InternalCopy(clonedArray.GetValue(indices)!, visited), indices));
             }
 
         }
@@ -49,20 +49,21 @@ public static class ObjectExtensions
         }
     }
 
-    private static void CopyFields(object originalObject, IDictionary<object, object> visited, object cloneObject, Type typeToReflect, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy, Func<FieldInfo, bool> filter = null)
+    private static void CopyFields(object originalObject, IDictionary<object, object> visited, object cloneObject, Type typeToReflect, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy, Func<FieldInfo, bool>? filter = null)
     {
         foreach (FieldInfo fieldInfo in typeToReflect.GetFields(bindingFlags))
         {
             if (filter != null && filter(fieldInfo) == false) continue;
             if (IsPrimitive(fieldInfo.FieldType)) continue;
             var originalFieldValue = fieldInfo.GetValue(originalObject);
-            var clonedFieldValue = InternalCopy(originalFieldValue, visited);
+            var clonedFieldValue = InternalCopy(originalFieldValue!, visited);
             fieldInfo.SetValue(cloneObject, clonedFieldValue);
         }
     }
-    public static T Copy<T>(this T original)
+
+    public static T Copy<T>(this T original) where T : notnull
     {
-        return (T)Copy((object)original);
+        return (T)Copy((object)original)!;
     }
 }
 

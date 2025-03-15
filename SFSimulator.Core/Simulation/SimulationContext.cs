@@ -78,6 +78,8 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public bool DoPetsDungeons { get; set; } = false;
     public PetsState Pets { get; set; } = new();
     public int Aura { get; set; }
+    public int AuraFillLevel { get; set; }
+    public AuraProgressStrategyType AuraStrategy { get; set; } = AuraProgressStrategyType.OnlyEpicItems;
     public BlackSmithResources BlackSmithResources { get; set; } = new(0, 0);
     public SFToolsDungeonData? DungeonsData { get; set; }
     public SimulationFinishCondition FinishCondition { get; set; } = new();

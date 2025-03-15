@@ -58,6 +58,8 @@ public partial class SfIcon
        { "EarthFruit", "earthfruit_icon.png" },
        { "FireFruit", "firefruit_icon.png" },
        { "WaterFruit", "waterfruit_icon.png" },
-        { "Fortress", "fortress_icon.png" },
+       { "Fortress", "fortress_icon.png" },
+       { "Toilet", "toilet_icon.png" },
+       { "Mana", "mana_icon.png" },
     };
 }
