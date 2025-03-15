@@ -59,4 +59,42 @@ public class BaseStatsIncreasingServiceTests
 
         Assert.IsTrue(difference < 0.01, $"Expected ratio: {expectedRatio}, actual ratio: {actualRatio}");
     }
+
+    [TestMethod]
+    [DataRow(50_000_000_000)]
+    [DataRow(100_000_000_000)]
+    [DataRow(200_000_000_000)]
+    public void IncreaseBaseStats_increases_luck_up_to_1200(double gold)
+    {
+        var service = DependencyProvider.Get<IBaseStatsIncreasingService>();
+        var simulationContext = new SimulationContext();
+        simulationContext.BaseStatsIncreaseStrategy = BaseStatsIncreaseStrategyType.Keep_50_50_until_same_cost_then_60_40;
+        simulationContext.Gold = (decimal)gold;
+
+        service.IncreaseBaseStats(simulationContext);
+
+        Assert.AreEqual(1200, simulationContext.BaseLuck);
+    }
+
+    [TestMethod]
+    [DataRow(1_000_000_000)]
+    [DataRow(2_000_000_000)]
+    [DataRow(3_000_000_000)]
+    [DataRow(4_000_000_000)]
+    [DataRow(5_000_000_000)]
+    public void IncreaseBaseStats_keeps_the_luck_up_to_40_percent(double gold)
+    {
+        var service = DependencyProvider.Get<IBaseStatsIncreasingService>();
+        var simulationContext = new SimulationContext();
+        simulationContext.BaseStatsIncreaseStrategy = BaseStatsIncreaseStrategyType.Keep_50_50_until_same_cost_then_60_40;
+        simulationContext.Gold = (decimal)gold;
+
+        service.IncreaseBaseStats(simulationContext);
+
+        var actualRatio = (double)simulationContext.BaseLuck / simulationContext.BaseConstitution;
+        var expectedRatio = 0.4;
+        var difference = Math.Abs(expectedRatio - actualRatio);
+
+        Assert.AreEqual(expectedRatio, actualRatio, 0.01);
+    }
 }

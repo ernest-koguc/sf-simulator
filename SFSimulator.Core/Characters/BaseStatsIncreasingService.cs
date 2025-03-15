@@ -1,6 +1,9 @@
 ﻿namespace SFSimulator.Core;
 public class BaseStatsIncreasingService(ICurves curves) : IBaseStatsIncreasingService
 {
+    private const decimal LuckRatio = 0.4M;
+    private const int MaxBaseLuck = 1200;
+
     public void IncreaseBaseStats(SimulationContext simulationContext)
     {
         switch (simulationContext.BaseStatsIncreaseStrategy)
@@ -34,20 +37,21 @@ public class BaseStatsIncreasingService(ICurves curves) : IBaseStatsIncreasingSe
         while (haveUpgraded)
         {
             haveUpgraded = false;
-            var currentRatio = 0M;
 
-            if (simulationContext.BaseMainAttribute == 0 && simulationContext.BaseConstitution == 0)
+            var luckRatio = GetAttributesRatio(simulationContext.BaseLuck, simulationContext.BaseMainAttribute);
+
+            if (luckRatio < LuckRatio && simulationContext.BaseLuck < MaxBaseLuck)
             {
-                currentRatio = 1;
+                var goldCost = GetBaseStatsIncreaseCost(simulationContext.BaseLuck);
+                if (goldCost <= simulationContext.Gold)
+                {
+                    simulationContext.BaseLuck++;
+                    simulationContext.Gold -= goldCost;
+                    haveUpgraded = true;
+                }
             }
-            else if (simulationContext.BaseConstitution != 0)
-            {
-                currentRatio = (decimal)simulationContext.BaseMainAttribute / simulationContext.BaseConstitution;
-            }
-            else
-            {
-                currentRatio = decimal.MaxValue;
-            }
+
+            var currentRatio = GetAttributesRatio(simulationContext.BaseMainAttribute, simulationContext.BaseConstitution);
 
             if (currentRatio <= mainConRatio && (mainAttributeLimit == null || simulationContext.BaseMainAttribute < mainAttributeLimit))
             {
@@ -71,6 +75,14 @@ public class BaseStatsIncreasingService(ICurves curves) : IBaseStatsIncreasingSe
             }
         }
     }
+
+    private decimal GetAttributesRatio(int first, int second)
+        => (first, second) switch
+        {
+            (0, 0) => 1,
+            (_, 0) => decimal.MaxValue,
+            _ => (decimal)first / second
+        };
 
     private decimal GetBaseStatsIncreaseCost(int attributeLevel)
     {
