@@ -448,4 +448,29 @@ public class GameFormulasService : IGameFormulasService
         MountType.Griffin => 2,
         _ => throw new ArgumentOutOfRangeException(nameof(mount))
     };
+
+    public decimal GetGoldForDungeonEnemy(DungeonEnemy dungeonEnemy)
+    {
+        if (DoesDungeonEnemyDropItem(dungeonEnemy))
+        {
+            return 0;
+        }
+
+        if (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Tower)
+        {
+            return 9 * Curves.GoldCurve[dungeonEnemy.Level + 2] / 100;
+        }
+
+        if (dungeonEnemy.Dungeon.Type is DungeonTypeEnum.Twister or DungeonTypeEnum.Sandstorm or DungeonTypeEnum.Default)
+        {
+            return 2 * Curves.GoldCurve[dungeonEnemy.Level] / 100;
+        }
+
+        return 0;
+    }
+
+    public bool DoesDungeonEnemyDropItem(DungeonEnemy dungeonEnemy)
+        => (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Default && dungeonEnemy.Position is 3 or 5 or 7 or 10)
+        || (dungeonEnemy.Dungeon.Type is DungeonTypeEnum.Twister or DungeonTypeEnum.Sandstorm && dungeonEnemy.Position % 2 == 0)
+        || (dungeonEnemy.Dungeon.Type is DungeonTypeEnum.Default && dungeonEnemy.Dungeon.Position is 15 or 19 or 22 or 26);
 }

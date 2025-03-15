@@ -93,7 +93,7 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGa
             amountOfItems++;
         }
 
-        List<Item> items = new();
+        List<Item> items = [];
         for (var i = 0; i < amountOfItems; i++)
         {
             var item = itemGenerator.GenerateItem(characterLevel);

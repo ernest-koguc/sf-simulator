@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFSimulator.Core;
+using System.Linq;
 
 namespace SFSimulator.Tests;
 
@@ -69,5 +70,56 @@ public class GameFormulasServiceTests
         var result = gameFormulaService.GetExperienceForPetDungeonEnemy(level);
 
         Assert.AreEqual(xp, result);
+    }
+
+    [TestMethod]
+    [DataRow(1, 1, false)]
+    [DataRow(1, 3, true)]
+    [DataRow(1, 5, true)]
+    [DataRow(1, 7, true)]
+    [DataRow(1, 10, true)]
+    [DataRow(10, 4, false)]
+    [DataRow(10, 10, true)]
+    [DataRow(99, 658, true)]
+    [DataRow(99, 711, false)]
+    [DataRow(19, 1, true)]
+    [DataRow(19, 10, true)]
+    [DataRow(22, 1, true)]
+    [DataRow(22, 10, true)]
+    [DataRow(22, 10, true)]
+    [DataRow(98, 1, false)]
+    [DataRow(98, 5, false)]
+    [DataRow(98, 100, false)]
+    public void GetGoldForDungeonEnemey_gives_gold_or_item_with_gold_value(int dungeonPosition, int enemyPosition, bool givesItem) // if not item than gold)
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
+
+        var dungeonEnemy = dungeonProvider.GetDungeonEnemy(dungeonPosition, enemyPosition);
+
+        var gold = gameFormulaService.GetGoldForDungeonEnemy(dungeonEnemy);
+        var hasItem = gameFormulaService.DoesDungeonEnemyDropItem(dungeonEnemy);
+
+        Assert.AreEqual(givesItem, hasItem, "Expected dungeon to give an item");
+        Assert.IsTrue(givesItem ? gold == 0 : gold > 0, "Expected dungeon to either have 0 gold and an item or to not have any item but have gold");
+    }
+
+    [TestMethod]
+    public void GetGoldForDungeonEnemy_does_not_give_gold_or_item_for_dungeons_in_shadow_loop()
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
+
+        var dungeons = dungeonProvider.GetAllDungeons(new SimulationContext());
+
+        foreach (var enemy in dungeons.Where(d => d.Type is DungeonTypeEnum.Shadow or DungeonTypeEnum.LoopOfIdols).SelectMany(d => d.DungeonEnemies))
+        {
+
+            var gold = gameFormulaService.GetGoldForDungeonEnemy(enemy);
+            var hasItem = gameFormulaService.DoesDungeonEnemyDropItem(enemy);
+
+            Assert.AreEqual(false, hasItem, "Expected dungeon to not give an item");
+            Assert.AreEqual(0, gold, "Expected dungeon to not give any gold");
+        }
     }
 }

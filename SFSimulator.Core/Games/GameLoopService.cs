@@ -222,13 +222,26 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     {
         if (SimulationContext.DoDungeons)
         {
-            _characterDungeonProgressionService.ProgressThrough(SimulationContext, result =>
-            {
-                _scrapbookService.UpdateScrapbook(SimulationContext, result);
-                GiveXPToCharacter(result.Experience, GainSource.Dungeon);
-                GiveGoldToCharacter(result.Gold, GainSource.Dungeon);
-            }, CurrentDay);
+            return;
         }
+
+        _characterDungeonProgressionService.ProgressThrough(SimulationContext, result =>
+        {
+            _scrapbookService.UpdateScrapbook(SimulationContext, result);
+            GiveXPToCharacter(result.Experience, GainSource.Dungeon);
+            GiveGoldToCharacter(result.Gold, GainSource.Dungeon);
+
+            if (result.Item is not null)
+            {
+                var goldFromItem = ItemBackPack.AddItemToBackPack(result.Item, CurrentItemTypesForWitch);
+                if (goldFromItem.HasValue)
+                    GiveGoldToCharacter(goldFromItem.Value, GainSource.Item);
+            }
+            if (result.DungeonEnemy.Dungeon.Type == DungeonTypeEnum.Tower)
+            {
+                SimulationContext.GoldBonus.Tower = result.DungeonEnemy.Position;
+            }
+        }, CurrentDay);
     }
 
     private void CollectWeeklyTasksRewards()

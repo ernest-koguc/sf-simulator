@@ -3,7 +3,8 @@
 public interface IGameFormulasService
 {
     QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus);
-    public double GetDailyPetFoodFromWheel(int characterLevel, List<EventType> events, SpinAmountType spinAmount);
+    double GetDailyPetFoodFromWheel(int characterLevel, List<EventType> events, SpinAmountType spinAmount);
+    bool DoesDungeonEnemyDropItem(DungeonEnemy dungeonEnemy);
 
     #region Experience
     long GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool experienceEvent);
@@ -31,5 +32,6 @@ public interface IGameFormulasService
     decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
     decimal GetExpeditionMidwayGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
     decimal GetExpeditionFinalGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
+    decimal GetGoldForDungeonEnemy(DungeonEnemy dungeonEnemy);
     #endregion
 }

@@ -6,12 +6,14 @@ public class DungeonSimulator : IDungeonSimulator
 {
     private readonly IFightableContextFactory _fightableContextFactory;
     private readonly IGameFormulasService _gameFormulasService;
+    private readonly IItemGenerator _itemGenerator;
     private readonly Random _random;
 
-    public DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService, Random random)
+    public DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService, IItemGenerator itemGenerator, Random random)
     {
         _fightableContextFactory = dungeonableContextFactory;
         _gameFormulasService = gameFormulasService;
+        _itemGenerator = itemGenerator;
         _random = random;
     }
 
@@ -58,7 +60,7 @@ public class DungeonSimulator : IDungeonSimulator
         Console.WriteLine($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
         var result = SimulateFight(lookupContext, iterations, winThreshold);
 
-        return CreateDungeonSimulationResult(result.WonFights, result.Succeeded, dungeonEnemy);
+        return CreateDungeonSimulationResult(result.WonFights, result.Succeeded, dungeonEnemy, character.Level);
     }
 
     private FightSimulationResult SimulateFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext, int iterations, int winThreshold)
@@ -86,17 +88,21 @@ public class DungeonSimulator : IDungeonSimulator
         return new FightSimulationResult(wonFights, wonFights >= winThreshold);
     }
 
-    private DungeonSimulationResult CreateDungeonSimulationResult(int wonFights, bool suceeded, DungeonEnemy dungeonEnemy)
+    private DungeonSimulationResult CreateDungeonSimulationResult(int wonFights, bool suceeded, DungeonEnemy dungeonEnemy, int characterLevel)
     {
         if (!suceeded)
             return DungeonSimulationResult.FailedResult(wonFights, dungeonEnemy);
 
         var xp = _gameFormulasService.GetExperienceForDungeonEnemy(dungeonEnemy);
+        var gold = _gameFormulasService.GetGoldForDungeonEnemy(dungeonEnemy);
 
-        // TODO: Add logic for gold calculations or possibly just skip it? Does it even matter? Might matter a bit for the tower and twister
-        // remeber about items as well - Even number is normal item, 5th and 10th are epics, otherwise gold (twister/sandstorm 50th is epic item).
-        // for tower shadow world and loop of idols it is epic without gold value guaranteed.
-        var result = new DungeonSimulationResult(true, xp, 0, wonFights, dungeonEnemy);
+        Item? item = null;
+        if (_gameFormulasService.DoesDungeonEnemyDropItem(dungeonEnemy))
+        {
+            item = _itemGenerator.GenerateItem(Math.Min(dungeonEnemy.Level, characterLevel));
+        }
+
+        var result = new DungeonSimulationResult(true, xp, gold, item, wonFights, dungeonEnemy);
 
         return result;
     }
