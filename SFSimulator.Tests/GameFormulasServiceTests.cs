@@ -105,6 +105,29 @@ public class GameFormulasServiceTests
     }
 
     [TestMethod]
+    [DataRow(1, 1, 6.5)]
+    [DataRow(1, 2, 9)]
+    [DataRow(1, 6, 32)]
+    [DataRow(1, 9, 154)]
+    [DataRow(10, 9, 144_249.1)]
+    [DataRow(11, 4, 228_866.2)]
+    [DataRow(16, 2, 287_140.4)]
+    [DataRow(99, 711, 2_747_370.9)]
+    [DataRow(98, 5, 318_717)]
+    [DataRow(98, 100, 7_386_146.1)]
+    public void GetGoldForDungeonEnemey_gives_gold_or_item_with_gold_value(int dungeonPosition, int enemyPosition, double expectedGold)
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
+
+        var dungeonEnemy = dungeonProvider.GetDungeonEnemy(dungeonPosition, enemyPosition);
+
+        var gold = gameFormulaService.GetGoldForDungeonEnemy(dungeonEnemy);
+
+        Assert.AreEqual((decimal)expectedGold, gold);
+    }
+
+    [TestMethod]
     public void GetGoldForDungeonEnemy_does_not_give_gold_or_item_for_dungeons_in_shadow_loop()
     {
         var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
