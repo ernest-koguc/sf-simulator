@@ -3,6 +3,7 @@
 public class GameFormulasService : IGameFormulasService
 {
     private ICurves Curves { get; init; }
+
     public GameFormulasService(ICurves curves)
     {
         Curves = curves ?? throw new ArgumentNullException(nameof(curves));
