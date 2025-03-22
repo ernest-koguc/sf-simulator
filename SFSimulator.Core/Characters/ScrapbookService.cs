@@ -101,6 +101,11 @@ public class ScrapbookService : IScrapbookService
             simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + 1) / CoreShared.SCRAPBOOK_LIMIT);
         }
     }
+    public void UpdateScrapbook(SimulationContext simulationContext, int guildRaidPictures)
+    {
+        var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
+        simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + guildRaidPictures) / CoreShared.SCRAPBOOK_LIMIT);
+    }
 
     private bool IsNotMirrorDungeon(DungeonEnemy dungeonEnemy) => dungeonEnemy is not { Dungeon: { Position: 9 }, Position: 10 };
     private bool IsViablePictureDungeon(DungeonEnemy dungeonEnemy) => dungeonEnemy.Dungeon.Type is DungeonTypeEnum.Default or DungeonTypeEnum.Tower or DungeonTypeEnum.LoopOfIdols;

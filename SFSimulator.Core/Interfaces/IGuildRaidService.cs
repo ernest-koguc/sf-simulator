@@ -2,6 +2,6 @@
 
 public interface IGuildRaidService
 {
-    void Progress(int currentDay, SimulationContext simulationContext);
+    void Progress(int currentDay, SimulationContext simulationContext, Action<int>? addGuildRaidPictures = null);
     void SetUpGuildRaidsState(SimulationContext simulationContext, List<GuildRaidRequirements>? guildRaidRequirements = null);
 }

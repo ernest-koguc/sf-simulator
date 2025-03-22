@@ -4,6 +4,7 @@ using Radzen;
 using SFSimulator.Frontend;
 using SpawnDev.BlazorJS;
 using SpawnDev.BlazorJS.WebWorkers;
+using System.Diagnostics;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -13,13 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddRadzenComponents();
 builder.Services.AddBlazorJSRuntime();
 builder.Services.AddWebWorkerService();
-
-//builder.Services.AddBlazorDB(options =>
-//{
-//    options.Name = Constants.DatabaseName;
-//    options.Version = Constants.DatabaseVersion;
-//    options.StoreSchemas = new() { SchemaHelper.GetStoreSchema<SavedResultEntity>() };
-//});
+builder.Services.AddScoped<Stopwatch>();
 
 builder.Services.RegisterSimulatorCore();
 

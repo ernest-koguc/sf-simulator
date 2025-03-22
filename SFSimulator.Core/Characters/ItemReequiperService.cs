@@ -1,6 +1,6 @@
 namespace SFSimulator.Core;
 
-public class ItemReequiperService(IRuneQuantityProvider runeQuantityProvider, IRuneValueProvider runeValueProvider,
+public class ItemReequiperService(IRuneValueProvider runeValueProvider,
         IGemTypeUsageProvider gemTypeUsageProvider, IBlackSmithAdvisor blackSmithAdvisor, IGuildKnightsProvider guildKnightsProvider) : IItemReequiperService
 {
     public ReequipOptions Options { get; set; } = new(10, 1, 10, 1, 1.5D);
@@ -29,7 +29,7 @@ public class ItemReequiperService(IRuneQuantityProvider runeQuantityProvider, IR
     private List<EquipmentItem> ReequipItems(ClassType classType, List<EquipmentItem> oldItems, SimulationContext simulationContext, int day, bool upgradeItems)
     {
         var itemComparer = new ClassAwareItemComparer(classType);
-        var runesQuantity = runeQuantityProvider.GetRunesQuantity(day);
+        var runesQuantity = simulationContext.RuneQuantity;
         var itemQualityRune = runeValueProvider.GetRuneValue(RuneType.ItemQuality, runesQuantity);
         var knights = guildKnightsProvider.GetKnightsAmount(day);
         var isSecondWeaponSlot = false;
@@ -90,6 +90,11 @@ public class ItemReequiperService(IRuneQuantityProvider runeQuantityProvider, IR
                 case ItemType.Shield:
                 default:
                     break;
+            }
+
+            if (simulationContext.Level > 66)
+            {
+                itemBuilder.WithEnchantment();
             }
 
             newItems.Add(itemBuilder.Build());

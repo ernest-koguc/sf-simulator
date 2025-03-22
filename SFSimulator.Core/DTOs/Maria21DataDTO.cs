@@ -1,4 +1,7 @@
-﻿namespace SFSimulator.Core;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace SFSimulator.Core;
 
 public class Maria21DataDTO
 {
@@ -29,6 +32,13 @@ public class Maria21DataDTO
     public GroupData Group { get; set; } = null!;
     public SFCompanions? Companions { get; set; } = null!;
     public SFToolsPets Pets { get; set; } = null!;
+    public SFToolsRunes? Idle { get; set; } = null!;
+}
+
+public class SFToolsRunes
+{
+    [JsonConverter(typeof(RunesJsonConverter))]
+    public int Runes { get; set; }
 }
 
 public class Toilet
@@ -202,4 +212,26 @@ public class Witch
     public int Items { get; set; }
     public int ItemsNext { get; set; }
     public int Item { get; set; }
+}
+
+public class RunesJsonConverter : JsonConverter<int>
+{
+    public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var doc = JsonDocument.ParseValue(ref reader);
+        var val = doc.RootElement.GetRawText();
+        if (string.IsNullOrWhiteSpace(val))
+            return 0;
+        var vals = val.Split("e+");
+
+        if (vals.Length > 1)
+            return int.Parse(vals[1]);
+
+        var intVal = int.Parse(vals[0]);
+        return (int)Math.Floor(Math.Log10(intVal));
+    }
+    public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue("1E+" + value);
+    }
 }

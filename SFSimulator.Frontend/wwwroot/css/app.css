@@ -51,7 +51,7 @@ html, body {
     --rz-secondary-darker: #30b572 !important;
     --rz-form-field-label-focus-color: var(--rz-secondary) !important;
     --rz-input-focus-border: 1px solid var(--rz-secondary) !important;
-    --rz-accordion-item-background-color: unsert !important;
+    --rz-accordion-item-background-color: unset !important;
     --rz-input-background-color: rgba(0,0,0,0.3);
 }
 

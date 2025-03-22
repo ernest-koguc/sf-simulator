@@ -2,6 +2,7 @@
 using Radzen;
 using SFSimulator.Core;
 using SpawnDev.BlazorJS.WebWorkers;
+using System.Diagnostics;
 
 namespace SFSimulator.Frontend.Pages.SimulatorPage;
 
@@ -10,10 +11,11 @@ public partial class SimulatorPage
     [Inject]
     private WebWorkerService WebWorkerService { get; set; } = default!;
     [Inject]
-    private DialogService DialogService { get; set; } = default!;
+    private NotificationService NotificationService { get; set; } = default!;
+    [Inject]
+    private Stopwatch Stopwatch { get; set; } = default!;
     private SimulationResult? SimulationResult { get; set; }
     private SimulationContext Options { get; set; } = new();
-    private SimulationContext? ContextAfterSimulation { get; set; }
     private bool IsSimulating { get; set; } = false;
     private int ProgressValue { get; set; }
     private string ProgressText { get; set; } = string.Empty;
@@ -25,35 +27,42 @@ public partial class SimulatorPage
             return;
         }
 
-        Options = context;
-        var copy = Options.Copy();
-        ContextAfterSimulation = copy;
+        SimulationResult = null;
+
         var webWorker = await WebWorkerService.GetWebWorker();
-        if (webWorker is not null)
+        if (webWorker is null)
         {
-            IsSimulating = true;
-            ProgressText = "Current day: 1";
-            SimulationResult = null;
-            StateHasChanged();
-            try
-            {
-                var service = webWorker.GetService<IGameLoopService>();
-                SimulationResult = await service.Run(copy, simulationProgress =>
-                {
-                    ProgressValue = simulationProgress.Progress;
-                    ProgressText = $"Current day: {simulationProgress.CurrentDay}";
-                    StateHasChanged();
-                });
-                Console.WriteLine(SimulationResult?.AfterSimulation.BaseStat);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            IsSimulating = false;
-            ProgressValue = 0;
-            ProgressText = string.Empty;
-            StateHasChanged();
+            NotificationService.Error("ServiceWorker is not available in your browser, please try enabling it and try again.");
+            return;
         }
+
+        IsSimulating = true;
+        ProgressText = "Current day: 1";
+        StateHasChanged();
+
+        try
+        {
+            var service = webWorker.GetService<IGameLoopService>();
+            Stopwatch.Restart();
+            SimulationResult = await service.Run(context, simulationProgress =>
+            {
+                ProgressValue = simulationProgress.Progress;
+                ProgressText = $"Current day: {simulationProgress.CurrentDay}";
+                StateHasChanged();
+            });
+            Console.WriteLine($"Simulation finished, took {Stopwatch.ElapsedMilliseconds}ms");
+            Stopwatch.Stop();
+        }
+        catch (Exception ex)
+        {
+            Stopwatch.Stop();
+            Console.WriteLine(ex);
+            NotificationService.Error("Simulation resulted in errors, if problems persist please reach out to me on discord.");
+        }
+
+        IsSimulating = false;
+        ProgressValue = 0;
+        ProgressText = string.Empty;
+        StateHasChanged();
     }
 }

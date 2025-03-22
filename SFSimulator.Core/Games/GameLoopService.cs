@@ -7,7 +7,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     IWeeklyTasksRewardProvider weeklyTasksRewardProvider, IScheduler scheduler, ICharacterDungeonProgressionService characterDungeonProgressionService,
     IExpeditionService expeditionService, IBaseStatsIncreasingService baseStatsIncreasingService, IScrapbookService scrapbookService,
     IPotionService potionService, IPortalService portalService, IGuildRaidService guildRaidService, IPetProgressionService petProgressionService,
-    IAuraProgressService auraProgressService) : IGameLoopService
+    IAuraProgressService auraProgressService, IRuneQuantityProvider runeQuantityProvider) : IGameLoopService
 {
     private readonly IThirstSimulator _thirstSimulator = thirstSimulator;
     private readonly IExpeditionService _expeditionService = expeditionService;
@@ -23,6 +23,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private readonly IGuildRaidService _guildRaidService = guildRaidService;
     private readonly IPetProgressionService _petProgressionService = petProgressionService;
     private readonly IAuraProgressService _auraProgressService = auraProgressService;
+    private readonly IRuneQuantityProvider _runeQuantityProvider = runeQuantityProvider;
 
     private readonly List<ItemType> CurrentItemTypesForWitch = [];
     private List<EventType> CurrentEvents { get; set; } = [];
@@ -148,6 +149,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
         _guildRaidService.SetUpGuildRaidsState(simulationContext);
 
+        _runeQuantityProvider.Setup(simulationContext);
+
         SimulatedDays = [];
     }
 
@@ -159,6 +162,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         PerformScheduleActions(schedule);
 
         SellItemsToWitch();
+
+        _runeQuantityProvider.IncreaseRuneQuantity(SimulationContext, CurrentDay);
 
         _auraProgressService.IncreaseAuraProgress(SimulationContext, CurrentEvents.Contains(EventType.Toilet));
 
@@ -194,7 +199,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         GiveCalendarRewardToPlayer(calendarReward);
 
         _portalService.Progress(CurrentDay, SimulationContext);
-        _guildRaidService.Progress(CurrentDay, SimulationContext);
+        _guildRaidService.Progress(CurrentDay, SimulationContext,
+            (newPictures) => _scrapbookService.UpdateScrapbook(SimulationContext, newPictures));
 
         DoPetsProgression();
     }
@@ -220,7 +226,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
     private void DoDungeonProgression()
     {
-        if (SimulationContext.DoDungeons)
+        if (!SimulationContext.DoDungeons)
         {
             return;
         }

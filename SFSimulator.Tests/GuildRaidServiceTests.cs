@@ -27,8 +27,8 @@ public class GuildRaidServiceTests
         var guildRaidService = DependencyProvider.Get<IGuildRaidService>();
         var simulationContext = new SimulationContext();
         simulationContext.GuildRaids = 49;
-        List<GuildRaidRequirements> soloPortalRequirements = [new(50, 10, 300)];
-        guildRaidService.SetUpGuildRaidsState(simulationContext, soloPortalRequirements);
+        List<GuildRaidRequirements> guildRaidRequirements = [new(50, 10, 300)];
+        guildRaidService.SetUpGuildRaidsState(simulationContext, guildRaidRequirements);
 
         guildRaidService.Progress(1, simulationContext);
         Assert.AreEqual(49, simulationContext.GuildRaids, "Guild raid level should not increase when requirements are not met");
@@ -42,5 +42,41 @@ public class GuildRaidServiceTests
 
         guildRaidService.Progress(10, simulationContext);
         Assert.AreEqual(50, simulationContext.GuildRaids, "Guild raid level should increase when requirements are met");
+    }
+
+    [TestMethod]
+    public void Progress_increases_the_guild_bonuses()
+    {
+        var guildRaidService = DependencyProvider.Get<IGuildRaidService>();
+        var simulationContext = new SimulationContext();
+        simulationContext.GuildRaids = 49;
+        simulationContext.Level = 300;
+        simulationContext.GoldBonus.GuildBonus = 98;
+        simulationContext.ExperienceBonus.GuildBonus = 98;
+
+        List<GuildRaidRequirements> guildRaidRequirements = [new(50, 10, 300)];
+        guildRaidService.SetUpGuildRaidsState(simulationContext, guildRaidRequirements);
+
+        guildRaidService.Progress(10, simulationContext);
+        Assert.AreEqual(100, simulationContext.GoldBonus.GuildBonus);
+        Assert.AreEqual(100, simulationContext.ExperienceBonus.GuildBonus);
+    }
+
+    [TestMethod]
+    public void Progress_does_not_increase_guild_bonus_over_the_cap()
+    {
+        var guildRaidService = DependencyProvider.Get<IGuildRaidService>();
+        var simulationContext = new SimulationContext();
+        simulationContext.GuildRaids = 49;
+        simulationContext.Level = 300;
+        simulationContext.GoldBonus.GuildBonus = 200;
+        simulationContext.ExperienceBonus.GuildBonus = 200;
+
+        List<GuildRaidRequirements> guildRaidRequirements = [new(50, 10, 300)];
+        guildRaidService.SetUpGuildRaidsState(simulationContext, guildRaidRequirements);
+
+        guildRaidService.Progress(10, simulationContext);
+        Assert.AreEqual(200, simulationContext.GoldBonus.GuildBonus);
+        Assert.AreEqual(200, simulationContext.ExperienceBonus.GuildBonus);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFSimulator.Core;
+using System;
 using System.Linq;
 
 namespace SFSimulator.Tests;
@@ -37,6 +38,45 @@ public class DungeonProviderTests
             Assert.IsTrue(enemy.LightningResistance >= 0 && enemy.LightningResistance <= 75, $"{nameof(enemy.LightningResistance)} out of range for dungeon position {enemy.Dungeon.Position}, enemy position {enemy.Position}");
             Assert.IsTrue(enemy.FirstWeapon?.RuneValue >= 0 && enemy.FirstWeapon?.RuneValue <= 60, $"Fire resistance out of range for dungeon position {enemy.Dungeon.Position}, enemy position {enemy.Position}");
             Assert.IsTrue(enemy.FirstWeapon?.RuneType == RuneType.None ? enemy.FirstWeapon?.RuneValue == 0 : enemy.FirstWeapon?.RuneValue > 0, $"Invalid weapon rune {enemy.Dungeon.Position}, enemy position {enemy.Position}");
+        }
+    }
+
+    [TestMethod]
+    public void GetAllDungeons_all_dungeons_and_enemies_have_names()
+    {
+        var service = DependencyProvider.Get<IDungeonProvider>();
+
+        var dungeons = service.GetAllDungeons(new SimulationContext());
+
+        foreach (var enemy in dungeons.SelectMany(d => d.DungeonEnemies))
+        {
+            string? name = null;
+            try
+            {
+                name = enemy.Name;
+            }
+            catch (Exception)
+            {
+                Assert.Fail($"Dungeon position {enemy.Dungeon.Position}, enemy position {enemy.Position} does not have a name");
+            }
+
+            if (name == string.Empty)
+            {
+                Assert.Inconclusive($"Dungeon position {enemy.Dungeon.Position}, enemy position {enemy.Position} has an empty name");
+            }
+
+        }
+
+        foreach (var dungeon in dungeons)
+        {
+            try
+            {
+                var name = dungeon.Name;
+            }
+            catch (Exception)
+            {
+                Assert.Fail($"Dungeon position {dungeon.Position} does not have a name");
+            }
         }
     }
 }

@@ -11,5 +11,5 @@ public static class NotificationServiceExtensions
     public static void Warning(this NotificationService service, string summary, string detail = "")
         => service.Notify(NotificationSeverity.Warning, summary, detail);
     public static void Error(this NotificationService service, string summary, string detail = "")
-        => service.Notify(NotificationSeverity.Error, summary, detail);
+        => service.Notify(NotificationSeverity.Error, summary, detail, 6000);
 }

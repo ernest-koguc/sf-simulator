@@ -11,21 +11,41 @@ public class GuildRaidService : IGuildRaidService
         }
 
         var guildRaid = simulationContext.GuildRaids;
+        var currentGuildRaidRequirement = GuildRaidRequirements.FirstOrDefault(r => r.GuildRaidLevel == guildRaid);
         GuildRaidRequirements = GuildRaidRequirements
-            .SkipWhile(e => e.GuildRaidLevel < guildRaid)
-            .Iterate((prev, next) => next with { MinimumDays = next.MinimumDays - prev.MinimumDays })
+            .SkipWhile(r => r.GuildRaidLevel <= guildRaid)
+            .Select(r => r with { MinimumDays = r.MinimumDays - currentGuildRaidRequirement.MinimumDays })
             .ToList();
     }
 
-    public void Progress(int currentDay, SimulationContext simulationContext)
+    public void Progress(int currentDay, SimulationContext simulationContext, Action<int>? addGuildRaidPictures = null)
     {
         var guildRaids = simulationContext.GuildRaids + 1;
-        var newGuildRaidLvel = GuildRaidRequirements
+        var newGuildRaidLevel = GuildRaidRequirements
             .FirstOrDefault(r => r.GuildRaidLevel == guildRaids && r.MinimumDays <= currentDay && r.MinimumLevel <= simulationContext.Level);
-        if (newGuildRaidLvel != default)
+        if (newGuildRaidLevel != default)
         {
-            simulationContext.GuildRaids = newGuildRaidLvel.GuildRaidLevel;
-            GuildRaidRequirements.Remove(newGuildRaidLvel);
+            var difference = newGuildRaidLevel.GuildRaidLevel - simulationContext.GuildRaids;
+            simulationContext.GuildRaids = newGuildRaidLevel.GuildRaidLevel;
+            GuildRaidRequirements.Remove(newGuildRaidLevel);
+
+            if (difference <= 0)
+            {
+                return;
+            }
+
+            if (addGuildRaidPictures is not null)
+            {
+                addGuildRaidPictures(difference);
+            }
+
+            if (simulationContext.GuildRaids <= 50)
+            {
+                var newExpGuildBonus = simulationContext.ExperienceBonus.GuildBonus + 2 * difference;
+                simulationContext.ExperienceBonus.GuildBonus = Math.Min(200, newExpGuildBonus);
+                var newGoldGuildBonus = simulationContext.GoldBonus.GuildBonus + 2 * difference;
+                simulationContext.GoldBonus.GuildBonus = Math.Min(200, newGoldGuildBonus);
+            }
         }
     }
 

@@ -8,14 +8,30 @@ public class RuneQuantityProvider : IRuneQuantityProvider
         RuneQuantity = GetDefaultRuneQuantity();
     }
 
-    public void Setup(ICollection<DayRuneQuantity> quantity)
+    public void Setup(SimulationContext simulationContext, ICollection<DayRuneQuantity>? quantity = null)
     {
-        RuneQuantity = quantity.ToArray();
+        RuneQuantity = quantity?.ToArray() ?? GetDefaultRuneQuantity();
+        var lastRecord = RuneQuantity.LastOrDefault(r => r.Quantity <= simulationContext.RuneQuantity);
 
-        if (quantity.Count == 0) RuneQuantity = [default];
+        RuneQuantity = RuneQuantity
+            .SkipWhile(e => e.Quantity <= simulationContext.RuneQuantity)
+            .Select(r => r with { Day = r.Day - lastRecord.Day })
+            .ToArray();
     }
 
-    public int GetRunesQuantity(int day) => RuneQuantity.Last((e) => e.Day <= day).Quantity;
+    public void IncreaseRuneQuantity(SimulationContext simulationContext, int day)
+    {
+        if (simulationContext.RuneQuantity >= 100)
+        {
+            return;
+        }
+
+        var runeQuantity = RuneQuantity.LastOrDefault((e) => e.Day <= day);
+        if (runeQuantity != default)
+        {
+            simulationContext.RuneQuantity = runeQuantity.Quantity;
+        }
+    }
 
     private DayRuneQuantity[] GetDefaultRuneQuantity()
     {

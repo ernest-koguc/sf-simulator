@@ -19,15 +19,17 @@ public class PortalService : IPortalService
         }
 
         var soloPortal = (int)simulationContext.SoloPortal;
+        var currentSoloPortalRequirement = SoloPortalRequirements.FirstOrDefault(r => r.PortalLevel == soloPortal);
         SoloPortalRequirements = SoloPortalRequirements
-            .SkipWhile(e => e.PortalLevel < soloPortal)
-            .Iterate((prev, next) => next with { MinimumDays = next.MinimumDays - prev.MinimumDays })
+            .SkipWhile(e => e.PortalLevel <= soloPortal)
+            .Select(r => r with { MinimumDays = r.MinimumDays - currentSoloPortalRequirement.MinimumDays })
             .ToList();
 
         var guildPortal = (int)simulationContext.GuildPortal;
+        var currentGuildPortalRequirement = GuildPortalRequirements.FirstOrDefault(r => r.PortalLevel == guildPortal);
         GuildPortalRequirements = GuildPortalRequirements
-            .SkipWhile(e => e.PortalLevel < guildPortal)
-            .Iterate((prev, next) => next with { MinimumDays = next.MinimumDays - prev.MinimumDays })
+            .SkipWhile(e => e.PortalLevel <= guildPortal)
+            .Select(r => r with { MinimumDays = r.MinimumDays - currentGuildPortalRequirement.MinimumDays })
             .ToList();
     }
 

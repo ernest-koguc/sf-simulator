@@ -40,7 +40,8 @@
 
 <script>
     window.addEventListener('message', event => {
-        if (event.origin.indexOf('sftools.mar21.eu') != -1)
+        if (event.origin.indexOf('sftools.mar21.eu') != -1) {
             DotNet.invokeMethodAsync('SFSimulator.Frontend', 'PostSfToolsMessage', event.data)
+        }
     });
 </script>

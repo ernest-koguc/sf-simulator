@@ -38,6 +38,7 @@
                                             <Numeric Icon="XP" Name="Experience" Label="Experience" Min="0" Max="1_500_000_000" @bind-Value="@Options.Experience"/>
                                             <DropDown Icon="Mount" Name="Mount" Label="Mount" @bind-Value="@Options.Mount" />
                                             <Numeric Icon="Hydra" Name="Hydra" Label="Hydra" Min="0" Max="20" @bind-Value="@Options.HydraHeads"/>
+                                            <Numeric Name="GuildRaids" Label="Guild Raids" Min="0" Max="50" @bind-Value="@Options.GuildRaids"/>
                                         </div>
                                     </RadzenColumn>
                                     <RadzenColumn Size="12" SizeXS="6" class="d-flex">
@@ -180,7 +181,15 @@
                                             @* TODO: Maybe this should be disabled if we don't do dungeon progression, also add dynamic validation for Mana level based on the aura level *@
                                             <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
                                             <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="66"/>
-                                            <Numeric Icon="Mana" Name="AuraFillLevel" Label="Aura Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
+                                            <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
+                                        </div>
+                                    </RadzenColumn>
+                                    <RadzenColumn class="d-flex">
+                                        <div class="d-flex flex-column">
+                                            <Numeric Icon="SoloPortal" Name="SoloPortal" Label="Solo Portal" Min="0" Max="50" Step="1" @bind-Value="@Options.SoloPortal"/>
+                                            <Numeric Icon="GuildPortal" Name="GuildPortal" Label="Guild Portal" Min="0" Max="50" Step="1" @bind-Value="@Options.GuildPortal"/>
+                                            <Numeric Name="GuildKnights" Label="Guild Knights" Min="0" Max="1000" Step="1" @bind-Value="@Options.GuildKnights"/>
+                                            <Numeric Icon="Runes" Name="RunesQuantity" Label="Runes" Min="0" Max="300" Step="1" @bind-Value="@Options.RuneQuantity" />
                                         </div>
                                     </RadzenColumn>
                                 </RadzenRow>
