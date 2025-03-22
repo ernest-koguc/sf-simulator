@@ -26,6 +26,20 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public ExpeditionOptions ExpeditionOptionsAfterSwitch { get; set; } = new(1.28M, 1.2M);
     public int ScrollsUnlocked { get; set; } = 9;
     public bool DoDungeons { get; set; }
+    public DungeonProgressionOptions DungeonOptions { get; set; } = new()
+    {
+        InstaKillPercentage = 1,
+        DungeonIterations = 1000,
+    };
+    public ReequipOptions ReequipOptions { get; set; } = new()
+    {
+        ChangeGear = true,
+        CharacterReequipLevelOffset = 10,
+        CharacterLevelOnLastEquipmentChange = -1,
+        CompanionReequipLevelOffset = 10,
+        CompanionLevelOnLastEquipmentChange = -1,
+        PreferredWeaponRange = 1.5D,
+    };
     public int GuildKnights { get; set; }
     public int GuildRaids { get; set; } = 0;
     public int RuneQuantity { get; set; }

@@ -139,7 +139,11 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
 
         if (SimulationContext.DoDungeons)
+        {
             _characterDungeonProgressionService.InitCharacterDungeonState(SimulationContext);
+            _characterDungeonProgressionService.ReequipOptions = SimulationContext.ReequipOptions;
+            _characterDungeonProgressionService.DungeonOptions = SimulationContext.DungeonOptions;
+        }
 
         var dungeons = _characterDungeonProgressionService.GetDungeons(SimulationContext);
 

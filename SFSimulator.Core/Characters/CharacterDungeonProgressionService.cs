@@ -1,13 +1,14 @@
-using System.Diagnostics;
-
 namespace SFSimulator.Core;
 
 public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider,
         IDungeonSimulator dungeonSimulator, IItemReequiperService itemReequiper) : ICharacterDungeonProgressionService
 {
     public delegate void OnDungeonKill(DungeonSimulationResult result);
-    public DungeonProgressionOptions Options { get; set; } = new DungeonProgressionOptions(0.01D, DefaultDungeonIterations);
-    private static int DefaultDungeonIterations => Debugger.IsAttached ? 1000 : 1000;
+    public DungeonProgressionOptions DungeonOptions { get; set; } = new()
+    {
+        InstaKillPercentage = 1,
+        DungeonIterations = 1000,
+    };
     public ReequipOptions ReequipOptions { set => itemReequiper.Options = value; }
 
     public IEnumerable<Dungeon> GetDungeons(SimulationContext simulationContext)
@@ -33,8 +34,9 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
         {
             // If the enemy was actually defeated in a side loop then skip
             if (enemy.IsDefeated) continue;
-            var winTreshold = (int)(Options.DungeonIterations * Options.InstaKillPercentage);
-            var result = dungeonSimulator.SimulateDungeon(enemy, simulationContext, simulationContext.Companions, Options.DungeonIterations, winTreshold);
+            var winThreshold = (int)(DungeonOptions.DungeonIterations * (DungeonOptions.InstaKillPercentage / 100));
+
+            var result = dungeonSimulator.SimulateDungeon(enemy, simulationContext, simulationContext.Companions, DungeonOptions.DungeonIterations, winThreshold);
 
             if (!result.Succeeded) continue;
 

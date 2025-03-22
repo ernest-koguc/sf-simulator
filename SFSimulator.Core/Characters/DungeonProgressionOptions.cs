@@ -1,3 +1,7 @@
 namespace SFSimulator.Core;
 
-public readonly record struct DungeonProgressionOptions(double InstaKillPercentage, int DungeonIterations);
+public class DungeonProgressionOptions
+{
+    public double InstaKillPercentage { get; set; }
+    public int DungeonIterations { get; set; }
+}

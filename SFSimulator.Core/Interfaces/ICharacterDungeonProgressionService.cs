@@ -2,7 +2,7 @@
 
 public interface ICharacterDungeonProgressionService
 {
-    DungeonProgressionOptions Options { get; set; }
+    DungeonProgressionOptions DungeonOptions { get; set; }
     ReequipOptions ReequipOptions { set; }
 
     IEnumerable<Dungeon> GetDungeons(SimulationContext simulationContext);

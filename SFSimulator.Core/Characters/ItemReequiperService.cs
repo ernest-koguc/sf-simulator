@@ -3,23 +3,46 @@ namespace SFSimulator.Core;
 public class ItemReequiperService(IRuneValueProvider runeValueProvider,
         IGemTypeUsageProvider gemTypeUsageProvider, IBlackSmithAdvisor blackSmithAdvisor, IGuildKnightsProvider guildKnightsProvider) : IItemReequiperService
 {
-    public ReequipOptions Options { get; set; } = new(10, 1, 10, 1, 1.5D);
+    public ReequipOptions Options { get; set; } = new()
+    {
+        ChangeGear = true,
+        CharacterReequipLevelOffset = 10,
+        CharacterLevelOnLastEquipmentChange = -1,
+        CompanionReequipLevelOffset = 10,
+        CompanionLevelOnLastEquipmentChange = -1,
+        PreferredWeaponRange = 1.5D,
+    };
 
     public bool ShouldReequip(int characterLevel)
-        => characterLevel >= Options.CharacterLevelOnLastEquipmentChange + Options.CharacterReequipLevelOffset;
+    {
+        if (Options.CharacterLevelOnLastEquipmentChange == -1)
+        {
+            Options.CharacterLevelOnLastEquipmentChange = characterLevel;
+            return false;
+        }
+        return characterLevel >= Options.CharacterLevelOnLastEquipmentChange + Options.CharacterReequipLevelOffset && Options.ChangeGear;
+    }
 
     public bool ShouldReequipCompanions(int characterLevel)
-        => characterLevel >= Options.CompanionLevelOnLastEquipmentChange + Options.CompanionReequipLevelOffset;
+    {
+        if (Options.CompanionLevelOnLastEquipmentChange == -1)
+        {
+            Options.CompanionLevelOnLastEquipmentChange = characterLevel;
+            return false;
+        }
+
+        return characterLevel >= Options.CompanionLevelOnLastEquipmentChange + Options.CompanionReequipLevelOffset && Options.ChangeGear;
+    }
 
     public void ReequipCharacter(SimulationContext simulationContext, int day)
     {
-        Options = Options with { CharacterLevelOnLastEquipmentChange = simulationContext.Level };
+        Options.CharacterLevelOnLastEquipmentChange = simulationContext.Level;
         simulationContext.Items = ReequipItems(simulationContext.Class, simulationContext.Items, simulationContext, day, true);
     }
 
     public void ReequipCompanions(SimulationContext simulationContext, int day)
     {
-        Options = Options with { CompanionLevelOnLastEquipmentChange = simulationContext.Level };
+        Options.CompanionLevelOnLastEquipmentChange = simulationContext.Level;
         foreach (var companion in simulationContext.Companions)
         {
             companion.Items = ReequipItems(companion.Class, companion.Items, simulationContext, day, false);
@@ -148,5 +171,12 @@ public class ItemReequiperService(IRuneValueProvider runeValueProvider,
         return possibleItems;
     }
 }
-public readonly record struct ReequipOptions(int CharacterReequipLevelOffset, int CharacterLevelOnLastEquipmentChange,
-        int CompanionReequipLevelOffset, int CompanionLevelOnLastEquipmentChange, double PreferredWeaponRange);
+public class ReequipOptions
+{
+    public bool ChangeGear { get; set; }
+    public int CharacterReequipLevelOffset { get; set; }
+    public int CharacterLevelOnLastEquipmentChange { get; set; }
+    public int CompanionReequipLevelOffset { get; set; }
+    public int CompanionLevelOnLastEquipmentChange { get; set; }
+    public double PreferredWeaponRange { get; set; }
+}

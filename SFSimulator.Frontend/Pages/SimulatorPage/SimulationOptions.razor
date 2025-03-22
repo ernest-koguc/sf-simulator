@@ -167,25 +167,34 @@
                                 </div>
                             </Template>
                             <ChildContent>
+                                @if (Options.DungeonsData is null)
+                                {
+                                    <RadzenRow>
+                                        <RadzenText class="rz-mt-2">
+                                            Currently dungeon can be enabled
+                                            only if data is polled via endpoint.
+                                        </RadzenText>
+                                    </RadzenRow>
+                                }
                                 <RadzenRow>
                                     <RadzenColumn class="d-flex">
                                         <div class="d-flex flex-column">
                                             <CheckBox Disabled="Options.DungeonsData is null" Name="DoDungeons" Label="Do Dungeons" @bind-Value="@Options.DoDungeons"/>
-                                            @if (Options.DungeonsData is null)
-                                            {
-                                                <RadzenText class="rz-mt-2">
-                                                    Currently dungeon can be enabled<br/> 
-                                                    only if data is polled via endpoint.
-                                                </RadzenText>
-                                            }
-                                            @* TODO: Maybe this should be disabled if we don't do dungeon progression, also add dynamic validation for Mana level based on the aura level *@
-                                            <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
-                                            <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="66"/>
-                                            <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
+                                            <Numeric Name="DungeonIterations" Label="Dungeon Iterations" @bind-Value="@Options.DungeonOptions.DungeonIterations" Min="1" Max="1_000_000"/>
+                                            <Numeric Name="InstaKillPercentage" Label="Minimum WR" @bind-Value="@Options.DungeonOptions.InstaKillPercentage" Min="0.01M" Max="100" Step="0.01M"/>
+                                            <CheckBox Name="ChangeGear" Label="Change Gear" @bind-Value="@Options.ReequipOptions.ChangeGear"/>
+                                            <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="PreferredWeaponRange" Label="Weapon Range" @bind-Value="@Options.ReequipOptions.PreferredWeaponRange" Min="1" Max="1.75M" Step="0.05"/>
+                                            <RadzenText>Character:</RadzenText>
+                                            <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="CharacterReequip" Label="Every X Level" @bind-Value="@Options.ReequipOptions.CharacterReequipLevelOffset" Min="1" Max="100"/>
+                                            <RadzenText>Companions:</RadzenText>
+                                            <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="CompanionReequip" Label="Every X Level" @bind-Value="@Options.ReequipOptions.CompanionReequipLevelOffset" Min="1" Max="100"/>
                                         </div>
                                     </RadzenColumn>
                                     <RadzenColumn class="d-flex">
                                         <div class="d-flex flex-column">
+                                            <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
+                                            <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="66"/>
+                                            <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
                                             <Numeric Icon="SoloPortal" Name="SoloPortal" Label="Solo Portal" Min="0" Max="50" Step="1" @bind-Value="@Options.SoloPortal"/>
                                             <Numeric Icon="GuildPortal" Name="GuildPortal" Label="Guild Portal" Min="0" Max="50" Step="1" @bind-Value="@Options.GuildPortal"/>
                                             <Numeric Name="GuildKnights" Label="Guild Knights" Min="0" Max="1000" Step="1" @bind-Value="@Options.GuildKnights"/>
