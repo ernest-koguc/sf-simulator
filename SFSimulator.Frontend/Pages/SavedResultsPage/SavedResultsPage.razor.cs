@@ -1,15 +1,35 @@
-﻿namespace SFSimulator.Frontend.Pages.SavedResultsPage;
+﻿using Microsoft.AspNetCore.Components;
+using Radzen;
+using Radzen.Blazor;
+using System.Linq.Dynamic.Core;
+
+namespace SFSimulator.Frontend.Pages.SavedResultsPage;
 
 public partial class SavedResultsPage
 {
-    //[Inject]
-    //private IMagicDbFactory DbFactory { get; set; } = default!;
+    [Inject]
+    private DatabaseService DatabaseService { get; set; } = default!;
+    private bool IsLoading { get; set; } = false;
+    private int Count { get; set; } = 0;
+    RadzenDataGrid<SavedResultEntity> Grid { get; set; } = default!;
+    private List<SavedResultEntity> SavedResults { get; set; } = default!;
 
-    protected override async Task OnParametersSetAsync()
+    private async Task LoadData(LoadDataArgs args)
     {
-        await base.OnParametersSetAsync();
+        IsLoading = true;
+        var query = (await DatabaseService.GetSavedResults()).AsQueryable();
+        if (!string.IsNullOrEmpty(args.Filter))
+        {
+            query = query.Where(args.Filter);
+        }
+        if (!string.IsNullOrEmpty(args.OrderBy))
+        {
+            query = query.OrderBy(args.OrderBy);
+        }
 
-        //var db = await DbFactory.GetDbManagerAsync(Constants.DatabaseName);
-        //var records = await db.GetAll<SavedResultEntity>();
+        SavedResults = query.ToList();
+        Count = SavedResults.Count;
+
+        IsLoading = false;
     }
 }

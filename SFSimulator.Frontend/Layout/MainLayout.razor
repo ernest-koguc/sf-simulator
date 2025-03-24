@@ -14,13 +14,13 @@
     <RadzenSidebar Responsive="false" @bind-Expanded="ShowMenu" Style="position: absolute;">
         <RadzenPanelMenu Visible="@ShowMenu" Style="">
             <RadzenPanelMenuItem Icon="hourglass_top" Text="Simulator" Path="/" Match="NavLinkMatch.All"></RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Icon="collections_bookmark" Text="Saved Results" Path="results"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Icon="collections_bookmark" Text="Saved Results" Path="saved-results"></RadzenPanelMenuItem>
             <RadzenPanelMenuItem Icon="edit_calendar" Text="Custom Schedule" Path="schedules"></RadzenPanelMenuItem>
             <RadzenPanelMenuItem Icon="science" Text="Experimental" Path="experimental"></RadzenPanelMenuItem>
         </RadzenPanelMenu>
     </RadzenSidebar>
     <RadzenBody Style="background-color: transparent;">
-        <RadzenRow>
+        <RadzenRow Style="height: 100%;">
             <RadzenColumn Size="12">
                 @Body
             </RadzenColumn>

@@ -15,6 +15,7 @@ builder.Services.AddRadzenComponents();
 builder.Services.AddBlazorJSRuntime();
 builder.Services.AddWebWorkerService();
 builder.Services.AddScoped<Stopwatch>();
+builder.Services.AddScoped<DatabaseService>();
 
 builder.Services.RegisterSimulatorCore();
 

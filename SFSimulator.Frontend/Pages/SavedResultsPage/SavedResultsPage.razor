@@ -1,4 +1,27 @@
-﻿
-@code {
+﻿@page "/saved-results"
 
-}
+<RadzenDataGrid Style="height: 100%;" @ref="Grid" IsLoading=@IsLoading Count="@Count" Data="@SavedResults" LoadData="@LoadData" AllowSorting="true" 
+    AllowFiltering="true" AllowPaging="false" FilterMode="FilterMode.Simple" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    <Columns>
+        <RadzenDataGridColumn Title="Name" Property="@nameof(SavedResultEntity.Name)"/>
+        <RadzenDataGridColumn Title="Started On" Property="@nameof(SavedResultEntity.Started)"/>
+        <RadzenDataGridColumn Title="Finished On" Property="@nameof(SavedResultEntity.Finished)"/>
+        <RadzenDataGridColumn Title="Duration" Property="@nameof(SavedResultEntity.Days)">
+            <Template Context="data">
+                @data.Days days
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Title="Milestones" Filterable="false" Sortable="false">
+            <Template Context="data">
+                Base stats: @data.BeforeSimulation.BaseStat -> @data.AfterSimulation.BaseStat <br />
+                Level: @data.BeforeSimulation.Level -> @data.AfterSimulation.Level
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Title="Last Modification" Property="@nameof(SavedResultEntity.LastModification)"/>
+    </Columns>
+    <EmptyTemplate>
+        <RadzenText>
+            Nothing saved so far. You can save simulation results in the <RadzenLink Path="/">Simulator</RadzenLink> page. 
+        </RadzenText>
+    </EmptyTemplate>
+</RadzenDataGrid>

@@ -1,0 +1,61 @@
+﻿@if (IsSaving)
+{
+    <RadzenTemplateForm TItem=FormModel Data="@Model" Submit="Save">
+        <RadzenRow AlignItems="AlignItems.Start">
+            <RadzenFormField Text="Name" Variant="Variant.Flat" Component="ResultName">
+                <RadzenTextBox MaxLength="32"  Name="ResultName" @bind-Value="Model.Name" AutoCompleteType="AutoCompleteType.Off"/>
+                <RadzenRequiredValidator Component="ResultName" Text="Name must be between 1 to 32 characters" Popup="true" Style="position: absolute; margin-top: 6rem;"/>
+            </RadzenFormField>
+            <RadzenButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Danger" Click="Cancel" Style="height: 41px;">
+                <RadzenIcon Icon="Close"/><span class="rz-ms-2">Cancel</span>
+            </RadzenButton>
+            <RadzenButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success">
+                <SfIcon Icon="Heart"/><span class="rz-ms-2">Confirm</span>
+            </RadzenButton>
+        </RadzenRow>
+    </RadzenTemplateForm>
+}
+else
+{
+    <div style="height: 61px;">
+        <RadzenButton Disabled="AlreadySaved" Click="StartSaving" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success">
+            <SfIcon Icon="Heart"/><span class="rz-ms-2">Save</span>
+        </RadzenButton>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public SimulationResult Result { get; set; } = default!;
+    [Inject]
+    private DatabaseService DatabaseService { get; set; } = default!;
+    [Inject]
+    private NotificationService NotificationService { get; set; } = default!;
+    private FormModel Model { get; set; } = new FormModel();
+    private bool IsSaving { get; set; } = false;
+    private bool AlreadySaved { get; set; } = false;
+
+    private void Cancel()
+    {
+        IsSaving = false;
+        Model.Name = string.Empty;
+    }
+
+    private void StartSaving()
+    {
+        IsSaving = true;
+    }
+
+    private async Task Save(FormModel form)
+    {
+        await DatabaseService.SaveResult(form.Name!, Result);
+        NotificationService.Success("Result has been saved!");
+        IsSaving = false;
+        AlreadySaved = true;
+    }
+
+    private class FormModel
+    {
+        public string Name { get; set; } = default!;
+    }
+}

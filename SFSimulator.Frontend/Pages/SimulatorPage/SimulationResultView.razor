@@ -1,10 +1,7 @@
 ﻿<RadzenCard class="rz-p-0 rz-w-fit-content bg-card" Style="max-width: 100%; width: 100% !important;">
     <RadzenRow JustifyContent="JustifyContent.SpaceBetween" Style="padding: 0.5rem 1rem; border-radius: var(--rz-card-border-radius);">
         <RadzenText TextStyle="TextStyle.H5" Text="Result" Style="align-self: center; margin-bottom: 0;"/>
-        <div>
-            <RadzenButton Variant="Variant.Text" ButtonStyle="ButtonStyle.Base"><SfIcon Icon="Load"/><span class="rz-ms-2">Copy to options</span></RadzenButton>
-            <RadzenButton Click="SaveResult" Variant="Variant.Text" ButtonStyle="ButtonStyle.Base"><SfIcon Icon="Load"/><span class="rz-ms-2">Save</span></RadzenButton>
-        </div>
+        <SaveResult Result="Result"/>
     </RadzenRow>
     <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" class="rz-px-4 rz-border-radius-2" Gap="0">
         <RadzenColumn Size="12" SizeLG="5" class="rz-p-4 rz-border-radius-2" Style="background-color: rgba(0,0,0,0.3)">
