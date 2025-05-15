@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 using SFSimulator.Core;
+using SFSimulator.Frontend.Extensions;
 using SpawnDev.BlazorJS.WebWorkers;
 using System.Diagnostics;
 
@@ -12,6 +13,8 @@ public partial class SimulatorPage
     private WebWorkerService WebWorkerService { get; set; } = default!;
     [Inject]
     private NotificationService NotificationService { get; set; } = default!;
+    [Inject]
+    private DialogService DialogService { get; set; } = default!;
     [Inject]
     private Stopwatch Stopwatch { get; set; } = default!;
     private SimulationResult? SimulationResult { get; set; }
@@ -52,12 +55,14 @@ public partial class SimulatorPage
             });
             Console.WriteLine($"Simulation finished, took {Stopwatch.ElapsedMilliseconds}ms");
             Stopwatch.Stop();
+            NotificationService.Info($"Simulation finished, took {Stopwatch.ElapsedMilliseconds}ms");
         }
         catch (Exception ex)
         {
             Stopwatch.Stop();
             Console.WriteLine(ex);
-            NotificationService.Error("Simulation resulted in errors, if problems persist please reach out to me on discord.");
+
+            await DialogService.OpenCrashReport("An error occured during simulation.", ex.Message + "\r\n" + (ex.StackTrace ?? ""));
         }
 
         IsSimulating = false;

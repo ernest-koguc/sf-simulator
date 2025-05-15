@@ -34,6 +34,19 @@ public partial class SimulationOptions
         }
     }
 
+    private async Task OpenMoreOptions()
+    {
+        var result = await DialogService.OpenAsync<SavedSimulationOptionsDialog>(SavedSimulationOptionsDialog.Title,
+        parameters: new Dictionary<string, object>
+        {
+            [nameof(SavedSimulationOptionsDialog.Options)] = Options
+        }, SavedSimulationOptionsDialog.DialogOptions);
+        if (result is SimulationContext data)
+        {
+            Options = data;
+        }
+    }
+
     private ValidationResult ValidateField(Expression<Func<SimulationContext, object?>> fieldToValidate)
     {
         var result = Validator.Validate(Options, options =>

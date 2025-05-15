@@ -17,7 +17,7 @@ public partial class SavedResultsPage
     private async Task LoadData(LoadDataArgs args)
     {
         IsLoading = true;
-        var query = (await DatabaseService.GetSavedResults()).AsQueryable();
+        var query = (await DatabaseService.SavedResults.Get()).AsQueryable();
         if (!string.IsNullOrEmpty(args.Filter))
         {
             query = query.Where(args.Filter);
@@ -27,9 +27,38 @@ public partial class SavedResultsPage
             query = query.OrderBy(args.OrderBy);
         }
 
+        Count = query.Count();
         SavedResults = query.ToList();
-        Count = SavedResults.Count;
 
         IsLoading = false;
+    }
+
+    private async Task ConfirmEdit(SavedResultEntity entity)
+    {
+        await Grid.UpdateRow(entity);
+    }
+
+    private async Task Save(SavedResultEntity entity)
+    {
+        await DatabaseService.SavedResults.Put(entity);
+    }
+
+    private async Task Edit(SavedResultEntity entity)
+    {
+        await Grid.EditRow(entity);
+    }
+
+    private async Task CancelEdit(SavedResultEntity entity)
+    {
+        var originalEntity = await DatabaseService.SavedResults.Get(entity.Id);
+        entity.Name = originalEntity.Name;
+        Grid.CancelEditRow(entity);
+    }
+
+
+    private async Task Remove(SavedResultEntity entity)
+    {
+        await DatabaseService.SavedResults.Remove(entity.Id);
+        await Grid.Reload();
     }
 }

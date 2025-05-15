@@ -2,21 +2,29 @@
     <RadzenRow JustifyContent="JustifyContent.SpaceBetween" Style="padding: 0.5rem 1rem; border-radius: var(--rz-card-border-radius);">
         <RadzenText TextStyle="TextStyle.H5" Text="Simulator" Style="align-self: center; margin-bottom: 0;"/>
         <span style="margin: 0 auto;"></span>
-        <RadzenButton Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Warning" Click="OpenEndpoint"><SfIcon Icon="Endpoint"/><span class="rz-ms-2">Endpoint</span></RadzenButton>
-        <RadzenButton Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary"><SfIcon Icon="Load"/><span class="rz-ms-2">Load</span></RadzenButton>
+        <RadzenStack Orientation="Orientation.Horizontal">
+            <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Warning" Shade="Shade.Lighter" Click="OpenEndpoint">
+                <RadzenIcon Icon="call_received" /><span class="rz-ms-2">Endpoint</span>
+            </RadzenButton>
+            <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Lighter" Click="OpenMoreOptions">
+                <RadzenIcon Icon="menu"/><span class="rz-ms-2">More</span>
+            </RadzenButton>
+        </RadzenStack>
     </RadzenRow>
     <RadzenTemplateForm TItem="SimulationContext" Data="Options" Submit="Submit" Style="width: 100%;height:100%;">
         <ChildContent Context="ctx">
             <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;" Gap="0">
                 <RadzenStack Style="border-bottom: var(--rz-border-base-600);" class="rz-p-4">
                     <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Gap="1rem">
-                        @* TODO: Adjust the validation *@
+                    </RadzenRow>
+                    <div class="d-flex flex-column flex-xxl-row align-items-center justify-content-center gap-1">
                         <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Dark" Text="Simulate"/>
                         <RadzenText>until</RadzenText>
                         <Numeric Variant="Variant.Outlined" Min="1" Name="Until" @bind-Value="@Options.FinishCondition.Until"/>
                         <DropDown Variant="Variant.Outlined" Name="FinishCondition" @bind-Value="@Options.FinishCondition.FinishWhen"/>
-                    </RadzenRow>
+                    </div>
                 </RadzenStack>
+                @* TODO: Adjust the validation *@
                 <RadzenAccordion Multiple="true">
                     <Items>
                         <RadzenAccordionItem>
@@ -27,27 +35,26 @@
                                         Character
                                     </div>
                                 </div>
+                                <div class='w-10'>
+
+                                </div>
                             </Template>
                             <ChildContent>
                                 <RadzenRow>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
-                                        <div class="d-flex flex-column">
+                                    <RadzenColumn Size="12" SizeXS="6" class="flex w-8 flex-col">
                                             <DropDown Name="Class" Label="Class" @bind-Value="@Options.Class" Filter="(e) => e != ClassType.Bert && e != ClassType.Mirror"/>
                                             <Numeric Icon="Level" Name="Level" Label="Level" Min="1" Max="800" @bind-Value="@Options.Level" Validator="() => ValidateField(o => o.Level)"/>
                                             <Numeric Icon="XP" Name="Experience" Label="Experience" Min="0" Max="1_500_000_000" @bind-Value="@Options.Experience"/>
                                             <DropDown Icon="Mount" Name="Mount" Label="Mount" @bind-Value="@Options.Mount" />
                                             <Numeric Icon="Hydra" Name="Hydra" Label="Hydra" Min="0" Max="20" @bind-Value="@Options.HydraHeads"/>
                                             <Numeric Name="GuildRaids" Label="Guild Raids" Min="0" Max="50" @bind-Value="@Options.GuildRaids"/>
-                                        </div>
                                     </RadzenColumn>
-                                    <RadzenColumn Size="12" SizeXS="6" class="d-flex">
-                                        <div class="d-flex flex-column">
+                                    <RadzenColumn Size="12" SizeXS="6" class="flex flex-col">
                                             <Numeric Name="BaseStrength" Label="Base Strength" Min="0" Max="2_000_000" @bind-Value="@Options.BaseStrength"/>
                                             <Numeric Name="BaseDexterity" Label="Base Dexterity" Min="0" Max="2_000_000" @bind-Value="@Options.BaseDexterity"/>
                                             <Numeric Name="BaseIntelligence" Label="Base Intelligence" Min="0" Max="2_000_000" @bind-Value="@Options.BaseIntelligence"/>
                                             <Numeric Name="BaseConstitution" Label="Base Constitution" Min="0" Max="2_000_000" @bind-Value="@Options.BaseConstitution"/>
                                             <Numeric Name="BaseLuck" Label="Base Luck" Min="0" Max="2_000_000" @bind-Value="@Options.BaseLuck"/>
-                                        </div>
                                     </RadzenColumn>
                                 </RadzenRow>
                             </ChildContent>
@@ -104,9 +111,7 @@
                                             <DropDown Icon="Wheel" Name="SpinAmount" Label="Spin Amount" @bind-Value="@Options.SpinAmount"/>
                                             <Numeric Icon="Guard" Name="DailyGuard" Label="Hours of Guard" 
                                                 Min="0" Max="24" @bind-Value="@Options.DailyGuard"/>
-                                            
-                                            @* // TODO SCHEDULE *@
-
+                                            <DropDown Name="EventSchedule" Label="Event Schedule" @bind-Value="@Options.EventSchedule"/>
                                         </div>
                                     </RadzenColumn>
                                     <RadzenColumn Size="12" SizeXS="6" class="d-flex">
@@ -169,7 +174,7 @@
                                 @if (Options.DungeonsData is null)
                                 {
                                     <RadzenRow>
-                                        <RadzenText class="rz-mt-2">
+                                        <RadzenText class="rz-my-6">
                                             Currently dungeon can be enabled
                                             only if data is polled via endpoint.
                                         </RadzenText>
@@ -228,6 +233,7 @@
                                         <div class="d-flex flex-column">
                                             <CheckBox Name="DoPetsDungeons" Label="Do Pets Dungeons" @bind-Value="Options.DoPetsDungeons"/>
                                             <p>Poll the pets data via sftools</p>
+                                            <br/>
                                             <p>Shadow Total Level: @Options.Pets.Elements[PetElementType.Shadow].Sum(p => p.Level)</p>
                                             <p>Light Total Level: @Options.Pets.Elements[PetElementType.Light].Sum(p => p.Level)</p>
                                             <p>Earth Total Level: @Options.Pets.Elements[PetElementType.Earth].Sum(p => p.Level)</p>

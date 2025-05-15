@@ -12,7 +12,7 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public bool SkipCalendar { get; set; } = true;
     public SpinAmountType SpinAmount { get; set; } = SpinAmountType.Max;
     public decimal DailyGuard { get; set; } = 23;
-    public Dictionary<(int Week, int Day), ScheduleDay> Schedule = new();
+    public EventScheduleType EventSchedule = EventScheduleType.Year2024Cycle;
     public int HydraHeads { get; set; } = 0;
     public int GoldPitLevel { get; set; } = 0;
     public int AcademyLevel { get; set; } = 0;
@@ -29,7 +29,7 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public DungeonProgressionOptions DungeonOptions { get; set; } = new()
     {
         InstaKillPercentage = 1,
-        DungeonIterations = 1000,
+        DungeonIterations = 100,
     };
     public ReequipOptions ReequipOptions { get; set; } = new()
     {

@@ -17,4 +17,14 @@ public static class DialogServiceExtension
         };
         return dialogService.OpenAsync<ProgressBar>(text);
     }
+
+    public static Task OpenCrashReport(this DialogService dialogService, string message, string details)
+    {
+        return dialogService.OpenAsync<CrashReportDialog>(CrashReportDialog.Title, new()
+            {
+                {nameof(CrashReportDialog.Message), message },
+                {nameof(CrashReportDialog.Details), details },
+            },
+            CrashReportDialog.DialogOptions);
+    }
 }

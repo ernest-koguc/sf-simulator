@@ -13,15 +13,15 @@
     </RadzenHeader>
     <RadzenSidebar Responsive="false" @bind-Expanded="ShowMenu" Style="position: absolute;">
         <RadzenPanelMenu Visible="@ShowMenu" Style="">
-            <RadzenPanelMenuItem Icon="hourglass_top" Text="Simulator" Path="/" Match="NavLinkMatch.All"></RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Icon="collections_bookmark" Text="Saved Results" Path="saved-results"></RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Icon="edit_calendar" Text="Custom Schedule" Path="schedules"></RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Icon="science" Text="Experimental" Path="experimental"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Icon="hourglass_top" Text="Simulator" Path="/" Match="NavLinkMatch.All" Click="ToggleMenu"/>
+            <RadzenPanelMenuItem Icon="favorite" Text="Saved Results" Path="saved-results" Click="ToggleMenu"/>
+            <RadzenPanelMenuItem Icon="edit_calendar" Text="Custom Schedule" Path="schedules" Click="ToggleMenu"/>
+            <RadzenPanelMenuItem Icon="science" Text="Experimental" Path="experimental" Click="ToggleMenu"/>
         </RadzenPanelMenu>
     </RadzenSidebar>
-    <RadzenBody Style="background-color: transparent;">
+    <RadzenBody Style="background-color: rgba(0,0,0,0.4);scrollbar-gutter: stable;">
         <RadzenRow Style="height: 100%;">
-            <RadzenColumn Size="12">
+            <RadzenColumn Size="12" Style="height: 100%;">
                 @Body
             </RadzenColumn>
         </RadzenRow>

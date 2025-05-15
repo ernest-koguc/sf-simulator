@@ -4,12 +4,12 @@
 <PageTitle>@Constants.PageTitle</PageTitle>
 
 <RadzenRow>
-    <RadzenColumn SizeLG="5" SizeMD="4" Size="12" >
-    <SimulationOptions @bind-Options:set="Simulate" @bind-Options:get="Options"/>
+    <RadzenColumn SizeLG="5" SizeMD="12" Size="12" class="justify-content-center d-flex">
+        <SimulationOptions @bind-Options:set="Simulate" @bind-Options:get="Options"/>
     </RadzenColumn>
     @if (SimulationResult is not null)
     {
-        <RadzenColumn SizeLG="7" SizeMD="8" Size="12">
+        <RadzenColumn SizeLG="7" SizeMD="12" Size="12">
             <SimulationResultView Result="@SimulationResult"/>
         </RadzenColumn>
     }

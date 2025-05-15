@@ -1,0 +1,24 @@
+﻿<RadzenStack class="h-100">
+    <RadzenText class="rz-color-danger">@Message</RadzenText>
+    <RadzenStack class="rz-p-3" Style="height: 200px; max-height: 200px; overflow-y: auto; overflow-x: clip;" Gap="0">
+        @if (!ShowDetails)
+        {
+            <div class="d-flex justify-content-center align-items-center h-100 w-100">
+                <RadzenButton Variant="Variant.Filled" Style="position: absolute; z-index: 1;" ButtonStyle="ButtonStyle.Info" Icon="visibility" 
+                Shade="Shade.Lighter" Click="() => ShowDetails = true" Text="Show details"/>
+            </div>
+        }
+        else 
+        {
+            var details = Details.Split([Environment.NewLine], StringSplitOptions.None);
+            foreach (var line in details)
+            {
+                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-base-100" Style="word-break: break-all;">@line</RadzenText>
+            }
+        }
+    </RadzenStack>
+    <RadzenText>If the problem reoccurs, contact me on discord: abus3r_</RadzenText>
+    <RadzenRow JustifyContent="JustifyContent.End">
+        <RadzenButton Variant="Variant.Filled" Shade="Shade.Lighter" ButtonStyle="ButtonStyle.Danger" Click="DialogService.Close">CLOSE</RadzenButton>
+    </RadzenRow>
+</RadzenStack>

@@ -33,7 +33,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private bool IsWitchEvent => CurrentEvents.Contains(EventType.Witch);
     private int CurrentDay { get; set; }
     private ContextSnapshot BeforeSimulation { get; set; } = default!;
-    private Dictionary<AchievementType, SimulationAchievement> Achievements { get; set; } = new();
+    private Dictionary<AchievementType, SimulationAchievement> Achievements { get; set; } = [];
     private List<SimulatedGains> SimulatedDays { get; set; } = null!;
     private SimulationContext SimulationContext { get; set; } = null!;
     private SimulatedGains CurrentDayGains { get; set; } = default!;
@@ -110,7 +110,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
             SimulatedDays = SimulatedDays,
             BeforeSimulation = BeforeSimulation,
             AfterSimulation = new(SimulationContext.BaseStat, SimulationContext.Level, SimulationContext.Experience),
-            Achievements = Achievements.Values.ToList()
+            Achievements = [.. Achievements.Values]
         };
     }
 
@@ -133,7 +133,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
         _calendarRewardProvider.ConfigureCalendar(SimulationContext.Calendar, SimulationContext.CalendarDay, SimulationContext.SkipCalendar);
 
-        _scheduler.SetCustomSchedule(SimulationContext.Schedule);
+        _scheduler.SetSchedule(SimulationContext.EventSchedule);
 
         SimulationContext.Potions = _potionService.GetPotions(SimulationContext.Class);
 
@@ -160,10 +160,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
     private void RunDay()
     {
-        var schedule = _scheduler.GetCurrentSchedule();
-        CurrentEvents = schedule.Events;
-
-        PerformScheduleActions(schedule);
+        CurrentEvents = _scheduler.GetEvents();
 
         SellItemsToWitch();
 
@@ -274,14 +271,6 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         }
     }
 
-    private void PerformScheduleActions(ScheduleDay schedule)
-    {
-        foreach (var action in schedule.Actions)
-        {
-            SimulationContext.PerformAction(_thirstSimulator.ThirstSimulationOptions, action);
-        }
-    }
-
     private void SellItemsToWitch()
     {
         CurrentItemTypesForWitch.Clear();
@@ -362,8 +351,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
     private void GiveGoldToCharacter(decimal gold, GainSource source)
     {
-        if (gold < 0)
-            throw new ArgumentOutOfRangeException(nameof(gold));
+        ArgumentOutOfRangeException.ThrowIfNegative(gold);
 
         SimulationContext.Gold += gold;
 

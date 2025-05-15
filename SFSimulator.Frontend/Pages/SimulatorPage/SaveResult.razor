@@ -6,21 +6,15 @@
                 <RadzenTextBox MaxLength="32"  Name="ResultName" @bind-Value="Model.Name" AutoCompleteType="AutoCompleteType.Off"/>
                 <RadzenRequiredValidator Component="ResultName" Text="Name must be between 1 to 32 characters" Popup="true" Style="position: absolute; margin-top: 6rem;"/>
             </RadzenFormField>
-            <RadzenButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Danger" Click="Cancel" Style="height: 41px;">
-                <RadzenIcon Icon="Close"/><span class="rz-ms-2">Cancel</span>
-            </RadzenButton>
-            <RadzenButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success">
-                <SfIcon Icon="Heart"/><span class="rz-ms-2">Confirm</span>
-            </RadzenButton>
+            <RadzenButton ButtonType="ButtonType.Button" Variant="Variant.Filled" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Lighter" Click="Cancel" Icon="close" Text="Cancel"/>
+            <RadzenButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" ButtonStyle="ButtonStyle.Success" Shade="Shade.Lighter" Icon="favorite" Text="Confirm"/>
         </RadzenRow>
     </RadzenTemplateForm>
 }
 else
 {
     <div style="height: 61px;">
-        <RadzenButton Disabled="AlreadySaved" Click="StartSaving" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Success">
-            <SfIcon Icon="Heart"/><span class="rz-ms-2">Save</span>
-        </RadzenButton>
+        <RadzenButton Disabled="AlreadySaved" Click="StartSaving" Variant="Variant.Filled" ButtonStyle="ButtonStyle.Success" Shade="Shade.Lighter" Icon="favorite" Text="Save"/>
     </div>
 }
 
@@ -48,7 +42,18 @@ else
 
     private async Task Save(FormModel form)
     {
-        await DatabaseService.SaveResult(form.Name!, Result);
+        var savedResultEntity = new SavedResultEntity
+        {
+            Name = form.Name,
+            Started = DateOnly.FromDateTime(DateTime.Now),
+            Finished = DateOnly.FromDateTime(DateTime.Now).AddDays(Result.Days),
+            Days = Result.Days,
+            BeforeSimulation = Result.BeforeSimulation,
+            AfterSimulation = Result.AfterSimulation,
+            SimulatedDays = Result.SimulatedDays,
+            Achievements = Result.Achievements,
+        };
+        await DatabaseService.SavedResults.Put(savedResultEntity);
         NotificationService.Success("Result has been saved!");
         IsSaving = false;
         AlreadySaved = true;

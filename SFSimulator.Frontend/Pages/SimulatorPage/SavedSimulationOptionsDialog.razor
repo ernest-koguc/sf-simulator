@@ -1,0 +1,54 @@
+﻿<RadzenStack class="h-100">
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            <RadzenText TextStyle="TextStyle.H6">Save options for later</RadzenText>
+            <RadzenTemplateForm TItem="FormModel" Data="Model" Submit="SaveOptions">
+                <RadzenRow AlignItems="AlignItems.Center" class="rz-px-4">
+                    <RadzenFormField Component="Name" Text="Name" Variant="Variant.Text">
+                        <RadzenTextBox Disabled="IsSaved"  MaxLength="20" @bind-Value="@Model.Name" Name="Name" AutoCompleteType="AutoCompleteType.Off" focu/>
+                        <RadzenRequiredValidator Component="Name" Text="Name must be between 1 to 20 characters" Popup="true" Style="position: absolute; margin-top: 6rem;"/>
+                    </RadzenFormField>
+                    <RadzenButton Disabled="IsSaved" ButtonType="ButtonType.Submit" Variant="Variant.Filled" ButtonStyle="ButtonStyle.Success" Shade="Shade.Lighter" Icon="favorite" Text="Save"/>
+                </RadzenRow>
+            </RadzenTemplateForm>
+            <hr />
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenRow class="flex-grow-1 overflow-auto" Style="scrollbar-gutter: stable;">
+        <RadzenColumn Size="12">
+            <RadzenText TextStyle="TextStyle.H6">Previously saved options</RadzenText>
+            <RadzenDataList Data="SavedOptions" LoadData="LoadData" AllowVirtualization="false" AllowPaging="false" Count="Count" @ref="DataList" ShowEmptyMessage="true"
+                IsLoading="IsLoading">
+                <Template Context="savedOption">
+                    <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
+                        <RadzenColumn Size="5" SizeSM="7">
+                            <RadzenRow Gap="0.25rem">
+                                <RadzenColumn>
+                                    <RadzenText Text="Name" TextStyle="TextStyle.Overline" class="rz-my-0"/>
+                                    <RadzenText Text="@savedOption.Name" TextStyle="TextStyle.Body1" class="rz-my-0 rz-text-truncate" Style="width: 165px;" title="@savedOption.Name"/>
+                                </RadzenColumn>
+                                <RadzenColumn>
+                                    <RadzenText Text="Last Modified" TextStyle="TextStyle.Overline" class="rz-my-0"/>
+                                    <RadzenText Text="@savedOption.LastModification.ToString()" TextStyle="TextStyle.Body1" class="rz-my-0" Style="width: 165px;"/>
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenColumn>
+                        <RadzenColumn Size="7" SizeSM="5" Style="min-width: 233px;">
+                            <RadzenRow JustifyContent="JustifyContent.Center" Gap="0.25rem">
+                                <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Secondary" Shade="Shade.Lighter" Size="ButtonSize.Small" 
+                                    Icon="arrow_downward" Text="Load" Click="() => LoadOptions(savedOption)"/>
+                                <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Success" Shade="Shade.Lighter" Size="ButtonSize.Small" 
+                                    Icon="favorite" Text="Overwrite" Click="() => OverwriteOptions(savedOption)"/>
+                                <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Lighter" Size="ButtonSize.Small" 
+                                    Icon="close" Click="() => RemoveOptions(savedOption)"/>
+                            </RadzenRow>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </Template>
+                <EmptyTemplate>
+                    <RadzenText Text="Nothing saved so far."/>
+                </EmptyTemplate>
+            </RadzenDataList>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>

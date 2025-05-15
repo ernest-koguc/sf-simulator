@@ -23,6 +23,4 @@
   <PropertyGroup>
     <BlazorCacheBootResources>false</BlazorCacheBootResources>
   </PropertyGroup>
-
-
 </Project>
