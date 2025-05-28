@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using SFSimulator.Core;
 
-namespace SFSimulator.Frontend.Pages.SimulatorPage;
+namespace SFSimulator.Frontend.Pages.Simulator;
 
 public partial class SimulationResultView
 {

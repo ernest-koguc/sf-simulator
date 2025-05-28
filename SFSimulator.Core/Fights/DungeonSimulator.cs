@@ -24,7 +24,10 @@ public class DungeonSimulator : IDungeonSimulator
         var petDungeonContext = _fightableContextFactory.Create(petDungeonEnemy, playerPet);
         lookupContext.Add((playerPetContext, petDungeonContext));
 
-        Console.WriteLine($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
+        if (Debugger.IsAttached)
+        {
+            Console.WriteLine($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
+        }
         var result = SimulateFight(lookupContext, iterations, winThreshold);
 
         if (result.Succeeded)
@@ -57,7 +60,11 @@ public class DungeonSimulator : IDungeonSimulator
         var dungeonContext = _fightableContextFactory.Create(dungeonEnemy, character);
         lookupContext.Add((characterContext, dungeonContext));
 
-        Console.WriteLine($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
+        if (Debugger.IsAttached)
+        {
+            Console.WriteLine($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
+        }
+
         var result = SimulateFight(lookupContext, iterations, winThreshold);
 
         return CreateDungeonSimulationResult(result.WonFights, result.Succeeded, dungeonEnemy, character.Level);
@@ -83,7 +90,10 @@ public class DungeonSimulator : IDungeonSimulator
 
         var winratio = wonFights / (float)iterations;
 
-        Console.WriteLine($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
+        if (Debugger.IsAttached)
+        {
+            Console.WriteLine($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
+        }
 
         return new FightSimulationResult(wonFights, wonFights >= winThreshold);
     }

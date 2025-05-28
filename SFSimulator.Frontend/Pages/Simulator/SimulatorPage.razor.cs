@@ -5,7 +5,7 @@ using SFSimulator.Frontend.Extensions;
 using SpawnDev.BlazorJS.WebWorkers;
 using System.Diagnostics;
 
-namespace SFSimulator.Frontend.Pages.SimulatorPage;
+namespace SFSimulator.Frontend.Pages.Simulator;
 
 public partial class SimulatorPage
 {

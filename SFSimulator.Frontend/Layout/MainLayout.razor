@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+<HeadContent>
+    <RadzenTheme Theme="material-dark" />
+</HeadContent>
 <RadzenLayout Style="background-color: transparent; position: absolute; width: 100%;">
     <RadzenHeader>
         <RadzenStack class="rz-p-1 bg-dark-trans" Orientation="Orientation.Horizontal">
@@ -15,7 +18,7 @@
         <RadzenPanelMenu Visible="@ShowMenu" Style="">
             <RadzenPanelMenuItem Icon="hourglass_top" Text="Simulator" Path="/" Match="NavLinkMatch.All" Click="ToggleMenu"/>
             <RadzenPanelMenuItem Icon="favorite" Text="Saved Results" Path="saved-results" Click="ToggleMenu"/>
-            <RadzenPanelMenuItem Icon="edit_calendar" Text="Custom Schedule" Path="schedules" Click="ToggleMenu"/>
+@*          <RadzenPanelMenuItem Icon="edit_calendar" Text="Custom Schedule" Path="schedules" Click="ToggleMenu"/>*@            
             <RadzenPanelMenuItem Icon="science" Text="Experimental" Path="experimental" Click="ToggleMenu"/>
         </RadzenPanelMenu>
     </RadzenSidebar>

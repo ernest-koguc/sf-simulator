@@ -1,0 +1,47 @@
+﻿@page "/manual"
+
+<RadzenCard class="bg-card px-5">
+    <RadzenText TextStyle="TextStyle.H2">Manual</RadzenText>
+    <RadzenMarkdown class="px-10">
+### What is SF Simulator
+**SF Simulator** is a website tool, that allows you to simulate/track your character future progress in the game **Shakes & Fidget**.<br />
+Below you can find a light-weight manual on how to get started.
+### Navigation
+\1. **On/off switch** - toggles sidebar menu<br/>
+2. **Simulator** - maing page to simulate your progress<br/>
+3. **Saved Results** - page with all your saved simulation results<br/>
+4. **Experimental** - place for testing new experimental features<br/>
+5. **Manual** - this page<br/>
+6. **Patch Notes** - page with information about new features and changes on the website<br/>
+7. **Github** - link to the source code of the project<br/>
+![Navigation](./manual/navigation.png)
+
+### How to simulate progress
+On the main page you can simulate your character progress. 
+To do it you need to provide all necessary character information together with gameplay strategy, e.g. character level, class, how much thirst every day and similar.
+To make it easier there is option to poll your character information via SF Tools endpoint.
+Once you have all the information you can start the simulation by clicking the "Simulate" button.
+The result of simulation depending on the device will be displayed on the left/bottom of the screen.
+
+
+### Simulator
+\1. **Endpoint** - here you can poll your character data from SF Tools<br/>
+2. **More** - here you can save your current options or load previously saved options<br/>
+3. **Simulate** - click this button to start simulation<br/>
+4. & 5. **Condition** for how long to run the simulation, e.g. run until 1000 days pass, run until you reach level 500<br/>
+6. **Tabs** - here you provide all the information on your character and how the simulation will be run, e.g. your character class, level, base stats, strategies and more<br/>
+![Simulator](./manual/simulator.png)
+
+### Simulation Result
+\1. **Save** - click this button to save your simulation result. You can check all your saved results on the "Saved Results" page<br/>
+2. **Before** - high level information about character before starting simulation<br/>
+3. **After** - high level information about character after simulation<br/>
+4. **Statistics** - how many days have passed, how many base stats / levels were gained<br/>
+5. **Charts** - visual representation of character experience and base stats gains divided by game sections<br/>
+6. **Timeline** - most important events that happened during the simulation, e.g. when you reached certain level, when you gained certain base stat, etc.<br/>
+![result](./manual/result.png)
+
+### New features/changes/bugs
+If you found a bug or you would like to leave your awesome suggestion, feel free to contact me on discord: @Constants.DiscordContact
+    </RadzenMarkdown>
+</RadzenCard>

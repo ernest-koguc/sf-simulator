@@ -86,7 +86,6 @@ public class GameFormulasServiceTests
     [DataRow(19, 10, true)]
     [DataRow(22, 1, true)]
     [DataRow(22, 10, true)]
-    [DataRow(22, 10, true)]
     [DataRow(98, 1, false)]
     [DataRow(98, 5, false)]
     [DataRow(98, 100, false)]

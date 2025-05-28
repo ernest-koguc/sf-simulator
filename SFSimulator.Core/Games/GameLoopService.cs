@@ -78,8 +78,11 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
 
             stopwatch.Stop();
-            Console.WriteLine(SimulationContext.ToString());
-            Console.WriteLine($"Simulation ended, time elapsed: {stopwatch.ElapsedMilliseconds} ms");
+            if (Debugger.IsAttached)
+            {
+                Console.WriteLine(SimulationContext.ToString());
+                Console.WriteLine($"Simulation ended, time elapsed: {stopwatch.ElapsedMilliseconds} ms");
+            }
             return Task.FromResult<SimulationResult?>(CreateResult());
         }
         catch (Exception ex)

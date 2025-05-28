@@ -8,6 +8,7 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-red-300: oklch(80.8% 0.114 19.571);
+    --color-blue-200: oklch(88.2% 0.059 254.128);
     --color-blue-400: oklch(70.7% 0.165 254.624);
     --color-neutral-600: oklch(43.9% 0 0);
     --spacing: 0.25rem;
@@ -258,6 +259,12 @@
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
+  .px-5 {
+    padding-inline: calc(var(--spacing) * 5);
+  }
+  .px-10 {
+    padding-inline: calc(var(--spacing) * 10);
+  }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
@@ -267,8 +274,14 @@
   .text-center {
     text-align: center;
   }
+  .text-blue-200\! {
+    color: var(--color-blue-200) !important;
+  }
   .text-blue-400 {
     color: var(--color-blue-400);
+  }
+  .text-blue-400\! {
+    color: var(--color-blue-400) !important;
   }
   .text-red-300\! {
     color: var(--color-red-300) !important;

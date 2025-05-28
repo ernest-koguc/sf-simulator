@@ -3,7 +3,7 @@ using Radzen;
 using Radzen.Blazor;
 using SFSimulator.Core;
 
-namespace SFSimulator.Frontend.Pages.SimulatorPage;
+namespace SFSimulator.Frontend.Pages.Simulator;
 
 public partial class SavedSimulationOptionsDialog
 {

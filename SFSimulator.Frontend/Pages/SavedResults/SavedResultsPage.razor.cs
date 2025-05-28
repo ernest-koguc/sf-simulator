@@ -3,7 +3,7 @@ using Radzen;
 using Radzen.Blazor;
 using System.Linq.Dynamic.Core;
 
-namespace SFSimulator.Frontend.Pages.SavedResultsPage;
+namespace SFSimulator.Frontend.Pages.SavedResults;
 
 public partial class SavedResultsPage
 {

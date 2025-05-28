@@ -20,6 +20,10 @@
     <ProjectReference Include="..\SFSimulator.Core\SFSimulator.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\manual\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <BlazorCacheBootResources>false</BlazorCacheBootResources>
   </PropertyGroup>

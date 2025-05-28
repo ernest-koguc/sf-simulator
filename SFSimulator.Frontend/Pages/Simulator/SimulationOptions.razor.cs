@@ -7,7 +7,7 @@ using SFSimulator.Frontend.Dialogs;
 using SFSimulator.Frontend.Validation;
 using System.Linq.Expressions;
 
-namespace SFSimulator.Frontend.Pages.SimulatorPage;
+namespace SFSimulator.Frontend.Pages.Simulator;
 
 public partial class SimulationOptions
 {
