@@ -8,7 +8,8 @@
         }
     </Start>
     <ChildContent>
-        <RadzenNumeric AutoCompleteType="AutoCompleteType.Off" TValue="@TValue" Disabled="@Disabled" Min="@Min" Max="@Max" Step="@Step" Name="@Name" @bind-Value:get="@Value" @bind-Value:set="ValueChanged" ShowUpDown="false"/>
+        <RadzenNumeric AutoCompleteType="AutoCompleteType.Off" TValue="@TValue" Disabled="@Disabled" Min="@Min" Max="@Max" Step="@Step" Name="@Name" 
+            @bind-Value:get="@Value" @bind-Value:set="ValueChanged" ShowUpDown="false"/>
     </ChildContent>
 </RadzenFormField>
 <RadzenCustomValidator Component="@Name" Validator="Validate" Text="@ValidationError"/>

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Components;
 using Radzen;
+using Radzen.Blazor;
 using SFSimulator.Core;
 using SFSimulator.Frontend.Dialogs;
 using SFSimulator.Frontend.Validation;
@@ -19,10 +20,19 @@ public partial class SimulationOptions
     [Inject]
     private DialogService DialogService { get; set; } = default!;
     private SimulationContextValidator Validator { get; set; } = new();
+    private RadzenAccordion Accordion { get; set; } = default!;
+    private RadzenAccordionItem Item { get; set; } = default!;
 
     private Task Submit()
     {
         return OptionsChanged.InvokeAsync(Options);
+    }
+
+    private Task InvalidSubmit(FormInvalidSubmitEventArgs args)
+    {
+        Accordion.Refresh();
+
+        return Task.CompletedTask;
     }
 
     private async Task OpenEndpoint()

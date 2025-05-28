@@ -1,0 +1,226 @@
+﻿<RadzenCard class="bg-card p-0!">
+    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" class="px-4 py-2">
+        <RadzenText TextStyle="TextStyle.H5" Text="Simulator" Style="align-self: center; margin-bottom: 0;"/>
+        <span style="margin: 0 auto;"></span>
+        <RadzenStack Orientation="Orientation.Horizontal">
+            <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Warning" Shade="Shade.Lighter" Click="OpenEndpoint">
+                <RadzenIcon Icon="call_received" /><span class="rz-ms-2">Endpoint</span>
+            </RadzenButton>
+            <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Lighter" Click="OpenMoreOptions">
+                <RadzenIcon Icon="menu"/><span class="rz-ms-2">More</span>
+            </RadzenButton>
+        </RadzenStack>
+    </RadzenRow>
+    <RadzenTemplateForm TItem="SimulationContext" Data="Options" Submit="Submit" Style="width: 100%;height:100%;" InvalidSubmit="InvalidSubmit">
+        <ChildContent Context="ctx">
+            <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;" Gap="0">
+                <div class="flex flex-col items-center justify-start gap-2 p-4 sm:flex-row">
+                    <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Dark" Text="Simulate"/>
+                    <RadzenText>until</RadzenText>
+                    <Numeric Variant="Variant.Outlined" Min="1" Name="Until" @bind-Value="@Options.FinishCondition.Until"/>
+                    <DropDown Variant="Variant.Outlined" Name="FinishCondition" @bind-Value="@Options.FinishCondition.FinishWhen"/>
+                </div>
+                @* TODO: Adjust the validation *@
+                <RadzenAccordion Multiple="true" @ref=Accordion>
+                    <Items>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div class="flex items-center justify-between">
+                                    <SfIcon Icon="Character"/>
+                                    <div class="ml-2">
+                                        Character
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
+                                    <div class="flex flex-col">
+                                        <DropDown Name="Class" Label="Class" @bind-Value="@Options.Class" Filter="(e) => e != ClassType.Bert && e != ClassType.Mirror"/>
+                                        <Numeric Icon="Level" Name="Level" Label="Level" Min="1" Max="800" @bind-Value="@Options.Level" Validator="() => ValidateField(o => o.Level)"/>
+                                        <Numeric Icon="XP" Name="Experience" Label="Experience" Min="0" Max="1_500_000_000" @bind-Value="@Options.Experience"/>
+                                        <DropDown Icon="Mount" Name="Mount" Label="Mount" @bind-Value="@Options.Mount" />
+                                        <Numeric Icon="Hydra" Name="Hydra" Label="Hydra" Min="0" Max="20" @bind-Value="@Options.HydraHeads"/>
+                                        <Numeric Name="GuildRaids" Label="Guild Raids" Min="0" Max="50" @bind-Value="@Options.GuildRaids"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <Numeric Name="BaseStrength" Label="Base Strength" Min="0" Max="2_000_000" @bind-Value="@Options.BaseStrength"/>
+                                        <Numeric Name="BaseDexterity" Label="Base Dexterity" Min="0" Max="2_000_000" @bind-Value="@Options.BaseDexterity"/>
+                                        <Numeric Name="BaseIntelligence" Label="Base Intelligence" Min="0" Max="2_000_000" @bind-Value="@Options.BaseIntelligence"/>
+                                        <Numeric Name="BaseConstitution" Label="Base Constitution" Min="0" Max="2_000_000" @bind-Value="@Options.BaseConstitution"/>
+                                        <Numeric Name="BaseLuck" Label="Base Luck" Min="0" Max="2_000_000" @bind-Value="@Options.BaseLuck"/>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div class="flex items-center justify-between">
+                                    <SfIcon Icon="Bonuses"/>
+                                    <div class="ml-2">
+                                        Bonuses
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
+                                    <div class="flex flex-col">
+                                        <Numeric Icon="Scrapbook" Name="Scrapbook" Label="Scrapbook" Min="0" Max="100" @bind-Value="@Options.ExperienceBonus.ScrapbookFillness"/>
+                                        <Numeric Icon="Instructor" Name="Instructor" Label="Instructor" Min="0" Max="200" @bind-Value="@Options.ExperienceBonus.GuildBonus"/>
+                                        <Numeric Icon="XPRune" Name="ExperienceRuneBonus" Label="XP Rune" Min="0" Max="10" @bind-Value="@Options.ExperienceBonus.RuneBonus"/>
+                                        <CheckBox Name="ExperienceScroll" Label="Experience Scroll" @bind-Value="@Options.ExperienceBonus.HasExperienceScroll"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <Numeric Icon="Tower" Name="Tower" Label="Tower" Min="0" Max="100" @bind-Value="@Options.GoldBonus.Tower"/>
+                                        <Numeric Icon="Treasure" Name="Treasure" Label="Treasure" Min="0" Max="200" @bind-Value="@Options.GoldBonus.GuildBonus"/>
+                                        <Numeric Icon="GoldRune" Name="GoldRuneBonus" Label="Gold Rune" Min="0" Max="50" @bind-Value="@Options.GoldBonus.RuneBonus"/>
+                                        <CheckBox Name="GoldScroll" Label="Gold Scroll" @bind-Value="@Options.GoldBonus.HasGoldScroll"/>
+                                        <CheckBox Name="ArenaGoldScroll" Label="Arena Gold Scroll" @bind-Value="@Options.GoldBonus.HasArenaGoldScroll"/>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div class="flex items-center justify-between">
+                                    <SfIcon Icon="Playstyle"/>
+                                    <div class="ml-2">
+                                        Playstyle
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
+                                    <div class="flex flex-col">
+                                        <Numeric Icon="Thirst" Name="DailyThirst" Label="Daily Thirst" Min="0" Max="320" @bind-Value="@Options.DailyThirst"/>
+                                        <Numeric Icon="ExpeditionChest" Name="AvgAmountOfChests" Label="Avg Amount of Chests" 
+                                            Min="0" Max="2" @bind-Value="@Options.ExpeditionOptions.AverageAmountOfChests"/>
+                                        <Numeric Icon="ExpeditionStar" Name="AvgStarBonus" Label="Avg Star Bonus" 
+                                            Min="1" Max="1.35M" @bind-Value="@Options.ExpeditionOptions.AverageStarExperienceBonus"/>
+                                        <DropDown Icon="Wheel" Name="SpinAmount" Label="Spin Amount" @bind-Value="@Options.SpinAmount"/>
+                                        <Numeric Icon="Guard" Name="DailyGuard" Label="Hours of Guard" 
+                                            Min="0" Max="24" @bind-Value="@Options.DailyGuard"/>
+                                        <DropDown Name="EventSchedule" Label="Event Schedule" @bind-Value="@Options.EventSchedule"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <CheckBox Name="SwitchPriority" Label="Switch Priority" @bind-Value="@Options.SwitchPriority"/>
+                                        @* TODO Validate it is above or equal current character level *@
+                                        <Numeric Icon="Switch" Name="SwitchLevel" Label="Switch Level" 
+                                            Min="1" Max="800" @bind-Value="@Options.SwitchLevel" Validator="() => ValidateField(o => o.SwitchLevel)" Disabled="@(!Options.SwitchPriority)"/>
+                                        <Numeric Icon="ExpeditionChest" Name="AvgAmountOfChestsAfterSwitch" Label="Avg Amount of Chests (After Switch)" 
+                                            Min="0" Max="2" @bind-Value="@Options.ExpeditionOptionsAfterSwitch.AverageAmountOfChests" Disabled="@(!Options.SwitchPriority)"/>
+                                        <Numeric Icon="ExpeditionStar" Name="AvgStarBonusAfterSwitch" Label="Avg Star Bonus (After Switch)" 
+                                            Min="1" Max="1.35M" @bind-Value="@Options.ExpeditionOptionsAfterSwitch.AverageStarExperienceBonus" Disabled="@(!Options.SwitchPriority)"/>
+                                        <Numeric Icon="Calendar" Name="Calendar" Label="Calendar" Min="1" Max="12" @bind-Value="@Options.Calendar"/>
+                                        <Numeric Icon="Hourglass" Name="CalendarDay" Label="Calendar Day" Min="1" Max="20" @bind-Value="@Options.CalendarDay"/>
+                                        <CheckBox Name="SkipCalendar" Label="Skip Calendar" @bind-Value="@Options.SkipCalendar"/>
+                                        <CheckBox Name="DoWeeklyTasks" Label="Do Weekly Tasks" @bind-Value="@Options.WeeklyTasksOptions.DoWeeklyTasks"/>
+                                        <CheckBox Name="DrinkExtraBeer" Label="Drink Weekly Task Beer" @bind-Value="@Options.WeeklyTasksOptions.DrinkExtraBeer"/>
+                                        <CheckBox Name="SellPetFood" Label="Sell Pet Food" @bind-Value="@Options.SellPetFood"/>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div class="flex items-center justify-between">
+                                    <SfIcon Icon="Fortress"/>
+                                    <div class="ml-2">
+                                        Fortress
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
+                                    <div class="flex flex-col">
+                                        <Numeric Icon="Academy" Name="Academy" Label="Academy Level" Min="0" Max="20" @bind-Value="@Options.AcademyLevel"/>
+                                        <Numeric Icon="GemMine" Name="GemMine" Label="Gem Mine Level" Min="0" Max="100" @bind-Value="@Options.GemMineLevel"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <Numeric Icon="GoldPit" Name="GoldPit" Label="Gold Pit Level" Min="0" Max="100" @bind-Value="@Options.GoldPitLevel"/>
+                                        <Numeric Icon="Treasury" Name="Treasury" Label="Treasury Level" Min="0" Max="45" @bind-Value="@Options.TreasuryLevel"/>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div class="flex items-center justify-between">
+                                    <SfIcon Icon="Dungeon"/>
+                                    <div class="ml-2">
+                                        Dungeons
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                @if (Options.DungeonsData is null)
+                                {
+                                    <RadzenText class="rz-my-6">
+                                        Currently dungeon can be enabled
+                                        only if data is polled via endpoint.
+                                    </RadzenText>
+                                }
+                                <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
+                                    <div class="flex flex-col">
+                                        <CheckBox Disabled="Options.DungeonsData is null" Name="DoDungeons" Label="Do Dungeons" @bind-Value="@Options.DoDungeons"/>
+                                        <Numeric Name="DungeonIterations" Label="Dungeon Iterations" @bind-Value="@Options.DungeonOptions.DungeonIterations" Min="1" Max="1_000_000"/>
+                                        <Numeric Name="InstaKillPercentage" Label="Minimum WR" @bind-Value="@Options.DungeonOptions.InstaKillPercentage" Min="0.01M" Max="100" Step="0.01"/>
+                                        <CheckBox Name="ChangeGear" Label="Change Gear" @bind-Value="@Options.ReequipOptions.ChangeGear"/>
+                                        <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="PreferredWeaponRange" Label="Weapon Range" 
+                                            @bind-Value="@Options.ReequipOptions.PreferredWeaponRange" Min="1" Max="1.75M" Step="0.05"/>
+                                        <RadzenText>Character:</RadzenText>
+                                        <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="CharacterReequip" Label="Every X Level" 
+                                            @bind-Value="@Options.ReequipOptions.CharacterReequipLevelOffset" Min="1" Max="100"/>
+                                        <RadzenText>Companions:</RadzenText>
+                                        <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="CompanionReequip" Label="Every X Level" 
+                                            @bind-Value="@Options.ReequipOptions.CompanionReequipLevelOffset" Min="1" Max="100"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
+                                        <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="66"/>
+                                        <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
+                                        <Numeric Icon="SoloPortal" Name="SoloPortal" Label="Solo Portal" Min="0" Max="50" @bind-Value="@Options.SoloPortal"/>
+                                        <Numeric Icon="GuildPortal" Name="GuildPortal" Label="Guild Portal" Min="0" Max="50" @bind-Value="@Options.GuildPortal"/>
+                                        <Numeric Name="GuildKnights" Label="Guild Knights" Min="0" Max="1000" @bind-Value="@Options.GuildKnights"/>
+                                        <Numeric Icon="Runes" Name="RunesQuantity" Label="Runes" Min="0" Max="300" @bind-Value="@Options.RuneQuantity" />
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                        <RadzenAccordionItem>
+                            <Template>
+                                <div class="flex items-center justify-between">
+                                    <SfIcon Icon="Pets"/>
+                                    <div class="ml-2">
+                                        Pets
+                                    </div>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
+                                    <div class="flex flex-col">
+                                        <CheckBox Name="SellPetFood" Label="Sell Pet Food" @bind-Value="@Options.SellPetFood"/>
+                                        <Numeric Icon="ShadowFruit" Name="ShadowFood" Label="Shadow Food" Min="0" Max="99000" @bind-Value="@Options.Pets.Food[PetElementType.Shadow]"/>
+                                        <Numeric Icon="LightFruit" Name="LightFood" Label="Light Food" Min="0" Max="99000" @bind-Value="@Options.Pets.Food[PetElementType.Light]"/>
+                                        <Numeric Icon="EarthFruit" Name="EarthFood" Label="Earth Food" Min="0" Max="99000" @bind-Value="@Options.Pets.Food[PetElementType.Earth]"/>
+                                        <Numeric Icon="FireFruit" Name="FireFood" Label="Fire Food" Min="0" Max="99000" @bind-Value="@Options.Pets.Food[PetElementType.Fire]"/>
+                                        <Numeric Icon="WaterFruit" Name="WaterFood" Label="Water Food" Min="0" Max="99000" @bind-Value="@Options.Pets.Food[PetElementType.Water]"/>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <CheckBox Name="DoPetsDungeons" Label="Do Pets Dungeons" @bind-Value="Options.DoPetsDungeons"/>
+                                        <p>Poll the pets data via sftools</p>
+                                        <br/>
+                                        <p>Shadow Total Level: @Options.Pets.Elements[PetElementType.Shadow].Sum(p => p.Level)</p>
+                                        <p>Light Total Level: @Options.Pets.Elements[PetElementType.Light].Sum(p => p.Level)</p>
+                                        <p>Earth Total Level: @Options.Pets.Elements[PetElementType.Earth].Sum(p => p.Level)</p>
+                                        <p>Fire Total Level: @Options.Pets.Elements[PetElementType.Fire].Sum(p => p.Level)</p>
+                                        <p>Water Total Level: @Options.Pets.Elements[PetElementType.Water].Sum(p => p.Level)</p>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
+            </RadzenStack>
+        </ChildContent>
+    </RadzenTemplateForm>
+</RadzenCard>

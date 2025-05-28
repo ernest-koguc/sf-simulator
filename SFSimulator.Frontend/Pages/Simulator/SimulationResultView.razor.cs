@@ -13,6 +13,7 @@ public partial class SimulationResultView
     private List<ChartRecord> ChosenDayExperienceGains => Result
         .SimulatedDays[ChosenDay - 1]
         .ExperienceGain
+        .OrderBy(x => x.Key)
         .Select((kvp) => new ChartRecord(kvp.Key.GetDisplayName(), kvp.Value))
         .ToList();
     private List<ChartRecord> TotalBaseStatGains { get; set; } = default!;
@@ -33,7 +34,8 @@ public partial class SimulationResultView
                 acc[key] += day.ExperienceGain[key];
             }
             return acc;
-        }).Select((keyValuePair) => new ChartRecord(keyValuePair.Key.GetDisplayName(), keyValuePair.Value)).ToList();
+        }).OrderBy(x => x.Key)
+            .Select((keyValuePair) => new ChartRecord(keyValuePair.Key.GetDisplayName(), keyValuePair.Value)).ToList();
 
         TotalBaseStatGains = Result.SimulatedDays.Aggregate(new Dictionary<GainSource, decimal>(), (acc, day) =>
         {
@@ -43,7 +45,8 @@ public partial class SimulationResultView
                 acc[key] += day.BaseStatGain[key];
             }
             return acc;
-        }).Select((keyValuePair) => new ChartRecord(keyValuePair.Key.GetDisplayName(), keyValuePair.Value)).ToList();
+        }).OrderBy(x => x.Key)
+            .Select((keyValuePair) => new ChartRecord(keyValuePair.Key.GetDisplayName(), keyValuePair.Value)).ToList();
 
         AverageExperienceGains = TotalExperienceGains.Select(t => new ChartRecord(t.Source, t.Value / Result.Days)).ToList();
 

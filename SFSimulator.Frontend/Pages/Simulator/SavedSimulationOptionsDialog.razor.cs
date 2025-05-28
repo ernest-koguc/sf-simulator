@@ -16,7 +16,7 @@ public partial class SavedSimulationOptionsDialog
         CloseDialogOnEsc = true,
         CloseDialogOnOverlayClick = true,
         AutoFocusFirstElement = false,
-        ContentCssClass = "h-100"
+        ContentCssClass = "h-full",
     };
     public static string Title { get; } = "More Options";
     [Inject]
