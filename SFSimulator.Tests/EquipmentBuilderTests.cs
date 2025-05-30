@@ -112,7 +112,7 @@ public class EquipmentBuilderTests
     [TestMethod]
     [DataRow(513, ClassType.Mage, 28, 1000, GemType.Legendary, 1301)]
     [DataRow(148, ClassType.Mage, 10, 114, GemType.Intelligence, 177)]
-    //TODO more test cases
+    [DataRow(56, ClassType.Assassin, 1, 365, GemType.Constitution, 144)]
     public void EquipmentBuilder_gives_proper_gem_values(int characterLevel, ClassType classType,
             int gemMineLevel, int knights, GemType gemType, int expectedGemValue)
     {

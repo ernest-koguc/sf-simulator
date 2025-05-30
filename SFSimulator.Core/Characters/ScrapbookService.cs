@@ -42,14 +42,7 @@ public class ScrapbookService : IScrapbookService
 
     public void InitScrapbook(IEnumerable<Dungeon> dungeons, SimulationContext simulationContext)
     {
-        var temp = LevelItemsMap.Sum(d => d.Value);
-        if (simulationContext.Level < 10)
-        {
-            simulationContext.ExperienceBonus.ScrapbookFillness = 0;
-            return;
-        }
-
-        var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
+        var initialPictures = GetCurrentPictures(simulationContext.ExperienceBonus.ScrapbookFillness);
 
         var monsterPictures = dungeons
             .SelectMany(d => d.DungeonEnemies)
@@ -62,7 +55,7 @@ public class ScrapbookService : IScrapbookService
         var newItems = monsterPictures + LevelItemsMap.Where(x => x.Key <= simulationContext.Level).Sum(x => x.Value);
         if (newItems >= initialPictures)
         {
-            simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)newItems / CoreShared.SCRAPBOOK_LIMIT);
+            simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)newItems / CoreShared.SCRAPBOOK_LIMIT * 100);
             LevelItemsMap = LevelItemsMap.Where(x => x.Key > simulationContext.Level).ToDictionary();
             return;
         }
@@ -86,9 +79,9 @@ public class ScrapbookService : IScrapbookService
 
     public void UpdateScrapbook(SimulationContext simulationContext)
     {
-        var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
+        var initialPictures = GetCurrentPictures(simulationContext.ExperienceBonus.ScrapbookFillness);
         var picturesToAdd = LevelItemsMap.Where(x => x.Key <= simulationContext.Level).Sum(x => x.Value);
-        simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(1, (decimal)(initialPictures + picturesToAdd) / CoreShared.SCRAPBOOK_LIMIT);
+        simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + picturesToAdd) / CoreShared.SCRAPBOOK_LIMIT * 100);
         LevelItemsMap = LevelItemsMap.Where(x => x.Key > simulationContext.Level).ToDictionary();
     }
     public void UpdateScrapbook(SimulationContext simulationContext, DungeonSimulationResult dungeonResult)
@@ -97,17 +90,20 @@ public class ScrapbookService : IScrapbookService
             && IsViablePictureDungeon(dungeonResult.DungeonEnemy)
             && IsNotMirrorDungeon(dungeonResult.DungeonEnemy))
         {
-            var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
-            simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + 1) / CoreShared.SCRAPBOOK_LIMIT);
+            var initialPictures = GetCurrentPictures(simulationContext.ExperienceBonus.ScrapbookFillness);
+            simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + 1) / CoreShared.SCRAPBOOK_LIMIT * 100);
         }
     }
     public void UpdateScrapbook(SimulationContext simulationContext, int guildRaidPictures)
     {
-        var initialPictures = (int)(simulationContext.ExperienceBonus.ScrapbookFillness * CoreShared.SCRAPBOOK_LIMIT);
-        simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + guildRaidPictures) / CoreShared.SCRAPBOOK_LIMIT);
+        var initialPictures = GetCurrentPictures(simulationContext.ExperienceBonus.ScrapbookFillness);
+        simulationContext.ExperienceBonus.ScrapbookFillness = Math.Min(100, (decimal)(initialPictures + guildRaidPictures) / CoreShared.SCRAPBOOK_LIMIT * 100);
     }
 
     private bool IsNotMirrorDungeon(DungeonEnemy dungeonEnemy) => dungeonEnemy is not { Dungeon: { Position: 9 }, Position: 10 };
     private bool IsViablePictureDungeon(DungeonEnemy dungeonEnemy) => dungeonEnemy.Dungeon.Type is DungeonTypeEnum.Default or DungeonTypeEnum.Tower or DungeonTypeEnum.LoopOfIdols;
+
+    private int GetCurrentPictures(decimal scrapbookFillness)
+        => (int)(scrapbookFillness * CoreShared.SCRAPBOOK_LIMIT / 100);
 }
 

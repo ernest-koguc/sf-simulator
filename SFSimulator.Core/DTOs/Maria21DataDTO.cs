@@ -181,7 +181,6 @@ public class SFToolsDungeonData
 
 public class Fortress
 {
-    // TODO WORKER IN FORTRESS LOGIC
     public int Knights { get; set; }
     public int LaborerQuarters { get; set; }
     public int GemMine { get; set; }

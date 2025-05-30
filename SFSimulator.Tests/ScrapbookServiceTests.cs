@@ -8,13 +8,12 @@ namespace SFSimulator.Tests;
 public class ScrapbookServiceTests
 {
     [TestMethod]
-    [DataRow(10, 0.2276)]
-    [DataRow(100, 0.7149)]
-    [DataRow(250, 0.7434)]
-    [DataRow(500, 0.7624)]
+    [DataRow(10, 22.7645)]
+    [DataRow(100, 71.49)]
+    [DataRow(250, 74.3412)]
+    [DataRow(500, 76.2419)]
     public void InitScrapbook_gives_correct_count(int level, double expectedFillness)
     {
-        //TODO: Move to interface
         var scrapbookService = DependencyProvider.Get<IScrapbookService>();
         var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
         var simulationContext = new SimulationContext();
@@ -25,6 +24,25 @@ public class ScrapbookServiceTests
         scrapbookService.InitScrapbook(dungeons, simulationContext);
 
         Assert.AreEqual(expectedFillness, (double)simulationContext.ExperienceBonus.ScrapbookFillness, 0.001);
+    }
+
+    [TestMethod]
+    [DataRow(1, 25)]
+    [DataRow(10, 80)]
+    [DataRow(100, 90)]
+    [DataRow(250, 100)]
+    public void InitScrapbook_doesnt_decrease_initial_scrapbook(int level, double initialFillness)
+    {
+        var scrapbookService = DependencyProvider.Get<IScrapbookService>();
+        var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
+        var simulationContext = new SimulationContext();
+        simulationContext.Level = level;
+        simulationContext.ExperienceBonus.ScrapbookFillness = (decimal)initialFillness;
+        var dungeons = dungeonProvider.InitDungeons();
+
+        scrapbookService.InitScrapbook(dungeons, simulationContext);
+
+        Assert.AreEqual(initialFillness, (double)simulationContext.ExperienceBonus.ScrapbookFillness, 0.001);
     }
 
     [TestMethod]
@@ -46,6 +64,6 @@ public class ScrapbookServiceTests
 
         scrapbookService.InitScrapbook(dungeons, simulationContext);
 
-        Assert.AreEqual(1, (double)simulationContext.ExperienceBonus.ScrapbookFillness);
+        Assert.AreEqual(100, (double)simulationContext.ExperienceBonus.ScrapbookFillness);
     }
 }

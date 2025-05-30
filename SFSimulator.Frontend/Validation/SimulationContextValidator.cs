@@ -24,7 +24,6 @@ public class SimulationContextValidator : AbstractValidator<SimulationContext>
         RuleFor(o => o.DailyThirst).InclusiveBetween(0, 320);
         RuleFor(o => o.SpinAmount).IsInEnum();
         RuleFor(o => o.DailyGuard).InclusiveBetween(0, 24);
-        // Rule for schedule
         RuleFor(o => o.HydraHeads).InclusiveBetween(0, 20);
         RuleFor(o => o.GoldPitLevel).InclusiveBetween(0, 100);
         RuleFor(o => o.AcademyLevel).InclusiveBetween(0, 20);
@@ -41,30 +40,22 @@ public class SimulationContextValidator : AbstractValidator<SimulationContext>
         RuleFor(o => o.GuildKnights).InclusiveBetween(0, 1000);
         RuleFor(o => o.Level).InclusiveBetween(0, 1000);
         RuleFor(o => o.Class).IsInEnum();
-        RuleFor(o => o.Experience).InclusiveBetween(0, 1_500_000_000).Custom((val, context) =>
-        {
-            //TODO add validation for current level max experience
-        });
+        RuleFor(o => o.Experience).InclusiveBetween(0, 1_500_000_000);
         RuleFor(o => o.BaseStat).InclusiveBetween(0, 10_000_000);
-        // Maximum of 1 mln stats worth in gold
         RuleFor(o => o.Gold).InclusiveBetween(0, 10_000_000_000_000);
         RuleFor(o => o.BaseStrength).InclusiveBetween(0, 10_000_000);
         RuleFor(o => o.BaseDexterity).InclusiveBetween(0, 10_000_000);
         RuleFor(o => o.BaseIntelligence).InclusiveBetween(0, 10_000_000);
         RuleFor(o => o.BaseConstitution).InclusiveBetween(0, 10_000_000);
         RuleFor(o => o.BaseLuck).InclusiveBetween(0, 10_000_000);
-        // Equipment potion validation???
         RuleFor(o => o.GladiatorLevel).InclusiveBetween(0, 15);
         RuleFor(o => o.GladiatorLevel).InclusiveBetween(0, 15);
         RuleFor(o => o.GladiatorLevel).InclusiveBetween(0, 15);
         RuleFor(o => o.SoloPortal).InclusiveBetween(0, 50);
         RuleFor(o => o.GuildPortal).InclusiveBetween(0, 50);
-        // Companions?
-        // Pets
         RuleFor(o => o.Aura).InclusiveBetween(0, 66);
         RuleFor(o => o.BlackSmithResources.Splinters).InclusiveBetween(0, 100_000_000);
         RuleFor(o => o.BlackSmithResources.Metal).InclusiveBetween(0, 100_000_000);
-        // Dungeons
         RuleFor(o => o.FinishCondition.FinishWhen).IsInEnum();
         RuleFor(o => o.FinishCondition.Until).Custom((val, context) =>
         {
@@ -74,19 +65,22 @@ public class SimulationContextValidator : AbstractValidator<SimulationContext>
                     if (val <= 0 || val > 3000)
                     {
                         context.AddFailure($"{nameof(context.InstanceToValidate.FinishCondition.Until)} must be between 1 and 3000");
-                    };
+                    }
+                    ;
                     break;
                 case SimulationFinishConditionType.UntilLevel:
                     if (val <= context.InstanceToValidate.Level)
                     {
                         context.AddFailure($"{nameof(context.InstanceToValidate.FinishCondition.Until)} must be greater than {nameof(context.InstanceToValidate.Level)}");
-                    };
+                    }
+                    ;
                     break;
                 case SimulationFinishConditionType.UntilBaseStats:
                     if (val <= context.InstanceToValidate.BaseStat)
                     {
                         context.AddFailure($"{nameof(context.InstanceToValidate.FinishCondition.Until)} must be greater than {nameof(context.InstanceToValidate.BaseStat)}");
-                    };
+                    }
+                    ;
                     break;
             }
         });

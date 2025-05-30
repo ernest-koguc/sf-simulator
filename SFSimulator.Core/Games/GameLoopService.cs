@@ -343,13 +343,17 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         var goldFromGems = _gameFormulasService.GetDailyGoldFromGemMine(SimulationContext.Level, SimulationContext.GemMineLevel);
         GiveGoldToCharacter(goldFromGems, GainSource.Gem);
 
-        var questsFromTimeMachine = _thirstSimulator.GenerateQuestsFromTimeMachine(20, _gameFormulasService.GetMinimumQuestValue(SimulationContext.Level, SimulationContext.ExperienceBonus, SimulationContext.GoldBonus));
-
-        foreach (var quest in questsFromTimeMachine)
+        if (SimulationContext.Level >= 125)
         {
-            GiveGoldToCharacter(quest.Gold, GainSource.TimeMachine);
-            GiveXPToCharacter((long)quest.Experience, GainSource.TimeMachine);
+            var questsFromTimeMachine = _thirstSimulator.GenerateQuestsFromTimeMachine(20, _gameFormulasService.GetMinimumQuestValue(SimulationContext.Level, SimulationContext.ExperienceBonus, SimulationContext.GoldBonus));
+
+            foreach (var quest in questsFromTimeMachine)
+            {
+                GiveGoldToCharacter(quest.Gold, GainSource.TimeMachine);
+                GiveXPToCharacter((long)quest.Experience, GainSource.TimeMachine);
+            }
         }
+
     }
 
     private void GiveGoldToCharacter(decimal gold, GainSource source)
@@ -508,6 +512,46 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
             _petProgressionService.GivePetFood(SimulationContext.Pets, 5, PetElementType.Water);
         }
 
-        //TODO ATTRIBUTES LOGIC - CLASS AS NECESSARY INPUT??
+        var mainAttribute = ClassConfigurationProvider.GetClassConfiguration(SimulationContext.Class).MainAttribute;
+        if (calendarReward == CalendarRewardType.DEXTERITY_ATTRIBUTE && mainAttribute == AttributeType.Dexterity)
+        {
+            SimulationContext.BaseDexterity += 3;
+
+            var baseStatGain = CurrentDayGains.BaseStatGain;
+            baseStatGain[GainSource.Calendar] += 3;
+            baseStatGain[GainSource.Total] += 3;
+        }
+
+        if (calendarReward == CalendarRewardType.INTELIGENCE_ATTRIBUTE && mainAttribute == AttributeType.Intelligence)
+        {
+            SimulationContext.BaseIntelligence += 3;
+
+            var baseStatGain = CurrentDayGains.BaseStatGain;
+            baseStatGain[GainSource.Calendar] += 3;
+            baseStatGain[GainSource.Total] += 3;
+        }
+
+        if (calendarReward == CalendarRewardType.STRENGTH_ATTRIBUTE && mainAttribute == AttributeType.Strength)
+        {
+            SimulationContext.BaseStrength += 3;
+
+            var baseStatGain = CurrentDayGains.BaseStatGain;
+            baseStatGain[GainSource.Calendar] += 3;
+            baseStatGain[GainSource.Total] += 3;
+        }
+
+        if (calendarReward == CalendarRewardType.CONSTITUTION_ATTRIBUTE)
+        {
+            SimulationContext.BaseConstitution += 3;
+
+            var baseStatGain = CurrentDayGains.BaseStatGain;
+            baseStatGain[GainSource.Calendar] += 3;
+            baseStatGain[GainSource.Total] += 3;
+        }
+
+        if (calendarReward == CalendarRewardType.LUCK_ATTRIBUTE)
+        {
+            SimulationContext.BaseLuck += 3;
+        }
     }
 }

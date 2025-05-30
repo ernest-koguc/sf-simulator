@@ -11,7 +11,7 @@
             </RadzenButton>
         </RadzenStack>
     </RadzenRow>
-    <RadzenTemplateForm TItem="SimulationContext" Data="Options" Submit="Submit" Style="width: 100%;height:100%;" InvalidSubmit="InvalidSubmit">
+    <RadzenTemplateForm TItem="SimulationContext" Data="Options" Submit="Submit" Style="width: 100%;height:100%;">
         <ChildContent Context="ctx">
             <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;" Gap="0">
                 <div class="flex flex-col items-center justify-start gap-2 p-4 sm:flex-row">
@@ -20,8 +20,7 @@
                     <Numeric Variant="Variant.Outlined" Min="1" Name="Until" @bind-Value="@Options.FinishCondition.Until"/>
                     <DropDown Variant="Variant.Outlined" Name="FinishCondition" @bind-Value="@Options.FinishCondition.FinishWhen"/>
                 </div>
-                @* TODO: Adjust the validation *@
-                <RadzenAccordion Multiple="true" @ref=Accordion>
+                <RadzenAccordion Multiple="true">
                     <Items>
                         <RadzenAccordionItem>
                             <Template>
@@ -103,7 +102,6 @@
                                     </div>
                                     <div class="flex flex-col">
                                         <CheckBox Name="SwitchPriority" Label="Switch Priority" @bind-Value="@Options.SwitchPriority"/>
-                                        @* TODO Validate it is above or equal current character level *@
                                         <Numeric Icon="Switch" Name="SwitchLevel" Label="Switch Level" 
                                             Min="1" Max="800" @bind-Value="@Options.SwitchLevel" Validator="() => ValidateField(o => o.SwitchLevel)" Disabled="@(!Options.SwitchPriority)"/>
                                         <Numeric Icon="ExpeditionChest" Name="AvgAmountOfChestsAfterSwitch" Label="Avg Amount of Chests (After Switch)" 
@@ -149,6 +147,7 @@
                                     <div class="ml-2">
                                         Dungeons
                                     </div>
+                                    <RadzenBadge Variant="Variant.Filled" BadgeStyle="BadgeStyle.Danger" Text="BETA" class="bg-red-800! ms-2" />
                                 </div>
                             </Template>
                             <ChildContent>

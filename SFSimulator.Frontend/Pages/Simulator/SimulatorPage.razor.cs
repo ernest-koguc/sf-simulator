@@ -18,7 +18,6 @@ public partial class SimulatorPage
     [Inject]
     private Stopwatch Stopwatch { get; set; } = default!;
     private SimulationResult? SimulationResult { get; set; }
-    private SimulationContext Options { get; set; } = new();
     private bool IsSimulating { get; set; } = false;
     private int ProgressValue { get; set; }
     private string ProgressText { get; set; } = string.Empty;
