@@ -284,12 +284,6 @@
   .text-blue-200\! {
     color: var(--color-blue-200) !important;
   }
-  .text-blue-400 {
-    color: var(--color-blue-400);
-  }
-  .text-blue-400\! {
-    color: var(--color-blue-400) !important;
-  }
   .text-red-300\! {
     color: var(--color-red-300) !important;
   }

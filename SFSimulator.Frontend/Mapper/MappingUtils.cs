@@ -15,7 +15,6 @@ public static class MappingUtils
         simulationContext.GoldBonus.GuildBonus = GetGuildBonus(maria21DataDto, BonusType.GOLD);
         simulationContext.GoldBonus.RuneBonus = GetQuestRuneBonus(maria21DataDto, BonusType.GOLD);
         simulationContext.GoldBonus.HasGoldScroll = maria21DataDto.Items.Ring?.Enchantment == WitchScrollType.QuestGold || maria21DataDto.Inventory.Dummy.Ring?.Enchantment == WitchScrollType.QuestGold;
-        simulationContext.GoldBonus.HasArenaGoldScroll = maria21DataDto.Items.Misc?.Enchantment == WitchScrollType.ArenaGold || maria21DataDto.Inventory.Dummy.Misc?.Enchantment == WitchScrollType.ArenaGold;
 
         simulationContext.Level = maria21DataDto.Level;
         simulationContext.Experience = maria21DataDto.XP;
