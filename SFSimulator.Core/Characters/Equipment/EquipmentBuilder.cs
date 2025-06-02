@@ -326,7 +326,7 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
             ClassType.Bard or ClassType.Mage or ClassType.Necromancer or ClassType.Druid => new ItemAttributesGroup(0, 0, baseAttributes, 0, 0),
             ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker or ClassType.Bert => new ItemAttributesGroup(baseAttributes, 0, 0, 0, 0),
             ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter => new ItemAttributesGroup(0, baseAttributes, 0, 0, 0),
-            _ => throw new InvalidEnumArgumentException(nameof(classType))
+            _ => throw new InvalidEnumArgumentException($"{nameof(classType)} with value {classType} is unsupported")
         };
     }
 

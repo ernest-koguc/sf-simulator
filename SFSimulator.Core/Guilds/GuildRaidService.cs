@@ -41,9 +41,9 @@ public class GuildRaidService : IGuildRaidService
 
             if (simulationContext.GuildRaids <= 50)
             {
-                var newExpGuildBonus = simulationContext.ExperienceBonus.GuildBonus + 2 * simulationContext.GuildRaids;
+                var newExpGuildBonus = simulationContext.ExperienceBonus.GuildBonus + (2 * difference);
                 simulationContext.ExperienceBonus.GuildBonus = Math.Min(200, newExpGuildBonus);
-                var newGoldGuildBonus = simulationContext.GoldBonus.GuildBonus + 2 * simulationContext.GuildRaids;
+                var newGoldGuildBonus = simulationContext.GoldBonus.GuildBonus + (2 * difference);
                 simulationContext.GoldBonus.GuildBonus = Math.Min(200, newGoldGuildBonus);
             }
         }

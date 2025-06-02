@@ -112,7 +112,6 @@
                                         <CheckBox Name="SkipCalendar" Label="Skip Calendar" @bind-Value="@Options.SkipCalendar"/>
                                         <CheckBox Name="DoWeeklyTasks" Label="Do Weekly Tasks" @bind-Value="@Options.WeeklyTasksOptions.DoWeeklyTasks"/>
                                         <CheckBox Name="DrinkExtraBeer" Label="Drink Weekly Task Beer" @bind-Value="@Options.WeeklyTasksOptions.DrinkExtraBeer"/>
-                                        <CheckBox Name="SellPetFood" Label="Sell Pet Food" @bind-Value="@Options.SellPetFood"/>
                                     </div>
                                 </div>
                             </ChildContent>
@@ -160,8 +159,8 @@
                                 <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
                                     <div class="flex flex-col">
                                         <CheckBox Disabled="Options.DungeonsData is null" Name="DoDungeons" Label="Do Dungeons" @bind-Value="@Options.DoDungeons"/>
-                                        <Numeric Name="DungeonIterations" Label="Dungeon Iterations" @bind-Value="@Options.DungeonOptions.DungeonIterations" Min="1" Max="1_000_000"/>
-                                        <Numeric Name="InstaKillPercentage" Label="Minimum WR" @bind-Value="@Options.DungeonOptions.InstaKillPercentage" Min="0.01M" Max="100" Step="0.01"/>
+                                        <Numeric Disabled="!Options.DoDungeons" Name="DungeonIterations" Label="Dungeon Iterations" @bind-Value="@Options.DungeonOptions.DungeonIterations" Min="1" Max="1_000_000"/>
+                                        <Numeric Disabled="!Options.DoDungeons" Name="InstaKillPercentage" Label="Minimum WR" @bind-Value="@Options.DungeonOptions.InstaKillPercentage" Min="0.01M" Max="100" Step="0.01"/>
                                         <CheckBox Name="ChangeGear" Label="Change Gear" @bind-Value="@Options.ReequipOptions.ChangeGear"/>
                                         <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="PreferredWeaponRange" Label="Weapon Range" 
                                             @bind-Value="@Options.ReequipOptions.PreferredWeaponRange" Min="1" Max="1.75M" Step="0.05"/>

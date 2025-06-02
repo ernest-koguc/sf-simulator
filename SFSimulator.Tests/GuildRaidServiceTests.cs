@@ -51,15 +51,15 @@ public class GuildRaidServiceTests
         var simulationContext = new SimulationContext();
         simulationContext.GuildRaids = 49;
         simulationContext.Level = 300;
-        simulationContext.GoldBonus.GuildBonus = 98;
-        simulationContext.ExperienceBonus.GuildBonus = 98;
+        simulationContext.GoldBonus.GuildBonus = 198;
+        simulationContext.ExperienceBonus.GuildBonus = 198;
 
         List<GuildRaidRequirements> guildRaidRequirements = [new(50, 10, 300)];
         guildRaidService.SetUpGuildRaidsState(simulationContext, guildRaidRequirements);
 
         guildRaidService.Progress(10, simulationContext);
-        Assert.AreEqual(100, simulationContext.GoldBonus.GuildBonus);
-        Assert.AreEqual(100, simulationContext.ExperienceBonus.GuildBonus);
+        Assert.AreEqual(200, simulationContext.GoldBonus.GuildBonus);
+        Assert.AreEqual(200, simulationContext.ExperienceBonus.GuildBonus);
     }
 
     [TestMethod]
