@@ -79,4 +79,27 @@ public class GuildRaidServiceTests
         Assert.AreEqual(200, simulationContext.GoldBonus.GuildBonus);
         Assert.AreEqual(200, simulationContext.ExperienceBonus.GuildBonus);
     }
+
+    [TestMethod]
+    [DataRow(25, 25)]
+    [DataRow(50, 50)]
+    [DataRow(75, 75)]
+    [DataRow(100, 100)]
+    public void Progress_does_not_decrease_inital_guild_bonus(int days, int initialGuildBonus)
+    {
+        var guildRaidService = DependencyProvider.Get<IGuildRaidService>();
+        var simulationContext = new SimulationContext();
+        simulationContext.GuildRaids = 0;
+        simulationContext.Level = 300;
+        simulationContext.GoldBonus.GuildBonus = initialGuildBonus;
+        simulationContext.ExperienceBonus.GuildBonus = initialGuildBonus;
+
+        guildRaidService.SetUpGuildRaidsState(simulationContext);
+
+        guildRaidService.Progress(days, simulationContext);
+        Assert.IsTrue(simulationContext.GoldBonus.GuildBonus >= initialGuildBonus,
+            $"Experience bonus after progressing is below the initial value of {initialGuildBonus}");
+        Assert.IsTrue(simulationContext.ExperienceBonus.GuildBonus >= initialGuildBonus,
+            $"Experience bonus after progressing is below the initial value of {initialGuildBonus}");
+    }
 }
