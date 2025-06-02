@@ -2,20 +2,12 @@
 
 namespace SFSimulator.Core;
 
-public class DungeonSimulator : IDungeonSimulator
+public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService, IItemGenerator itemGenerator, Random random) : IDungeonSimulator
 {
-    private readonly IFightableContextFactory _fightableContextFactory;
-    private readonly IGameFormulasService _gameFormulasService;
-    private readonly IItemGenerator _itemGenerator;
-    private readonly Random _random;
-
-    public DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService, IItemGenerator itemGenerator, Random random)
-    {
-        _fightableContextFactory = dungeonableContextFactory;
-        _gameFormulasService = gameFormulasService;
-        _itemGenerator = itemGenerator;
-        _random = random;
-    }
+    private readonly IFightableContextFactory _fightableContextFactory = dungeonableContextFactory;
+    private readonly IGameFormulasService _gameFormulasService = gameFormulasService;
+    private readonly IItemGenerator _itemGenerator = itemGenerator;
+    private readonly Random _random = random;
 
     public PetSimulationResult SimulatePetDungeon(PetFightable petDungeonEnemy, PetFightable playerPet, int simulationContextLevel, int iterations, int winThreshold)
     {
@@ -120,10 +112,10 @@ public class DungeonSimulator : IDungeonSimulator
     private bool PerformSingleFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext)
     {
         long? leftoverHealth = null;
-        foreach (var pair in lookupContext)
+        foreach (var (LeftSide, RightSide) in lookupContext)
         {
-            var charSide = pair.LeftSide;
-            var dungeonSide = pair.RightSide;
+            var charSide = LeftSide;
+            var dungeonSide = RightSide;
 
             if (leftoverHealth.HasValue)
                 dungeonSide.Health = leftoverHealth.Value;
@@ -141,7 +133,7 @@ public class DungeonSimulator : IDungeonSimulator
 
     private bool PerformFight(IFightableContext charSide, IFightableContext dungeonSide)
     {
-        var charSideStarts = charSide.Reaction > dungeonSide.Reaction ? true : _random.NextDouble() < 0.5;
+        var charSideStarts = charSide.Reaction > dungeonSide.Reaction || _random.NextDouble() < 0.5;
         var (attacker, defender) = charSideStarts ? (charSide, dungeonSide) : (dungeonSide, charSide);
 
         var round = 0;

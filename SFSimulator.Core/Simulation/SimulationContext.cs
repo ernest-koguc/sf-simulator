@@ -172,9 +172,10 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
         }
     }
 
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+        return JsonSerializer.Serialize(this, JsonOptions);
     }
 }
 
