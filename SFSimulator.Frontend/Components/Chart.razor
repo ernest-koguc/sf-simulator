@@ -1,0 +1,39 @@
+﻿@if (shouldInitChart)
+{
+    <canvas id="@_elementId">
+    </canvas>
+}
+else
+{
+    <div class="flex h-full items-center justify-center">
+        <h3>No data to display</h3>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public List<ChartRecord> Records { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = default!;
+    private Guid _elementId = Guid.NewGuid();
+    private bool shouldInitChart = false;
+
+    protected override Task OnParametersSetAsync()
+    {
+        shouldInitChart = Records.Any(r => r.Value >= 1);
+
+        return base.OnParametersSetAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (shouldInitChart)
+        {
+            await JSRuntime
+                .InvokeVoidAsync("initChart" , _elementId.ToString(), Records.Select(r => new { label = r.Source, data = r.Value}), Title);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

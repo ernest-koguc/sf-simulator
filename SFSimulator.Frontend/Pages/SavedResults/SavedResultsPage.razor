@@ -1,0 +1,51 @@
+﻿@page "/saved-results"
+
+<RadzenDataGrid Style="height: 100%;" @ref="Grid" IsLoading=@IsLoading Count="@Count" Data="@SavedResults" LoadData="@LoadData" AllowSorting="true" TItem="SavedResultEntity"
+AllowFiltering="true" AllowPaging="false" AllowColumnResize="true" AllowColumnReorder="true"
+FilterMode="FilterMode.Simple" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" RowUpdate="Save">
+    <Columns>
+        <RadzenDataGridColumn Title="Name" Property="@nameof(SavedResultEntity.Name)" Width="200px">
+            <EditTemplate Context="result">
+                <RadzenTextBox MaxLength="32" @bind-Value="result.Name" Style="width:200px; display: block" Name="Name"/>
+                <RadzenRequiredValidator Text="Name must be between 1 to 32 characters" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Title="Started On" Property="@nameof(SavedResultEntity.Started)" Width="125px"/>
+        <RadzenDataGridColumn Title="Finished On" Property="@nameof(SavedResultEntity.Finished)" Width="125px"/>
+        <RadzenDataGridColumn Title="Duration" Property="@nameof(SavedResultEntity.Days)" Width="125px">
+            <Template Context="data">
+                @data.Days days
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Title="Milestones" Filterable="false" Sortable="false" Width="250px">
+            <Template Context="data">
+                Base stats: @data.BeforeSimulation.BaseStat -> @data.AfterSimulation.BaseStat <br />
+                Level: @data.BeforeSimulation.Level -> @data.AfterSimulation.Level
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Title="Last Modification" Property="@nameof(SavedResultEntity.LastModification)" Width="185px"/>
+        <RadzenDataGridColumn Title="Actions" Filterable="false" Sortable="false" Width="200px">
+            <Template Context="result">
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.25rem">
+                    <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Secondary" Shade="Shade.Lighter" Size="ButtonSize.Small" 
+                    Icon="edit" Text="Edit" Click="() => Edit(result)"/>
+                    <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Lighter" Size="ButtonSize.Small" 
+                    Icon="close" Text="Remove" Click="() => Remove(result)"/>
+                </RadzenStack>
+            </Template>
+            <EditTemplate Context="result">
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="0.25rem">
+                    <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Success" Shade="Shade.Lighter" Size="ButtonSize.Small" 
+                    Icon="check" Text="Save" Click="() => ConfirmEdit(result)"/>
+                    <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Lighter" Size="ButtonSize.Small" 
+                    Icon="close" Text="Cancel" Click="() => CancelEdit(result)"/>
+                </RadzenStack>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+    <EmptyTemplate>
+        <RadzenText>
+            No saved records matching the criteria. You can save simulation results in the <RadzenLink Path="/">Simulator</RadzenLink> page. 
+        </RadzenText>
+    </EmptyTemplate>
+</RadzenDataGrid>

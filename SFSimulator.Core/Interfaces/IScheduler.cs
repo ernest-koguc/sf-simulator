@@ -1,10 +1,10 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public interface IScheduler
 {
-    public interface IScheduler
-    {
-        void SetStartingPoint(int week, int day);
-        ScheduleDay GetCurrentSchedule();
-        void SetCustomSchedule(Dictionary<(int Week, int Day), ScheduleDay> schedule);
-        void SetDefaultSchedule();
-    }
+    void SetStartingPoint(int week, int day);
+    void SetCustomSchedule(Dictionary<(int Week, int Day), List<EventType>> schedule);
+    void SetSchedule(EventScheduleType scheduleType);
+    List<EventType> GetEvents();
+
 }

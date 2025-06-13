@@ -1,40 +1,41 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public class SimulatedGains
 {
-    public class SimulatedGains
+    public int DayIndex { get; set; }
+
+    public Dictionary<GainSource, long> ExperienceGain { get; set; } = new()
     {
-        public int DayIndex { get; set; }
+        { GainSource.Expedition,  0 },
+        { GainSource.Dungeon,     0 },
+        { GainSource.Academy,     0 },
+        { GainSource.TimeMachine, 0 },
+        { GainSource.DailyTasks,  0 },
+        { GainSource.WeeklyTasks, 0 },
+        { GainSource.Wheel,       0 },
+        { GainSource.Calendar,    0 },
+        { GainSource.GuildFight,  0 },
+        { GainSource.Pets,        0 },
+        { GainSource.Arena,       0 },
+        { GainSource.Total,       0 }
+    };
 
-        public Dictionary<GainSource, long> ExperienceGain { get; set; } = new()
-        {
-            { GainSource.QUEST, 0         },
-            { GainSource.EXPEDITION, 0    },
-            { GainSource.ACADEMY, 0       },
-            { GainSource.TIME_MACHINE, 0  },
-            { GainSource.DAILY_TASKS, 0   },
-            { GainSource.WEEKLY_TASKS, 0  },
-            { GainSource.WHEEL, 0         },
-            { GainSource.CALENDAR, 0      },
-            { GainSource.GUILD_FIGHT, 0   },
-            { GainSource.ARENA, 0         },
-            { GainSource.TOTAL, 0         }
-        };
-
-        public Dictionary<GainSource, decimal> BaseStatGain { get; set; } = new()
-        {
-            { GainSource.QUEST, 0         },
-            { GainSource.EXPEDITION, 0    },
-            { GainSource.GOLD_PIT, 0      },
-            { GainSource.TIME_MACHINE, 0  },
-            { GainSource.DAILY_TASKS, 0   },
-            { GainSource.WEEKLY_TASKS, 0  },
-            { GainSource.WHEEL, 0         },
-            { GainSource.CALENDAR, 0      },
-            { GainSource.GUARD, 0         },
-            { GainSource.GEM, 0           },
-            { GainSource.ITEM, 0          },
-            { GainSource.DICE_GAME, 0     },
-            { GainSource.ARENA, 0         },
-            { GainSource.TOTAL, 0         }
-        };
-    }
+    public Dictionary<GainSource, decimal> BaseStatGain { get; set; } = new()
+    {
+        { GainSource.Expedition,  0 },
+        { GainSource.Dungeon,     0 },
+        { GainSource.GoldPit,     0 },
+        { GainSource.TimeMachine, 0 },
+        { GainSource.DailyTasks,  0 },
+        { GainSource.WeeklyTasks, 0 },
+        { GainSource.Wheel,       0 },
+        { GainSource.Calendar,    0 },
+        { GainSource.Guard,       0 },
+        { GainSource.Gem,         0 },
+        { GainSource.Item,        0 },
+        { GainSource.DiceGame,    0 },
+        { GainSource.Pets,        0 },
+        { GainSource.Arena,       0 },
+        { GainSource.Total,       0 }
+    };
 }

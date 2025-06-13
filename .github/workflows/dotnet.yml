@@ -16,28 +16,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18.13
-        cache: 'npm'
-        cache-dependency-path: SFSimulator.Web/package-lock.json
-    - name: npm install
-      run: |
-        cd SFSimulator.Web
-        npm install
-    - name: npm build
-      run: |
-        cd SFSimulator.Web
-        npm run build
-    - name: Restore
-      run: dotnet restore
-    - name: Build API
-      run: dotnet build .\SFSimulator.API --no-restore
+        dotnet-version: 9.0.x
     - name: dotnet publish 
-      run: dotnet publish -c Release -o sfsimulator .\SFSimulator.API
-        
+      run: dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
     - name: deploy on iis
       uses: ChristopheLav/iis-deploy@v1
       with:

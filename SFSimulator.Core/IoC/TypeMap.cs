@@ -1,17 +1,3 @@
-﻿namespace SFSimulator.Core
-{
-    public class TypeMap
-    {
-        public Type Implementation { get; }
-        public Type Interface { get; }
-        public TypeMapOption TypeMapOption { get; }
+﻿namespace SFSimulator.Core;
 
-        public TypeMap(Type implementation, Type typeInterface, TypeMapOption typeMapOption = TypeMapOption.None)
-        {
-            Implementation = implementation;
-            Interface = typeInterface;
-            TypeMapOption = typeMapOption;
-        }
-
-    }
-}
+public record class TypeMap(Type Implementation, Type Interface);

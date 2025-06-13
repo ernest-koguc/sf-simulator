@@ -8,7 +8,7 @@ public class DruidFightContext : DelegatableFightableContext
     private double RageCritMultiplierBonus { get; set; } = 3.6D;
     private double SwoopChance { get; set; } = 0.25;
     private double SwoopDamageModifier { get; set; } = 3.325D;
-    
+
     public DruidFightContext()
     {
         AttackImplementation = AttackImpl;
@@ -37,7 +37,7 @@ public class DruidFightContext : DelegatableFightableContext
             var critMultiplier = CritMultiplier + RageCritMultiplierBonus;
             var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, RageCritChance, critMultiplier, Random);
 
-            return target.TakeAttack(dmg); 
+            return target.TakeAttack(dmg);
         }
         finally
         {
@@ -73,7 +73,7 @@ public class DruidFightContext : DelegatableFightableContext
         return target.TakeAttack(dmg);
     }
 
-    private bool TakeAttackImpl (double damage)
+    private bool TakeAttackImpl(double damage)
     {
         IsInBearForm = false;
         Health -= (long)damage;

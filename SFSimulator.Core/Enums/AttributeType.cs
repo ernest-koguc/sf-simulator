@@ -2,9 +2,9 @@ namespace SFSimulator.Core;
 
 public enum AttributeType
 {
-    Strength,
-    Dexterity,
-    Intelligence,
-    Constitution,
-    Luck
+    Strength = 1,
+    Dexterity = 2,
+    Intelligence = 3,
+    Constitution = 4,
+    Luck = 5
 }

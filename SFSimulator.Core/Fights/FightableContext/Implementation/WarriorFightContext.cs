@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 
-public class WarriorFightContext : DelegatableFightableContext 
+public class WarriorFightContext : DelegatableFightableContext
 {
     public int BlockChance { get; set; }
     public WarriorFightContext()
@@ -22,7 +22,7 @@ public class WarriorFightContext : DelegatableFightableContext
         return target.TakeAttack(dmg);
     }
 
-    private bool TakeAttackImpl (double damage)
+    private bool TakeAttackImpl(double damage)
     {
         Health -= (long)damage;
         return Health <= 0;

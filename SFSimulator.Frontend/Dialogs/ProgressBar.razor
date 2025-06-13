@@ -1,0 +1,102 @@
+﻿@implements IDisposable
+
+<div class="overlay">
+    <div class="progressbar">
+        <RadzenText Text="@Text" TextStyle="TextStyle.H6"/>        
+        <RadzenProgressBar ShowValue="false" Min=0 Max=100 Value=Current Style="width: max(300px, 30vw); height: 35px; border-radius: 0.25rem;" ProgressBarStyle="ProgressBarStyle.Primary"/>
+        <RadzenText class="mt-1!">@MiscText</RadzenText>
+    </div>
+</div>
+
+
+<style>
+    .overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.8);
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .progressbar {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+</style>
+
+@code {
+    [Parameter, EditorRequired]
+    public bool Visible { get; set; }
+    [Parameter, EditorRequired]
+    public int Current { get; set; }
+    [Parameter, EditorRequired]
+    public string Text { get; set; } = default!;
+
+    private string MiscText { get; set; } = FunkyTexts[Random.Shared.Next(FunkyTexts.Length)];
+    private readonly PeriodicTimer _timer = new (TimeSpan.FromSeconds(2));
+
+    private static string[] FunkyTexts =
+    [
+        "Obliterating enemies...",
+        "Bringing back #banter on Tavern discord...",
+        "Making crazi mald...",
+        "Fidgeting the Shakes...",
+        "Pulling out 80 points from Pig expedition...",
+        "Waiting for TM bug to be fixed...",
+        "Rioting because of Stay logged in check not working...",
+        "Writing open letter update - Day 2137...",
+        "Waiting for the Treasure Hunt update...",
+        "Shaking the Fidget...",
+        "Succeeding in getting the Polish citizenship...",
+        "Abusing Battle Mage attributes bonus...",
+        "Getting obliterated by the dungeon enemy as a BM...",
+        "Putting house on auction to compete with Turor...",
+        "Mashing Enter until morale improves...",
+        "Bugging the Fixes...",
+        "Praying to BM god...",
+        "Admiring New Backend...",
+        "Getting fact-checked by Milado...",
+        "Making sure Eggman reworks new class into scout variant...",
+        "Letting know Magi that warrior is worst class...",
+        "Waiting to get mod on Tavern...",
+        "Making scrambled eggs on GS4 server...",
+        "Quitting the game because of the new UI...",
+        "Getting quadrillion mushrooms from bugged HV...",
+        "Applauding 1.8 chest avg of the GOAT mentor...",
+        "Getting ticket response in only 3 months...",
+        "Switching to Mobile Dungeon because of better game design...",
+        "Waiting for Tavern Exam final results..."
+    ];
+
+    protected override void OnInitialized()
+    {
+        RunTimer();
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+    }
+
+    private async void RunTimer()
+    {
+        while (await _timer.WaitForNextTickAsync())
+        {
+            MiscText = FunkyTexts[Random.Shared.Next(FunkyTexts.Length)];
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

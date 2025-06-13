@@ -9,7 +9,7 @@ public class DemonHunterFightContext : DelegatableFightableContext
         AttackImplementation = AttackImpl;
 
         if (enemyClass == ClassType.Mage)
-            TakeAttackImplementation  = NoReviveTakeAttackImpl;
+            TakeAttackImplementation = NoReviveTakeAttackImpl;
         else
             TakeAttackImplementation = TakeAttackImpl;
 
@@ -35,7 +35,7 @@ public class DemonHunterFightContext : DelegatableFightableContext
         return target.TakeAttack(dmg);
     }
 
-    private bool TakeAttackImpl (double damage)
+    private bool TakeAttackImpl(double damage)
     {
         Health -= (long)damage;
 

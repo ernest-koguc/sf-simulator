@@ -20,6 +20,6 @@
         public int ColdResistance { get; }
         public int HealthRune { get; }
         public double SoloPortal { get; }
-        public double GuildPortal { get; } 
+        public double GuildPortal { get; }
     }
 }

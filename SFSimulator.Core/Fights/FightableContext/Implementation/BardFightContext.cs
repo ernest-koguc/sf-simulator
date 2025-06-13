@@ -58,7 +58,6 @@ public class BardFightContext : DelegatableFightableContext
         if (MelodyLength == 0)
             MelodyDmgMultiplier = 1;
 
-        //Console.WriteLine($"Round: {round}, Melody length: {MelodyLength}, MelodyDmg: {MelodyDmgMultiplier}");
         MelodyLength--;
 
         if (!target.WillTakeAttack())
@@ -69,7 +68,7 @@ public class BardFightContext : DelegatableFightableContext
         return target.TakeAttack(dmg);
     }
 
-    private bool TakeAttackImpl (double damage)
+    private bool TakeAttackImpl(double damage)
     {
         Health -= (long)damage;
         return Health <= 0;

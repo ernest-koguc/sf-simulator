@@ -1,6 +1,6 @@
 namespace SFSimulator.Core;
 
-public class WeeklyTasksRewardProvider(IGameLogic _gameLogic) : IWeeklyTasksRewardProvider
+public class WeeklyTasksRewardProvider(IGameFormulasService _gameLogic) : IWeeklyTasksRewardProvider
 {
     public decimal GetWeeklyGold(int characterLevel, int day)
     {
@@ -31,4 +31,3 @@ public class WeeklyTasksRewardProvider(IGameLogic _gameLogic) : IWeeklyTasksRewa
 
     public int GetWeeklyThirst(int day) => day % 7 == 1 ? 20 : 0;
 }
-

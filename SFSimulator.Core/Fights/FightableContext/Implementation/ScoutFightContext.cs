@@ -21,7 +21,7 @@ public class ScoutFightContext : DelegatableFightableContext
         return target.TakeAttack(dmg);
     }
 
-    private bool TakeAttackImpl (double damage)
+    private bool TakeAttackImpl(double damage)
     {
         Health -= (long)damage;
         return Health <= 0;

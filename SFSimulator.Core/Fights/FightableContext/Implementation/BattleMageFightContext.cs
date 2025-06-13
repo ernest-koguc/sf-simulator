@@ -28,7 +28,7 @@ public class BattleMageFightContext : DelegatableFightableContext, IBeforeFightA
         return target.TakeAttack(dmg);
     }
 
-    private bool TakeAttackImpl (double damage)
+    private bool TakeAttackImpl(double damage)
     {
         Health -= (long)damage;
         return Health <= 0;

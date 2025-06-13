@@ -1,174 +1,550 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public class Scheduler : IScheduler
 {
-    public class Scheduler : IScheduler
+    private int CurrentWeek;
+    private int CurrentDay;
+    private Dictionary<(int Week, int Day), List<EventType>> Schedule;
+    public Scheduler()
     {
-        private int CurrentWeek;
-        private int CurrentDay;
-        private Dictionary<(int Week, int Day), ScheduleDay> Schedule { get; set; } = null!;
-        public Scheduler()
+        CurrentWeek = 1;
+        CurrentDay = 1;
+        Schedule = Year2024Cycle;
+    }
+
+    public void SetStartingPoint(int week, int day)
+    {
+        if (day > Schedule.Keys.Max(s => s.Day) || day < Schedule.Keys.Min(s => s.Day))
+            throw new ArgumentOutOfRangeException(nameof(day));
+        if (week > Schedule.Keys.Max(s => s.Week) || week < Schedule.Keys.Min(s => s.Week))
+            throw new ArgumentOutOfRangeException(nameof(week));
+
+        CurrentWeek = week;
+        CurrentDay = day;
+    }
+    public void SetSchedule(EventScheduleType scheduleType)
+    {
+        switch (scheduleType)
+        {
+            case EventScheduleType.SimpleCycle:
+                Schedule = SimpleCycle;
+                break;
+            case EventScheduleType.Year2024Cycle:
+                Schedule = Year2024Cycle;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(scheduleType));
+        }
+    }
+
+    public void SetCustomSchedule(Dictionary<(int Week, int Day), List<EventType>> schedule)
+    {
+        ArgumentNullException.ThrowIfNull(schedule);
+
+        if (schedule.Count == 0)
+        {
+            schedule.Add((1, 1), []);
+            Schedule = schedule;
+            return;
+        }
+
+        var weeks = schedule.Keys.Select(s => s.Week);
+        var min = weeks.Min();
+        var max = weeks.Max();
+        var weeksBetween = Enumerable.Range(min, max);
+        if (weeksBetween.Any(s => !weeks.Contains(s)))
+            throw new ArgumentException("There can not be any gaps between weeks");
+
+        Schedule = schedule;
+    }
+
+    public List<EventType> GetEvents()
+    {
+        if (CurrentDay > Schedule.Keys.Where(x => x.Week == CurrentWeek).Max(x => x.Day))
+        {
+            CurrentDay = 1;
+            CurrentWeek++;
+        }
+
+        if (CurrentWeek > Schedule.Keys.Max(s => s.Week))
         {
             CurrentWeek = 1;
-            CurrentDay = 1;
-
-            SetDefaultSchedule();
-        }
-        public void SetStartingPoint(int week, int day)
-        {
-            if (day > Schedule.Keys.Max(s => s.Day) || day < Schedule.Keys.Min(s => s.Day))
-                throw new ArgumentOutOfRangeException(nameof(day));
-            if (week > Schedule.Keys.Max(s => s.Week) || week < Schedule.Keys.Min(s => s.Week))
-                throw new ArgumentOutOfRangeException(nameof(week));
-
-            CurrentWeek = week;
-            CurrentDay = day;
         }
 
-        public ScheduleDay GetCurrentSchedule()
-        {
-            if (CurrentDay > Schedule.Keys.Where(x => x.Week == CurrentWeek).Max(x => x.Day))
-            {
-                CurrentDay = 1;
-                CurrentWeek++;
-            }
-
-            if (CurrentWeek > Schedule.Keys.Max(s=>s.Week))
-            {
-                CurrentWeek = 1;
-            }
-            
-            var schedule = Schedule[(CurrentWeek, CurrentDay)];
-            CurrentDay++;
-            return schedule;
-        }
-        public void SetCustomSchedule(Dictionary<(int Week, int Day), ScheduleDay> schedule)
-        {
-            if (schedule == null)
-                throw new ArgumentNullException(nameof(schedule));
-
-            if (schedule.Count == 0)
-            {
-                schedule.Add((1, 1), new ScheduleDay());
-                Schedule = schedule;
-                return;
-            }
-
-            var weeks = schedule.Keys.Select(s=>s.Week);
-            var min = weeks.Min();
-            var max = weeks.Max();
-            var weeksBetween = Enumerable.Range(min, max);
-            if (weeksBetween.Any(s => !weeks.Contains(s)))
-                throw new ArgumentException("There can not be any gaps between weeks");
-
-            Schedule = schedule;
-        }
-        public void SetDefaultSchedule()
-        {
-            var firstWeek = new List<EventType>() { EventType.Experience, EventType.Hourglasses, EventType.EpicQuest };
-            var secondWeek = new List<EventType>() { EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge };
-            var thirdWeek = new List<EventType>() { EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch };
-            var fourthWeek = new List<EventType>() { EventType.Mushroom, EventType.EpicShop, EventType.Fortress, EventType.Pets, EventType.Forge, EventType.Toilet };
-            var eightWeek = new List<EventType>() { EventType.Mushroom, EventType.Experience, EventType.Gold, EventType.Fortress, EventType.Toilet, EventType.PieceworkParty };
-            var twelvethWeek = new List<EventType>() { EventType.Mushroom, EventType.EpicLuck, EventType.Fortress, EventType.Toilet, EventType.LuckyDay, EventType.Forge };
-
-            Schedule = new()
-            {
-                { (1,  1),  new() },
-                { (1,  2),  new() },
-                { (1,  3),  new() },
-                { (1,  4),  new() },
-                { (1,  5),  new() { Events = firstWeek }},
-                { (1,  6),  new() { Events = firstWeek }},
-                { (1,  7),  new() { Events = firstWeek }},
-
-                { (2,  1),  new() },
-                { (2,  2),  new() },
-                { (2,  3),  new() },
-                { (2,  4),  new() },
-                { (2,  5),  new() { Events = secondWeek }},
-                { (2,  6),  new() { Events = secondWeek }},
-                { (2,  7),  new() { Events = secondWeek }},
-
-                { (3,  1),  new() },
-                { (3,  2),  new() },
-                { (3,  3),  new() },
-                { (3,  4),  new() },
-                { (3,  5),  new() { Events = thirdWeek }},
-                { (3,  6),  new() { Events = thirdWeek }},
-                { (3,  7),  new() { Events = thirdWeek }},
-
-                { (4,  1),  new() },
-                { (4,  2),  new() },
-                { (4,  3),  new() },
-                { (4,  4),  new() },
-                { (4,  5),  new() { Events = fourthWeek }},
-                { (4,  6),  new() { Events = fourthWeek }},
-                { (4,  7),  new() { Events = fourthWeek }},
-
-                { (5,  1),  new() },
-                { (5,  2),  new() },
-                { (5,  3),  new() },
-                { (5,  4),  new() },
-                { (5,  5),  new() { Events = firstWeek }},
-                { (5,  6),  new() { Events = firstWeek }},
-                { (5,  7),  new() { Events = firstWeek }},
-
-                { (6,  1),  new() },
-                { (6,  2),  new() },
-                { (6,  3),  new() },
-                { (6,  4),  new() },
-                { (6,  5),  new() { Events = secondWeek }},
-                { (6,  6),  new() { Events = secondWeek }},
-                { (6,  7),  new() { Events = secondWeek }},
-
-                { (7,  1),  new() },
-                { (7,  2),  new() },
-                { (7,  3),  new() },
-                { (7,  4),  new() },
-                { (7,  5),  new() { Events = thirdWeek }},
-                { (7,  6),  new() { Events = thirdWeek }},
-                { (7,  7),  new() { Events = thirdWeek }},
-
-                { (8,  1),  new() },
-                { (8,  2),  new() },
-                { (8,  3),  new() },
-                { (8,  4),  new() },
-                { (8,  5),  new() { Events = eightWeek }},
-                { (8,  6),  new() { Events = eightWeek }},
-                { (8,  7),  new() { Events = eightWeek }},
-
-                { (9,  1),  new() },
-                { (9,  2),  new() },
-                { (9,  3),  new() },
-                { (9,  4),  new() },
-                { (9,  5),  new() { Events = firstWeek }},
-                { (9,  6),  new() { Events = firstWeek }},
-                { (9,  7),  new() { Events = firstWeek }},
-
-                { (10, 1), new() },
-                { (10, 2), new() },
-                { (10, 3), new() },
-                { (10, 4), new() },
-                { (10, 5), new() { Events = secondWeek }},
-                { (10, 6), new() { Events = secondWeek }},
-                { (10, 7), new() { Events = secondWeek }},
-
-                { (11, 1), new() },
-                { (11, 2), new() },
-                { (11, 3), new() },
-                { (11, 4), new() },
-                { (11, 5), new() { Events = thirdWeek }},
-                { (11, 6), new() { Events = thirdWeek }},
-                { (11, 7), new() { Events = thirdWeek }},
-
-                { (12, 1), new() },
-                { (12, 2), new() },
-                { (12, 3), new() },
-                { (12, 4), new() },
-                { (12, 5), new() { Events = twelvethWeek }},
-                { (12, 6), new() { Events = twelvethWeek }},
-                { (12, 7), new() { Events = twelvethWeek }}
-            };
-        }
+        var events = Schedule[(CurrentWeek, CurrentDay)];
+        CurrentDay++;
+        return events;
 
     }
+
+    #region SimpleCycle
+    public Dictionary<(int Week, int Day), List<EventType>> SimpleCycle = new()
+    {
+        [(1, 1)] = [],
+        [(1, 2)] = [],
+        [(1, 3)] = [],
+        [(1, 4)] = [],
+        [(1, 5)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+        [(1, 6)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+        [(1, 7)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+
+        [(2, 1)] = [],
+        [(2, 2)] = [],
+        [(2, 3)] = [],
+        [(2, 4)] = [],
+        [(2, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+        [(2, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+        [(2, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+
+        [(3, 1)] = [],
+        [(3, 2)] = [],
+        [(3, 3)] = [],
+        [(3, 4)] = [],
+        [(3, 5)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+        [(3, 6)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+        [(3, 7)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+
+        [(4, 1)] = [],
+        [(4, 2)] = [],
+        [(4, 3)] = [],
+        [(4, 4)] = [],
+        [(4, 5)] = [EventType.Mushroom, EventType.EpicShop, EventType.Fortress, EventType.Pets, EventType.Forge, EventType.Toilet],
+        [(4, 6)] = [EventType.Mushroom, EventType.EpicShop, EventType.Fortress, EventType.Pets, EventType.Forge, EventType.Toilet],
+        [(4, 7)] = [EventType.Mushroom, EventType.EpicShop, EventType.Fortress, EventType.Pets, EventType.Forge, EventType.Toilet],
+
+        [(5, 1)] = [],
+        [(5, 2)] = [],
+        [(5, 3)] = [],
+        [(5, 4)] = [],
+        [(5, 5)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+        [(5, 6)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+        [(5, 7)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+
+        [(6, 1)] = [],
+        [(6, 2)] = [],
+        [(6, 3)] = [],
+        [(6, 4)] = [],
+        [(6, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+        [(6, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+        [(6, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+
+        [(7, 1)] = [],
+        [(7, 2)] = [],
+        [(7, 3)] = [],
+        [(7, 4)] = [],
+        [(7, 5)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+        [(7, 6)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+        [(7, 7)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+
+        [(8, 1)] = [],
+        [(8, 2)] = [],
+        [(8, 3)] = [],
+        [(8, 4)] = [],
+        [(8, 5)] = [EventType.Mushroom, EventType.Experience, EventType.Gold, EventType.Fortress, EventType.Toilet, EventType.PieceworkParty],
+        [(8, 6)] = [EventType.Mushroom, EventType.Experience, EventType.Gold, EventType.Fortress, EventType.Toilet, EventType.PieceworkParty],
+        [(8, 7)] = [EventType.Mushroom, EventType.Experience, EventType.Gold, EventType.Fortress, EventType.Toilet, EventType.PieceworkParty],
+
+        [(9, 1)] = [],
+        [(9, 2)] = [],
+        [(9, 3)] = [],
+        [(9, 4)] = [],
+        [(9, 5)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+        [(9, 6)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+        [(9, 7)] = [EventType.Experience, EventType.Hourglasses, EventType.EpicQuest],
+
+        [(10, 1)] = [],
+        [(10, 2)] = [],
+        [(10, 3)] = [],
+        [(10, 4)] = [],
+        [(10, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+        [(10, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+        [(10, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Toilet, EventType.Forge],
+
+        [(11, 1)] = [],
+        [(11, 2)] = [],
+        [(11, 3)] = [],
+        [(11, 4)] = [],
+        [(11, 5)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+        [(11, 6)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+        [(11, 7)] = [EventType.Gold, EventType.Souls, EventType.Pets, EventType.Witch],
+
+        [(12, 1)] = [],
+        [(12, 2)] = [],
+        [(12, 3)] = [],
+        [(12, 4)] = [],
+        [(12, 5)] = [EventType.Mushroom, EventType.EpicLuck, EventType.Fortress, EventType.Toilet, EventType.LuckyDay, EventType.Forge],
+        [(12, 6)] = [EventType.Mushroom, EventType.EpicLuck, EventType.Fortress, EventType.Toilet, EventType.LuckyDay, EventType.Forge],
+        [(12, 7)] = [EventType.Mushroom, EventType.EpicLuck, EventType.Fortress, EventType.Toilet, EventType.LuckyDay, EventType.Forge],
+    };
+    #endregion
+
+    #region Year2024
+    public Dictionary<(int Week, int Day), List<EventType>> Year2024Cycle = new()
+    {
+        [(1, 1)] = [],
+        [(1, 2)] = [EventType.EpicShop, EventType.EpicQuest, EventType.EpicLuck, EventType.Hourglasses, EventType.Experience, EventType.Fortress, EventType.LuckyDay],
+        [(1, 3)] = [EventType.EpicShop, EventType.EpicQuest, EventType.EpicLuck, EventType.Hourglasses, EventType.Experience, EventType.Fortress, EventType.LuckyDay],
+        [(1, 4)] = [],
+        [(1, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(1, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(1, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(2, 1)] = [],
+        [(2, 2)] = [],
+        [(2, 3)] = [],
+        [(2, 4)] = [],
+        [(2, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(2, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(2, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(3, 1)] = [],
+        [(3, 2)] = [],
+        [(3, 3)] = [],
+        [(3, 4)] = [],
+        [(3, 5)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(3, 6)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(3, 7)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(4, 1)] = [],
+        [(4, 2)] = [],
+        [(4, 3)] = [],
+        [(4, 4)] = [],
+        [(4, 5)] = [EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(4, 6)] = [EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(4, 7)] = [EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(5, 1)] = [],
+        [(5, 2)] = [],
+        [(5, 3)] = [],
+        [(5, 4)] = [],
+        [(5, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(5, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(5, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(6, 1)] = [],
+        [(6, 2)] = [],
+        [(6, 3)] = [],
+        [(6, 4)] = [],
+        [(6, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(6, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(6, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(7, 1)] = [],
+        [(7, 2)] = [],
+        [(7, 3)] = [],
+        [(7, 4)] = [],
+        [(7, 5)] = [EventType.Souls, EventType.EpicShop, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(7, 6)] = [EventType.Souls, EventType.EpicShop, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(7, 7)] = [EventType.Souls, EventType.EpicShop, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(8, 1)] = [],
+        [(8, 2)] = [],
+        [(8, 3)] = [],
+        [(8, 4)] = [EventType.Hellevator],
+        [(8, 5)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(8, 6)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(8, 7)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(9, 1)] = [EventType.Hellevator],
+        [(9, 2)] = [EventType.Hellevator],
+        [(9, 3)] = [EventType.Hellevator],
+        [(9, 4)] = [EventType.Hellevator],
+        [(9, 5)] = [EventType.Hellevator, EventType.EpicShop, EventType.Fortress, EventType.Toilet, EventType.Witch],
+        [(9, 6)] = [EventType.Hellevator, EventType.EpicShop, EventType.Fortress, EventType.Toilet, EventType.Witch],
+        [(9, 7)] = [EventType.Hellevator, EventType.EpicShop, EventType.Fortress, EventType.Toilet, EventType.Witch],
+        [(10, 1)] = [],
+        [(10, 2)] = [],
+        [(10, 3)] = [],
+        [(10, 4)] = [],
+        [(10, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(10, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(10, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(11, 1)] = [],
+        [(11, 2)] = [],
+        [(11, 3)] = [],
+        [(11, 4)] = [],
+        [(11, 5)] = [EventType.EpicShop, EventType.Forge, EventType.Gold, EventType.LuckyDay],
+        [(11, 6)] = [EventType.EpicShop, EventType.Forge, EventType.Gold, EventType.LuckyDay],
+        [(11, 7)] = [EventType.EpicShop, EventType.Forge, EventType.Gold, EventType.LuckyDay],
+        [(12, 1)] = [],
+        [(12, 2)] = [],
+        [(12, 3)] = [],
+        [(12, 4)] = [],
+        [(12, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(12, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(12, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(13, 1)] = [],
+        [(13, 2)] = [],
+        [(13, 3)] = [],
+        [(13, 4)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(13, 5)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(13, 6)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(13, 7)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(14, 1)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(14, 2)] = [EventType.LegendaryDungeon],
+        [(14, 3)] = [EventType.LegendaryDungeon],
+        [(14, 4)] = [EventType.LegendaryDungeon],
+        [(14, 5)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets],
+        [(14, 6)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets],
+        [(14, 7)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets],
+        [(15, 1)] = [EventType.LegendaryDungeon],
+        [(15, 2)] = [],
+        [(15, 3)] = [],
+        [(15, 4)] = [],
+        [(15, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(15, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(15, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(16, 1)] = [],
+        [(16, 2)] = [],
+        [(16, 3)] = [],
+        [(16, 4)] = [],
+        [(16, 5)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(16, 6)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(16, 7)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(17, 1)] = [],
+        [(17, 2)] = [],
+        [(17, 3)] = [],
+        [(17, 4)] = [],
+        [(17, 5)] = [EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(17, 6)] = [EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(17, 7)] = [EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(18, 1)] = [],
+        [(18, 2)] = [],
+        [(18, 3)] = [EventType.PieceworkParty, EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets],
+        [(18, 4)] = [],
+        [(18, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(18, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(18, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(19, 1)] = [],
+        [(19, 2)] = [],
+        [(19, 3)] = [],
+        [(19, 4)] = [EventType.EpicShop, EventType.EpicQuest, EventType.Forge, EventType.Toilet],
+        [(19, 5)] = [EventType.EpicShop, EventType.EpicQuest, EventType.Forge, EventType.Toilet],
+        [(19, 6)] = [EventType.EpicShop, EventType.EpicQuest, EventType.Forge, EventType.Toilet],
+        [(19, 7)] = [EventType.EpicShop, EventType.EpicQuest, EventType.Forge, EventType.Toilet],
+        [(20, 1)] = [],
+        [(20, 2)] = [],
+        [(20, 3)] = [],
+        [(20, 4)] = [],
+        [(20, 5)] = [EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Fortress, EventType.Gold],
+        [(20, 6)] = [EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Fortress, EventType.Gold],
+        [(20, 7)] = [EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Fortress, EventType.Gold],
+        [(21, 1)] = [EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Fortress, EventType.Gold],
+        [(21, 2)] = [],
+        [(21, 3)] = [],
+        [(21, 4)] = [EventType.Hellevator],
+        [(21, 5)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Mushroom],
+        [(21, 6)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Mushroom],
+        [(21, 7)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Mushroom],
+        [(22, 1)] = [EventType.Hellevator],
+        [(22, 2)] = [EventType.Hellevator],
+        [(22, 3)] = [EventType.Hellevator],
+        [(22, 4)] = [EventType.Hellevator],
+        [(22, 5)] = [EventType.Hellevator, EventType.EpicShop, EventType.EpicQuest, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Mushroom],
+        [(22, 6)] = [EventType.Hellevator, EventType.EpicShop, EventType.EpicQuest, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Mushroom],
+        [(22, 7)] = [EventType.Hellevator, EventType.EpicShop, EventType.EpicQuest, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Mushroom],
+        [(23, 1)] = [],
+        [(23, 2)] = [],
+        [(23, 3)] = [],
+        [(23, 4)] = [],
+        [(23, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(23, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(23, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(24, 1)] = [],
+        [(24, 2)] = [],
+        [(24, 3)] = [],
+        [(24, 4)] = [],
+        [(24, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(24, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(24, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(25, 1)] = [],
+        [(25, 2)] = [],
+        [(25, 3)] = [],
+        [(25, 4)] = [],
+        [(25, 5)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Witch, EventType.LuckyDay],
+        [(25, 6)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Witch, EventType.LuckyDay],
+        [(25, 7)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Witch, EventType.LuckyDay],
+        [(26, 1)] = [EventType.LegendaryDungeon],
+        [(26, 2)] = [EventType.LegendaryDungeon],
+        [(26, 3)] = [EventType.LegendaryDungeon],
+        [(26, 4)] = [EventType.LegendaryDungeon],
+        [(26, 5)] = [EventType.LegendaryDungeon, EventType.Souls, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets, EventType.Gold, EventType.LuckyDay],
+        [(26, 6)] = [EventType.LegendaryDungeon, EventType.Souls, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets, EventType.Gold, EventType.LuckyDay],
+        [(26, 7)] = [EventType.LegendaryDungeon, EventType.Souls, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets, EventType.Gold, EventType.LuckyDay],
+        [(27, 1)] = [],
+        [(27, 2)] = [],
+        [(27, 3)] = [],
+        [(27, 4)] = [],
+        [(27, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(27, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(27, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(28, 1)] = [],
+        [(28, 2)] = [],
+        [(28, 3)] = [],
+        [(28, 4)] = [],
+        [(28, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(28, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(28, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(29, 1)] = [],
+        [(29, 2)] = [],
+        [(29, 3)] = [],
+        [(29, 4)] = [],
+        [(29, 5)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(29, 6)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(29, 7)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(30, 1)] = [],
+        [(30, 2)] = [],
+        [(30, 3)] = [],
+        [(30, 4)] = [EventType.Hellevator],
+        [(30, 5)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(30, 6)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(30, 7)] = [EventType.Hellevator, EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Pets],
+        [(31, 1)] = [EventType.Hellevator],
+        [(31, 2)] = [EventType.Hellevator],
+        [(31, 3)] = [EventType.Hellevator],
+        [(31, 4)] = [EventType.Hellevator],
+        [(31, 5)] = [EventType.Hellevator, EventType.Souls, EventType.EpicQuest, EventType.EpicLuck, EventType.Hourglasses, EventType.Experience, EventType.Mushroom, EventType.Gold],
+        [(31, 6)] = [EventType.Hellevator, EventType.Souls, EventType.EpicQuest, EventType.EpicLuck, EventType.Hourglasses, EventType.Experience, EventType.Mushroom, EventType.Gold],
+        [(31, 7)] = [EventType.Hellevator, EventType.Souls, EventType.EpicQuest, EventType.EpicLuck, EventType.Hourglasses, EventType.Experience, EventType.Mushroom, EventType.Gold],
+        [(32, 1)] = [],
+        [(32, 2)] = [],
+        [(32, 3)] = [],
+        [(32, 4)] = [],
+        [(32, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(32, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(32, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(33, 1)] = [],
+        [(33, 2)] = [],
+        [(33, 3)] = [],
+        [(33, 4)] = [],
+        [(33, 5)] = [EventType.PieceworkParty, EventType.EpicShop, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Gold],
+        [(33, 6)] = [EventType.PieceworkParty, EventType.EpicShop, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Gold],
+        [(33, 7)] = [EventType.PieceworkParty, EventType.EpicShop, EventType.Experience, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Gold],
+        [(34, 1)] = [],
+        [(34, 2)] = [],
+        [(34, 3)] = [],
+        [(34, 4)] = [],
+        [(34, 5)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(34, 6)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(34, 7)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(35, 1)] = [],
+        [(35, 2)] = [],
+        [(35, 3)] = [],
+        [(35, 4)] = [],
+        [(35, 5)] = [EventType.LegendaryDungeon, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(35, 6)] = [EventType.LegendaryDungeon, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(35, 7)] = [EventType.LegendaryDungeon, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.LuckyDay],
+        [(36, 1)] = [EventType.LegendaryDungeon],
+        [(36, 2)] = [EventType.LegendaryDungeon],
+        [(36, 3)] = [EventType.LegendaryDungeon],
+        [(36, 4)] = [EventType.LegendaryDungeon],
+        [(36, 5)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Fortress, EventType.Witch],
+        [(36, 6)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Fortress, EventType.Witch],
+        [(36, 7)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Hourglasses, EventType.Experience, EventType.Toilet, EventType.Fortress, EventType.Witch],
+        [(37, 1)] = [],
+        [(37, 2)] = [],
+        [(37, 3)] = [],
+        [(37, 4)] = [],
+        [(37, 5)] = [EventType.Souls, EventType.FreeBeer, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(37, 6)] = [EventType.Souls, EventType.FreeBeer, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(37, 7)] = [EventType.Souls, EventType.FreeBeer, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(38, 1)] = [],
+        [(38, 2)] = [],
+        [(38, 3)] = [],
+        [(38, 4)] = [],
+        [(38, 5)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(38, 6)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(38, 7)] = [EventType.Souls, EventType.Witch, EventType.Pets, EventType.Gold],
+        [(39, 1)] = [],
+        [(39, 2)] = [],
+        [(39, 3)] = [],
+        [(39, 4)] = [],
+        [(39, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(39, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(39, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(40, 1)] = [],
+        [(40, 2)] = [],
+        [(40, 3)] = [],
+        [(40, 4)] = [],
+        [(40, 5)] = [EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.Pets],
+        [(40, 6)] = [EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.Pets],
+        [(40, 7)] = [EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.Pets],
+        [(41, 1)] = [],
+        [(41, 2)] = [],
+        [(41, 3)] = [],
+        [(41, 4)] = [],
+        [(41, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(41, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(41, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(42, 1)] = [],
+        [(42, 2)] = [],
+        [(42, 3)] = [],
+        [(42, 4)] = [],
+        [(42, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom],
+        [(42, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom],
+        [(42, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Experience, EventType.Toilet, EventType.Mushroom],
+        [(43, 1)] = [],
+        [(43, 2)] = [],
+        [(43, 3)] = [],
+        [(43, 4)] = [],
+        [(43, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(43, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(43, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet, EventType.Mushroom],
+        [(44, 1)] = [],
+        [(44, 2)] = [],
+        [(44, 3)] = [],
+        [(44, 4)] = [],
+        [(44, 5)] = [EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets, EventType.BlackGems],
+        [(44, 6)] = [EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets, EventType.BlackGems],
+        [(44, 7)] = [EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Fortress, EventType.Witch, EventType.Pets, EventType.BlackGems],
+        [(45, 1)] = [],
+        [(45, 2)] = [],
+        [(45, 3)] = [],
+        [(45, 4)] = [],
+        [(45, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(45, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(45, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience],
+        [(46, 1)] = [],
+        [(46, 2)] = [],
+        [(46, 3)] = [],
+        [(46, 4)] = [],
+        [(46, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(46, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(46, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(47, 1)] = [],
+        [(47, 2)] = [],
+        [(47, 3)] = [],
+        [(47, 4)] = [EventType.Hellevator],
+        [(47, 5)] = [EventType.Hellevator, EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(47, 6)] = [EventType.Hellevator, EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(47, 7)] = [EventType.Hellevator, EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(48, 1)] = [EventType.Hellevator],
+        [(48, 2)] = [EventType.Hellevator],
+        [(48, 3)] = [EventType.Hellevator],
+        [(48, 4)] = [EventType.Hellevator],
+        [(48, 5)] = [EventType.Hellevator, EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Mushroom, EventType.Witch, EventType.Pets, EventType.Gold, EventType.BlackGems],
+        [(48, 6)] = [EventType.Hellevator, EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Mushroom, EventType.Witch, EventType.Pets, EventType.Gold, EventType.BlackGems],
+        [(48, 7)] = [EventType.Hellevator, EventType.Souls, EventType.EpicShop, EventType.Forge, EventType.Mushroom, EventType.Witch, EventType.Pets, EventType.Gold, EventType.BlackGems],
+        [(49, 1)] = [],
+        [(49, 2)] = [],
+        [(49, 3)] = [],
+        [(49, 4)] = [],
+        [(49, 5)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience, EventType.RumbleOfRiches],
+        [(49, 6)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience, EventType.RumbleOfRiches],
+        [(49, 7)] = [EventType.EpicQuest, EventType.Hourglasses, EventType.Experience, EventType.RumbleOfRiches],
+        [(50, 1)] = [],
+        [(50, 2)] = [],
+        [(50, 3)] = [],
+        [(50, 4)] = [],
+        [(50, 5)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(50, 6)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(50, 7)] = [EventType.EpicShop, EventType.EpicLuck, EventType.Forge, EventType.Toilet],
+        [(51, 1)] = [],
+        [(51, 2)] = [],
+        [(51, 3)] = [],
+        [(51, 4)] = [],
+        [(51, 5)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Witch, EventType.Pets, EventType.Gold, EventType.RumbleOfRiches],
+        [(51, 6)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Witch, EventType.Pets, EventType.Gold, EventType.RumbleOfRiches],
+        [(51, 7)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Mushroom, EventType.Witch, EventType.Pets, EventType.Gold, EventType.RumbleOfRiches],
+        [(52, 1)] = [EventType.LegendaryDungeon],
+        [(52, 2)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.LuckyDay, EventType.Mushroom],
+        [(52, 3)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.LuckyDay, EventType.Mushroom],
+        [(52, 4)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.LuckyDay, EventType.Mushroom],
+        [(52, 5)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.LuckyDay, EventType.Mushroom],
+        [(52, 6)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.LuckyDay, EventType.Mushroom],
+        [(52, 7)] = [EventType.LegendaryDungeon, EventType.Forge, EventType.Toilet, EventType.Fortress, EventType.Witch, EventType.LuckyDay, EventType.Mushroom],
+    };
+    #endregion
 }

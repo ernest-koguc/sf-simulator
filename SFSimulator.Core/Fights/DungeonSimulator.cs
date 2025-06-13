@@ -2,50 +2,70 @@
 
 namespace SFSimulator.Core;
 
-public class DungeonSimulator : IDungeonSimulator
+public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService, IItemGenerator itemGenerator, Random random) : IDungeonSimulator
 {
-    private readonly IDungeonProvider _dungeonProvider;
-    private readonly IFightableContextFactory _dungeonableContextFactory;
-    private readonly IGameLogic _gameLogic;
-    private readonly Random _random;
+    private readonly IFightableContextFactory _fightableContextFactory = dungeonableContextFactory;
+    private readonly IGameFormulasService _gameFormulasService = gameFormulasService;
+    private readonly IItemGenerator _itemGenerator = itemGenerator;
+    private readonly Random _random = random;
 
-    public DungeonSimulator(IDungeonProvider dungeonProvider, IFightableContextFactory dungeonableContextFactory, IGameLogic gameLogic, Random random)
+    public PetSimulationResult SimulatePetDungeon(PetFightable petDungeonEnemy, PetFightable playerPet, int simulationContextLevel, int iterations, int winThreshold)
     {
-        _dungeonProvider = dungeonProvider;
-        _dungeonableContextFactory = dungeonableContextFactory;
-        _gameLogic = gameLogic;
-        _random = random;
+        var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
+        var playerPetContext = _fightableContextFactory.Create(playerPet, petDungeonEnemy);
+        var petDungeonContext = _fightableContextFactory.Create(petDungeonEnemy, playerPet);
+        lookupContext.Add((playerPetContext, petDungeonContext));
+
+        if (Debugger.IsAttached)
+        {
+            Console.WriteLine($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
+        }
+        var result = SimulateFight(lookupContext, iterations, winThreshold);
+
+        if (result.Succeeded)
+        {
+            var xp = _gameFormulasService.GetExperienceForPetDungeonEnemy(simulationContextLevel);
+            return new PetSimulationResult(result.WonFights, result.Succeeded, xp);
+        }
+        else
+        {
+            return PetSimulationResult.FailedResult(result.WonFights);
+        }
     }
 
-    public async Task<DungeonSimulationResult> SimulateAllOpenDungeonsAsync(Character character, int iterations, int winThreshold)
+    public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions, int iterations, int winThreshold)
+        where T : IWeaponable where E : IWeaponable
     {
-        if (iterations <= 0)
-            throw new ArgumentOutOfRangeException(nameof(iterations));
-        var dungeonEnemy = _dungeonProvider.GetDungeonEnemy(1, 1);
-        return CreateResult(1, winThreshold, character, dungeonEnemy);
-    }
-    public DungeonSimulationResult SimulateDungeon(DungeonEnemy dungeonEnemy, RawFightable character, int iterations, int winThreshold)
-    {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-
-        var lookupContext = new (IFightableContext LeftSide, IFightableContext RightSide)[4];
-        var index = 0;
+        var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
 
         if (dungeonEnemy.Dungeon.Type.WithCompanions())
         {
-            foreach (var companion in character.Companions)
+            foreach (var companion in companions)
             {
-                var context = _dungeonableContextFactory.Create(companion, dungeonEnemy);
-                var companionDungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, companion);
-                lookupContext[index] = (context, companionDungeonContext);
-                index++;
+                var context = _fightableContextFactory.Create(companion, dungeonEnemy);
+                var companionDungeonContext = _fightableContextFactory.Create(dungeonEnemy, companion);
+                lookupContext.Add((context, companionDungeonContext));
             }
         }
 
-        var characterContext = _dungeonableContextFactory.Create(character, dungeonEnemy);
-        var dungeonContext = _dungeonableContextFactory.Create(dungeonEnemy, character);
-        lookupContext[index] = (characterContext, dungeonContext);
+        var characterContext = _fightableContextFactory.Create(character, dungeonEnemy);
+        var dungeonContext = _fightableContextFactory.Create(dungeonEnemy, character);
+        lookupContext.Add((characterContext, dungeonContext));
+
+        if (Debugger.IsAttached)
+        {
+            Console.WriteLine($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
+        }
+
+        var result = SimulateFight(lookupContext, iterations, winThreshold);
+
+        return CreateDungeonSimulationResult(result.WonFights, result.Succeeded, dungeonEnemy, character.Level);
+    }
+
+    private FightSimulationResult SimulateFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext, int iterations, int winThreshold)
+    {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
 
         var wonFights = 0;
 
@@ -54,51 +74,48 @@ public class DungeonSimulator : IDungeonSimulator
             if (PerformSingleFight(lookupContext))
                 wonFights++;
 
-            if (wonFights >= winThreshold)
+            if (wonFights >= winThreshold && !Debugger.IsAttached)
                 break;
         }
 
         stopwatch.Stop();
 
+        var winratio = wonFights / (float)iterations;
+
         if (Debugger.IsAttached)
         {
-            Console.WriteLine(wonFights / (float)iterations * 100 + "%" + $" ({wonFights})" + $", elapsed time: {stopwatch.Elapsed}");
+            Console.WriteLine($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
         }
 
-        return CreateResult(wonFights, winThreshold, character, dungeonEnemy);
+        return new FightSimulationResult(wonFights, wonFights >= winThreshold);
     }
 
-    public DungeonSimulationResult SimulateDungeon(DungeonEnemy dungeonEnemy, Character character, int iterations, int winThreshold)
+    private DungeonSimulationResult CreateDungeonSimulationResult(int wonFights, bool suceeded, DungeonEnemy dungeonEnemy, int characterLevel)
     {
-        var wonFights = 0;
-        return CreateResult(wonFights, winThreshold, character, dungeonEnemy);
-    }
+        if (!suceeded)
+            return DungeonSimulationResult.FailedResult(wonFights, dungeonEnemy);
 
-    private DungeonSimulationResult CreateResult<T>(int wonFights, int winTreshold, IFightable<T> character, DungeonEnemy dungeonEnemy) where T : IWeaponable
-    {
-        if (wonFights < winTreshold)
-            return DungeonSimulationResult.FailedResult(wonFights);
+        var xp = _gameFormulasService.GetExperienceForDungeonEnemy(dungeonEnemy);
+        var gold = _gameFormulasService.GetGoldForDungeonEnemy(dungeonEnemy);
 
-        var xp = _gameLogic.GetExperienceForDungeonEnemy(character.Level, dungeonEnemy);
-
-        var result = new DungeonSimulationResult
+        Item? item = null;
+        if (_gameFormulasService.DoesDungeonEnemyDropItem(dungeonEnemy))
         {
-            Succeeded = true,
-            Experience = xp,
-            WonFights = wonFights,
-            // TODO: Add logic for gold calculations
-            Gold = 0
-        };
+            item = _itemGenerator.GenerateItem(Math.Min(dungeonEnemy.Level, characterLevel));
+        }
+
+        var result = new DungeonSimulationResult(true, xp, gold, item, wonFights, dungeonEnemy);
 
         return result;
     }
-    private bool PerformSingleFight((IFightableContext LeftSide, IFightableContext RightSide)[] lookupContext)
+
+    private bool PerformSingleFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext)
     {
         long? leftoverHealth = null;
-        foreach (var pair in lookupContext)
+        foreach (var (LeftSide, RightSide) in lookupContext)
         {
-            var charSide = pair.LeftSide;
-            var dungeonSide = pair.RightSide;
+            var charSide = LeftSide;
+            var dungeonSide = RightSide;
 
             if (leftoverHealth.HasValue)
                 dungeonSide.Health = leftoverHealth.Value;
@@ -116,29 +133,19 @@ public class DungeonSimulator : IDungeonSimulator
 
     private bool PerformFight(IFightableContext charSide, IFightableContext dungeonSide)
     {
-        var leftSideStarts = charSide.Reaction > dungeonSide.Reaction ? true : _random.NextDouble() >= 0.5D;
-        IFightableContext attacker;
-        IFightableContext defender;
-        if (leftSideStarts)
-        {
-            attacker = charSide;
-            defender = dungeonSide;
-        }
-        else
-        {
-            attacker = dungeonSide;
-            defender = charSide;
-        }
+        var charSideStarts = charSide.Reaction > dungeonSide.Reaction || _random.NextDouble() < 0.5;
+        var (attacker, defender) = charSideStarts ? (charSide, dungeonSide) : (dungeonSide, charSide);
+
         var round = 0;
 
         if (attacker is IBeforeFightAttackable attackerImpl && attackerImpl.AttackBeforeFight(defender, ref round))
         {
-            return leftSideStarts;
+            return charSideStarts;
         }
 
         if (defender is IBeforeFightAttackable defenderImpl && defenderImpl.AttackBeforeFight(defender, ref round))
         {
-            return !leftSideStarts;
+            return !charSideStarts;
         }
 
         bool? result = null;
@@ -147,19 +154,19 @@ public class DungeonSimulator : IDungeonSimulator
         {
             if (attacker.Attack(defender, ref round))
             {
-                result = leftSideStarts;
+                result = charSideStarts;
                 break;
             }
 
             if (defender.Attack(attacker, ref round))
             {
-                result = !leftSideStarts;
+                result = !charSideStarts;
                 break;
             }
         }
         if (result is null)
         {
-            throw new Exception("Dungeon simulation exceeded max iterations");
+            throw new Exception("Internal error in dungeon simulator causing infinite rounds in fight");
         }
 
         return result.Value;

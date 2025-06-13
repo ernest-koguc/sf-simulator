@@ -14,7 +14,7 @@ public abstract class DelegatableFightableContext : IFightableContext
     public delegate bool TakeAttackDelegate(double damage);
     public delegate bool WillTakeAttackDelegate();
     protected AttackDelegate AttackImplementation { get; set; } = default!;
-    protected TakeAttackDelegate TakeAttackImplementation { get; set; } = default!; 
+    protected TakeAttackDelegate TakeAttackImplementation { get; set; } = default!;
     protected WillTakeAttackDelegate WillTakeAttackImplementation { get; set; } = default!;
     public Random Random { get; set; } = default!;
 

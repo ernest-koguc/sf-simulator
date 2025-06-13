@@ -3,7 +3,7 @@
 public static class DungeonEnemyName
 {
     public static string GetName(string dungeonName, int dungeonEnemyPosition)
-        => EnemyNames[dungeonName].First(e => e.Position == dungeonEnemyPosition).Name;
+        => EnemyNames[dungeonName].FirstOrDefault(e => e.Position == dungeonEnemyPosition).Name ?? string.Empty;
 
     private static Dictionary<string, List<(int Position, string Name)>> EnemyNames { get; set; } = new()
     {
