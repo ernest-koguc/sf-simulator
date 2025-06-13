@@ -39,7 +39,7 @@ public class GemTypeUsageProvider : IGemTypeUsageProvider
     {
         return classType switch
         {
-            ClassType.Warrior or ClassType.Bert or ClassType.Berserker or ClassType.BattleMage => GemType.Strength,
+            ClassType.Warrior or ClassType.Bert or ClassType.Berserker or ClassType.BattleMage or ClassType.Paladin => GemType.Strength,
             ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter => GemType.Dexterity,
             ClassType.Mage or ClassType.Bard or ClassType.Druid or ClassType.Necromancer => GemType.Intelligence,
             _ => throw new ArgumentException($"Class type {classType} is not supported", nameof(classType))
