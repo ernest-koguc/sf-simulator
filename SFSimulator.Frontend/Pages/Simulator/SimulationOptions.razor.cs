@@ -24,11 +24,6 @@ public partial class SimulationOptions
         await Simulate.InvokeAsync(Options);
     }
 
-    private Task InvalidSubmit(FormInvalidSubmitEventArgs args)
-    {
-        return Task.CompletedTask;
-    }
-
     private async Task OpenEndpoint()
     {
         var result = await DialogService.OpenAsync<EndpointDialog>(string.Empty, options: EndpointDialog.PreferredDialogOptions);

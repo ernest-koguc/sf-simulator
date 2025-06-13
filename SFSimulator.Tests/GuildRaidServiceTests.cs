@@ -9,13 +9,13 @@ namespace SFSimulator.Tests;
 public class GuildRaidServiceTests
 {
     [TestMethod]
-    public void SetUpGuildRaidsState_throws_error_if_there_is_no_sufficient_amount_of_solo_portal_levels()
+    public void SetUpGuildRaidsState_throws_error_if_there_is_no_sufficient_amount_of_guild_raids_levels()
     {
         var guildRaidService = DependencyProvider.Get<IGuildRaidService>();
         var simulationContext = new SimulationContext();
         simulationContext.GuildRaids = 0;
 
-        Assert.ThrowsException<ArgumentException>(() =>
+        Assert.ThrowsExactly<ArgumentException>(() =>
         {
             guildRaidService.SetUpGuildRaidsState(simulationContext, []);
         });
@@ -63,11 +63,13 @@ public class GuildRaidServiceTests
     }
 
     [TestMethod]
-    public void Progress_does_not_increase_guild_bonus_over_the_cap()
+    [DataRow(49)]
+    [DataRow(150)]
+    public void Progress_does_not_increase_guild_bonus_over_the_cap(int guildRaids)
     {
         var guildRaidService = DependencyProvider.Get<IGuildRaidService>();
         var simulationContext = new SimulationContext();
-        simulationContext.GuildRaids = 49;
+        simulationContext.GuildRaids = guildRaids;
         simulationContext.Level = 300;
         simulationContext.GoldBonus.GuildBonus = 200;
         simulationContext.ExperienceBonus.GuildBonus = 200;

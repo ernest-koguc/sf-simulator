@@ -49,7 +49,7 @@ public class GuildRaidService : IGuildRaidService
         }
     }
 
-    private List<GuildRaidRequirements> GetDefaultGuildRaidRequirements() =>
+    private static List<GuildRaidRequirements> GetDefaultGuildRaidRequirements() =>
     [
         new (1, 2, 50),
         new (2, 2,55),
