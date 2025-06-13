@@ -166,6 +166,12 @@
   .static {
     position: static;
   }
+  .m-0 {
+    margin: calc(var(--spacing) * 0);
+  }
+  .m-0\! {
+    margin: calc(var(--spacing) * 0) !important;
+  }
   .my-2 {
     margin-block: calc(var(--spacing) * 2);
   }
