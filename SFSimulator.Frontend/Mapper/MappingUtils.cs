@@ -43,7 +43,6 @@ public static class MappingUtils
         simulationContext.Aura = maria21DataDto.Toilet.Aura;
         simulationContext.AuraFillLevel = maria21DataDto.Toilet.Fill;
         simulationContext.RuneQuantity = maria21DataDto.Idle?.Runes ?? 0;
-        // Is it guild knights or just player knights???
         simulationContext.GuildKnights = maria21DataDto.Fortress.Knights;
         simulationContext.GuildRaids = maria21DataDto.Group.Group?.Raid ?? 0;
         simulationContext.Pets = new PetsState(maria21DataDto.Pets);
