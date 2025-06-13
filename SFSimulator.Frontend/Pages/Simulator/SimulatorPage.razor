@@ -15,4 +15,7 @@
     }
 </RadzenRow>
 
-<ProgressBar Visible="@IsSimulating" Current="@ProgressValue" Text=@ProgressText />
+@if (IsSimulating)
+{
+    <ProgressBar Visible="@IsSimulating" Current="@ProgressValue" Text=@ProgressText/>
+}

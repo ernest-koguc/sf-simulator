@@ -166,9 +166,6 @@
   .static {
     position: static;
   }
-  .m-0 {
-    margin: calc(var(--spacing) * 0);
-  }
   .m-0\! {
     margin: calc(var(--spacing) * 0) !important;
   }
@@ -177,6 +174,15 @@
   }
   .ms-2 {
     margin-inline-start: calc(var(--spacing) * 2);
+  }
+  .mt-1 {
+    margin-top: calc(var(--spacing) * 1);
+  }
+  .mt-1\! {
+    margin-top: calc(var(--spacing) * 1) !important;
+  }
+  .mt-3 {
+    margin-top: calc(var(--spacing) * 3);
   }
   .mt-4\! {
     margin-top: calc(var(--spacing) * 4) !important;
@@ -237,9 +243,6 @@
   }
   .justify-center {
     justify-content: center;
-  }
-  .justify-start {
-    justify-content: flex-start;
   }
   .gap-2 {
     gap: calc(var(--spacing) * 2);

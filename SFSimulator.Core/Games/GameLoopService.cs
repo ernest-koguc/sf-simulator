@@ -393,7 +393,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     {
         ArgumentOutOfRangeException.ThrowIfNegative(xp);
 
-        if (SimulationContext.Level == 800)
+        if (SimulationContext.Level == CoreShared.MAX_LEVEL)
             return;
 
         SimulationContext.Experience += xp;

@@ -17,7 +17,8 @@
                 <div class="flex flex-col items-center justify-center gap-2 p-4 sm:flex-row">
                     <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" ButtonStyle="ButtonStyle.Dark" Text="Simulate"/>
                     <RadzenText class="m-0!">until</RadzenText>
-                    <Numeric Variant="Variant.Outlined" Min="1" Name="Until" @bind-Value="@Options.FinishCondition.Until"/>
+                    <Numeric Variant="Variant.Outlined" Min="1" Name="Until" @bind-Value="@Options.FinishCondition.Until" 
+                        Max="@Options.FinishCondition.MaxUntil"/>
                     <DropDown Variant="Variant.Outlined" Name="FinishCondition" @bind-Value="@Options.FinishCondition.FinishWhen"/>
                 </div>
                 <RadzenAccordion Multiple="true">
@@ -190,6 +191,7 @@
                                     <div class="ml-2">
                                         Pets
                                     </div>
+                                    <RadzenBadge Variant="Variant.Filled" BadgeStyle="BadgeStyle.Danger" Text="BETA" class="ms-2 bg-red-800!" />
                                 </div>
                             </Template>
                             <ChildContent>
