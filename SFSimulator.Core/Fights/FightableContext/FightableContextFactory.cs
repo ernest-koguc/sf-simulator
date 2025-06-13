@@ -29,6 +29,7 @@ public class FightableContextFactory : IFightableContextFactory
             ClassType.Druid => CreateDruidContext(main, opponent),
             ClassType.DemonHunter => CreateDemonHunterContext(opponent),
             ClassType.Bard => CreateBardContext(main, opponent),
+            ClassType.Paladin => CreatePaladinContext(main, opponent),
             _ => throw new ArgumentOutOfRangeException(nameof(main.Class)),
         };
         InstantiateSharedProperties(context, main, opponent);
@@ -122,6 +123,18 @@ public class FightableContextFactory : IFightableContextFactory
     {
         var bonusLength = _bonusMelodyLengthProvider.GetBonusMelodyLength(main);
         var context = new BardFightContext(opponent.Class, bonusLength);
+        return context;
+    }
+
+    private DelegatableFightableContext CreatePaladinContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
+    {
+        var damageReduction = 0d;
+        if (main.Armor > 0 && opponent.Class != ClassType.Mage)
+            damageReduction = Math.Min(0.45, (double)main.Armor / opponent.Level / 100D);
+        var context = new PaladinFightContext(opponent.Class)
+        {
+            InitialArmorReduction = damageReduction
+        };
         return context;
     }
 }

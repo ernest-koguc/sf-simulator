@@ -2,7 +2,8 @@
 
 public class DamageProvider : IDamageProvider
 {
-    public (double Minimum, double Maximum) CalculateDamage<T, E>(IWeaponable? weapon, IFightable<T> attacker, IFightable<E> target, bool isSecondWeapon = false) where T : IWeaponable where E : IWeaponable
+    public (double Minimum, double Maximum) CalculateDamage<T, E>(IWeaponable? weapon, IFightable<T> attacker, IFightable<E> target, bool isSecondWeapon = false)
+        where T : IWeaponable where E : IWeaponable
     {
         var damage = GetBaseDmg(weapon, attacker, isSecondWeapon);
 
@@ -15,12 +16,13 @@ public class DamageProvider : IDamageProvider
 
         ProcArmorDamageReduction(attacker, target, ref damage);
 
-        ProcClassModifiers(attacker, ref damage);
+        ProcClassModifiers(attacker, target, ref damage);
 
         return (damage.Minimum, damage.Maximum);
     }
 
-    private static void ProcClassModifiers<T>(IFightable<T> attacker, ref (double Minimum, double Maximum) damage) where T : IWeaponable
+    private static void ProcClassModifiers<T, E>(IFightable<T> attacker, IFightable<E> target, ref (double Minimum, double Maximum) damage)
+        where T : IWeaponable where E : IWeaponable
     {
         if (attacker.Class == ClassType.Berserker)
         {
@@ -46,6 +48,18 @@ public class DamageProvider : IDamageProvider
         {
             damage.Minimum *= 0.56D;
             damage.Maximum *= 0.56D;
+        }
+
+        if (attacker.Class == ClassType.Mage && target.Class == ClassType.Paladin)
+        {
+            damage.Minimum *= 1.5D;
+            damage.Maximum *= 1.5D;
+        }
+
+        if (attacker.Class == ClassType.Paladin && target.Class == ClassType.Mage)
+        {
+            damage.Minimum *= 1.5D * 0.833D;
+            damage.Maximum *= 1.5D * 0.833D;
         }
     }
 
@@ -90,6 +104,9 @@ public class DamageProvider : IDamageProvider
                 damageReduction *= 2;
                 damageReduction = Math.Min(damageReduction, 0.2D);
                 break;
+            case ClassType.Paladin:
+                damageReduction = 0;
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(target.Class));
         }
@@ -126,7 +143,7 @@ public class DamageProvider : IDamageProvider
                 => Math.Max(attacker.Intelligence / 2D, attacker.Intelligence - target.Intelligence / 2D),
             ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter
                 => Math.Max(attacker.Dexterity / 2D, attacker.Dexterity - target.Dexterity / 2D),
-            ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker or ClassType.Bert
+            ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker or ClassType.Paladin or ClassType.Bert
                 => (double)Math.Max(attacker.Strength / 2D, attacker.Strength - target.Strength / 2D),
 
             _ => throw new ArgumentOutOfRangeException(nameof(attacker.Class)),
@@ -173,6 +190,7 @@ public class DamageProvider : IDamageProvider
     {
         var multiplier = opponent.Class switch
         {
+            ClassType.Paladin => 6,
             ClassType.Warrior or ClassType.Bert or ClassType.Druid or ClassType.BattleMage => 5,
             ClassType.Bard => 2,
             ClassType.Mage => 0,

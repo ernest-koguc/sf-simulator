@@ -11,10 +11,10 @@ public static class ClassConfigurationProvider
 
     public static ClassConfiguration GetClassConfiguration(ClassType classType)
     {
-        if (!ClassConfiguration!.ContainsKey(classType))
+        if (!ClassConfiguration!.TryGetValue(classType, out var value))
             throw new ArgumentException($"Configuration for class {classType} is not supported");
 
-        return ClassConfiguration[classType];
+        return value;
     }
     private static void InitClassConfiguration()
     {

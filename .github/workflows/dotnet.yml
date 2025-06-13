@@ -19,7 +19,6 @@ jobs:
         dotnet-version: 8.0.x
     - name: dotnet publish 
       run: dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
-        
     - name: deploy on iis
       uses: ChristopheLav/iis-deploy@v1
       with:

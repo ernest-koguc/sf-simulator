@@ -105,6 +105,8 @@ public class Potion
 {
     public PotionType Type { get; set; }
     public int Size { get; set; }
+
+    public static Potion Eternity => new Potion() { Size = 25, Type = PotionType.Eternity };
 }
 public class Slots
 {

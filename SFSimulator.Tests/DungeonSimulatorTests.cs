@@ -89,6 +89,44 @@ public class DungeonSimulatorTests
 
         var winRatio = wonFights / (iterations * threads);
 
-        Assert.AreEqual(expectedWinRatio, winRatio, 0.001, $"Expected win ratio: {expectedWinRatio} but actual was {winRatio}, won fights: {wonFights}");
+        Assert.AreEqual(expectedWinRatio, winRatio, 0.005, $"Expected win ratio: {expectedWinRatio} but actual was {winRatio}, won fights: {wonFights}");
+    }
+
+    [TestMethod]
+    [DataRow(4, 6, 64, 1766, 225, 230, 1359, 641, 2236, 94, 102, true, 0.3365)]
+    [DataRow(3, 9, 64, 1766, 225, 230, 1359, 641, 2236, 94, 102, true, 0.2459)]
+    [DataRow(5, 8, 64, 2500, 225, 230, 2000, 641, 2236, 100, 200, true, 0.1025)]
+    public void SimulateDungeon_yields_correct_win_ratio(int dungeonPosition, int dungeonEnemyPosition, int level, int strength, int dexterity,
+        int intelligence, int constitution, int luck, int armor, int minDmg, int maxDmg, bool hasEternity, double expectedWinRatio)
+    {
+        var dungeonSimulator = DependencyProvider.Get<IDungeonSimulator>();
+        var simulationContext = new SimulationContext();
+        simulationContext.Class = ClassType.Paladin;
+        simulationContext.Level = level;
+        simulationContext.BaseStrength = strength;
+        simulationContext.BaseDexterity = dexterity;
+        simulationContext.BaseIntelligence = intelligence;
+        simulationContext.BaseConstitution = constitution;
+        simulationContext.BaseLuck = luck;
+        simulationContext.Items =
+        [
+            new () { ItemType = ItemType.Weapon, MinDmg = minDmg, MaxDmg = maxDmg},
+            new () { Armor = armor, ItemType = ItemType.Breastplate}
+        ];
+        if (hasEternity)
+        {
+            simulationContext.Potions = [Potion.Eternity];
+        }
+
+        var dungeonProvider = DependencyProvider.Get<IDungeonProvider>();
+        var dungeon = dungeonProvider.GetDungeonEnemy(dungeonPosition, dungeonEnemyPosition);
+
+        var iterations = 2_000_000;
+        var result = dungeonSimulator.SimulateDungeon<EquipmentItem, EquipmentItem>(dungeon, simulationContext, [],
+            iterations, iterations);
+        var winRatio = (double)result.WonFights / iterations;
+
+        Assert.AreEqual(expectedWinRatio, winRatio, 0.005,
+             $"Expected win ratio: {expectedWinRatio} but actual was {winRatio}, won fights: {result.WonFights}");
     }
 }

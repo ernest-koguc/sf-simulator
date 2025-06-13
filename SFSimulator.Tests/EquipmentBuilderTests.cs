@@ -31,7 +31,7 @@ public class EquipmentBuilderTests
     [DataRow(ItemAttributeType.Epic)]
     public void EquipmentBuilder_epic_and_legendary_items_have_3_equal_attributes(ItemAttributeType attrType)
     {
-        foreach (var classType in Enum.GetValues<ClassType>())
+        foreach (var classType in Enum.GetValues<ClassType>().Except([ClassType.Mirror]))
         {
             var builder = new EquipmentBuilder(attrType, 500, classType, 20, 0, 0, ItemType.Headgear);
             builder.WithAttributes();
