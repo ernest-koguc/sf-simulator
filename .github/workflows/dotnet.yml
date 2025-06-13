@@ -27,3 +27,4 @@ jobs:
         msdeploy-username: ${{ secrets.IISUSER }}
         msdeploy-password: ${{ secrets.IISPASSWORD }}
         source-path: sfsimulator
+        skip-extra-files: 0
