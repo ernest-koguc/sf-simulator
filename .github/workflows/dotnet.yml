@@ -18,7 +18,11 @@ jobs:
       with:
         dotnet-version: 9.0.x
     - name: dotnet publish 
-      run: dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
+      run: |
+          dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
+          dir
+          dir sfsimulator
+          dir .\SFSimulator.Frontend
     - name: deploy on iis
       uses: ChristopheLav/iis-deploy@v1
       with:

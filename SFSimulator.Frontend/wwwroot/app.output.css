@@ -175,14 +175,8 @@
   .ms-2 {
     margin-inline-start: calc(var(--spacing) * 2);
   }
-  .mt-1 {
-    margin-top: calc(var(--spacing) * 1);
-  }
   .mt-1\! {
     margin-top: calc(var(--spacing) * 1) !important;
-  }
-  .mt-3 {
-    margin-top: calc(var(--spacing) * 3);
   }
   .mt-4\! {
     margin-top: calc(var(--spacing) * 4) !important;
@@ -211,11 +205,17 @@
   .h-100 {
     height: calc(var(--spacing) * 100);
   }
+  .h-\[500px\] {
+    height: 500px;
+  }
   .h-full {
     height: 100%;
   }
   .w-100 {
     width: calc(var(--spacing) * 100);
+  }
+  .w-\[500px\] {
+    width: 500px;
   }
   .w-full {
     width: 100%;
@@ -474,6 +474,9 @@ ul[role=tablist] {
   width: 50%;
   overflow: hidden;
   border-radius: 0.25rem;
+}
+.progress-bar-image {
+  background-image: url(./favicon.svg);
 }
 .progress-bar-value {
   width: 100%;
