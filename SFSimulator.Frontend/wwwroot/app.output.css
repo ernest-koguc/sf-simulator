@@ -476,7 +476,7 @@ ul[role=tablist] {
   border-radius: 0.25rem;
 }
 .progress-bar-image {
-  background-image: url(./favicon.svg);
+  background-image: url(./favicon.png);
 }
 .progress-bar-value {
   width: 100%;
