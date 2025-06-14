@@ -40,48 +40,56 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
     public Task<SimulationResult?> Run(SimulationContext simulationContext, Action<SimulationProgress> progressCallback)
     {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-        SetupContext(simulationContext);
-
-        Func<int> lookUpValue = simulationContext.FinishCondition.FinishWhen switch
+        try
         {
-            SimulationFinishConditionType.UntilDays => () => CurrentDay - 1,
-            SimulationFinishConditionType.UntilLevel => () =>
-                SimulationContext.Level > simulationContext.FinishCondition.Until ? simulationContext.FinishCondition.Until : SimulationContext.Level,
-            SimulationFinishConditionType.UntilBaseStats => () =>
-                SimulationContext.BaseStat > simulationContext.FinishCondition.Until ? simulationContext.FinishCondition.Until : SimulationContext.BaseStat,
-            _ => throw new InvalidEnumArgumentException(nameof(simulationContext.FinishCondition.FinishWhen)),
-        };
-        var startingValue = lookUpValue();
-        var simulateUntil = simulationContext.FinishCondition.Until - lookUpValue();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            SetupContext(simulationContext);
 
-        var progressStopwatch = new Stopwatch();
-        progressStopwatch.Start();
-        for (CurrentDay = 1; lookUpValue() < simulationContext.FinishCondition.Until; CurrentDay++)
-        {
-            var dayResult = new SimulatedGains { DayIndex = CurrentDay };
-            SimulatedDays.Add(dayResult);
-            CurrentDayGains = dayResult;
-            RunDay();
-            if (progressStopwatch.ElapsedMilliseconds > 100)
+            Func<int> lookUpValue = simulationContext.FinishCondition.FinishWhen switch
             {
-                progressCallback(new(lookUpValue() - startingValue, CurrentDay, simulateUntil));
-                progressStopwatch.Restart();
+                SimulationFinishConditionType.UntilDays => () => CurrentDay - 1,
+                SimulationFinishConditionType.UntilLevel => () =>
+                    SimulationContext.Level > simulationContext.FinishCondition.Until ? simulationContext.FinishCondition.Until : SimulationContext.Level,
+                SimulationFinishConditionType.UntilBaseStats => () =>
+                    SimulationContext.BaseStat > simulationContext.FinishCondition.Until ? simulationContext.FinishCondition.Until : SimulationContext.BaseStat,
+                _ => throw new InvalidEnumArgumentException(nameof(simulationContext.FinishCondition.FinishWhen)),
+            };
+            var startingValue = lookUpValue();
+            var simulateUntil = simulationContext.FinishCondition.Until - lookUpValue();
+
+            var progressStopwatch = new Stopwatch();
+            progressStopwatch.Start();
+            for (CurrentDay = 1; lookUpValue() < simulationContext.FinishCondition.Until; CurrentDay++)
+            {
+                var dayResult = new SimulatedGains { DayIndex = CurrentDay };
+                SimulatedDays.Add(dayResult);
+                CurrentDayGains = dayResult;
+                RunDay();
+                if (progressStopwatch.ElapsedMilliseconds > 100)
+                {
+                    progressCallback(new(lookUpValue() - startingValue, CurrentDay, simulateUntil));
+                    progressStopwatch.Restart();
+                }
             }
+            progressCallback(new(lookUpValue() - startingValue, CurrentDay - 1, simulateUntil));
+            progressStopwatch.Stop();
+            Achievements.Add(AchievementType.SimulationFinish, new(CurrentDay - 1, AchievementType.SimulationFinish));
+
+
+            stopwatch.Stop();
+            if (Debugger.IsAttached)
+            {
+                Console.WriteLine(SimulationContext.ToString());
+                Console.WriteLine($"Simulation ended, time elapsed: {stopwatch.ElapsedMilliseconds} ms");
+            }
+            return Task.FromResult<SimulationResult?>(CreateResult());
         }
-        progressCallback(new(lookUpValue() - startingValue, CurrentDay - 1, simulateUntil));
-        progressStopwatch.Stop();
-        Achievements.Add(AchievementType.SimulationFinish, new(CurrentDay - 1, AchievementType.SimulationFinish));
-
-
-        stopwatch.Stop();
-        if (Debugger.IsAttached)
+        catch (Exception ex)
         {
-            Console.WriteLine(SimulationContext.ToString());
-            Console.WriteLine($"Simulation ended, time elapsed: {stopwatch.ElapsedMilliseconds} ms");
+            Console.WriteLine(ex);
+            throw;
         }
-        return Task.FromResult<SimulationResult?>(CreateResult());
     }
 
     private SimulationResult CreateResult()
