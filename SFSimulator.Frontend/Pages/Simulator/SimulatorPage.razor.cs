@@ -46,21 +46,26 @@ public partial class SimulatorPage
         {
             var service = webWorker.GetService<IGameLoopService>();
             Stopwatch.Restart();
+            string? error = null;
             SimulationResult = await service.Run(context, simulationProgress =>
             {
                 ProgressValue = simulationProgress.Progress;
                 ProgressText = $"Current day: {simulationProgress.CurrentDay}";
                 StateHasChanged();
+            }, ex =>
+            {
+                error = ex;
             });
-            Console.WriteLine($"Simulation finished, took {Stopwatch.ElapsedMilliseconds}ms");
+
+            if (error is not null)
+                throw new Exception(error);
+
             Stopwatch.Stop();
             NotificationService.Info($"Simulation finished, took {Stopwatch.ElapsedMilliseconds}ms");
         }
         catch (Exception ex)
         {
             Stopwatch.Stop();
-            Console.WriteLine(ex);
-
             await DialogService.OpenCrashReport("An error occured during simulation.", ex.Message + "\r\n" + (ex.StackTrace ?? ""));
         }
 

@@ -2,5 +2,5 @@
 
 public interface IGameLoopService
 {
-    Task<SimulationResult?> Run(SimulationContext simulationContext, Action<SimulationProgress> progressCallback);
+    Task<SimulationResult?> Run(SimulationContext simulationContext, Action<SimulationProgress> progressCallback, Action<string> onException);
 }
