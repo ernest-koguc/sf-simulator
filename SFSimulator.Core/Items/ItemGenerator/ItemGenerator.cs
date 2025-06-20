@@ -15,7 +15,7 @@ public class ItemGenerator : IItemGenerator
     {
         var item = new Item
         {
-            ItemType = (ItemType)_random.Next(1, 10),
+            ItemType = (ItemType)_random.Next(1, 11),
             GoldValue = _itemValueProvider.GetGoldValueForItem(characterLevel) * 4,
         };
 

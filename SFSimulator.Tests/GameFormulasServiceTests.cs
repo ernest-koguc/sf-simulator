@@ -144,4 +144,25 @@ public class GameFormulasServiceTests
             Assert.AreEqual(0, gold, "Expected dungeon to not give any gold");
         }
     }
+
+    [TestMethod]
+    public void ExpeditionService_GetExpeditionGold_is_capped_during_gold_event()
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var characterLevel = 832;
+        var goldBonus = new GoldBonus(100, 200, 50, true);
+        var mount = MountType.Griffin;
+
+        var withGoldEvent = gameFormulaService.GetExpeditionChestGold(characterLevel, goldBonus, true, mount, 320);
+        var withoutGoldEvent = gameFormulaService.GetExpeditionChestGold(characterLevel, goldBonus, false, mount, 320);
+        Assert.AreEqual(withGoldEvent, withoutGoldEvent);
+
+        withGoldEvent = gameFormulaService.GetExpeditionFinalGold(characterLevel, goldBonus, true, mount, 320);
+        withoutGoldEvent = gameFormulaService.GetExpeditionFinalGold(characterLevel, goldBonus, false, mount, 320);
+        Assert.AreEqual(withGoldEvent, withoutGoldEvent);
+
+        withGoldEvent = gameFormulaService.GetExpeditionMidwayGold(characterLevel, goldBonus, true, mount, 320);
+        withoutGoldEvent = gameFormulaService.GetExpeditionMidwayGold(characterLevel, goldBonus, false, mount, 320);
+        Assert.AreEqual(withGoldEvent, withoutGoldEvent);
+    }
 }

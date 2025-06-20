@@ -5,6 +5,7 @@ public interface IGameFormulasService
     QuestValue GetMinimumQuestValue(int characterLevel, ExperienceBonus experienceBonus, GoldBonus goldBonus);
     double GetDailyPetFoodFromWheel(int characterLevel, List<EventType> events, SpinAmountType spinAmount);
     bool DoesDungeonEnemyDropItem(DungeonEnemy dungeonEnemy);
+    decimal GetMinimumExpeditionLength(int characterLevel);
 
     #region Experience
     long GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool experienceEvent);
@@ -29,9 +30,9 @@ public interface IGameFormulasService
     decimal GetDailyGoldFromWheel(int characterLevel, IEnumerable<EventType> events, SpinAmountType spinAmount);
     decimal GetDailyGoldFromGemMine(int characterLevel, int gemMineLevel, int workers = 15);
     decimal GetGoldRewardFromArena(int characterLevel, int count, bool arenaScroll);
-    decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
-    decimal GetExpeditionMidwayGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
-    decimal GetExpeditionFinalGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst);
+    decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, decimal thirst);
+    decimal GetExpeditionMidwayGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, decimal thirst);
+    decimal GetExpeditionFinalGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, decimal thirst);
     decimal GetGoldForDungeonEnemy(DungeonEnemy dungeonEnemy);
     #endregion
 }

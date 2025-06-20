@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace SFSimulator.Core;
 
 public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGameFormulasService gameFormulasService) : IExpeditionService
@@ -5,6 +7,7 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGa
     public ExpeditionOptions Options { get; set; } = new ExpeditionOptions(1.5M, 1.28M);
     private const decimal MidwayGoldChance = 0.85M;
     private const decimal MidwayFruitBasketChance = 0.3M;
+    // TODO: here we should make sure that we check if the character level is above 75 + what is the amount of expes for the character level
     public double GetDailyExpeditionPetFood(int characterLevel, GoldBonus goldBonus, List<EventType> events, MountType mount, int thirst)
     {
         var midWayGoldReward = gameFormulasService.GetExpeditionMidwayGold(characterLevel, goldBonus, events.Contains(EventType.Gold), mount, thirst);
@@ -38,7 +41,7 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGa
         return (double)fruits;
     }
 
-    public decimal GetDailyExpeditionGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    private decimal GetExpeditionGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, decimal thirst)
     {
         var goldFromFinalReward = gameFormulasService.GetExpeditionFinalGold(characterLevel, goldBonus, isGoldEvent, mount, thirst);
 
@@ -60,7 +63,7 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGa
         return totalGold;
     }
 
-    public long GetDailyExpeditionExperience(int characterLevel, ExperienceBonus experienceBonus, bool isExperienceEvent, MountType mount, int thirst)
+    public long GetExpeditionExperience(int characterLevel, ExperienceBonus experienceBonus, bool isExperienceEvent, MountType mount, decimal thirst)
     {
         var baseExperience = curves.ExperienceCurve[characterLevel] / (0.75M * (characterLevel + 1)) / 11 / (decimal)Math.Max(1, Math.Exp(30090.33D / 5000000D * (characterLevel - 99)));
         baseExperience *= 15.18M;
@@ -101,6 +104,44 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGa
         }
 
         return items;
+    }
+
+    public void DoExpeditions(SimulationContext simulationContext, List<EventType> events, decimal thirst, Action<decimal> giveGold, Action<long> giveExperience)
+    {
+        var usedThirst = 0M;
+        var isGoldEvent = events.Contains(EventType.Gold);
+        var isExperienceEvent = events.Contains(EventType.Experience);
+
+        while (usedThirst < thirst)
+        {
+            var expeditionLength = gameFormulasService.GetMinimumExpeditionLength(simulationContext.Level);
+
+            if (usedThirst >= 100)
+            {
+                // If we are above or equal to 100 thirst we are starting beers so max expe length is 20 (we drink one by one)
+                expeditionLength = Math.Min(expeditionLength, 20);
+                // On lower levels we can have expes that are less than 20 - lets say 10 - then we have 2 expes per beer - 10 and 10 length
+                var currentBeerThirst = usedThirst % 20;
+                expeditionLength = Math.Min(expeditionLength, 20 - currentBeerThirst);
+            }
+
+            // This might be not necessary if thirst is always divisible by 20
+            expeditionLength = Math.Min(expeditionLength, thirst - usedThirst);
+
+            usedThirst += expeditionLength;
+            var gold = GetExpeditionGold(simulationContext.Level, simulationContext.GoldBonus,
+                isGoldEvent, simulationContext.Mount, expeditionLength);
+            var exp = GetExpeditionExperience(simulationContext.Level, simulationContext.ExperienceBonus,
+                isExperienceEvent, simulationContext.Mount, expeditionLength);
+            Console.WriteLine($"Expedition length: {expeditionLength}");
+            Console.WriteLine($"Gold: {gold}");
+            Console.WriteLine($"Experience: {exp}");
+
+            giveExperience(exp);
+            giveGold(gold);
+        }
+
+        Debug.Assert(usedThirst == thirst, $"Used thirst {usedThirst} does not match the expected thirst {thirst}.");
     }
 
     private static decimal GetMountBonus(MountType mount)

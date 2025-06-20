@@ -7,7 +7,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     IWeeklyTasksRewardProvider weeklyTasksRewardProvider, IScheduler scheduler, ICharacterDungeonProgressionService characterDungeonProgressionService,
     IExpeditionService expeditionService, IBaseStatsIncreasingService baseStatsIncreasingService, IScrapbookService scrapbookService,
     IPotionService potionService, IPortalService portalService, IGuildRaidService guildRaidService, IPetProgressionService petProgressionService,
-    IAuraProgressService auraProgressService, IRuneQuantityProvider runeQuantityProvider) : IGameLoopService
+    IAuraProgressService auraProgressService, IRuneQuantityProvider runeQuantityProvider, IWitchService witchService) : IGameLoopService
 {
     private readonly IThirstSimulator _thirstSimulator = thirstSimulator;
     private readonly IExpeditionService _expeditionService = expeditionService;
@@ -24,8 +24,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private readonly IPetProgressionService _petProgressionService = petProgressionService;
     private readonly IAuraProgressService _auraProgressService = auraProgressService;
     private readonly IRuneQuantityProvider _runeQuantityProvider = runeQuantityProvider;
+    private readonly IWitchService _witchService = witchService;
 
-    private readonly List<ItemType> CurrentItemTypesForWitch = [];
     private List<EventType> CurrentEvents { get; set; } = [];
     private ItemBackPack ItemBackPack { get; set; } = null!;
     private bool IsExperienceEvent => CurrentEvents.Contains(EventType.Experience);
@@ -245,7 +245,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
             if (result.Item is not null)
             {
-                var goldFromItem = ItemBackPack.AddItemToBackPack(result.Item, CurrentItemTypesForWitch);
+                var goldFromItem = ItemBackPack.AddItemToBackPack(result.Item, _witchService.GetAvailableItems(CurrentDay, IsWitchEvent));
                 if (goldFromItem.HasValue)
                     GiveGoldToCharacter(goldFromItem.Value, GainSource.Item);
             }
@@ -272,24 +272,15 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         if (SimulationContext.WeeklyTasksOptions.DrinkExtraBeer)
         {
             var extraThirst = _weeklyTasksRewardProvider.GetWeeklyThirst(CurrentDay);
+            Console.WriteLine("Weekly task");
             DoExpeditions(extraThirst);
+            Console.WriteLine("---------------------");
         }
     }
 
     private void SellItemsToWitch()
     {
-        CurrentItemTypesForWitch.Clear();
-
-        if (IsWitchEvent)
-        {
-            CurrentItemTypesForWitch.AddRange(Enumerable.Range(1, 9).Select(i => (ItemType)i));
-        }
-        else
-        {
-            CurrentItemTypesForWitch.Add((ItemType)Random.Shared.Next(1, 10));
-        }
-
-        var gold = ItemBackPack.SellSpecifiedItemTypeToWitch(CurrentItemTypesForWitch);
+        var gold = ItemBackPack.SellSpecifiedItemTypeToWitch(_witchService.GetAvailableItems(CurrentDay, IsWitchEvent));
 
         if (gold.HasValue)
             GiveGoldToCharacter(gold.Value, GainSource.Item);
@@ -297,26 +288,21 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
     private void DoExpeditions(int thirst)
     {
-        // TODO: Maybe do expeditions in smaller segments to account for level ups, especially on lower
-        // levels it can make a difference in how much xp you get (e.g. level one character levels up every expedition pretty much)
-        // Also this might make more sense if we consider the switch period when picking gold in midway reward is better than pet food
-        // be aware that some of the calculation need to know the total amount of thirst, so maybe this should be encapsulated in the expedition service
-        // and some sort of action to update the simulation context should be part of the API?
-        var gold = _expeditionService.GetDailyExpeditionGold(SimulationContext.Level, SimulationContext.GoldBonus, IsGoldEvent, SimulationContext.Mount, thirst);
-        GiveGoldToCharacter(gold, GainSource.Expedition);
-        var xp = _expeditionService.GetDailyExpeditionExperience(SimulationContext.Level, SimulationContext.ExperienceBonus, IsExperienceEvent, SimulationContext.Mount, thirst);
-        GiveXPToCharacter(xp, GainSource.Expedition);
+        _expeditionService.DoExpeditions(SimulationContext, CurrentEvents, thirst,
+            gold => GiveGoldToCharacter(gold, GainSource.Expedition),
+            exp => GiveXPToCharacter(exp, GainSource.Expedition));
 
         var items = _expeditionService.GetDailyExpeditionItems(SimulationContext.Level, thirst);
         foreach (var item in items)
         {
-            var goldFromItem = ItemBackPack.AddItemToBackPack(item, CurrentItemTypesForWitch);
+            var goldFromItem = ItemBackPack.AddItemToBackPack(item, _witchService.GetAvailableItems(CurrentDay, IsWitchEvent));
 
             if (goldFromItem.HasValue)
                 GiveGoldToCharacter(goldFromItem.Value, GainSource.Item);
         }
 
-        var petFood = _expeditionService.GetDailyExpeditionPetFood(SimulationContext.Level, SimulationContext.GoldBonus, CurrentEvents, SimulationContext.Mount, thirst);
+        var petFood = _expeditionService.GetDailyExpeditionPetFood(SimulationContext.Level, SimulationContext.GoldBonus,
+            CurrentEvents, SimulationContext.Mount, thirst);
         _petProgressionService.GivePetFood(SimulationContext.Pets, petFood);
     }
 

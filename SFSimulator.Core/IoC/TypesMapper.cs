@@ -40,5 +40,6 @@ public static class TypesMapper
         new (typeof(PetProgressionService), typeof(IPetProgressionService)),
         new (typeof(PetUnlockerService), typeof(IPetUnlockerService)),
         new (typeof(AuraProgressService), typeof(IAuraProgressService)),
+        new (typeof(WitchService), typeof(IWitchService)),
     ];
 }

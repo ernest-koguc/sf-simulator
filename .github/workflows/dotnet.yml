@@ -20,9 +20,7 @@ jobs:
     - name: dotnet publish 
       run: |
           dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
-          dir
-          dir sfsimulator
-          dir .\SFSimulator.Frontend
+          dotnet workload list
     - name: deploy on iis
       uses: ChristopheLav/iis-deploy@v1
       with:

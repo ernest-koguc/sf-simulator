@@ -381,7 +381,7 @@ public class GameFormulasService : IGameFormulasService
         return food;
     }
 
-    public decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    public decimal GetExpeditionChestGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, decimal thirst)
     {
         var baseGold = Curves.GoldCurve[characterLevel];
 
@@ -400,7 +400,7 @@ public class GameFormulasService : IGameFormulasService
         return goldPerChest;
     }
 
-    public decimal GetExpeditionMidwayGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    public decimal GetExpeditionMidwayGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, decimal thirst)
     {
         var baseGold = Curves.GoldCurve[characterLevel];
 
@@ -419,7 +419,7 @@ public class GameFormulasService : IGameFormulasService
         return goldFromMidMonster;
     }
 
-    public decimal GetExpeditionFinalGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, int thirst)
+    public decimal GetExpeditionFinalGold(int characterLevel, GoldBonus goldBonus, bool isGoldEvent, MountType mount, decimal thirst)
     {
         var baseGold = Curves.GoldCurve[characterLevel];
 
@@ -474,4 +474,26 @@ public class GameFormulasService : IGameFormulasService
         => (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Default && dungeonEnemy.Position is 3 or 5 or 7 or 10)
         || (dungeonEnemy.Dungeon.Type is DungeonTypeEnum.Twister or DungeonTypeEnum.Sandstorm && dungeonEnemy.Position % 2 == 0)
         || (dungeonEnemy.Dungeon.Type is DungeonTypeEnum.Default && dungeonEnemy.Dungeon.Position is 15 or 19 or 22 or 26);
+
+    public decimal GetMinimumExpeditionLength(int characterLevel)
+    {
+        return characterLevel switch
+        {
+            >= 101 => 25,
+            >= 13 => 12.5M,
+            12 => 11.25M,
+            11 => 10,
+            10 => 8.75M,
+            9 => 8.33M,
+            8 => 5,
+            7 => 3.75M,
+            6 => 2.5M,
+            5 => 2.25M,
+            4 => 2,
+            3 => 1.75M,
+            2 => 1.5M,
+            1 => 1.25M,
+            _ => throw new ArgumentOutOfRangeException(nameof(characterLevel), $"{nameof(characterLevel)} greater or equal to 1")
+        };
+    }
 }
