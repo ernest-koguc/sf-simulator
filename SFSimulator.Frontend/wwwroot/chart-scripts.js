@@ -1,5 +1,5 @@
 ﻿Chart.register(ChartDataLabels);
-const charts = {} ;
+const charts = {};
 window.initChart = function (canvasId, data, title) {
     if (charts[canvasId] !== undefined)
         charts[canvasId].destroy();
@@ -102,6 +102,11 @@ let valueScales = {
         autoSkip: false,
         color: 'white'
     }
+}
+
+window.destroyChart = function (canvasId) {
+    charts[canvasId]?.destroy();
+    delete charts[canvasId];
 }
 
 

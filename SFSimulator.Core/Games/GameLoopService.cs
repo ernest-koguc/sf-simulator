@@ -396,7 +396,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
         if (achievementType is not null)
         {
-            Achievements.TryAdd(achievementType.Value, new SimulationAchievement { Type = achievementType.Value, Day = CurrentDay });
+            Achievements.TryAdd(achievementType.Value, new SimulationAchievement(CurrentDay, achievementType.Value));
         }
     }
     private void GiveXPToCharacter(long xp, GainSource source)
@@ -445,7 +445,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         };
         if (achievementType is not null)
         {
-            Achievements.TryAdd(achievementType.Value, new SimulationAchievement { Type = achievementType.Value, Day = CurrentDay });
+            Achievements.TryAdd(achievementType.Value, new SimulationAchievement(CurrentDay, achievementType.Value));
         }
     }
 
