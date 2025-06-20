@@ -31,7 +31,7 @@ public partial class SimulatorPage
 
         SimulationResult = null;
 
-        var webWorker = await WebWorkerService.GetWebWorker();
+        using var webWorker = await WebWorkerService.GetWebWorker();
         if (webWorker is null)
         {
             NotificationService.Error("ServiceWorker is not available in your browser, please try enabling it and try again.");
