@@ -16,10 +16,8 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         var petDungeonContext = _fightableContextFactory.Create(petDungeonEnemy, playerPet);
         lookupContext.Add((playerPetContext, petDungeonContext));
 
-        if (Debugger.IsAttached)
-        {
-            Console.WriteLine($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
-        }
+        DrHouse.Differential($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
+
         var result = SimulateFight(lookupContext, iterations, winThreshold);
 
         if (result.Succeeded)
@@ -52,10 +50,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         var dungeonContext = _fightableContextFactory.Create(dungeonEnemy, character);
         lookupContext.Add((characterContext, dungeonContext));
 
-        if (Debugger.IsAttached)
-        {
-            Console.WriteLine($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
-        }
+        DrHouse.Differential($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
 
         var result = SimulateFight(lookupContext, iterations, winThreshold);
 
@@ -69,23 +64,29 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         var wonFights = 0;
 
-        for (var i = 0; i < iterations; i++)
+        for (var i = 1; i <= iterations; i++)
         {
             if (PerformSingleFight(lookupContext))
                 wonFights++;
 
-            if (wonFights >= winThreshold && !Debugger.IsAttached)
+            // If we reached the win threshold and we are not debugging, we can stop early
+            if (wonFights >= winThreshold && !DrHouse.IsDebugging)
+            {
                 break;
+            }
+
+            // If we are debugging and we know that we won't reach the win threshold, we can stop early
+            if (wonFights + (iterations - i) < winThreshold && !DrHouse.IsDebugging)
+            {
+                break;
+            }
         }
 
         stopwatch.Stop();
 
         var winratio = wonFights / (float)iterations;
 
-        if (Debugger.IsAttached)
-        {
-            Console.WriteLine($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
-        }
+        DrHouse.Differential($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
 
         return new FightSimulationResult(wonFights, wonFights >= winThreshold);
     }

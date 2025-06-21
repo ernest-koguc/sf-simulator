@@ -133,12 +133,11 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGa
                 isGoldEvent, simulationContext.Mount, expeditionLength);
             var exp = GetExpeditionExperience(simulationContext.Level, simulationContext.ExperienceBonus,
                 isExperienceEvent, simulationContext.Mount, expeditionLength);
-            Console.WriteLine($"Expedition length: {expeditionLength}");
-            Console.WriteLine($"Gold: {gold}");
-            Console.WriteLine($"Experience: {exp}");
 
             giveExperience(exp);
             giveGold(gold);
+
+            Debug.Assert(expeditionLength > 0, $"Expedition length should be greater than 0. Got {expeditionLength} instead.");
         }
 
         Debug.Assert(usedThirst == thirst, $"Used thirst {usedThirst} does not match the expected thirst {thirst}.");

@@ -79,11 +79,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
 
             stopwatch.Stop();
-            if (Debugger.IsAttached)
-            {
-                Console.WriteLine(SimulationContext.ToString());
-                Console.WriteLine($"Simulation ended, time elapsed: {stopwatch.ElapsedMilliseconds} ms");
-            }
+            DrHouse.Differential(SimulationContext.ToString());
+            DrHouse.Differential($"Simulation ended, time elapsed: {stopwatch.ElapsedMilliseconds} ms");
 
             return Task.FromResult<SimulationResult?>(CreateResult());
         }
@@ -272,9 +269,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         if (SimulationContext.WeeklyTasksOptions.DrinkExtraBeer)
         {
             var extraThirst = _weeklyTasksRewardProvider.GetWeeklyThirst(CurrentDay);
-            Console.WriteLine("Weekly task");
             DoExpeditions(extraThirst);
-            Console.WriteLine("---------------------");
         }
     }
 
