@@ -2,14 +2,16 @@
 
 namespace SFSimulator.Core;
 
-public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService, IItemGenerator itemGenerator, Random random) : IDungeonSimulator
+public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService,
+    IItemGenerator itemGenerator, Random random) : IDungeonSimulator
 {
     private readonly IFightableContextFactory _fightableContextFactory = dungeonableContextFactory;
     private readonly IGameFormulasService _gameFormulasService = gameFormulasService;
     private readonly IItemGenerator _itemGenerator = itemGenerator;
     private readonly Random _random = random;
 
-    public PetSimulationResult SimulatePetDungeon(PetFightable petDungeonEnemy, PetFightable playerPet, int simulationContextLevel, int iterations, int winThreshold)
+    public PetSimulationResult SimulatePetDungeon(PetFightable petDungeonEnemy, PetFightable playerPet, int simulationContextLevel,
+        DungeonSimulationOptions options)
     {
         var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
         var playerPetContext = _fightableContextFactory.Create(playerPet, petDungeonEnemy);
@@ -18,7 +20,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         DrHouse.Differential($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
 
-        var result = SimulateFight(lookupContext, iterations, winThreshold);
+        var result = SimulateFight(lookupContext, options);
 
         if (result.Succeeded)
         {
@@ -31,8 +33,8 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         }
     }
 
-    public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions, int iterations, int winThreshold)
-        where T : IWeaponable where E : IWeaponable
+    public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions,
+        DungeonSimulationOptions options) where T : IWeaponable where E : IWeaponable
     {
         var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
 
@@ -52,31 +54,32 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         DrHouse.Differential($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
 
-        var result = SimulateFight(lookupContext, iterations, winThreshold);
+        var result = SimulateFight(lookupContext, options);
 
         return CreateDungeonSimulationResult(result.WonFights, result.Succeeded, dungeonEnemy, character.Level);
     }
 
-    private FightSimulationResult SimulateFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext, int iterations, int winThreshold)
+    private FightSimulationResult SimulateFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext,
+        DungeonSimulationOptions options)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
         var wonFights = 0;
 
-        for (var i = 1; i <= iterations; i++)
+        for (var i = 1; i <= options.Iterations; i++)
         {
             if (PerformSingleFight(lookupContext))
                 wonFights++;
 
             // If we reached the win threshold and we are not debugging, we can stop early
-            if (wonFights >= winThreshold && !DrHouse.IsDebugging)
+            if (wonFights >= options.WinThreshold && options.Optimise)
             {
                 break;
             }
 
             // If we are debugging and we know that we won't reach the win threshold, we can stop early
-            if (wonFights + (iterations - i) < winThreshold && !DrHouse.IsDebugging)
+            if (wonFights + (options.Iterations - i) < options.WinThreshold && options.Optimise)
             {
                 break;
             }
@@ -84,11 +87,11 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         stopwatch.Stop();
 
-        var winratio = wonFights / (float)iterations;
+        var winratio = wonFights / (float)options.Iterations;
 
         DrHouse.Differential($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
 
-        return new FightSimulationResult(wonFights, wonFights >= winThreshold);
+        return new FightSimulationResult(wonFights, wonFights >= options.WinThreshold);
     }
 
     private DungeonSimulationResult CreateDungeonSimulationResult(int wonFights, bool suceeded, DungeonEnemy dungeonEnemy, int characterLevel)

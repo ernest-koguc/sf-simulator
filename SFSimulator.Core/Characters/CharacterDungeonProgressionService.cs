@@ -36,7 +36,8 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
             if (enemy.IsDefeated) continue;
             var winThreshold = (int)(DungeonOptions.DungeonIterations * (DungeonOptions.InstaKillPercentage / 100));
 
-            var result = dungeonSimulator.SimulateDungeon(enemy, simulationContext, simulationContext.Companions, DungeonOptions.DungeonIterations, winThreshold);
+            var result = dungeonSimulator.SimulateDungeon(enemy, simulationContext, simulationContext.Companions,
+                new(DungeonOptions.DungeonIterations, winThreshold, true));
 
             if (!result.Succeeded) continue;
 

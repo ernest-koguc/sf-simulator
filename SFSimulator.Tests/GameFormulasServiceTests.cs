@@ -140,7 +140,7 @@ public class GameFormulasServiceTests
             var gold = gameFormulaService.GetGoldForDungeonEnemy(enemy);
             var hasItem = gameFormulaService.DoesDungeonEnemyDropItem(enemy);
 
-            Assert.AreEqual(false, hasItem, "Expected dungeon to not give an item");
+            Assert.IsFalse(hasItem, "Expected dungeon to not give an item");
             Assert.AreEqual(0, gold, "Expected dungeon to not give any gold");
         }
     }

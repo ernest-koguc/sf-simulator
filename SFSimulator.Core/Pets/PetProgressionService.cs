@@ -128,7 +128,8 @@ public class PetProgressionService(IPetFightableFactory petFightableFactory, IPe
             var petDungeonFightable = petFightableFactory.CreateDungeonPetFightable(dungeonPet.ElementType, dungeonPet.Position);
             var playerPetFightable = petFightableFactory.CreatePetFightable(playerPet, simulationContext.Pets, simulationContext.GladiatorLevel);
             var result = dungeonSimulator
-                .SimulatePetDungeon(petDungeonFightable, playerPetFightable, simulationContext.Level, 1000, 7);
+                .SimulatePetDungeon(petDungeonFightable, playerPetFightable, simulationContext.Level,
+                new(1000, 7, true));
 
             if (result.Succeeded)
             {
@@ -147,7 +148,7 @@ public class PetProgressionService(IPetFightableFactory petFightableFactory, IPe
 
         FeedPets(currentDay, simulationContext.Pets, isPetEvent);
 
-        if (nextDungeons.Any())
+        if (nextDungeons.Count != 0)
         {
             DoPetDungeonsFights(currentDay, simulationContext, nextDungeons, isPetEvent, onWonFight);
         }
@@ -157,7 +158,7 @@ public class PetProgressionService(IPetFightableFactory petFightableFactory, IPe
     {
         var petType = GetCurrentArenaElement(currentDay);
         var food = isPetEvent ? 7.5 : 2.5;
-        pets.Food[petType] += 2.5;
+        pets.Food[petType] += food;
     }
 
     private PetElementType GetCurrentArenaElement(int currentDay)

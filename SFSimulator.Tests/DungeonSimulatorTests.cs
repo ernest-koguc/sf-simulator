@@ -76,7 +76,8 @@ public class DungeonSimulatorTests
         {
             var task = Task.Run(() =>
             {
-                var result = dungeonSimulator.SimulatePetDungeon(dungeonPet, playerPet, 1, iterations, iterations);
+                var result = dungeonSimulator.SimulatePetDungeon(dungeonPet, playerPet, 1,
+                    new(iterations, iterations, false));
                 results.Add(result);
             });
 
@@ -123,7 +124,7 @@ public class DungeonSimulatorTests
 
         var iterations = 2_000_000;
         var result = dungeonSimulator.SimulateDungeon<EquipmentItem, EquipmentItem>(dungeon, simulationContext, [],
-            iterations, iterations);
+            new(iterations, iterations, false));
         var winRatio = (double)result.WonFights / iterations;
 
         Assert.AreEqual(expectedWinRatio, winRatio, 0.005,
