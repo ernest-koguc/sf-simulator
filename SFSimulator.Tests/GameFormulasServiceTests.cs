@@ -146,7 +146,7 @@ public class GameFormulasServiceTests
     }
 
     [TestMethod]
-    public void ExpeditionService_GetExpeditionGold_is_capped_during_gold_event()
+    public void GetExpeditionGold_is_capped_during_gold_event()
     {
         var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
         var characterLevel = 832;
@@ -164,5 +164,35 @@ public class GameFormulasServiceTests
         withGoldEvent = gameFormulaService.GetExpeditionMidwayGold(characterLevel, goldBonus, true, mount, 320);
         withoutGoldEvent = gameFormulaService.GetExpeditionMidwayGold(characterLevel, goldBonus, false, mount, 320);
         Assert.AreEqual(withGoldEvent, withoutGoldEvent);
+    }
+
+    [TestMethod]
+    [DataRow(100, 10, 5_208)]
+    [DataRow(150, 15, 58_812)]
+    [DataRow(200, 20, 381_942)]
+    [DataRow(300, 30, 6_322_622)]
+    [DataRow(400, 40, 52_523_705)]
+    [DataRow(500, 50, 292_354_110)]
+    [DataRow(632, 99, 300_000_000)]
+    public void GetGoldPitCapacity_returns_correct_capacity(int characterLevel, int goldPitLevel, int expectedCapacity)
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var capacity = gameFormulaService.GetGoldPitCapacity(characterLevel, goldPitLevel);
+
+        Assert.AreEqual(expectedCapacity, capacity);
+    }
+
+    [TestMethod]
+    [DataRow(100, 10, 45_747)]
+    [DataRow(150, 15, 511_497)]
+    [DataRow(393, 20, 6_921_840)]
+    [DataRow(500, 19, 2_535_030)]
+    [DataRow(632, 20, 1_022_484)]
+    public void GetAcademyCapacity_returns_correct_capacity(int characterLevel, int academyLevel, int expectedCapacity)
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var capacity = gameFormulaService.GetAcademyCapacity(characterLevel, academyLevel);
+
+        Assert.AreEqual(expectedCapacity, capacity);
     }
 }

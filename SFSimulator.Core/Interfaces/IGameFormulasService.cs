@@ -6,6 +6,8 @@ public interface IGameFormulasService
     double GetDailyPetFoodFromWheel(int characterLevel, List<EventType> events, SpinAmountType spinAmount);
     bool DoesDungeonEnemyDropItem(DungeonEnemy dungeonEnemy);
     decimal GetMinimumExpeditionLength(int characterLevel);
+    decimal GetGoldPitCapacity(int characterLevel, int goldPitLevel);
+    long GetAcademyCapacity(int characterLevel, int academyLevel);
 
     #region Experience
     long GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool experienceEvent);

@@ -125,7 +125,6 @@ public class ExpeditionService(ICurves curves, IItemGenerator itemGenerator, IGa
                 expeditionLength = Math.Min(expeditionLength, 20 - currentBeerThirst);
             }
 
-            // This might be not necessary if thirst is always divisible by 20
             expeditionLength = Math.Min(expeditionLength, thirst - usedThirst);
 
             usedThirst += expeditionLength;

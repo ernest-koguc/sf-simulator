@@ -27,6 +27,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private readonly IWitchService _witchService = witchService;
 
     private List<EventType> CurrentEvents { get; set; } = [];
+    private List<EventType> PreviousEvents { get; set; } = [];
     private ItemBackPack ItemBackPack { get; set; } = null!;
     private bool IsExperienceEvent => CurrentEvents.Contains(EventType.Experience);
     private bool IsGoldEvent => CurrentEvents.Contains(EventType.Gold);
@@ -162,6 +163,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
     private void RunDay()
     {
+        PreviousEvents = CurrentEvents;
         CurrentEvents = _scheduler.GetEvents();
 
         SellItemsToWitch();
@@ -189,8 +191,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         var arenaXP = 10 * _gameFormulasService.GetExperienceRewardFromArena(SimulationContext.Level, IsExperienceEvent);
         GiveXPToCharacter(arenaXP, GainSource.Arena);
 
-        var goldFromWatch = SimulationContext.DailyGuard * _gameFormulasService.GetGoldFromGuardDuty(SimulationContext.Level, SimulationContext.GoldBonus, IsGoldEvent);
-        GiveGoldToCharacter(goldFromWatch, GainSource.Guard);
+        CollectGuardDutyReward();
 
         var goldFromDiceGame = _gameFormulasService.GetDailyGoldFromDiceGame(SimulationContext.Level, CurrentEvents);
         GiveGoldToCharacter(goldFromDiceGame, GainSource.DiceGame);
@@ -206,6 +207,21 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
             (newPictures) => _scrapbookService.UpdateScrapbook(SimulationContext, newPictures));
 
         DoPetsProgression();
+    }
+
+    private void CollectGuardDutyReward()
+    {
+        var goldFromWatch = SimulationContext.DailyGuard * _gameFormulasService.GetGoldFromGuardDuty(SimulationContext.Level, SimulationContext.GoldBonus, IsGoldEvent);
+        GiveGoldToCharacter(goldFromWatch, GainSource.Guard);
+
+        if (!PreviousEvents.Contains(EventType.Gold) && IsGoldEvent)
+        {
+            var additionalGoldFromWatch = _gameFormulasService.GetGoldFromGuardDuty(SimulationContext.Level,
+                SimulationContext.GoldBonus, true) * 10;
+            additionalGoldFromWatch -= _gameFormulasService.GetGoldFromGuardDuty(SimulationContext.Level,
+                SimulationContext.GoldBonus, false) * 10;
+            GiveGoldToCharacter(additionalGoldFromWatch, GainSource.Guard);
+        }
     }
 
     private void DoPetsProgression()
@@ -320,8 +336,21 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         var goldPitProduction = 24 * _gameFormulasService.GetHourlyGoldPitProduction(SimulationContext.Level, SimulationContext.GoldPitLevel, IsGoldEvent);
         GiveGoldToCharacter(goldPitProduction, GainSource.GoldPit);
 
+        if (!PreviousEvents.Contains(EventType.Gold) && IsGoldEvent)
+        {
+            var goldCapacity = _gameFormulasService.GetGoldPitCapacity(SimulationContext.Level, SimulationContext.GoldPitLevel);
+            var additionalGoldPitProduction = goldCapacity / 2;
+            GiveGoldToCharacter(additionalGoldPitProduction, GainSource.GoldPit);
+        }
+
         var academyExperienceProduction = 24 * _gameFormulasService.GetAcademyHourlyProduction(SimulationContext.Level, SimulationContext.AcademyLevel, IsExperienceEvent);
         GiveXPToCharacter(academyExperienceProduction, GainSource.Academy);
+
+        if (!PreviousEvents.Contains(EventType.Experience) && IsExperienceEvent)
+        {
+            var academyCapacity = _gameFormulasService.GetAcademyCapacity(SimulationContext.Level, SimulationContext.AcademyLevel);
+            GiveGoldToCharacter(academyCapacity, GainSource.Academy);
+        }
 
         var goldFromGems = _gameFormulasService.GetDailyGoldFromGemMine(SimulationContext.Level, SimulationContext.GemMineLevel);
         GiveGoldToCharacter(goldFromGems, GainSource.Gem);

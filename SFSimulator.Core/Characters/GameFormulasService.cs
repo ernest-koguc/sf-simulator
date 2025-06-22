@@ -496,4 +496,53 @@ public class GameFormulasService : IGameFormulasService
             _ => throw new ArgumentOutOfRangeException(nameof(characterLevel), $"{nameof(characterLevel)} greater or equal to 1")
         };
     }
+
+    public decimal GetGoldPitCapacity(int characterLevel, int goldPitLevel)
+    {
+        if (goldPitLevel == 0)
+        {
+            return 0;
+        }
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(goldPitLevel, 100);
+        ArgumentOutOfRangeException.ThrowIfLessThan(goldPitLevel, 1);
+
+        var goldPitHourly = GetHourlyGoldPitProduction(characterLevel, goldPitLevel, false);
+        return Math.Floor(Math.Min(300_000_000, goldPitHourly * goldPitLevel * Math.Max(2, 12M / goldPitLevel)));
+    }
+
+    public long GetAcademyCapacity(int characterLevel, int academyLevel)
+    {
+        if (academyLevel == 0)
+        {
+            return 0;
+        }
+
+        var hourlyAcademy = GetAcademyHourlyProduction(characterLevel, academyLevel, false);
+        var academyMultiplier = academyLevel switch
+        {
+            1 => 1,
+            2 => 1.1,
+            3 => 1.2,
+            4 => 1.3,
+            5 => 1.4,
+            6 => 1.5,
+            7 => 1.6,
+            8 => 2.0,
+            9 => 2.4,
+            10 => 3.2,
+            11 => 4.0,
+            12 => 4.8,
+            13 => 6.4,
+            14 => 8.0,
+            15 => 9.6,
+            16 => 10.0,
+            17 => 10.4,
+            18 => 10.8,
+            19 => 11.2,
+            20 => 12,
+            _ => throw new ArgumentOutOfRangeException(nameof(academyLevel), $"{nameof(academyLevel)} must be between 1 and 20")
+        };
+
+        return (long)(hourlyAcademy * academyMultiplier);
+    }
 }
