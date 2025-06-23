@@ -228,9 +228,9 @@ public class RunesJsonConverter : JsonConverter<int>
         if (vals.Length > 1)
             return int.Parse(vals[1]);
 
-        var longVal = long.Parse(vals[0]);
-        return (int)Math.Floor(Math.Log10(longVal));
+        return Math.Min(0, vals[0].Count() - 1);
     }
+
     public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
     {
         writer.WriteStringValue("1E+" + value);
