@@ -349,7 +349,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         if (!PreviousEvents.Contains(EventType.Experience) && IsExperienceEvent)
         {
             var academyCapacity = _gameFormulasService.GetAcademyCapacity(SimulationContext.Level, SimulationContext.AcademyLevel);
-            GiveGoldToCharacter(academyCapacity, GainSource.Academy);
+            GiveXPToCharacter(academyCapacity, GainSource.Academy);
         }
 
         var goldFromGems = _gameFormulasService.GetDailyGoldFromGemMine(SimulationContext.Level, SimulationContext.GemMineLevel);
