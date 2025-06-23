@@ -25,4 +25,8 @@
     <Folder Include="wwwroot\manual\" />
     <Folder Include="wwwroot\external\" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <BlazorCacheBootResources>false</BlazorCacheBootResources>
+  </PropertyGroup>
 </Project>
