@@ -228,8 +228,8 @@ public class RunesJsonConverter : JsonConverter<int>
         if (vals.Length > 1)
             return int.Parse(vals[1]);
 
-        var intVal = int.Parse(vals[0]);
-        return (int)Math.Floor(Math.Log10(intVal));
+        var longVal = long.Parse(vals[0]);
+        return (int)Math.Floor(Math.Log10(longVal));
     }
     public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
     {
