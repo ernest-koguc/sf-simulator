@@ -1,21 +1,21 @@
 ﻿namespace SFSimulator.Core;
 internal class PaladinFightContext : DelegatableFightableContext
 {
-    public PaladinStanceType Stance { get; set; } = PaladinStanceType.Initial;
     public required double InitialArmorReduction { get; set; }
-    private ClassType opponentClass;
+
+    private PaladinStanceType Stance { get; set; } = PaladinStanceType.Initial;
     private double CurrentArmorReduction => Stance switch
     {
-        PaladinStanceType.Initial or PaladinStanceType.Defensive => Math.Min(0.45, InitialArmorReduction),
-        PaladinStanceType.Offensive => Math.Min(0.20, InitialArmorReduction),
+        PaladinStanceType.Initial or PaladinStanceType.Defensive => 1,
+        PaladinStanceType.Offensive => 1 / (1 - InitialArmorReduction) * (1 - Math.Min(0.20, InitialArmorReduction)),
         _ => throw new NotSupportedException($"Unknown stance: {Stance}"),
     };
 
     private double DamageMultiplier => Stance switch
     {
-        PaladinStanceType.Initial => 0.833,
-        PaladinStanceType.Defensive => 0.568,
-        PaladinStanceType.Offensive => 1.253,
+        PaladinStanceType.Initial => 1,
+        PaladinStanceType.Defensive => (1 / 0.833) * 0.568,
+        PaladinStanceType.Offensive => (1 / 0.833) * 1.253,
         _ => throw new NotSupportedException($"Unknown stance: {Stance}"),
     };
 
@@ -29,7 +29,6 @@ internal class PaladinFightContext : DelegatableFightableContext
 
     public PaladinFightContext(ClassType enemyClass)
     {
-        opponentClass = enemyClass;
         if (enemyClass == ClassType.Mage)
         {
             AttackImplementation = MageAttackImpl;
@@ -53,35 +52,27 @@ internal class PaladinFightContext : DelegatableFightableContext
     {
         round++;
 
-        if (opponentClass != ClassType.Mage)
-        {
-            ChangeStance();
-        }
-
+        ChangeStance();
 
         if (!target.WillTakeAttack())
-            return false;
-
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
-        if (opponentClass != ClassType.Mage)
         {
-            dmg *= DamageMultiplier;
+            return false;
         }
 
-        return target.TakeAttack(dmg);
+        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+            round, CritChance, CritMultiplier, Random) * DamageMultiplier;
+
+        return target.TakeAttack(dmg, ref round);
     }
 
-    private bool TakeAttackImpl(double damage)
+    private bool TakeAttackImpl(double damage, ref int round)
     {
-        var actualDamage = damage * (1 - CurrentArmorReduction);
-        if (Random.Next(1, 101) <= BlockChance)
+        var actualDamage = damage * CurrentArmorReduction;
+
+        if (Stance == PaladinStanceType.Defensive && Random.Next(1, 101) <= BlockChance)
         {
-            if (Stance == PaladinStanceType.Defensive)
-            {
-                var maxHeal = MaxHealth - Health;
-                var health = actualDamage * 0.3;
-                Health += Math.Min(maxHeal, (long)health);
-            }
+            var health = actualDamage * 0.3;
+            Health += Math.Min(Math.Max(0, MaxHealth - Health), (long)health);
 
             return false;
         }
@@ -94,24 +85,28 @@ internal class PaladinFightContext : DelegatableFightableContext
     {
         round++;
         var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
-        return target.TakeAttack(dmg);
+        return target.TakeAttack(dmg, ref round);
     }
 
-    private bool NoBlockTakeAttackImpl(double damage)
+    private bool NoBlockTakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
         return Health <= 0;
     }
 
-    // Here we always take attack since we need to know how much would we heal in defensive stance, we might also try to adjust the abstraction?
-    private bool WillTakeAttackImpl() => true;
+    private bool WillTakeAttackImpl()
+    {
+        return Stance == PaladinStanceType.Defensive || Random.Next(1, 101) > BlockChance;
+    }
 
     private void ChangeStance()
     {
         var shouldChangeStance = Random.Next(1, 101) <= 50;
 
         if (!shouldChangeStance)
+        {
             return;
+        }
 
         Stance = Stance switch
         {

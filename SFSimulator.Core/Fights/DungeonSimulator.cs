@@ -147,7 +147,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
             return charSideStarts;
         }
 
-        if (defender is IBeforeFightAttackable defenderImpl && defenderImpl.AttackBeforeFight(defender, ref round))
+        if (defender is IBeforeFightAttackable defenderImpl && defenderImpl.AttackBeforeFight(attacker, ref round))
         {
             return !charSideStarts;
         }
@@ -156,13 +156,17 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         for (var i = 0; i < int.MaxValue; i++)
         {
-            if (attacker.Attack(defender, ref round))
+            var skipRound = defender is IRoundSkipable roundSkipable && roundSkipable.WillSkipRound(ref round);
+
+            if (!skipRound && attacker.Attack(defender, ref round))
             {
                 result = charSideStarts;
                 break;
             }
 
-            if (defender.Attack(attacker, ref round))
+            skipRound = attacker is IRoundSkipable roundSkipable1 && roundSkipable1.WillSkipRound(ref round);
+
+            if (!skipRound && defender.Attack(attacker, ref round))
             {
                 result = !charSideStarts;
                 break;

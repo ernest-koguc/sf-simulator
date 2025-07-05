@@ -9,7 +9,7 @@ public class PotionService : IPotionService
             new() { Size = 15, Type = PotionType.Eternity }
         ];
 
-        var mainAttribute = ClassConfigurationProvider.GetClassConfiguration(classType).MainAttribute;
+        var mainAttribute = ClassConfigurationProvider.Get(classType).MainAttribute;
         var mainPotionType = mainAttribute switch
         {
             AttributeType.Strength => PotionType.Strength,

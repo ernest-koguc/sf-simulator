@@ -524,7 +524,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
             _petProgressionService.GivePetFood(SimulationContext.Pets, 5, PetElementType.Water);
         }
 
-        var mainAttribute = ClassConfigurationProvider.GetClassConfiguration(SimulationContext.Class).MainAttribute;
+        var mainAttribute = ClassConfigurationProvider.Get(SimulationContext.Class).MainAttribute;
         if (calendarReward == CalendarRewardType.DEXTERITY_ATTRIBUTE && mainAttribute == AttributeType.Dexterity)
         {
             SimulationContext.BaseDexterity += 3;

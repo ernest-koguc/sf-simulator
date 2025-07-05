@@ -22,7 +22,7 @@ public class EquipmentBuilderTests
         builder.WithAttributes();
         var item = builder.Build();
 
-        var mainAttr = ClassConfigurationProvider.GetClassConfiguration(classType).MainAttribute;
+        var mainAttr = ClassConfigurationProvider.Get(classType).MainAttribute;
         Assert.AreEqual(expectedStat, item[mainAttr]);
     }
 
@@ -37,7 +37,7 @@ public class EquipmentBuilderTests
             builder.WithAttributes();
             var item = builder.Build();
 
-            var mainAttr = ClassConfigurationProvider.GetClassConfiguration(classType).MainAttribute;
+            var mainAttr = ClassConfigurationProvider.Get(classType).MainAttribute;
 
             var attrWithNoValue = Enum.GetValues<AttributeType>().Except([mainAttr, AttributeType.Constitution, AttributeType.Luck]).Select(attr => item[attr]);
             var attrWithValues = new List<int> { item[mainAttr], item.Constitution, item.Luck };

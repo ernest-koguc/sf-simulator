@@ -37,7 +37,7 @@ public class PetFightableFactory : IPetFightableFactory
     {
         var mainAndConStat = MainAttributePerLevel.ElementAt(position - 1) * (level + 1) * elementalBonus;
         var luckStat = LuckAttributePerLevel.ElementAt(position - 1) * (level + 1) * elementalBonus;
-        var classConfiguration = ClassConfigurationProvider.GetClassConfiguration(classType);
+        var classConfiguration = ClassConfigurationProvider.Get(classType);
         var mainAttribute = classConfiguration.MainAttribute;
         decimal strength, dexterity, intelligence;
         switch (mainAttribute)

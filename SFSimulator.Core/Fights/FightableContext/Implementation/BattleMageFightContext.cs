@@ -13,7 +13,7 @@ public class BattleMageFightContext : DelegatableFightableContext, IBeforeFightA
     public bool AttackBeforeFight(IAttackTakable target, ref int round)
     {
         round++;
-        return target.TakeAttack(FireBallDamage);
+        return target.TakeAttack(FireBallDamage, ref round);
     }
 
     private bool AttackImpl(IAttackTakable target, ref int round)
@@ -25,10 +25,10 @@ public class BattleMageFightContext : DelegatableFightableContext, IBeforeFightA
 
         var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg);
+        return target.TakeAttack(dmg, ref round);
     }
 
-    private bool TakeAttackImpl(double damage)
+    private bool TakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
         return Health <= 0;

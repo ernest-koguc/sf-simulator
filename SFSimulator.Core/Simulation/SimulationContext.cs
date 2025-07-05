@@ -15,6 +15,8 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public EventScheduleType EventSchedule = EventScheduleType.Year2024Cycle;
     public int HydraHeads { get; set; } = 0;
     public int GoldPitLevel { get; set; } = 0;
+    public int FortressLevel { get; set; } = 0;
+    public int WorkerLevel { get; set; } = 0;
     public int AcademyLevel { get; set; } = 0;
     public int GemMineLevel { get; set; } = 0;
     public int TreasuryLevel { get; set; } = 0;
@@ -100,7 +102,7 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public SimulationFinishCondition FinishCondition { get; set; } = new();
     public BaseStatsIncreaseStrategyType BaseStatsIncreaseStrategy { get; set; } = BaseStatsIncreaseStrategyType.Keep_50_50_until_same_cost_then_60_40;
 
-    public int BaseMainAttribute => ClassConfigurationProvider.GetClassConfiguration(Class).MainAttribute switch
+    public int BaseMainAttribute => ClassConfigurationProvider.Get(Class).MainAttribute switch
     {
         AttributeType.Strength => BaseStrength,
         AttributeType.Dexterity => BaseDexterity,
@@ -112,7 +114,7 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
 
     public void SetBaseMainAttribute(int value)
     {
-        var attribute = ClassConfigurationProvider.GetClassConfiguration(Class).MainAttribute;
+        var attribute = ClassConfigurationProvider.Get(Class).MainAttribute;
         switch (attribute)
         {
             case AttributeType.Strength:
@@ -135,7 +137,7 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
         }
     }
 
-    public int TotalMainAttribute => this.GetTotalStatsFor(ClassConfigurationProvider.GetClassConfiguration(Class).MainAttribute);
+    public int TotalMainAttribute => this.GetTotalStatsFor(ClassConfigurationProvider.Get(Class).MainAttribute);
 
     public int this[AttributeType attribute]
     {

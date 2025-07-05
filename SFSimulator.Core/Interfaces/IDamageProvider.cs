@@ -1,8 +1,9 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public interface IDamageProvider
 {
-    public interface IDamageProvider
-    {
-        (double Minimum, double Maximum) CalculateDamage<T, E>(IWeaponable? weapon, IFightable<T> attacker, IFightable<E> target, bool isSecondWeapon = false) where T : IWeaponable where E : IWeaponable;
-        double CalculateFireBallDamage<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable;
-    }
+    (double Minimum, double Maximum) CalculateDamage<T, E>(IWeaponable? weapon, IFightable<T> attacker, IFightable<E> target, bool isSecondWeapon = false) where T : IWeaponable where E : IWeaponable;
+    double CalculateFireBallDamage<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable;
+    double CalculateDamageReduction<T, E>(IFightable<T> attacker, IFightable<E> target) where T : IWeaponable where E : IWeaponable;
+    double CalculateDamageMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target) where T : IWeaponable where E : IWeaponable;
 }

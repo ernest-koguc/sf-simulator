@@ -19,10 +19,10 @@ public class WarriorFightContext : DelegatableFightableContext
 
         var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg);
+        return target.TakeAttack(dmg, ref round);
     }
 
-    private bool TakeAttackImpl(double damage)
+    private bool TakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
         return Health <= 0;

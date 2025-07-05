@@ -11,7 +11,7 @@ public abstract class DelegatableFightableContext : IFightableContext
     public double CritMultiplier { get; set; }
 
     public delegate bool AttackDelegate(IAttackTakable target, ref int round);
-    public delegate bool TakeAttackDelegate(double damage);
+    public delegate bool TakeAttackDelegate(double damage, ref int round);
     public delegate bool WillTakeAttackDelegate();
     protected AttackDelegate AttackImplementation { get; set; } = default!;
     protected TakeAttackDelegate TakeAttackImplementation { get; set; } = default!;
@@ -23,9 +23,9 @@ public abstract class DelegatableFightableContext : IFightableContext
         return AttackImplementation(target, ref round);
     }
 
-    public bool TakeAttack(double damage)
+    public bool TakeAttack(double damage, ref int round)
     {
-        return TakeAttackImplementation(damage);
+        return TakeAttackImplementation(damage, ref round);
     }
 
     public bool WillTakeAttack()

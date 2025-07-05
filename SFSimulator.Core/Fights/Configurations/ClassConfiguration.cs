@@ -37,4 +37,13 @@ public sealed class ClassConfiguration
     /// </summary>
     public required double ItemBonusMultiplier { get; init; }
 
+    /// <summary>
+    /// Property <c>ArmorMultiplier</c> specifies a multiplier for armor for reduction calculation.
+    /// </summary>
+    public required double ArmorMultiplier { get; init; }
+    /// <summary>
+    /// Property <c>MaxArmorReduction</c> specifies a maximum armor reduction value.
+    /// </summary>
+    public required double MaxArmorReduction { get; init; }
+
 }

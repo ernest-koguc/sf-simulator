@@ -8,6 +8,7 @@ public static class DrHouse
     {
         if (IsDebugging)
         {
+            Debug.WriteLine(value);
             Console.WriteLine(value);
         }
     }

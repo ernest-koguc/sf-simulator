@@ -1,14 +1,16 @@
 ﻿namespace SFSimulator.Core;
 
-public class BerserkerFightContext : DelegatableFightableContext
+public class BerserkerFightContext : DelegatableFightableContext, IRoundSkipable
 {
     private int ChainAttackCounter { get; set; } = 0;
-    private int ChainAttackCap { get; set; } = 15;
-    public BerserkerFightContext()
+    private int ChainAttackCap { get; set; } = 14;
+    private ClassType OpponentClass { get; set; }
+    public BerserkerFightContext(ClassType opponentClass)
     {
         AttackImplementation = AttackImpl;
         TakeAttackImplementation = TakeAttackImpl;
         WillTakeAttackImplementation = WillTakeAttackImpl;
+        OpponentClass = opponentClass;
     }
 
     public override void ResetState()
@@ -26,31 +28,39 @@ public class BerserkerFightContext : DelegatableFightableContext
 
         var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg);
+        return target.TakeAttack(dmg, ref round);
     }
 
-    private bool TakeAttackImpl(double damage)
+    private bool TakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
         return Health <= 0;
     }
 
-    private bool WillTakeAttackImpl()
+    private bool WillTakeAttackImpl() => true;
+
+    public bool WillSkipRound(ref int round)
     {
+        if (OpponentClass == ClassType.Mage)
+        {
+            return false;
+        }
+
         if (ChainAttackCounter == ChainAttackCap)
         {
             ChainAttackCounter = 0;
         }
         else if (Random.Next(1, 101) > 50)
         {
+            round++;
             ChainAttackCounter++;
-            return false;
+            return true;
         }
         else
         {
             ChainAttackCounter = 0;
         }
 
-        return true;
+        return false;
     }
 }

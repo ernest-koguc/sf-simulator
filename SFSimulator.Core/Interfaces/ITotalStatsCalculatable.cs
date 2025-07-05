@@ -24,7 +24,7 @@ public static class ITotalStatsCalculatableExtensions
         var items = totalStatsCalculatable.Items;
 
         var attributesFromItems = items.Sum(i => GetSumOfItem(attributeType, i, totalStatsCalculatable.Class, totalStatsCalculatable.IsCompanion));
-        attributesFromItems = (int)(attributesFromItems * ClassConfigurationProvider.GetClassConfiguration(totalStatsCalculatable.Class).ItemBonusMultiplier);
+        attributesFromItems = (int)(attributesFromItems * ClassConfigurationProvider.Get(totalStatsCalculatable.Class).ItemBonusMultiplier);
 
         var baseAttributes = attributeType switch
         {
@@ -62,7 +62,7 @@ public static class ITotalStatsCalculatableExtensions
 
         if (!isCompanion && item.ItemType == ItemType.Weapon)
         {
-            var weaponGemMultiplier = ClassConfigurationProvider.GetClassConfiguration(classType).WeaponGemMultiplier;
+            var weaponGemMultiplier = ClassConfigurationProvider.Get(classType).WeaponGemMultiplier;
             gemValue *= weaponGemMultiplier;
         }
 
@@ -76,7 +76,7 @@ public static class ITotalStatsCalculatableExtensions
 
     private static int GetLegendaryGemValue(AttributeType attributeType, int gemValue, ClassType classType)
     {
-        var classMainAttribute = ClassConfigurationProvider.GetClassConfiguration(classType).MainAttribute;
+        var classMainAttribute = ClassConfigurationProvider.Get(classType).MainAttribute;
         return attributeType == classMainAttribute || attributeType == AttributeType.Constitution ? gemValue : 0;
     }
 }

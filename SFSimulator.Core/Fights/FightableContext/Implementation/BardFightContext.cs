@@ -2,16 +2,17 @@
 
 public class BardFightContext : DelegatableFightableContext
 {
-    private readonly (int duration, double dmgBonus)[] MelodiesEffects = new (int, double)[]
-    {
+    private readonly (int duration, double dmgBonus)[] MelodiesEffects =
+    [
         (1, 1.2),
         (1, 1.4),
         (2, 1.6)
-    };
+    ];
 
     public int MelodyLength { get; set; } = -1;
+    public int NextMelodyRound { get; set; } = 0;
     public double MelodyDmgMultiplier { get; set; } = 1;
-    private int MelodyAssignRound { get; set; }
+
     public BardFightContext(ClassType enemyClass, int melodyLengthBonus)
     {
         TakeAttackImplementation = TakeAttackImpl;
@@ -27,7 +28,6 @@ public class BardFightContext : DelegatableFightableContext
             {
                 MelodiesEffects[i].duration += melodyLengthBonus;
             }
-            MelodyAssignRound = 1;
         }
     }
 
@@ -36,39 +36,44 @@ public class BardFightContext : DelegatableFightableContext
         base.ResetState();
         MelodyLength = 0;
         MelodyDmgMultiplier = 1;
-        MelodyAssignRound = 1;
+        NextMelodyRound = 0;
     }
 
     private bool NoMelodiesAttackImpl(IAttackTakable target, ref int round)
     {
         round++;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+            round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg);
+        return target.TakeAttack(dmg, ref round);
     }
 
     private bool AttackImpl(IAttackTakable target, ref int round)
     {
         round++;
 
-        if (MelodyAssignRound <= round)
-            AssignMelodies(round);
-
         if (MelodyLength == 0)
+        {
             MelodyDmgMultiplier = 1;
-
+        }
+        if (MelodyLength <= 0 && NextMelodyRound <= 0)
+        {
+            AssignMelodies();
+        }
         MelodyLength--;
+        NextMelodyRound--;
 
         if (!target.WillTakeAttack())
             return false;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random) * MelodyDmgMultiplier;
+        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+            round, CritChance, CritMultiplier, Random) * MelodyDmgMultiplier;
 
-        return target.TakeAttack(dmg);
+        return target.TakeAttack(dmg, ref round);
     }
 
-    private bool TakeAttackImpl(double damage)
+    private bool TakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
         return Health <= 0;
@@ -76,18 +81,16 @@ public class BardFightContext : DelegatableFightableContext
 
     private bool WillTakeAttackImpl() => true;
 
-    private void AssignMelodies(int round)
+    private void AssignMelodies()
     {
         var rng = Random.NextDouble();
-        var effectedRolled = 2;
+        var melody = 2;
         if (rng < 0.50)
-            effectedRolled = 1;
+            melody = 1;
         else if (rng < 0.75)
-            effectedRolled = 0;
+            melody = 0;
 
-        var (duration, dmgBonus) = MelodiesEffects[effectedRolled];
-        MelodyLength = duration;
-        MelodyDmgMultiplier = dmgBonus;
-        MelodyAssignRound = round + MelodiesEffects[2].duration * 2;
+        (MelodyLength, MelodyDmgMultiplier) = MelodiesEffects[melody];
+        NextMelodyRound = 4;
     }
 }

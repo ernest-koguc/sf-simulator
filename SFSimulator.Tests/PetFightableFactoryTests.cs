@@ -38,7 +38,7 @@ public class PetFightableFactoryTests
         foreach (var elementType in Enum.GetValues<PetElementType>())
         {
             var petFightable = service.CreateDungeonPetFightable(elementType, position);
-            var mainAttribute = ClassConfigurationProvider.GetClassConfiguration(petFightable.Class).MainAttribute;
+            var mainAttribute = ClassConfigurationProvider.Get(petFightable.Class).MainAttribute;
             int main, secondaryFirst, secondarySecond;
             (main, secondaryFirst, secondarySecond) = mainAttribute switch
             {
@@ -105,7 +105,7 @@ public class PetFightableFactoryTests
 
         var petFightable = service.CreatePetFightable(pet, pets, 0);
 
-        var mainAttribute = ClassConfigurationProvider.GetClassConfiguration(petFightable.Class).MainAttribute;
+        var mainAttribute = ClassConfigurationProvider.Get(petFightable.Class).MainAttribute;
         int main, secondaryFirst, secondarySecond;
         (main, secondaryFirst, secondarySecond) = mainAttribute switch
         {

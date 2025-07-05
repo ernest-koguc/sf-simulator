@@ -32,22 +32,22 @@ public class DemonHunterFightContext : DelegatableFightableContext
 
         var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg);
+        return target.TakeAttack(dmg, ref round);
     }
 
-    private bool TakeAttackImpl(double damage)
+    private bool TakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
 
         if (Health <= 0)
         {
-            Revive();
+            Revive(ref round);
         }
 
         return Health <= 0;
     }
 
-    private bool NoReviveTakeAttackImpl(double damage)
+    private bool NoReviveTakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
         return Health <= 0;
@@ -55,13 +55,17 @@ public class DemonHunterFightContext : DelegatableFightableContext
 
     private bool WillTakeAttackImpl() => true;
 
-    private void Revive()
+    private void Revive(ref int round)
     {
-        if (Random.NextDouble() >= ReviveChance)
+        if (ReviveChance > 0 && Random.NextDouble() >= ReviveChance)
+        {
             return;
+        }
+
+        round++;
 
         Health = (long)(MaxHealth * HpReviveModifier);
-        ReviveChance -= 0.02;
+        ReviveChance -= 0.11;
         HpReviveModifier -= 0.1;
     }
 }

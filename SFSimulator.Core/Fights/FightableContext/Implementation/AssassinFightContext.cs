@@ -17,22 +17,28 @@ public class AssassinFightContext : DelegatableFightableContext
 
         if (target.WillTakeAttack())
         {
-            var firstWeaponDamage = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
-            if (target.TakeAttack(firstWeaponDamage))
+            var firstWeaponDamage = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+                round, CritChance, CritMultiplier, Random);
+            if (target.TakeAttack(firstWeaponDamage, ref round))
+            {
                 return true;
+            }
         }
 
         round++;
 
         if (!target.WillTakeAttack())
+        {
             return false;
+        }
 
-        var secondWeaponDamage = DungeonableDefaultImplementation.CalculateNormalHitDamage(SecondMinimumDamage, SecondMaximumDamage, round, CritChance, CritMultiplier, Random);
+        var secondWeaponDamage = DungeonableDefaultImplementation.CalculateNormalHitDamage(SecondMinimumDamage, SecondMaximumDamage,
+            round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(secondWeaponDamage);
+        return target.TakeAttack(secondWeaponDamage, ref round);
     }
 
-    private bool TakeAttackImpl(double damage)
+    private bool TakeAttackImpl(double damage, ref int round)
     {
         Health -= (long)damage;
         return Health <= 0;

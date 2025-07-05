@@ -15,7 +15,7 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
             attributes *= 1.2D;
 
         if (item.ItemType == ItemType.Weapon)
-            attributes /= ClassConfigurationProvider.GetClassConfiguration(item.ItemClassType).WeaponAttributeMultiplier;
+            attributes /= ClassConfigurationProvider.Get(item.ItemClassType).WeaponAttributeMultiplier;
 
         if (item.ItemAttributeType == ItemAttributeType.NormalOneStat && attributes > 66)
             attributes = Math.Round(attributes) * 0.75D;
@@ -46,7 +46,7 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
 
         if (item.ItemType == ItemType.Weapon)
         {
-            var multiplier = ClassConfigurationProvider.GetClassConfiguration(item.ItemClassType).WeaponAttributeMultiplier;
+            var multiplier = ClassConfigurationProvider.Get(item.ItemClassType).WeaponAttributeMultiplier;
             metal *= multiplier;
             splinters *= multiplier;
         }
@@ -123,7 +123,7 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
                 baseAttributes *= 1.2D;
 
             if (itemType == ItemType.Weapon)
-                baseAttributes /= ClassConfigurationProvider.GetClassConfiguration(classType).WeaponAttributeMultiplier;
+                baseAttributes /= ClassConfigurationProvider.Get(classType).WeaponAttributeMultiplier;
 
             if (itemAttributeType == ItemAttributeType.NormalOneStat && baseAttributes > 66)
                 baseAttributes *= 0.75D;
@@ -166,7 +166,7 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
 
             if (itemType == ItemType.Weapon)
             {
-                var multiplier = ClassConfigurationProvider.GetClassConfiguration(classType).WeaponAttributeMultiplier;
+                var multiplier = ClassConfigurationProvider.Get(classType).WeaponAttributeMultiplier;
                 metalCost *= multiplier;
                 splinterCost *= multiplier;
             }

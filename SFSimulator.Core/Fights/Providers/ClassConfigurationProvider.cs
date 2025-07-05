@@ -9,7 +9,7 @@ public static class ClassConfigurationProvider
         InitClassConfiguration();
     }
 
-    public static ClassConfiguration GetClassConfiguration(ClassType classType)
+    public static ClassConfiguration Get(ClassType classType)
     {
         if (!ClassConfiguration!.TryGetValue(classType, out var value))
             throw new ArgumentException($"Configuration for class {classType} is not supported");
@@ -30,7 +30,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 1,
                     ItemArmorMultiplier = 15,
                     MainAttribute = AttributeType.Strength,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.5,
                 }
             },
             {
@@ -43,7 +45,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 1,
                     ItemArmorMultiplier = 15,
                     MainAttribute = AttributeType.Strength,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.5,
                 }
             },
             {
@@ -56,7 +60,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 2,
                     ItemArmorMultiplier = 3,
                     MainAttribute = AttributeType.Intelligence,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.1,
                 }
             },
             {
@@ -69,7 +75,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 2,
                     ItemArmorMultiplier = 7.5,
                     MainAttribute = AttributeType.Dexterity,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.25,
                 }
             },
             {
@@ -82,7 +90,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 1,
                     ItemArmorMultiplier = 7.5,
                     MainAttribute = AttributeType.Dexterity,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.25,
                 }
             },
             {
@@ -95,7 +105,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 1,
                     ItemArmorMultiplier = 3,
                     MainAttribute = AttributeType.Strength,
-                    ItemBonusMultiplier = 1.11
+                    ItemBonusMultiplier = 1.11,
+                    ArmorMultiplier = 5,
+                    MaxArmorReduction = 0.5,
                 }
             },
             {
@@ -108,7 +120,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 1,
                     ItemArmorMultiplier = 15,
                     MainAttribute = AttributeType.Strength,
-                    ItemBonusMultiplier = 1.1
+                    ItemBonusMultiplier = 1.1,
+                    ArmorMultiplier = 0.5,
+                    MaxArmorReduction = 0.25,
                 }
             },
             {
@@ -121,33 +135,39 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 2,
                     ItemArmorMultiplier = 7.5,
                     MainAttribute = AttributeType.Intelligence,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.25,
                 }
             },
             {
                 ClassType.DemonHunter,
                 new ClassConfiguration
                 {
-                    HealthMultiplier = 5,
+                    HealthMultiplier = 4,
                     WeaponMultiplier = 2.5,
                     WeaponGemMultiplier = 2,
                     WeaponAttributeMultiplier = 2,
                     ItemArmorMultiplier = 15,
                     MainAttribute = AttributeType.Dexterity,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.5,
                 }
             },
             {
                 ClassType.Bard,
                 new ClassConfiguration
                 {
-                    HealthMultiplier = 3,
+                    HealthMultiplier = 2,
                     WeaponMultiplier = 4.5,
                     WeaponGemMultiplier = 2,
                     WeaponAttributeMultiplier = 2,
                     ItemArmorMultiplier = 7.5,
                     MainAttribute = AttributeType.Intelligence,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 2,
+                    MaxArmorReduction = 0.5,
                 }
             },
             {
@@ -160,7 +180,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 2,
                     ItemArmorMultiplier = 3,
                     MainAttribute = AttributeType.Intelligence,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 2,
+                    MaxArmorReduction = 0.2,
                 }
             },
             {
@@ -173,7 +195,9 @@ public static class ClassConfigurationProvider
                     WeaponAttributeMultiplier = 1,
                     ItemArmorMultiplier = 15,
                     MainAttribute = AttributeType.Strength,
-                    ItemBonusMultiplier = 1
+                    ItemBonusMultiplier = 1,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.45,
                 }
             },
         };

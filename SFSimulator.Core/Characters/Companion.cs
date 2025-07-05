@@ -53,9 +53,9 @@ public static class CompanionMappings
 {
     public static int MapCompanionAttribute(AttributeType attributeType, SimulationContext simulationContext, ClassType companionClass)
     {
-        var characterMainAttribute = ClassConfigurationProvider.GetClassConfiguration(simulationContext.Class).MainAttribute;
+        var characterMainAttribute = ClassConfigurationProvider.Get(simulationContext.Class).MainAttribute;
 
-        var companionMainAttribute = ClassConfigurationProvider.GetClassConfiguration(companionClass).MainAttribute;
+        var companionMainAttribute = ClassConfigurationProvider.Get(companionClass).MainAttribute;
 
         return attributeType == companionMainAttribute
             ? simulationContext.GetBaseAttributesOf(characterMainAttribute)

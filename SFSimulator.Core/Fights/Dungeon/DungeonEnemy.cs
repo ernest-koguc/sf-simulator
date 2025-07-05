@@ -83,8 +83,8 @@ public class DungeonEnemy : IFightable<RawWeapon>
         var maxReduction = Class switch
         {
             ClassType.Mage => 10,
-            ClassType.Warrior or ClassType.Bard or ClassType.DemonHunter or ClassType.Bert or ClassType.BattleMage => 50,
-            ClassType.Scout or ClassType.Assassin or ClassType.Berserker => 25,
+            ClassType.Warrior or ClassType.Bard or ClassType.DemonHunter or ClassType.Bert or ClassType.BattleMage or ClassType.Berserker => 50,
+            ClassType.Scout or ClassType.Assassin => 25,
             ClassType.Druid => 40,
             ClassType.Necromancer => 20,
             _ => throw new ArgumentOutOfRangeException(nameof(@class), "Provided class is unsupported"),

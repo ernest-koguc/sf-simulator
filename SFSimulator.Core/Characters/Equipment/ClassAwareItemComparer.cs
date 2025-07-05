@@ -15,7 +15,7 @@ public class ClassAwareItemComparer : IComparer<EquipmentItem>
         if (x == null) return -1;
         if (y == null) return 1;
 
-        var mainAttribute = ClassConfigurationProvider.GetClassConfiguration(ClassType).MainAttribute;
+        var mainAttribute = ClassConfigurationProvider.Get(ClassType).MainAttribute;
         var mainAttributeX = x[mainAttribute];
         var mainAttributeY = y[mainAttribute];
 

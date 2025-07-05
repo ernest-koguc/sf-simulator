@@ -1,8 +1,7 @@
-﻿namespace SFSimulator.Core
+﻿namespace SFSimulator.Core;
+
+public interface IAttackTakable
 {
-    public interface IAttackTakable
-    {
-        bool TakeAttack(double damage);
-        bool WillTakeAttack();
-    }
+    bool TakeAttack(double damage, ref int round);
+    bool WillTakeAttack();
 }

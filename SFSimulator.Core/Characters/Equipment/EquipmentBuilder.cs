@@ -58,7 +58,7 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
         if (itemAttributeType == ItemAttributeType.Legendary)
             levelForItem += 10;
 
-        var armorMultiplier = ClassConfigurationProvider.GetClassConfiguration(classType).ItemArmorMultiplier;
+        var armorMultiplier = ClassConfigurationProvider.Get(classType).ItemArmorMultiplier;
         var armor = levelForItem * armorMultiplier;
 
         EquipmentItem.Armor = (int)armor;
@@ -161,7 +161,7 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
 
         var witchFactor = 1 + (2 / 9D * scrollsUnlocked);
         var averageDamage = levelForWeapon + (witchFactor * (aura + itemQualityRuneValue));
-        var weaponMultiplier = ClassConfigurationProvider.GetClassConfiguration(classType).WeaponMultiplier;
+        var weaponMultiplier = ClassConfigurationProvider.Get(classType).WeaponMultiplier;
         averageDamage *= weaponMultiplier;
         var min = (int)((2 - range) * averageDamage);
         var max = (int)(range * averageDamage);
@@ -169,7 +169,7 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
         EquipmentItem.MaxDmg = max;
         EquipmentItem.ItemType = ItemType.Weapon;
 
-        var attributesMultiplier = ClassConfigurationProvider.GetClassConfiguration(classType).WeaponAttributeMultiplier;
+        var attributesMultiplier = ClassConfigurationProvider.Get(classType).WeaponAttributeMultiplier;
         EquipmentItem.Strength *= attributesMultiplier;
         EquipmentItem.Dexterity *= attributesMultiplier;
         EquipmentItem.Intelligence *= attributesMultiplier;
