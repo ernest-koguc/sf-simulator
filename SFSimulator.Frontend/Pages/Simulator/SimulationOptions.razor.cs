@@ -43,6 +43,10 @@ public partial class SimulationOptions
         if (result is SimulationContext data)
         {
             Options = data;
+            foreach (var companion in Options.Companions)
+            {
+                companion.Character = Options;
+            }
         }
     }
 

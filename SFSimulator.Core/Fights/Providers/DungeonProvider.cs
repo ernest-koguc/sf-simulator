@@ -642,7 +642,6 @@ public class DungeonProvider : IDungeonProvider
                 UnlockResolve = c => c.Dungeons.Where(d => d.Position <= 9).All(d => d.IsDefeated),
                 DungeonEnemies = new List<DungeonEnemy>
                 {
-                    // TODO tower has no block chance - should we change warriors to bert class
                     new DungeonEnemy(position: 1, @class: ClassType.Bert, level: 200, strength: 4194, dexterity: 1697, intelligence: 1665, constitution: 15940, luck: 2589, health: 16019700, minWeaponDmg: 268, maxWeaponDmg: 534, armorMultiplier: 1.5),
                     new DungeonEnemy(position: 2, @class: ClassType.Mage, level: 202, strength: 1714, dexterity: 1678, intelligence: 4242, constitution: 16140, luck: 2622, health: 6552840, minWeaponDmg: 610, maxWeaponDmg: 1217, armorMultiplier: 1.5),
                     new DungeonEnemy(position: 3, @class: ClassType.Scout, level: 204, strength: 1730, dexterity: 4292, intelligence: 1695, constitution: 16328, luck: 2654, health: 13388960, minWeaponDmg: 342, maxWeaponDmg: 681, armorMultiplier: 1.5),
