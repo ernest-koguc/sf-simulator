@@ -7,7 +7,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     IWeeklyTasksRewardProvider weeklyTasksRewardProvider, IScheduler scheduler, ICharacterDungeonProgressionService characterDungeonProgressionService,
     IExpeditionService expeditionService, IBaseStatsIncreasingService baseStatsIncreasingService, IScrapbookService scrapbookService,
     IPotionService potionService, IPortalService portalService, IGuildRaidService guildRaidService, IPetProgressionService petProgressionService,
-    IAuraProgressService auraProgressService, IRuneQuantityProvider runeQuantityProvider, IWitchService witchService) : IGameLoopService
+    IAuraProgressService auraProgressService, IRuneQuantityProvider runeQuantityProvider, IWitchService witchService, IItemGenerator itemGenerator)
+    : IGameLoopService
 {
     private readonly IThirstSimulator _thirstSimulator = thirstSimulator;
     private readonly IExpeditionService _expeditionService = expeditionService;
@@ -25,6 +26,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private readonly IAuraProgressService _auraProgressService = auraProgressService;
     private readonly IRuneQuantityProvider _runeQuantityProvider = runeQuantityProvider;
     private readonly IWitchService _witchService = witchService;
+    private readonly IItemGenerator _itemGenerator = itemGenerator;
 
     private List<EventType> CurrentEvents { get; set; } = [];
     private List<EventType> PreviousEvents { get; set; } = [];
@@ -328,7 +330,30 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         var petFood = _gameFormulasService.GetDailyPetFoodFromWheel(SimulationContext.Level, CurrentEvents, SimulationContext.SpinAmount);
         _petProgressionService.GivePetFood(SimulationContext.Pets, petFood);
 
-        //TODO: NORMAL ITEMS FROM WHEEL LOGIC
+        var isLuckyDay = CurrentEvents.Contains(EventType.LuckyDay);
+
+        var spins = 1;
+
+        if (isLuckyDay && SimulationContext.SpinAmount == SpinAmountType.Max)
+            spins = 40;
+        else if (SimulationContext.SpinAmount == SpinAmountType.Max)
+            spins = 20;
+
+        var itemCount = spins / 10;
+        if (itemCount == 0)
+        {
+            itemCount = Random.Shared.NextDouble() < spins * 0.1 ? 1 : 0;
+        }
+        for (var i = 0; i < itemCount; i++)
+        {
+            var item = _itemGenerator.GenerateItem(SimulationContext.Level);
+            item.GoldValue /= 4;
+            var goldFromItem = ItemBackPack.AddItemToBackPack(item, _witchService.GetAvailableItems(CurrentDay, IsWitchEvent));
+            if (goldFromItem.HasValue)
+            {
+                GiveGoldToCharacter(goldFromItem.Value, GainSource.Item);
+            }
+        }
     }
 
     private void CollectResourcesFromBuildings()
