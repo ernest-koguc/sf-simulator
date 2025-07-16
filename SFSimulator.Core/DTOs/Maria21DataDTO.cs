@@ -18,7 +18,7 @@ public class Maria21DataDTO
     public List<Potion> Potions { get; set; } = null!;
 
     public Inventory Inventory { get; set; } = null!;
-    public Fortress Fortress { get; set; } = null!;
+    public SFToolsFortress Fortress { get; set; } = null!;
     public Underworld Underworld { get; set; } = null!;
     public SFToolsDungeonData Dungeons { get; set; } = null!;
     public Runes Runes { get; set; } = null!;
@@ -181,8 +181,9 @@ public class SFToolsDungeonData
     public int Youtube { get; set; }
 }
 
-public class Fortress
+public class SFToolsFortress
 {
+    public int Fortress { get; set; }
     public int Knights { get; set; }
     public int LaborerQuarters { get; set; }
     public int GemMine { get; set; }
@@ -205,6 +206,13 @@ public class Underworld
 {
     public int GoldPit { get; set; }
     public int TimeMachine { get; set; }
+    public int Heart { get; set; }
+    public int Gate { get; set; }
+    public int Extractor { get; set; }
+    public int GoblinPit { get; set; }
+    public int Torture { get; set; }
+    public int TrollBlock { get; set; }
+    public int Keeper { get; set; }
 }
 
 public class Witch

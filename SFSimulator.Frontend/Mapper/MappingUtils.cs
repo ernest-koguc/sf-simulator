@@ -18,10 +18,24 @@ public static class MappingUtils
 
         simulationContext.Level = maria21DataDto.Level;
         simulationContext.Experience = maria21DataDto.XP;
+
         simulationContext.GoldPitLevel = maria21DataDto.Underworld.GoldPit;
+        simulationContext.HeartOfDarknessLevel = maria21DataDto.Underworld.Heart;
+        simulationContext.SoulExtractorLevel = maria21DataDto.Underworld.Extractor;
+        simulationContext.UnderworldGateLevel = maria21DataDto.Underworld.Gate;
+        simulationContext.TortureChamberLevel = maria21DataDto.Underworld.Torture;
+        simulationContext.AdventuromaticLevel = maria21DataDto.Underworld.TimeMachine;
+        simulationContext.GladiatorLevel = maria21DataDto.Fortress.Gladiator;
+        simulationContext.GoblinPitLevel = maria21DataDto.Underworld.GoblinPit;
+        simulationContext.TrollBlockLevel = maria21DataDto.Underworld.TrollBlock;
+        simulationContext.KeeperLevel = maria21DataDto.Underworld.Keeper;
+
         simulationContext.AcademyLevel = maria21DataDto.Fortress.Academy;
         simulationContext.GemMineLevel = maria21DataDto.Fortress.GemMine;
+        simulationContext.WorkerLevel = maria21DataDto.Fortress.LaborerQuarters;
+        simulationContext.FortressLevel = maria21DataDto.Fortress.Fortress;
         simulationContext.TreasuryLevel = maria21DataDto.Fortress.Treasury;
+
         simulationContext.Mount = maria21DataDto.Mount;
         simulationContext.Class = maria21DataDto.Class;
         simulationContext.HydraHeads = maria21DataDto.Group.Group?.Hydra ?? 0;
@@ -32,7 +46,6 @@ public static class MappingUtils
         simulationContext.BaseConstitution = maria21DataDto.Constitution.Base;
         simulationContext.BaseLuck = maria21DataDto.Luck.Base;
 
-        simulationContext.GladiatorLevel = maria21DataDto.Fortress.Gladiator;
         simulationContext.SoloPortal = maria21DataDto.Dungeons.Player;
         simulationContext.GuildPortal = maria21DataDto.Dungeons.Group;
         simulationContext.Calendar = maria21DataDto.CalendarType;

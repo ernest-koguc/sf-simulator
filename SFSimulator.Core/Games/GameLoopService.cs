@@ -7,7 +7,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     IWeeklyTasksRewardProvider weeklyTasksRewardProvider, IScheduler scheduler, ICharacterDungeonProgressionService characterDungeonProgressionService,
     IExpeditionService expeditionService, IBaseStatsIncreasingService baseStatsIncreasingService, IScrapbookService scrapbookService,
     IPotionService potionService, IPortalService portalService, IGuildRaidService guildRaidService, IPetProgressionService petProgressionService,
-    IAuraProgressService auraProgressService, IRuneQuantityProvider runeQuantityProvider, IWitchService witchService, IItemGenerator itemGenerator)
+    IAuraProgressService auraProgressService, IRuneQuantityProvider runeQuantityProvider, IWitchService witchService, IItemGenerator itemGenerator,
+    IFortressService fortressService, IUnderworldService underworldService)
     : IGameLoopService
 {
     private readonly IThirstSimulator _thirstSimulator = thirstSimulator;
@@ -27,6 +28,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private readonly IRuneQuantityProvider _runeQuantityProvider = runeQuantityProvider;
     private readonly IWitchService _witchService = witchService;
     private readonly IItemGenerator _itemGenerator = itemGenerator;
+    private readonly IFortressService _fortressService = fortressService;
+    private readonly IUnderworldService _underworldService = underworldService;
 
     private List<EventType> CurrentEvents { get; set; } = [];
     private List<EventType> PreviousEvents { get; set; } = [];
@@ -160,6 +163,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
         _runeQuantityProvider.Setup(simulationContext);
 
+        _underworldService.Setup(simulationContext);
+
         SimulatedDays = [];
     }
 
@@ -169,6 +174,10 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         CurrentEvents = _scheduler.GetEvents();
 
         SellItemsToWitch();
+
+        _fortressService.Progress(SimulationContext, CurrentEvents);
+
+        _underworldService.Progress(SimulationContext, CurrentEvents);
 
         _runeQuantityProvider.IncreaseRuneQuantity(SimulationContext, CurrentDay);
 

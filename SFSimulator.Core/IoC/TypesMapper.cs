@@ -1,5 +1,7 @@
 ﻿namespace SFSimulator.Core;
 
+public record class TypeMap(Type Implementation, Type Interface);
+
 public static class TypesMapper
 {
     public static IEnumerable<TypeMap> Types =>
@@ -41,5 +43,7 @@ public static class TypesMapper
         new (typeof(PetUnlockerService), typeof(IPetUnlockerService)),
         new (typeof(AuraProgressService), typeof(IAuraProgressService)),
         new (typeof(WitchService), typeof(IWitchService)),
+        new (typeof(FortressService), typeof(IFortressService)),
+        new (typeof(UnderworldService), typeof(IUnderworldService)),
     ];
 }

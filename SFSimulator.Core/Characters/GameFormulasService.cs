@@ -545,4 +545,101 @@ public class GameFormulasService : IGameFormulasService
 
         return (long)(hourlyAcademy * academyMultiplier);
     }
+
+    public decimal GetUnderworldBuildingTime(UnderworldBuildingType building, int nextBuildingLevel, int workerLevel)
+    {
+        var maxBuildingLevel = building switch
+        {
+            UnderworldBuildingType.GoldPit => 100,
+            _ => 15
+        };
+
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(nextBuildingLevel, maxBuildingLevel);
+
+        var time = nextBuildingLevel switch
+        {
+            1 => 900M,
+            2 => 1895M,
+            3 => 3960M,
+            4 => 8460M,
+            5 => 18000M,
+            6 => 28800M,
+            7 => 41100M,
+            8 => 66420M,
+            9 => 144000M,
+            10 => 313200M,
+            11 => 691200M,
+            12 => 1152000M,
+            13 => 1728000M,
+            14 => 2221200M,
+            15 => 2880000M,
+            >= 16 => 5184000M,
+            _ => throw new ArgumentOutOfRangeException(nameof(nextBuildingLevel), $"Expected value greater than 0, got {nextBuildingLevel}")
+        };
+
+        var workerMultiplier = 1 - 0.05M * workerLevel;
+
+        var step = 1M;
+        if (time > 3600)
+        {
+            step = 100M;
+        }
+
+        return Math.Ceiling(time * workerMultiplier / step) * step;
+    }
+
+    public decimal GetFortressBuildingTime(FortressBuildingType building, int nextBuildingLevel, int workerLevel)
+    {
+        var maxBuildingLevel = building switch
+        {
+            FortressBuildingType.Fortress => 20,
+            FortressBuildingType.Worker => 15,
+            FortressBuildingType.Academy => 20,
+            FortressBuildingType.Treasury => 45,
+            FortressBuildingType.GemMine => 100,
+            _ => throw new ArgumentOutOfRangeException(nameof(building), $"{nameof(building)} is not a valid fortress building type")
+        };
+
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(nextBuildingLevel, maxBuildingLevel);
+
+        var time = nextBuildingLevel switch
+        {
+            1 => 900M,
+            2 => 1895M,
+            3 => 3960M,
+            4 => 8460M,
+            5 => 18000M,
+            6 => 28800M,
+            7 => 41100M,
+            8 => 66420M,
+            9 => 144000M,
+            10 => 313200M,
+            11 => 691200M,
+            12 => 1152000M,
+            13 => 1728000M,
+            14 => 2221200M,
+            15 => 2880000M,
+            16 => 3801600M,
+            17 => 4147200M,
+            18 => 4492800M,
+            19 => 4838400M,
+            >= 20 => 5184000M,
+            _ => throw new ArgumentOutOfRangeException(nameof(nextBuildingLevel), "{nameof(nextBuildingLevel)} must be greater than 0")
+        };
+
+        if (building is FortressBuildingType.Treasury)
+        {
+            time = Math.Min(time, 2880000M);
+        }
+
+        var workerMultiplier = 1 - 0.05M * workerLevel;
+
+        var step = 1M;
+        if (time > 3600)
+        {
+            step = 100M;
+        }
+
+        return Math.Ceiling(time * workerMultiplier / step) * step;
+    }
 }

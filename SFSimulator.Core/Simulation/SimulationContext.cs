@@ -13,13 +13,35 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public SpinAmountType SpinAmount { get; set; } = SpinAmountType.Max;
     public decimal DailyGuard { get; set; } = 23;
     public EventScheduleType EventSchedule = EventScheduleType.Year2024Cycle;
+
     public int HydraHeads { get; set; } = 0;
+
+    #region UnderWorld
+
+    public int HeartOfDarknessLevel { get; set; }
+    public int SoulExtractorLevel { get; set; }
+    public int GoblinPitLevel { get; set; }
+    public int UnderworldGateLevel { get; set; }
+    public int TortureChamberLevel { get; set; }
+    public int AdventuromaticLevel { get; set; }
+    public int KeeperLevel { get; set; }
+    public int TrollBlockLevel { get; set; }
+    public int GladiatorLevel { get; set; }
     public int GoldPitLevel { get; set; } = 0;
+
+    #endregion
+
+
+    #region Fortress
+
     public int FortressLevel { get; set; } = 0;
     public int WorkerLevel { get; set; } = 0;
     public int AcademyLevel { get; set; } = 0;
     public int GemMineLevel { get; set; } = 0;
     public int TreasuryLevel { get; set; } = 0;
+
+    #endregion
+
     public MountType Mount { get; set; } = MountType.Griffin;
     public int Calendar { get; set; } = 1;
     public int CalendarDay { get; set; } = 1;
@@ -82,7 +104,6 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public bool HasWeaponScroll => FirstWeapon?.HasEnchantment == true || SecondWeapon?.HasEnchantment == true;
     public bool HasEternityPotion => Potions.Any(p => p.Type == PotionType.Eternity);
 
-    public int GladiatorLevel { get; set; }
     public double SoloPortal { get; set; }
     public double GuildPortal { get; set; }
     public double CritMultiplier => 2 + (0.11 * GladiatorLevel) + (HasWeaponScroll ? 0.05 : 0);
