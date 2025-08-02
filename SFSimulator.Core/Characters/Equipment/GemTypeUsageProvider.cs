@@ -1,5 +1,3 @@
-
-
 namespace SFSimulator.Core;
 
 public class GemTypeUsageProvider : IGemTypeUsageProvider

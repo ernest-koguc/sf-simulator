@@ -455,6 +455,88 @@ public static class DungeonEnemyName
             (10, "Berlin Scene Monster")
             }
         },
+
+
+        {
+            DungeonNames.ArcadeOfTheOldPixelIcons,
+            new()
+            {
+            (1, "Yum Yum Man"),
+            (2,"Crashing Bandikaboom"),
+            (3,"Low-Poly Lara"),
+            (4,"Morphing Bounty Hunter"),
+            (5,"Lined-up Invaders"),
+            (6,"Blue Crack Hedgehog"),
+            (7,"Blasting Bomber"),
+            (8,"Wandering Street Warrior"),
+            (9,"Gawky Gap Filler"),
+            (10,"King of Consoles"),
+            }
+        },
+        {
+            DungeonNames.TheServerRoom,
+            new()
+            {
+            (1, "Roynish Regression Robert"),
+            (2, "Philip the Burner"),
+            (3, "Patrick the Pedantic Pumper"),
+            (4, "Simon von Hip Swing"),
+            (5, "DarkwingDang the Shadow Mod"),
+            (6, "Json, Bringer of Light"),
+            (7, "Taha with the Ultra Instinct"),
+            (8, "Klaas the Code Rocker"),
+            (9, "KevOps the Rebooter"),
+            (10, "Florian the Colossal Quality Manager"),
+            }
+        },
+        {
+            DungeonNames.WorkshopOfTheHuntersOfTheUndead,
+            new()
+            {
+            (1, "Time Traveler Ash"),
+            (2, "Post-apocalyptic Patchwork Family"),
+            (3, "Forgetful Avenging Angel"),
+            (4, "Bloodhound Banglucard"),
+            (5, "Crossbow Rowdy"),
+            (6, "Leather-loving Death Dealer"),
+            (7, "Tallahatee-filled Cowboy"),
+            (8, "Solar-Powered Slayer"),
+            (9, "Gangster Brothers of the Dawn"),
+            (10, "Lollipop-sucking Cheerleader"),
+            }
+        },
+        {
+            DungeonNames.RetroTvLegends,
+            new()
+            {
+            (1, "Tropical Island Inspector"),
+            (2, "Buoy Lifeguard"),
+            (3, "Galactic Nitpicker"),
+            (4, "Hairy Squatter"),
+            (5, "Married Lazy Woman"),
+            (6, "X-treme Investigators"),
+            (7, "Absolute Team Player"),
+            (8, "Hammering Tool Man"),
+            (9, "Righteous AI Racer"),
+            (10, "All-purpose Handyman"),
+            }
+        },
+        {
+            DungeonNames.TheMeetingRoom,
+            new()
+            {
+            (1, "Phil, Judge of Numbers"),
+            (2, "Jane the UXecutioner"),
+            (3, "Renke the Rule Robber"),
+            (4, "Ben the Chaos Visionary"),
+            (5, "Nina the Text Tyrant"),
+            (6, "Khira the Coordinator"),
+            (7, "Juuri the Banisher"),
+            (8, "Nico the Backend Beast"),
+            (9, "Kira the Caffeine Coder"),
+            (10, "Queens of the Campaigns"),
+            }
+        },
         {
             DungeonNames.Tower,
             new()
@@ -597,27 +679,43 @@ public static class DungeonEnemyName
             new()
             {
             (1, "DoctorBenx"),
-            (2, "Zakreble"),
-            (3, "Golden Gianpy"),
-            (4, "Willyrex"),
-            (5, "Alvaro845"),
+            (2, "Gerrit"),
+            (3, "Karthas"),
+            (4, "Deraphin"),
+            (5, "Kugysplay"),
             (6, "Paul Terra"),
             (7, "Spieletrend"),
             (8, "Fatty Pillow"),
             (9, "Gimper"),
-            (10, "Unge"),
-            (11, "KeysJore"),
+            (10, "Idiota"),
+            (11, "Sadeg"),
             (12, "Aypierre"),
-            (13, "Mandzio"),
-            (14, "Boruciak"),
+            (13, "Sneili Sneils"),
+            (14, "Gamingguidesde"),
             (15, "Fifqo"),
             (16, "Zsoze"),
             (17, "ZeboPL"),
             (18, "Dhalucard"),
             (19, "Earliboy"),
             (20, "Skate702"),
-            (21, "Dorzer")
+            (21, "Dorzer"),
+            (22, "Zsombey"),
+            (23, "Waves"),
+            (24, "N3utr4l"),
+            (25, "Gilmour"),
+            (26, "Craft12354"),
+            (27, "Hunrizzle"),
+            (28, "DomCa"),
+            (29, "TunyGhost"),
+            (30, "MoZone"),
             }
         },
+        {
+            DungeonNames.Sandstorm,
+            new()
+            {
+            (1, string.Empty),
+            }
+        }
     };
 }

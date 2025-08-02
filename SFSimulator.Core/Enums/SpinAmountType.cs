@@ -1,8 +1,10 @@
-﻿namespace SFSimulator.Core
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SFSimulator.Core;
+
+public enum SpinAmountType
 {
-    public enum SpinAmountType
-    {
-        OnlyFree,
-        Max
-    }
+    [Display(Name = "Only Free")]
+    OnlyFree,
+    Max
 }

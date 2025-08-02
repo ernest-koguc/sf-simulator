@@ -6,5 +6,6 @@ public interface IDungeonProvider
     List<Dungeon> GetAllDungeons(SimulationContext simulationContext);
     bool IsValidEnemy(int dungeonPosition, int dungeonEnemyPosition);
     DungeonEnemy GetDungeonEnemy(int dungeonPositon, int dungeonEnemyPosition);
+    DungeonEnemy? GetDungeonEnemySafe(int dungeonPosition, int dungeonEnemyPosition);
     List<Dungeon> InitDungeons();
 }

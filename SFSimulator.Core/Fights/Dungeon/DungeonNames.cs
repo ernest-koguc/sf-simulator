@@ -30,7 +30,13 @@ internal class DungeonNames
     public const string PlayaHQ = "Playa HQ";
     public const string MountOlympus = "Mount Olympus";
     public const string MonsterGrotto = "Monster Grotto";
+    public const string ArcadeOfTheOldPixelIcons = "Arcade of the Old Pixel Icons";
+    public const string TheServerRoom = "The Server Room";
+    public const string WorkshopOfTheHuntersOfTheUndead = "Workshop of the Hunters of the Undead";
+    public const string RetroTvLegends = "Retro TV Legends";
+    public const string TheMeetingRoom = "The Meeting Room";
     public const string Tower = "Tower";
     public const string Twister = "Twister";
     public const string ContinousLoopOfIdols = "Continous Loop of Idols";
+    public const string Sandstorm = "Sandstorm";
 }

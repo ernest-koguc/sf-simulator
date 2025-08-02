@@ -8,6 +8,8 @@ public interface IGameFormulasService
     decimal GetMinimumExpeditionLength(int characterLevel);
     decimal GetGoldPitCapacity(int characterLevel, int goldPitLevel);
     long GetAcademyCapacity(int characterLevel, int academyLevel);
+    decimal GetFortressBuildingTime(FortressBuildingType building, int nextBuildingLevel, int workerLevel);
+    decimal GetUnderworldBuildingTime(UnderworldBuildingType building, int nextBuildingLevel, int workerLevel);
 
     #region Experience
     long GetAcademyHourlyProduction(int characterLevel, int academyLevel, bool experienceEvent);

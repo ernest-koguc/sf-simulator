@@ -129,13 +129,28 @@
                             <ChildContent>
                                 <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
                                     <div class="flex flex-col">
+                                        @* TODO: Add icons for fortress fields *@
+                                        <CheckBox Name="UpgradeFortress" Label="Upgrade Fortress" @bind-Value="@Options.UpgradeFortress"/>
+                                        <Numeric Name="Fortress" Label="Fortress Level" Min="0" Max="20" @bind-Value="@Options.FortressLevel"/>
+                                        <Numeric Name="Worker" Label="Worker Level" Min="0" Max="20" @bind-Value="@Options.WorkerLevel"/>
                                         <Numeric Icon="Academy" Name="Academy" Label="Academy Level" Min="0" Max="20" @bind-Value="@Options.AcademyLevel"/>
                                         <Numeric Icon="GemMine" Name="GemMine" Label="Gem Mine Level" Min="0" Max="100" @bind-Value="@Options.GemMineLevel"/>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <Numeric Icon="GoldPit" Name="GoldPit" Label="Gold Pit Level" Min="0" Max="100" @bind-Value="@Options.GoldPitLevel"/>
                                         <Numeric Icon="Treasury" Name="Treasury" Label="Treasury Level" Min="0" Max="45" @bind-Value="@Options.TreasuryLevel"/>
                                     </div>
+                                    <div class="flex flex-col">
+                                        @* TODO: Add icons for underworld fields *@
+                                        <CheckBox Name="UpgradeUnderworld" Label="Upgrade Underworld" @bind-Value="@Options.UpgradeUnderworld"/>
+                                        <Numeric Icon="GoldPit" Name="GoldPit" Label="Gold Pit Level" Min="0" Max="100" @bind-Value="@Options.GoldPitLevel"/>
+                                        <Numeric Name="Adventuromatic" Label="Adventuromatic" Min="0" Max="15" @bind-Value="@Options.AdventuromaticLevel"/>
+                                        <Numeric Name="Gladiator" Label="Gladiator" Min="0" Max="15" @bind-Value="@Options.GladiatorLevel"/>
+                                        <Numeric Name="HeartOfDarkness" Label="Heart of Darkness" Min="0" Max="15" @bind-Value="@Options.HeartOfDarknessLevel"/>
+                                        <Numeric Name="SoulExtractor" Label="Soul Extractor" Min="0" Max="15" @bind-Value="@Options.SoulExtractorLevel"/>
+                                        <Numeric Name="GoblinPit" Label="Goblin Pit" Min="0" Max="15" @bind-Value="@Options.GoblinPitLevel"/>
+                                        <Numeric Name="UnderworldGate" Label="Underworld Gate" Min="0" Max="15" @bind-Value="@Options.UnderworldGateLevel"/>
+                                        <Numeric Name="TortureChamber" Label="Torture Chamber" Min="0" Max="15" @bind-Value="@Options.TortureChamberLevel"/>
+                                        <Numeric Name="Keeper" Label="Keeper" Min="0" Max="15" @bind-Value="@Options.KeeperLevel"/>
+                                        <Numeric Name="TrollBlock" Label="Troll Block" Min="0" Max="15" @bind-Value="@Options.TrollBlockLevel"/>
+                                   </div>
                                 </div>
                             </ChildContent>
                         </RadzenAccordionItem>

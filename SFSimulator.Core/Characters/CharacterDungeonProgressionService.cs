@@ -32,9 +32,11 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
 
         foreach (var enemy in enemiesToIterate)
         {
-            // If the enemy was actually defeated in a side loop then skip
+            // If the enemy was defeated in a side loop then skip
             if (enemy.IsDefeated) continue;
-            var winThreshold = (int)(DungeonOptions.DungeonIterations * (DungeonOptions.InstaKillPercentage / 100));
+
+            // Make sure it is at least 1 if we have few iteration and small insta kill % (e.g. 100 iterations and 0.1% would result in 0)
+            var winThreshold = Math.Max(1, (int)(DungeonOptions.DungeonIterations * (DungeonOptions.InstaKillPercentage / 100)));
 
             var result = dungeonSimulator.SimulateDungeon(enemy, simulationContext, simulationContext.Companions,
                 new(DungeonOptions.DungeonIterations, winThreshold, true));
@@ -124,8 +126,8 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
         {
             >= 1 and <= 12 => sfToolsIndex + 1,
             13 => 15,
-            14 => 17,
-            15 => 19,
+            14 => 19,
+            15 => 17,
             16 => 18,
             17 => 24,
             18 => 27,

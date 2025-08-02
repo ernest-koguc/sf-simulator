@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SFSimulator.Core;
+using System;
 using System.Linq;
 
 namespace SFSimulator.Tests;
@@ -194,5 +195,50 @@ public class GameFormulasServiceTests
         var capacity = gameFormulaService.GetAcademyCapacity(characterLevel, academyLevel);
 
         Assert.AreEqual(expectedCapacity, capacity);
+    }
+
+    [TestMethod]
+    [DataRow(FortressBuildingType.Treasury, 5, 3, "0d4h15m0s")]
+    [DataRow(FortressBuildingType.Treasury, 45, 15, "8d8h0m0s")]
+    [DataRow(FortressBuildingType.Fortress, 10, 5, "2d17h15m0s")]
+    [DataRow(FortressBuildingType.Fortress, 15, 15, "8d8h0m0s")]
+    [DataRow(FortressBuildingType.Fortress, 15, 5, "25d0h0m0s")]
+    [DataRow(FortressBuildingType.Fortress, 20, 15, "15d0h0m0s")]
+    [DataRow(FortressBuildingType.GemMine, 90, 15, "15d0h0m0s")]
+    [DataRow(FortressBuildingType.GemMine, 20, 10, "30d0h0m0s")]
+    [DataRow(FortressBuildingType.GemMine, 100, 0, "60d0h0m0s")]
+    [DataRow(FortressBuildingType.GemMine, 7, 7, "0d7h26m40s")]
+    [DataRow(FortressBuildingType.Worker, 10, 9, "1d23h51m40s")]
+    [DataRow(FortressBuildingType.Academy, 15, 12, "13d8h0m0s")]
+    public void GetFortressBuildingTime_returns_correct_time(FortressBuildingType building, int buildingLevel, int workerLevel, string expectedTime)
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var time = gameFormulaService.GetFortressBuildingTime(building, buildingLevel, workerLevel);
+        var timeInTimeSpan = TimeSpan.FromSeconds((double)time);
+        var expectedTimeSpan = expectedTime.ToTimeSpan();
+
+        Assert.AreEqual(expectedTimeSpan, timeInTimeSpan);
+    }
+
+    [TestMethod]
+    [DataRow(UnderworldBuildingType.HeartOfDarkness, 5, 3, "0d4h15m0s")]
+    [DataRow(UnderworldBuildingType.HeartOfDarkness, 10, 5, "2d17h15m0s")]
+    [DataRow(UnderworldBuildingType.HeartOfDarkness, 15, 15, "8d8h0m0s")]
+    [DataRow(UnderworldBuildingType.HeartOfDarkness, 15, 5, "25d0h0m0s")]
+    [DataRow(UnderworldBuildingType.GoldPit, 20, 15, "15d0h0m0s")]
+    [DataRow(UnderworldBuildingType.GoldPit, 90, 15, "15d0h0m0s")]
+    [DataRow(UnderworldBuildingType.GoldPit, 20, 10, "30d0h0m0s")]
+    [DataRow(UnderworldBuildingType.GoldPit, 100, 0, "60d0h0m0s")]
+    [DataRow(UnderworldBuildingType.GoldPit, 7, 7, "0d7h26m40s")]
+    [DataRow(UnderworldBuildingType.Adventuromatic, 10, 9, "1d23h51m40s")]
+    [DataRow(UnderworldBuildingType.TortureChamber, 15, 12, "13d8h0m0s")]
+    public void GetUnderworldBuildingTime_returns_correct_time(UnderworldBuildingType building, int buildingLevel, int workerLevel, string expectedTime)
+    {
+        var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
+        var time = gameFormulaService.GetUnderworldBuildingTime(building, buildingLevel, workerLevel);
+        var timeInTimeSpan = TimeSpan.FromSeconds((double)time);
+        var expectedTimeSpan = expectedTime.ToTimeSpan();
+
+        Assert.AreEqual(expectedTimeSpan, timeInTimeSpan);
     }
 }
