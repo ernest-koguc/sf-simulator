@@ -9,28 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFSimulator.Tests", "SFSimu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFSimulator.Frontend", "SFSimulator.Frontend\SFSimulator.Frontend.csproj", "{BD16EEBF-B394-4665-873E-9D497B98173E}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "xtool", "xtool\", "{5398803F-672B-C284-B979-BD271F747A3B}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8.1"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_54541"
-		Debug.AspNetCompiler.PhysicalPath = "xtool\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_54541\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_54541"
-		Release.AspNetCompiler.PhysicalPath = "xtool\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_54541\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "54541"
-		SlnRelativePath = "xtool\"
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFSimulator.Api", "SFSimulator.Api\SFSimulator.Api.csproj", "{5BE48DA1-9FF9-4B18-A23C-0259A57BD5A6}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "SFSimulator.Extension", "SFSimulator.Extension\SFSimulator.Extension.esproj", "{17C81DFC-10F5-EF1B-DBA6-614477C8690C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,14 +31,16 @@ Global
 		{BD16EEBF-B394-4665-873E-9D497B98173E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD16EEBF-B394-4665-873E-9D497B98173E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD16EEBF-B394-4665-873E-9D497B98173E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5398803F-672B-C284-B979-BD271F747A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5398803F-672B-C284-B979-BD271F747A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5398803F-672B-C284-B979-BD271F747A3B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{5398803F-672B-C284-B979-BD271F747A3B}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{5BE48DA1-9FF9-4B18-A23C-0259A57BD5A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5BE48DA1-9FF9-4B18-A23C-0259A57BD5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BE48DA1-9FF9-4B18-A23C-0259A57BD5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BE48DA1-9FF9-4B18-A23C-0259A57BD5A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C81DFC-10F5-EF1B-DBA6-614477C8690C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C81DFC-10F5-EF1B-DBA6-614477C8690C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C81DFC-10F5-EF1B-DBA6-614477C8690C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{17C81DFC-10F5-EF1B-DBA6-614477C8690C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C81DFC-10F5-EF1B-DBA6-614477C8690C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C81DFC-10F5-EF1B-DBA6-614477C8690C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
