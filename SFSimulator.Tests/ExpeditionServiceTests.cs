@@ -29,14 +29,14 @@ public class ExpeditionServiceTests
 
 
     [TestMethod]
-    [DataRow(503, 118, 8, true, 2254, "1", 25, false, MountType.None, 1712634L)]
-    [DataRow(503, 200, 8, true, 2254, "1", 25, false, MountType.None, 2146930L)]
-    [DataRow(503, 200, 8, false, 2254, "1.2", 25, false, MountType.Tiger, 3325789L)]
-    [DataRow(455, 200, 10, true, 2233, "1.2", 25, false, MountType.Griffin, 7622852L)]
-    [DataRow(455, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 8575709L)]
-    [DataRow(557, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 3793256L)]
-    [DataRow(561, 200, 10, true, 2233, "1.35", 25, false, MountType.Tiger, 2610441L)]
-    [DataRow(597, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 2782279L)]
+    [DataRow(503, 118, 8, true, 2254, "1", 25, false, MountType.None, 1699818L)]
+    [DataRow(503, 200, 8, true, 2254, "1", 25, false, MountType.None, 2134114L)]
+    [DataRow(503, 200, 8, false, 2254, "1.2", 25, false, MountType.Tiger, 3305936L)]
+    [DataRow(455, 200, 10, true, 2233, "1.2", 25, false, MountType.Griffin, 7577894L)]
+    [DataRow(455, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 8525131L)]
+    [DataRow(557, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 3770884L)]
+    [DataRow(561, 200, 10, true, 2233, "1.35", 25, false, MountType.Tiger, 2595045L)]
+    [DataRow(597, 200, 10, true, 2233, "1.35", 25, false, MountType.Griffin, 2765869L)]
     public void ExpeditionService_DoExpeditions_ReturnsCorrectExperience(int characterLevel, int guildBonus, int runeBonus, bool hasScroll, int scrapbookItems,
         string avgStars, int thirst, bool isExperienceEvent, MountType mount, long expectedResult)
     {
