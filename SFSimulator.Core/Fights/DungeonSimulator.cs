@@ -116,18 +116,15 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
     private bool PerformSingleFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext)
     {
         long? leftoverHealth = null;
-        foreach (var (LeftSide, RightSide) in lookupContext)
+        foreach (var (CharSide, DungeonSide) in lookupContext)
         {
-            var charSide = LeftSide;
-            var dungeonSide = RightSide;
-
             if (leftoverHealth.HasValue)
-                dungeonSide.Health = leftoverHealth.Value;
+                DungeonSide.Health = leftoverHealth.Value;
 
-            var characterWon = PerformFight(charSide, dungeonSide);
-            leftoverHealth = dungeonSide.Health;
-            charSide.ResetState();
-            dungeonSide.ResetState();
+            var characterWon = PerformFight(CharSide, DungeonSide);
+            leftoverHealth = DungeonSide.Health;
+            CharSide.ResetState();
+            DungeonSide.ResetState();
 
             if (characterWon)
                 return true;

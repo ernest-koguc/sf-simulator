@@ -175,9 +175,15 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
 
         SellItemsToWitch();
 
-        _fortressService.Progress(SimulationContext, CurrentEvents);
+        if (SimulationContext.UpgradeFortress)
+        {
+            _fortressService.Progress(SimulationContext, CurrentEvents);
+        }
 
-        _underworldService.Progress(SimulationContext, CurrentEvents);
+        if (SimulationContext.UpgradeUnderworld)
+        {
+            _underworldService.Progress(SimulationContext, CurrentEvents);
+        }
 
         _runeQuantityProvider.IncreaseRuneQuantity(SimulationContext, CurrentDay);
 

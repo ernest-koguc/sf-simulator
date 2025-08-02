@@ -126,8 +126,8 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
         {
             >= 1 and <= 12 => sfToolsIndex + 1,
             13 => 15,
-            14 => 17,
-            15 => 19,
+            14 => 19,
+            15 => 17,
             16 => 18,
             17 => 24,
             18 => 27,

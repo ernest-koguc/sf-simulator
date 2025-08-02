@@ -38,7 +38,6 @@ public class UnderworldService(IGameFormulasService gameFormulasService) : IUnde
 
         BuildingTimeAvailable = 1;
 
-        // make sure we dont end up in an infinite loop after we ugprade GP to 100
         while (BuildingTimeAvailable > 0 && !IsFinished)
         {
 

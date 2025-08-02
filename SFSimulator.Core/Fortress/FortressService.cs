@@ -17,7 +17,6 @@ public class FortressService(IGameFormulasService gameFormulasService) : IFortre
 
         BuildingTimeAvailable = 1;
 
-        // make sure we dont end up in an infinite loop after we ugprade GM to 100
         while (BuildingTimeAvailable > 0 && !IsFinished)
         {
 

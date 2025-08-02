@@ -17,7 +17,7 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public int HydraHeads { get; set; } = 0;
 
     #region UnderWorld
-
+    public bool UpgradeUnderworld { get; set; } = true;
     public int HeartOfDarknessLevel { get; set; }
     public int SoulExtractorLevel { get; set; }
     public int GoblinPitLevel { get; set; }
@@ -27,13 +27,14 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public int KeeperLevel { get; set; }
     public int TrollBlockLevel { get; set; }
     public int GladiatorLevel { get; set; }
-    public int GoldPitLevel { get; set; } = 0;
+    public int GoldPitLevel { get; set; }
 
     #endregion
 
 
     #region Fortress
 
+    public bool UpgradeFortress { get; set; } = true;
     public int FortressLevel { get; set; } = 0;
     public int WorkerLevel { get; set; } = 0;
     public int AcademyLevel { get; set; } = 0;

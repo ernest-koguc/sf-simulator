@@ -6,17 +6,17 @@ public enum ClassType
 {
     Mirror = -1,
     Bert = 0,
-    Warrior,
-    Mage,
-    Scout,
-    Assassin,
+    Warrior = 1,
+    Mage = 2,
+    Scout = 3,
+    Assassin = 4,
     [Display(Name = "Battle Mage")]
-    BattleMage,
-    Berserker,
+    BattleMage = 5,
+    Berserker = 6,
     [Display(Name = "Demon Hunter")]
-    DemonHunter,
-    Druid,
-    Bard,
-    Necromancer,
-    Paladin
+    DemonHunter = 7,
+    Druid = 8,
+    Bard = 9,
+    Necromancer = 10,
+    Paladin = 11,
 }
