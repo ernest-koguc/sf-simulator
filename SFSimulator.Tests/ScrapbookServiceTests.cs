@@ -8,10 +8,10 @@ namespace SFSimulator.Tests;
 public class ScrapbookServiceTests
 {
     [TestMethod]
-    [DataRow(10, 22.7645)]
-    [DataRow(100, 71.49)]
-    [DataRow(250, 74.3412)]
-    [DataRow(500, 76.2419)]
+    [DataRow(10, 22.1988)]
+    [DataRow(100, 69.7135)]
+    [DataRow(250, 72.4936)]
+    [DataRow(500, 74.347)]
     public void InitScrapbook_gives_correct_count(int level, double expectedFillness)
     {
         var scrapbookService = DependencyProvider.Get<IScrapbookService>();

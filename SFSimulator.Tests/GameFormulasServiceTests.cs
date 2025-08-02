@@ -81,15 +81,15 @@ public class GameFormulasServiceTests
     [DataRow(1, 10, true)]
     [DataRow(10, 4, false)]
     [DataRow(10, 10, true)]
-    [DataRow(99, 658, true)]
-    [DataRow(99, 711, false)]
+    [DataRow(-2, 658, true)]
+    [DataRow(-2, 711, false)]
     [DataRow(19, 1, true)]
     [DataRow(19, 10, true)]
     [DataRow(22, 1, true)]
     [DataRow(22, 10, true)]
-    [DataRow(98, 1, false)]
-    [DataRow(98, 5, false)]
-    [DataRow(98, 100, false)]
+    [DataRow(-1, 1, false)]
+    [DataRow(-1, 5, false)]
+    [DataRow(-1, 100, false)]
     public void GetGoldForDungeonEnemey_gives_gold_or_item_with_gold_value(int dungeonPosition, int enemyPosition, bool givesItem) // if not item than gold)
     {
         var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
@@ -112,9 +112,9 @@ public class GameFormulasServiceTests
     [DataRow(10, 9, 144_249.1)]
     [DataRow(11, 4, 228_866.2)]
     [DataRow(16, 2, 287_140.4)]
-    [DataRow(99, 711, 2_747_370.9)]
-    [DataRow(98, 5, 318_717)]
-    [DataRow(98, 100, 7_386_146.1)]
+    [DataRow(-2, 711, 2_747_370.9)]
+    [DataRow(-1, 5, 318_717)]
+    [DataRow(-1, 100, 7_386_146.1)]
     public void GetGoldForDungeonEnemey_gives_gold_or_item_with_gold_value(int dungeonPosition, int enemyPosition, double expectedGold)
     {
         var gameFormulaService = DependencyProvider.Get<IGameFormulasService>();
