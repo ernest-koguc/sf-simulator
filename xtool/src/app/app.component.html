@@ -1,1 +1,25 @@
-<p>hola</p>
+<div class="flex h-full w-full flex-col font-[Verdana] text-foreground backdrop-brightness-30 border-l-10 border-black justify-center items-center">
+  <div hlmAccordion type="multiple" class='w-full'>
+    <div hlmAccordionItem>
+      <tab-btn hlmAccordionTrigger class='px-3 bg-purple-600/20 font-black text-xl text-zinc-300 text-shadow-sm text-shadow-black/35'>
+        DUNGEONS
+      </tab-btn>
+      <hlm-accordion-content class='bg-black/40'>
+        <dungeon-simulation/>
+      </hlm-accordion-content>
+    </div>
+    <div hlmAccordionItem>
+      <tab-btn hlmAccordionTrigger class='px-3 bg-purple-600/20 font-black text-xl text-zinc-300 text-shadow-sm text-shadow-black/35'>
+        EXPEDITIONS
+      </tab-btn>
+      <hlm-accordion-content class='bg-black/40'>
+        <expedition-preview/>
+      </hlm-accordion-content>
+    </div>
+  </div>
+  <div class="my-auto"></div>
+  @if (loggedInAs()) {
+    <div>Logged in as: {{ loggedInAs() }}</div>
+  }
+</div>
+

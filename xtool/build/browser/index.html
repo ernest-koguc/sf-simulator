@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-beasties-container>
+<head>
+  <meta charset="utf-8">
+  <title>x-tool</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>x-tool{position:absolute;right:0;top:0;width:max(350px,10vw);height:100%;background-image:url("./media/xtool.png");background-size:cover;background-position:center}#webgl-content{width:min(90vw,100vw - 350px)!important;left:min(45vw,50vw - 175px)!important;background-image:url("./media/background.png")}</style><link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.css"></noscript></head>
+<body>
+
+  <!--THIS IS TO MOCK UP THE STYLING OF SFGAME FOR LOCAL DEBUGGING-->
+  <div id="webgl-content">
+  </div>
+  <x-tool class="dark">
+  </x-tool>
+<script src="main.js" type="module"></script></body>
+</html>
+
+<style>
+  body {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+  }
+
+  #webgl-content {
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:100%;
+    height:100%;
+    transform:translate(-50%,-50%);
+    user-select:none;
+    margin:0;
+    padding:0;
+    /* background-image: url(background.png); */
+    background-size:cover;
+  }
+</style>

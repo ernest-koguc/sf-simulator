@@ -16,8 +16,29 @@
     "target": "ES2022",
     "module": "ES2022",
     "paths": {
+      "@spartan-ng/helm/accordion": [
+        "./src/app/shared/ui-accordion-helm/src/index.ts"
+      ],
       "@spartan-ng/helm/icon": [
-        "./shared/ui-icon-helm/src/index.ts"
+        "./src/app/shared/ui-icon-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/typography": [
+        "./src/app/shared/ui-typography-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/table": [
+        "./src/app/shared/ui-table-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/button": [
+        "./src/app/shared/ui-button-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/spinner": [
+        "./src/app/shared/ui-spinner-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/tooltip": [
+        "./src/app/shared/ui-tooltip-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/tabs": [
+        "./src/app/shared/ui-tabs-helm/src/index.ts"
       ]
     }
   },

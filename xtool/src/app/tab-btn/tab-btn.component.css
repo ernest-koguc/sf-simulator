@@ -1,0 +1,16 @@
+.fade-in {
+    visibility: visible;
+    transform: translateX(0);
+    opacity: 1;
+    margin-right: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.fade-out {
+    visibility: hidden;
+    transform: translateX(-100%);
+    opacity: 0;
+    margin-right: -48px;
+    transition: all 0.3s ease-in-out;
+    margin-left: 24px;
+}

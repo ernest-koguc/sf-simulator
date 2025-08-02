@@ -1,5 +1,6 @@
-import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { ApplicationConfig, provideZonelessChangeDetection, } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideExperimentalZonelessChangeDetection()]
+  providers: [provideZonelessChangeDetection(), provideHttpClient()]
 };
