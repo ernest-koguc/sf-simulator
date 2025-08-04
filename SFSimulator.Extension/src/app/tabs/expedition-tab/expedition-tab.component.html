@@ -38,11 +38,11 @@
     @let list = $any(savedExpeditions | async);
     @let tep = savedExpeditions | async;
     @for (expedition of list; track expedition.id) {
-      <div>
-        <span>{{ expedition.MainTask}}</span>
+      <div class='flex gap-2 items-center'>
+        <img [src]='getAssetUrl(expedition.MainTask)' width='50px' height='50px'/>
         <span>{{ expedition.Server }}</span>
         <span>{{ expedition.PlayerId }}</span>
-        <span>{{ expedition.CreatedAt }}</span>
+        <span>{{ expedition.CreatedAt | date:'short' }}</span>
       </div>
   }
   </div>
