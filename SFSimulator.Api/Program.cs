@@ -13,6 +13,7 @@ foreach (var type in TypesMapper.Types)
 {
     builder.Services.AddScoped(type.Interface, type.Implementation);
 }
+
 builder.Services.AddScoped<SimulateDungeonHandler>();
 builder.Services.AddCors(o =>
 {
