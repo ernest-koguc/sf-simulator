@@ -5,6 +5,7 @@ export type SFGameRequest = {
   req: string;
   params: string | null;
   data: Record<string, string>;
+  server: string;
 }
 
 export type Attribute = {
@@ -390,4 +391,28 @@ export enum ResourceType {
   Honor = 27,
 }
 
+export type Witch = {
+  Stage: number,
+  Items: number,
+  ItemsNext: number,
+  ItemForCauldron: number,
+  Finish: number,
+  Scrolls: {
+    Date: number,
+    Type: ScrollType,
+    Unlocked: boolean
+  }[]
+}
 
+export enum ScrollType {
+  None = 0,
+  Crit = 11,
+  QuestSpeed = 21,
+  QuestMushroom = 31,
+  Reaction = 51,
+  QuestExperience = 61,
+  Beer = 71,
+  QuestItems = 81,
+  QuestGold = 91,
+  ArenaGold = 101,
+}

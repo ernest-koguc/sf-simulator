@@ -3,6 +3,7 @@ import { ExpeditionEncounter, ExpeditionHalfTime, ExpeditionItemReward, Expediti
 
 export interface ExpeditionHistoryItem {
   Id?: number;
+  Server: string;
   PlayerId: number;
   MainTask: ExpeditionEncounter;
   SideTasks: ExpeditionEncounter[];

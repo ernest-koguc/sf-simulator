@@ -44,10 +44,13 @@ window.fetch = async (...args) => {
     return model;
   }, dictionary);
 
+  const urlParts = url.toLowerCase().split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+  const serverId = urlParts[1] + '_' + urlParts[2];
   const gameRequest: SFGameRequest = {
     req: req,
     params: params,
-    data: data
+    data: data,
+    server: serverId,
   };
 
   document.dispatchEvent(new CustomEvent("SFCommand", {

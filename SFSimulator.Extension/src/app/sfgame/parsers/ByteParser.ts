@@ -74,8 +74,8 @@ export class ByteParser {
     this.bytes = [];
   }
 
-  skip(size?: number) {
-    this.ptr += size!;
+  skip(size: number) {
+    this.ptr += size;
     return this;
   }
 

@@ -1,4 +1,4 @@
-import { ASSASSIN, BARD, BATTLEMAGE, BERSERKER, CONFIG, DEMONHUNTER, DRUID, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from "./ClassConfig";
+import { ASSASSIN, BATTLEMAGE, BERSERKER, CONFIG, WARRIOR } from "./ClassConfig";
 import { ByteParser } from "./parsers/ByteParser";
 import { Attribute, Equipment, Potion } from "./SFGameModels";
 
@@ -8,7 +8,6 @@ export type DataModel = {
   pets: number[] | null;
   chest: number[] | null;
   dummy: number[] | null;
-  witch: number[] | null;
   idle: number[] | null;
   calendar: number[] | null;
   dailyTasks: number[] | null;
@@ -19,18 +18,6 @@ export type DataModel = {
 
 export class PlayerModel {
   public Toilet!: { Aura: number, Mana: number, Capacity: number };
-  public Witch!: {
-    Stage: number,
-    Items: number,
-    ItemsNext: number,
-    Item: number,
-    Finish: number,
-    Scrolls: {
-      Date: number,
-      Type: number,
-      Owned: boolean
-    }[]
-  };
   public ID!: number;
   public Registered!: number;
   public Level!: number;
@@ -569,49 +556,6 @@ export class PlayerModel {
 
     if (data.dummy) {
       this.Inventory.Dummy = PlayerModel.loadEquipment(new ByteParser(data.dummy), 5, this.Class);
-    }
-
-    dataType = new ByteParser(data.witch);
-    let witchStage = dataType.long();
-
-    let witchItems = dataType.long();
-    const witchItemsNext = Math.max(0, dataType.long());
-    const witchItem = dataType.long();
-    witchItems = Math.min(witchItems, witchItemsNext);
-
-    dataType.skip(2);
-
-    const witchFinish = dataType.long() * 1000; //+ data.offset;
-    //if (this.Witch.Finish < this.Timestamp) {
-    //  this.Witch.Finish = 0;
-    //}
-
-    dataType.skip(1);
-
-    const witchScrolls = [];
-    for (let i = 0; i < 9; i++) {
-      // TODO: check if this is correct
-      dataType.skip();
-
-      const picIndex = dataType.long();
-      const date = dataType.long() * 1000;// + data.offset;
-      const type = picIndex % 1000;
-
-      witchScrolls[PlayerModel.getScroll(type)] = {
-        Date: date,
-        Type: type,
-        Owned: _between(date, 0, (new Date()).getTime())
-      };
-    }
-
-    witchStage = _lenWhere(witchScrolls, (scroll: any) => scroll.Owned);
-    this.Witch = {
-      Stage: witchStage,
-      Items: witchItems,
-      ItemsNext: witchItemsNext,
-      Item: witchItem,
-      Finish: witchFinish,
-      Scrolls: witchScrolls
     }
 
     if (data.dailyTasksRewards && data.dailyTasksRewards.length > 0) {
@@ -1320,13 +1264,6 @@ export function _between(val: any, min: any, max: any) {
   return val > min && val < max;
 }
 
-function _lenWhere(array: any[], filter: any) {
-  let count = 0;
-  for (const obj of array) {
-    if (filter(obj)) count++;
-  }
-  return count;
-}
 export function* _eachBlock(arr: any[], size: number) {
   for (let i = 0; i < arr.length / size; i++) {
     if (arr.length >= i * size + size) {

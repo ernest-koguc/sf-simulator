@@ -5,7 +5,7 @@
         DUNGEONS
       </tab-btn>
       <hlm-accordion-content class='bg-black/40'>
-        <dungeon-simulation/>
+        <dungeon-tab/>
       </hlm-accordion-content>
     </div>
     <div hlmAccordionItem>
@@ -13,13 +13,14 @@
         EXPEDITIONS
       </tab-btn>
       <hlm-accordion-content class='bg-black/40'>
-        <expedition-preview/>
+        <expedition-tab/>
       </hlm-accordion-content>
     </div>
   </div>
   <div class="my-auto"></div>
   @if (loggedInAs()) {
-    <div>Logged in as: {{ loggedInAs() }}</div>
+    <div class='px-3 text-lg'>Logged in as: {{ loggedInAs() }}</div>
+    <div class='px-3 pb-3 text-lg'>{{ sessionManager.current()?.server }}</div>
   }
 </div>
 

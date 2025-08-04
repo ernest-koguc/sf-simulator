@@ -5,13 +5,13 @@ import {
   HlmAccordionItemDirective,
   HlmAccordionTriggerDirective,
 } from '@spartan-ng/helm/accordion';
-import { SFGameModelTracker } from './sfgame-model-tracker.service';
-import { DungeonSimulator } from './dungeon-simulator.service';
-import { DungeonSimulationComponent } from "./dungeon-simulation/dungeon-simulation.component";
-import { ExpeditionPreviewComponent } from './expedition-preview/expedition-preview.component';
-import { ExpeditionService } from './services/expedition.service';
 import { SFGameRequest } from './sfgame/SFGameModels';
 import { TabBtnComponent } from './tab-btn/tab-btn.component';
+import { SFGameRequestHandler } from './services/SFGameRequestHandler';
+import { DungeonSimulator } from './services/DungeonSimulator';
+import { SessionManager } from './services/SessionManager';
+import { DungeonTabComponent } from './tabs/dungeon-tab/dungeon-tab.component';
+import { ExpeditionTabComponent } from './tabs/expedition-tab/expedition-tab.component';
 
 @Component({
   selector: 'x-tool',
@@ -20,8 +20,8 @@ import { TabBtnComponent } from './tab-btn/tab-btn.component';
     HlmAccordionItemDirective,
     HlmAccordionTriggerDirective,
     HlmAccordionContentComponent,
-    DungeonSimulationComponent,
-    ExpeditionPreviewComponent,
+    DungeonTabComponent,
+    ExpeditionTabComponent,
     TabBtnComponent,
   ],
   templateUrl: './app.component.html',
@@ -30,25 +30,27 @@ import { TabBtnComponent } from './tab-btn/tab-btn.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  public dungeonSimulation = viewChild(DungeonSimulationComponent);
+  public dungeonTab = viewChild(DungeonTabComponent);
 
-  public tracker = inject(SFGameModelTracker);
+  public tracker = inject(SFGameRequestHandler);
   public dungeonSimulator = inject(DungeonSimulator);
-  public expeditionService = inject(ExpeditionService);
+  public sessionManager = inject(SessionManager);
 
-  public loggedInAs = computed(() => this.tracker.playerName());
+
+  public loggedInAs = computed(() => this.sessionManager.current()?.playerName);
   private last = Promise.resolve();
 
   constructor() {
     document.addEventListener('SFCommand' as any, async (event: CustomEvent) => {
-      this.last = this.last.then(() => this.queueCommand(event.detail));
+      this.last = this.last.then(() => this.queueCommand(event.detail)).catch((error) => {
+        console.error('XTool: Error processing SFCommand - ' + error);
+      });
     });
   }
 
   private async queueCommand(gameRequest: SFGameRequest) {
     if (await this.tracker.digestResponse(gameRequest)) {
-      this.dungeonSimulation()?.simulateDungeons();
-      this.expeditionService.switchPlayer(this.tracker.player()!.ID);
+      this.dungeonTab()?.simulateDungeons();
     }
   }
 }

@@ -12,7 +12,5 @@ x-tool {
 #webgl-content {
   width: min(90vw, 100vw - 350px) !important;
   left: min(45vw, 50vw - 175px) !important;
-  /* REMOVE THIS ON PRODUCTION */
-  background-image: url(../public/background.png);
 }
 
