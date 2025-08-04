@@ -47962,8 +47962,8 @@ function numbers(val, delimiter = "/") {
 
 // src/environments/environment.development.ts
 var environment = {
-  //apiUrl: 'http://localhost:5267',
-  apiUrl: "http://sfsimulator.xyz/api"
+  apiUrl: "http://localhost:5267"
+  // apiUrl: 'http://sfsimulator.xyz/api',
 };
 
 // src/app/services/DungeonSimulator.ts
@@ -51630,7 +51630,7 @@ var HlmTabsModule = class _HlmTabsModule {
 var _forTrack0 = ($index, $item) => $item.id;
 function ExpeditionTabComponent_For_11_For_4_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "img", 12);
+    \u0275\u0275element(0, "img", 13);
   }
   if (rf & 2) {
     const task_r1 = ctx.$implicit;
@@ -51641,9 +51641,9 @@ function ExpeditionTabComponent_For_11_For_4_Template(rf, ctx) {
 function ExpeditionTabComponent_For_11_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 7);
-    \u0275\u0275element(1, "img", 10);
-    \u0275\u0275elementStart(2, "div", 11);
-    \u0275\u0275repeaterCreate(3, ExpeditionTabComponent_For_11_For_4_Template, 1, 1, "img", 12, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275element(1, "img", 11);
+    \u0275\u0275elementStart(2, "div", 12);
+    \u0275\u0275repeaterCreate(3, ExpeditionTabComponent_For_11_For_4_Template, 1, 1, "img", 13, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -51658,7 +51658,7 @@ function ExpeditionTabComponent_For_11_Template(rf, ctx) {
 function ExpeditionTabComponent_Conditional_12_For_3_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div");
-    \u0275\u0275element(1, "img", 15)(2, "img", 15)(3, "img", 15);
+    \u0275\u0275element(1, "img", 16)(2, "img", 16)(3, "img", 16);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -51682,8 +51682,8 @@ function ExpeditionTabComponent_Conditional_12_For_3_Template(rf, ctx) {
 function ExpeditionTabComponent_Conditional_12_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "hr");
-    \u0275\u0275elementStart(1, "div", 13);
-    \u0275\u0275repeaterCreate(2, ExpeditionTabComponent_Conditional_12_For_3_Template, 4, 11, "div", 14, \u0275\u0275repeaterTrackByIdentity);
+    \u0275\u0275elementStart(1, "div", 14);
+    \u0275\u0275repeaterCreate(2, ExpeditionTabComponent_Conditional_12_For_3_Template, 4, 11, "div", 15, \u0275\u0275repeaterTrackByIdentity);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -51694,43 +51694,49 @@ function ExpeditionTabComponent_Conditional_12_Template(rf, ctx) {
 }
 function ExpeditionTabComponent_For_21_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "span");
-    \u0275\u0275text(2);
+    \u0275\u0275elementStart(0, "div", 10);
+    \u0275\u0275element(1, "img", 16);
+    \u0275\u0275elementStart(2, "span");
+    \u0275\u0275text(3);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "span");
-    \u0275\u0275text(4);
+    \u0275\u0275elementStart(4, "span");
+    \u0275\u0275text(5);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "span");
-    \u0275\u0275text(6);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(7, "span");
-    \u0275\u0275text(8);
+    \u0275\u0275elementStart(6, "span");
+    \u0275\u0275text(7);
+    \u0275\u0275pipe(8, "date");
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
     const expedition_r8 = ctx.$implicit;
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(expedition_r8.MainTask);
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275property("src", ctx_r1.getAssetUrl(expedition_r8.MainTask), \u0275\u0275sanitizeUrl);
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(expedition_r8.Server);
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(expedition_r8.PlayerId);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(expedition_r8.CreatedAt);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind2(8, 4, expedition_r8.CreatedAt, "short"));
   }
 }
 var ExpeditionTabComponent = class _ExpeditionTabComponent {
   sessionManager = inject2(SessionManager);
   expeditionProgress = computed(() => this.sessionManager.current()?.expeditionProgress, ...ngDevMode ? [{ debugName: "expeditionProgress" }] : []);
   expeditions = computed(() => this.sessionManager.current()?.expedition, ...ngDevMode ? [{ debugName: "expeditions" }] : []);
-  savedExpeditions = liveQuery(() => db.ExpeditionHistory.toArray());
+  savedExpeditions = liveQuery(() => {
+    const session = this.sessionManager.current();
+    const server = session?.server;
+    const pid = session?.player?.ID;
+    db.ExpeditionHistory.filter((i) => i.Server === server && i.PlayerId === pid).toArray();
+  });
   getAssetUrl(encounterId) {
     return `https://sfsimulator.xyz/external/expedition/encounter${encounterId.toString()}.png`;
   }
   static \u0275fac = function ExpeditionTabComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _ExpeditionTabComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ExpeditionTabComponent, selectors: [["expedition-tab"]], decls: 22, vars: 5, consts: [["tab", "Current", 1, "w-full"], [1, "w-full"], ["hlmTabsTrigger", "Current"], ["hlmTabsTrigger", "Statistics"], ["hlmTabsTrigger", "History"], ["hlmTabsContent", "Current", 1, "flex", "flex-col", "justify-center", "items-center"], [1, "flex"], [1, "flex", "items-center", "justify-center", "m-2", "rounded-2xl", "bg-purple-500/15"], ["hlmTabsContent", "Statistics"], ["hlmTabsContent", "History", 1, "flex", "flex-col", "justify-center", "items-center"], ["width", "105px", "height", "105px", 1, "border-r-2", "border-purple-200/80", 3, "src"], [1, "flex", "flex-col", "items-center", "justify-center"], ["width", "35px", "height", "35px", 3, "src"], [1, "flex", "flex-col", "justify-center", "items-center"], [3, "class"], ["width", "50px", "height", "50px", 3, "src"]], template: function ExpeditionTabComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ExpeditionTabComponent, selectors: [["expedition-tab"]], decls: 22, vars: 5, consts: [["tab", "Current", 1, "w-full"], [1, "w-full"], ["hlmTabsTrigger", "Current"], ["hlmTabsTrigger", "Statistics"], ["hlmTabsTrigger", "History"], ["hlmTabsContent", "Current", 1, "flex", "flex-col", "justify-center", "items-center"], [1, "flex"], [1, "flex", "items-center", "justify-center", "m-2", "rounded-2xl", "bg-purple-500/15"], ["hlmTabsContent", "Statistics"], ["hlmTabsContent", "History", 1, "flex", "flex-col", "justify-center", "items-center"], [1, "flex", "gap-2", "items-center"], ["width", "105px", "height", "105px", 1, "border-r-2", "border-purple-200/80", 3, "src"], [1, "flex", "flex-col", "items-center", "justify-center"], ["width", "35px", "height", "35px", 3, "src"], [1, "flex", "flex-col", "justify-center", "items-center"], [3, "class"], ["width", "50px", "height", "50px", 3, "src"]], template: function ExpeditionTabComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "hlm-tabs", 0)(1, "hlm-tabs-list", 1)(2, "button", 2);
       \u0275\u0275text(3, "Current");
@@ -51754,7 +51760,7 @@ var ExpeditionTabComponent = class _ExpeditionTabComponent {
       \u0275\u0275pipe(17, "async");
       \u0275\u0275declareLet(18);
       \u0275\u0275pipe(19, "async");
-      \u0275\u0275repeaterCreate(20, ExpeditionTabComponent_For_21_Template, 9, 4, "div", null, _forTrack0);
+      \u0275\u0275repeaterCreate(20, ExpeditionTabComponent_For_21_Template, 9, 7, "div", 10, _forTrack0);
       \u0275\u0275elementEnd()();
     }
     if (rf & 2) {
@@ -51768,12 +51774,12 @@ var ExpeditionTabComponent = class _ExpeditionTabComponent {
       \u0275\u0275advance(8);
       \u0275\u0275repeater(list_r9);
     }
-  }, dependencies: [HlmTabsComponent, HlmTabsListComponent, HlmTabsContentDirective, HlmTabsTriggerDirective, AsyncPipe], encapsulation: 2, changeDetection: 0 });
+  }, dependencies: [HlmTabsComponent, HlmTabsListComponent, HlmTabsContentDirective, HlmTabsTriggerDirective, AsyncPipe, DatePipe], encapsulation: 2, changeDetection: 0 });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ExpeditionTabComponent, [{
     type: Component,
-    args: [{ selector: "expedition-tab", imports: [HlmTabsComponent, HlmTabsListComponent, HlmTabsContentDirective, HlmTabsTriggerDirective, AsyncPipe], changeDetection: ChangeDetectionStrategy.OnPush, template: `<hlm-tabs tab="Current" class="w-full">\r
+    args: [{ selector: "expedition-tab", imports: [HlmTabsComponent, HlmTabsListComponent, HlmTabsContentDirective, HlmTabsTriggerDirective, AsyncPipe, DatePipe], changeDetection: ChangeDetectionStrategy.OnPush, template: `<hlm-tabs tab="Current" class="w-full">\r
   <hlm-tabs-list class="w-full">\r
     <button hlmTabsTrigger="Current">Current</button>\r
     <button hlmTabsTrigger="Statistics">Statistics</button>\r
@@ -51813,11 +51819,11 @@ var ExpeditionTabComponent = class _ExpeditionTabComponent {
     @let list = $any(savedExpeditions | async);\r
     @let tep = savedExpeditions | async;\r
     @for (expedition of list; track expedition.id) {\r
-      <div>\r
-        <span>{{ expedition.MainTask}}</span>\r
+      <div class='flex gap-2 items-center'>\r
+        <img [src]='getAssetUrl(expedition.MainTask)' width='50px' height='50px'/>\r
         <span>{{ expedition.Server }}</span>\r
         <span>{{ expedition.PlayerId }}</span>\r
-        <span>{{ expedition.CreatedAt }}</span>\r
+        <span>{{ expedition.CreatedAt | date:'short' }}</span>\r
       </div>\r
   }\r
   </div>\r
@@ -51826,7 +51832,7 @@ var ExpeditionTabComponent = class _ExpeditionTabComponent {
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ExpeditionTabComponent, { className: "ExpeditionTabComponent", filePath: "src/app/tabs/expedition-tab/expedition-tab.component.ts", lineNumber: 22 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ExpeditionTabComponent, { className: "ExpeditionTabComponent", filePath: "src/app/tabs/expedition-tab/expedition-tab.component.ts", lineNumber: 21 });
 })();
 
 // src/app/app.component.ts

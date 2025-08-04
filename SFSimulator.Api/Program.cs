@@ -2,7 +2,7 @@ using SFSimulator.Api;
 using SFSimulator.Core;
 using System.Text.Json.Serialization;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -24,7 +24,7 @@ var app = builder.Build();
 
 app.UseCors(b => b.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 
-app.MapGroup("/dungeon")
+app.MapGroup("api/dungeon")
     .MapPost("/simulate", (SimulateDungeonRequest request, SimulateDungeonHandler handler) =>
     {
         return handler.HandleSimulateDungeonAsync(request);
@@ -37,5 +37,4 @@ app.Run();
 [JsonSerializable(typeof(SimulateDungeonRequest))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
-
 }
