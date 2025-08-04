@@ -1,0 +1,45 @@
+<div class='w-full flex flex-col justify-center items-center'>
+  <div class='flex flex-col w-full text-wrap'>
+    @for (warning of warnings(); track warning) {
+      <div class='flex items-center gap-2 text-destructive'>
+        <ng-icon hlm size='sm' name='lucideCircleAlert'/>
+        <span>{{ warning }}</span>
+      </div>
+    }
+  </div>
+  <div class='flex justify-end w-full mb-2'>
+    <button hlmBtn variant='clear' (click)='simulateDungeons()' [disabled]='isSimulating()'>
+      <ng-icon hlm size='sm' name="lucideRefreshCw" />
+    </button>
+  </div>
+  @if (isSimulating()) {
+    <hlm-spinner class='my-5'/>
+  }
+  @else if (simulationResult()) {
+     <table hlmTable class='w-full'>
+      <thead hlmTHead>
+        <tr hlmTr class='text-lg'>
+            <th hlmTh>Name</th>
+            <th hlmTh class='w-[45px]'>WR</th>
+            <th hlmTh class='w-[45px]'>XP</th>
+        </tr>
+      </thead>
+      <tbody hlmTBody>
+        @for (result of simulationResult(); track result) {
+          <tr hlmTr class='border-t border-gray-600 mb-2'>
+            <td hlmTd [class]='result.dungeonMetadata.withCompanions ? "flex flex-col text-purple-300 " : "flex flex-col text-yellow-100"'>
+              <div class='truncate text-xs'>{{ result.dungeonMetadata.dungeonName }}</div>
+              <div class='text-sm'>{{ result.dungeonMetadata.position}}. {{ result.dungeonMetadata.enemyName}}</div>
+            </td>
+            <td hlmTd class='text-center text-xs py-4' [title]='result.winRatio | percent: ".0-10"'>
+              {{ result.winRatio | percent: '.2' }}
+            </td>
+            <td hlmTd class='text-center text-xs py-4' [title]='result.dungeonMetadata.experience'>
+              {{ result.dungeonMetadata.experience | bigNumber }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -20,6 +20,7 @@ jobs:
     - name: dotnet publish 
       run: |
           dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
+          dotnet publish -c Release -o sfsimulator\api .\SFSimulator.Api
     - name: show workload
       run: |
           dotnet workload list

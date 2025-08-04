@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "x-tool",
+  "version": "1.0",
+  "description": "Set of helpers for Shakes & Fidget gameplay",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "64": "icon64.png"
+  },
+  "permissions": [
+  ],
+  "host_permissions": [
+    "https://sfgame.net/*",
+    "https://play.sfgame.net/*"
+  ],
+  "content_scripts": [
+    {
+      "js": [ "xtool-loader.js" ],
+      "matches": [
+        "https://sfgame.net/*",
+        "https://play.sfgame.net/*"
+      ],
+      "include_globs": [
+        "https://sfgame.net/*",
+        "https://play.sfgame.net/"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "main.js", "styles.css", "*.png" ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

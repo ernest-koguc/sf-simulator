@@ -1,0 +1,1 @@
+x-tool{position:absolute;right:0;top:0;width:max(350px,10vw);height:100%;background-image:url("./media/xtool.png");background-size:cover;background-position:center}#webgl-content{width:min(90vw,100vw - 350px)!important;left:min(45vw,50vw - 175px)!important}

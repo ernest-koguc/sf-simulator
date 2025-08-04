@@ -1,0 +1,40 @@
+<hlm-tabs tab="Current" class="w-full">
+  <hlm-tabs-list class="w-full">
+    <button hlmTabsTrigger="Current">Current</button>
+    <button hlmTabsTrigger="Statistics">Statistics</button>
+    <button hlmTabsTrigger="History">History</button>
+  </hlm-tabs-list>
+  <div hlmTabsContent="Current" class='flex flex-col justify-center items-center'>
+    <div class='flex'>
+      @for (expedition of expeditions(); track expedition) {
+        <div class='flex items-center justify-center m-2 rounded-2xl bg-purple-500/15'>
+          <img [src]='getAssetUrl(expedition.MainTask)' width='105px' height='105px' class='border-r-2 border-purple-200/80'/>
+          <div class='flex flex-col items-center justify-center'>
+            @for (task of expedition.SideTasks; track task) {
+              <img [src]='getAssetUrl(task)' width='35px' height='35px'/>
+            }
+          </div>
+        </div>
+      }
+    </div>
+    @if (expeditionProgress()?.isInProgress) {
+      <hr/>
+      <div class='flex flex-col justify-center items-center'>
+        @for (stage of expeditionProgress()!.stages; track stage; let isLast = $last) {
+          @let stageClass = 'flex items-center justify-center border-t-2 border-purple-300' + (isLast ? ' border-b-3 border-b-green-500' : '');
+          <div [class]='stageClass'>
+            <img [src]='getAssetUrl(stage.left)' width='50px' height='50px' [class]='stage.chosen === "left" ? "border-red-900 border-3 rounded-full" : ""'/>
+            <img [src]='getAssetUrl(stage.mid)' width='50px' height='50px' [class]='stage.chosen === "mid" ? "border-red-900 border-3 rounded-full" : ""'/>
+            <img [src]='getAssetUrl(stage.right)' width='50px' height='50px' [class]='stage.chosen === "right" ? "border-red-900 border-3 rounded-full" : ""'/>
+          </div>
+        }
+      </div>
+    }
+  </div>
+  <div hlmTabsContent="Statistics">
+    Here the stats will come
+  </div>
+  <div hlmTabsContent="History">
+    Here the history will come
+  </div>
+</hlm-tabs>

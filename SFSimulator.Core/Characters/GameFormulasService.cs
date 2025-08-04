@@ -340,7 +340,7 @@ public class GameFormulasService : IGameFormulasService
             xp = Curves.ExperienceCurve[dungeonEnemy.Level] / 5;
         }
 
-        if (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Twister)
+        if (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Twister || dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Sandstorm)
             xp /= 10;
 
         return xp;
