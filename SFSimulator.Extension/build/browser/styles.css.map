@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/styles.css"],
+  "sourcesContent": ["x-tool {\r\n  position: absolute;\r\n  right: 0;\r\n  top: 0;\r\n  width: max(350px, 10vw);\r\n  height: 100%;\r\n  background-image: url(../public/xtool.png);\r\n  background-size: cover;\r\n  background-position: center;\r\n}\r\n\r\n#webgl-content {\r\n  width: min(90vw, 100vw - 350px) !important;\r\n  left: min(45vw, 50vw - 175px) !important;\r\n}\r\n\r\n"],
+  "mappings": ";AAAA;AACE,YAAA;AACA,SAAA;AACA,OAAA;AACA,SAAA,IAAA,KAAA,EAAA;AACA,UAAA;AACA,oBAAA;AACA,mBAAA;AACA,uBAAA;AACF;AAEA,CAAA;AACE,SAAA,IAAA,IAAA,EAAA,MAAA,EAAA;AACA,QAAA,IAAA,IAAA,EAAA,KAAA,EAAA;AACF;",
+  "names": []
+}

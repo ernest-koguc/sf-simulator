@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PlayerModel } from '../sfgame/sfgame-parser';
 import { Dungeons, Tower } from '../sfgame/SFGameModels';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class DungeonSimulator {
   public simulateOpenDungeons(player: PlayerModel, dungeons: Dungeons, tower: Tower) {
     let body = this.createBody(dungeons, player, tower);
 
-    return this.httpClient.post<SimulateDungeonResponse[]>('http://localhost:5267/dungeon/simulate', body);
+    return this.httpClient.post<SimulateDungeonResponse[]>(`${environment.apiUrl}/dungeon/simulate`, body);
   }
 
   private createBody(dungeons: Dungeons, player: PlayerModel, tower: Tower) {
