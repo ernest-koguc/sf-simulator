@@ -37,7 +37,7 @@ public class StoreSet<T>(string storeName) where T : IEntity<Guid>
     private async Task<IDBObjectStore<TKey, TValue>> GetStore<TKey, TValue>(string storeName)
     {
         using var dbFactory = new IDBFactory();
-        using var db = await dbFactory.OpenAsync(DatabaseService.DatabaseName, 2, async upgradeEvent =>
+        using var db = await dbFactory.OpenAsync(DatabaseService.DatabaseName, 3, async upgradeEvent =>
         {
             using var target = upgradeEvent.Target;
             using var db = target.Result;
@@ -63,7 +63,7 @@ public class StoreSet<T>(string storeName) where T : IEntity<Guid>
             return;
         }
 
-        if (oldVersion != 0 && newVersion == 2)
+        if (oldVersion < 3)
         {
             var store = transaction.ObjectStore<Guid, SavedOptionsEntity>(DatabaseService.SavedOptionsStoreName);
             var oldRecords = await store.GetAllAsync();

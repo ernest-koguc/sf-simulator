@@ -18,7 +18,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         var petDungeonContext = _fightableContextFactory.Create(petDungeonEnemy, playerPet);
         lookupContext.Add((playerPetContext, petDungeonContext));
 
-        DrHouse.Differential($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
+        DrHouse.DungeonDifferential($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
 
         var result = SimulateFight(lookupContext, options);
 
@@ -52,7 +52,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         var dungeonContext = _fightableContextFactory.Create(dungeonEnemy, character);
         lookupContext.Add((characterContext, dungeonContext));
 
-        DrHouse.Differential($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
+        DrHouse.DungeonDifferential($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
 
         var result = SimulateFight(lookupContext, options);
 
@@ -89,7 +89,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         var winratio = wonFights / (float)options.Iterations;
 
-        DrHouse.Differential($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
+        DrHouse.DungeonDifferential($"{winratio:P} WR, {wonFights} WF, elapsed time: {stopwatch.Elapsed.TotalMilliseconds}");
 
         return new FightSimulationResult(wonFights, wonFights >= options.WinThreshold);
     }

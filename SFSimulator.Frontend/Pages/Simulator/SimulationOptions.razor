@@ -188,9 +188,16 @@
                                             @bind-Value="@Options.ReequipOptions.CompanionReequipLevelOffset" Min="1" Max="100"/>
                                     </div>
                                     <div class="flex flex-col">
+                                        <CheckBox Disabled="Options.DungeonsData is null" Name="DoDungeonPause" Label="Do Dungeon Pause" 
+                                            @bind-Value="@Options.DungeonOptions.DoDungeonPause"/>
+                                        <Numeric Disabled="!Options.DoDungeons || !Options.DungeonOptions.DoDungeonPause" Name="DungeonPauseStart"
+                                            Label="DP Start" @bind-Value="@Options.DungeonOptions.DungeonPauseStartLevel" Min="1" Max="800"/>
+                                        <Numeric Disabled="!Options.DoDungeons || !Options.DungeonOptions.DoDungeonPause" Name="DungeonPauseEnd" 
+                                            Label="DP End" @bind-Value="@Options.DungeonOptions.DungeonPauseEndLevel" 
+                                            Min="@Options.DungeonOptions.DungeonPauseStartLevel" Max="800"/>
                                         <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
                                         <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="400"/>
-                                        <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
+                                        <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="300"/>
                                         <Numeric Icon="SoloPortal" Name="SoloPortal" Label="Solo Portal" Min="0" Max="50" @bind-Value="@Options.SoloPortal"/>
                                         <Numeric Icon="GuildPortal" Name="GuildPortal" Label="Guild Portal" Min="0" Max="50" @bind-Value="@Options.GuildPortal"/>
                                         <Numeric Name="GuildKnights" Label="Guild Knights" Min="0" Max="1000" @bind-Value="@Options.GuildKnights"/>
