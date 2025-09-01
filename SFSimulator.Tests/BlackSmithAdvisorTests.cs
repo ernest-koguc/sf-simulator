@@ -11,17 +11,17 @@ public class BlackSmithAdvisorTests
     public IBlackSmithAdvisor BlackSmithAdvisor { get; set; } = DependencyProvider.Get<IBlackSmithAdvisor>();
 
     [TestMethod]
-    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 1126, 2253)]
-    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 1126, 2253)]
-    [DataRow(ItemAttributeType.Legendary, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 1188, 2376)]
-    [DataRow(ItemAttributeType.NormalOneStat, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 3432, 19)]
-    [DataRow(ItemAttributeType.NormalTwoStats, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 1568, 180)]
-    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Weapon, 1126, 2253)]
-    [DataRow(ItemAttributeType.Epic, 521, ClassType.Mage, 43, 9, 5, ItemType.Weapon, 2252, 4506)]
+    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 1936, 3872)]
+    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 1936, 3872)]
+    [DataRow(ItemAttributeType.Legendary, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 2122, 4245)]
+    [DataRow(ItemAttributeType.NormalOneStat, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 4179, 23)]
+    [DataRow(ItemAttributeType.NormalTwoStats, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 2696, 311)]
+    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 5, ItemType.Weapon, 1936, 3872)]
+    [DataRow(ItemAttributeType.Epic, 521, ClassType.Mage, 43, 5, ItemType.Weapon, 3872, 7744)]
     public void DismantleItem_gives_correct_splinters_and_metal_amount(ItemAttributeType itemAttributeType, int characterLevel,
-        ClassType classType, int aura, int scrollsUnlocked, int itemQualityRuneValue, ItemType itemType, int expectedMetal, int expectedSplinters)
+        ClassType classType, int aura, int itemQualityRuneValue, ItemType itemType, int expectedMetal, int expectedSplinters)
     {
-        var builder = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, scrollsUnlocked, itemQualityRuneValue, itemType)
+        var builder = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, itemQualityRuneValue, itemType)
             .WithAttributes();
 
         EquipmentItem item;
@@ -46,11 +46,11 @@ public class BlackSmithAdvisorTests
     public void DismantleItem_gives_double_splinters_and_metal_amount_for_nonwarrior_weapons(ItemAttributeType itemAttributeType, int characterLevel,
         ClassType classType, int aura, int scrollsUnlocked, int itemQualityRuneValue)
     {
-        var item = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, scrollsUnlocked, itemQualityRuneValue, ItemType.Amulet)
+        var item = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, itemQualityRuneValue, ItemType.Amulet)
             .WithAttributes()
             .Build();
 
-        var weapon = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, scrollsUnlocked, itemQualityRuneValue, ItemType.Weapon)
+        var weapon = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, itemQualityRuneValue, ItemType.Weapon)
             .WithAttributes()
             .AsWeapon()
             .Build();
@@ -63,16 +63,16 @@ public class BlackSmithAdvisorTests
     }
 
     [TestMethod]
-    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 20, 621682, 874358)]
-    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Breastplate, 10, 140501, 109849)]
-    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 9, 5, ItemType.Weapon, 14, 288427, 304094)]
-    [DataRow(ItemAttributeType.Legendary, 521, ClassType.Mage, 43, 9, 5, ItemType.Weapon, 18, 1041622, 1353482)]
-    [DataRow(ItemAttributeType.NormalOneStat, 400, ClassType.Berserker, 43, 9, 5, ItemType.Ring, 8, 91633, 19015)]
-    [DataRow(ItemAttributeType.NormalTwoStats, 200, ClassType.Warrior, 43, 9, 5, ItemType.Trinket, 16, 137949, 108413)]
+    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 20, 1067798, 1501933)]
+    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 10, 241461, 188823)]
+    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 5, ItemType.Weapon, 14, 495520, 522485)]
+    [DataRow(ItemAttributeType.Legendary, 521, ClassType.Mage, 43, 5, ItemType.Weapon, 18, 1859800, 2416538)]
+    [DataRow(ItemAttributeType.NormalOneStat, 400, ClassType.Berserker, 43, 5, ItemType.Ring, 8, 93114, 19318)]
+    [DataRow(ItemAttributeType.NormalTwoStats, 200, ClassType.Warrior, 43, 5, ItemType.Trinket, 16, 99769, 78425)]
     public void DismantleItem_gives_proper_refund_costs_for_upgraded_items(ItemAttributeType itemAttributeType, int characterLevel,
-        ClassType classType, int aura, int scrollsUnlocked, int itemQualityRuneValue, ItemType itemType, int upgradeLevel, int expectedMetal, int expectedSplinters)
+        ClassType classType, int aura, int itemQualityRuneValue, ItemType itemType, int upgradeLevel, int expectedMetal, int expectedSplinters)
     {
-        var builder = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, scrollsUnlocked, itemQualityRuneValue, itemType)
+        var builder = new EquipmentBuilder(itemAttributeType, characterLevel, classType, aura, itemQualityRuneValue, itemType)
             .WithAttributes();
 
         EquipmentItem item;
@@ -94,19 +94,19 @@ public class BlackSmithAdvisorTests
     {
         var items = new List<EquipmentItem>
         {
-            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 9, 5, ItemType.Headgear)
+            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 5, ItemType.Headgear)
                 .WithAttributes()
                 .Build(),
-            new EquipmentBuilder(ItemAttributeType.Legendary, 300, ClassType.Warrior, 43, 9, 5, ItemType.Breastplate)
+            new EquipmentBuilder(ItemAttributeType.Legendary, 300, ClassType.Warrior, 43, 5, ItemType.Breastplate)
                 .WithAttributes()
                 .Build(),
-            new EquipmentBuilder(ItemAttributeType.NormalOneStat, 200, ClassType.DemonHunter, 43, 9, 5, ItemType.Boots)
+            new EquipmentBuilder(ItemAttributeType.NormalOneStat, 200, ClassType.DemonHunter, 43, 5, ItemType.Boots)
                 .WithAttributes()
                 .Build(),
-            new EquipmentBuilder(ItemAttributeType.EpicAllAttributes, 400, ClassType.Necromancer, 43, 9, 5, ItemType.Amulet)
+            new EquipmentBuilder(ItemAttributeType.EpicAllAttributes, 400, ClassType.Necromancer, 43, 5, ItemType.Amulet)
                 .WithAttributes()
                 .Build(),
-            new EquipmentBuilder(ItemAttributeType.NormalTwoStats, 100, ClassType.Mage, 43, 9, 5, ItemType.Weapon)
+            new EquipmentBuilder(ItemAttributeType.NormalTwoStats, 100, ClassType.Mage, 43, 5, ItemType.Weapon)
                 .WithAttributes()
                 .AsWeapon()
                 .Build()
@@ -114,8 +114,8 @@ public class BlackSmithAdvisorTests
 
         var resources = BlackSmithAdvisor.UpgradeItems(items, new BlackSmithResources(int.MaxValue, int.MaxValue));
 
-        Assert.AreEqual(2352682, resources.Metal);
-        Assert.AreEqual(2749160, resources.Splinters);
+        Assert.AreEqual(2916814, resources.Metal);
+        Assert.AreEqual(3691420, resources.Splinters);
     }
 
     [TestMethod]
@@ -132,7 +132,7 @@ public class BlackSmithAdvisorTests
     {
         var items = new List<EquipmentItem>
         {
-            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 9, 5, ItemType.Headgear)
+            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 5, ItemType.Headgear)
                 .WithAttributes()
                 .Build()
         };
@@ -147,10 +147,10 @@ public class BlackSmithAdvisorTests
     {
         var items = new List<EquipmentItem>
         {
-            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 9, 5, ItemType.Headgear)
+            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 5, ItemType.Headgear)
                 .WithAttributes()
                 .Build(),
-            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 9, 5, ItemType.Headgear)
+            new EquipmentBuilder(ItemAttributeType.Epic, 521, ClassType.Scout, 43, 5, ItemType.Headgear)
                 .WithAttributes()
                 .Build(),
         };

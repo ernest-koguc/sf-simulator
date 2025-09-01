@@ -36,7 +36,6 @@ public class SimulationContextValidator : AbstractValidator<SimulationContext>
         RuleFor(o => o.ExpeditionOptions.AverageStarExperienceBonus).InclusiveBetween(1, 1.35M);
         RuleFor(o => o.ExpeditionOptionsAfterSwitch.AverageAmountOfChests).InclusiveBetween(0, 2);
         RuleFor(o => o.ExpeditionOptionsAfterSwitch.AverageStarExperienceBonus).InclusiveBetween(1, 1.35M);
-        RuleFor(o => o.ScrollsUnlocked).InclusiveBetween(0, 9);
         RuleFor(o => o.GuildKnights).InclusiveBetween(0, 1000);
         RuleFor(o => o.Level).InclusiveBetween(0, 1000);
         RuleFor(o => o.Class).IsInEnum();

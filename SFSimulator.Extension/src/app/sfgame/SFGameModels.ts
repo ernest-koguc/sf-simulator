@@ -1,5 +1,4 @@
-import { ItemModel } from "./sfgame-parser";
-import { CompanionModel } from "./parsers/TowerParser";
+import { ItemModel } from "./parsers/EquipmentParser";
 
 export type SFGameRequest = {
   req: string;
@@ -65,9 +64,9 @@ export type Tower = {
     TimeMachineDaily: number,
   };
   Companions: {
-    Bert: CompanionModel,
-    Mark: CompanionModel,
-    Kunigunde: CompanionModel
+    Bert: Companion,
+    Mark: Companion,
+    Kunigunde: Companion,
   };
 }
 
@@ -98,165 +97,6 @@ export type Resources = {
   EarthFood: number,
   FireFood: number,
   WaterFood: number,
-}
-
-export type OwnPlayerSave = {
-  Toilet: { Aura: number, Mana: number, Capacity: number },
-  Witch: {
-    Stage: number,
-    Items: number,
-    ItemsNext: number,
-    Item: number,
-    Finish: number,
-    Scrolls: {
-      Date: number,
-      Type: number,
-      Owned: boolean
-    }[]
-  },
-  ID: number,
-  Registered: number,
-  Level: number,
-  XP: number,
-  XPNext: number,
-  Honor: number,
-  Rank: number,
-  DevilPercent: number,
-  Class: number,
-  Action: { Status: number, Index: number, Finish: number },
-  Strength: Attribute,
-  Dexterity: Attribute,
-  Intelligence: Attribute,
-  Constitution: Attribute,
-  Luck: Attribute,
-  Items: Equipment,
-  Inventory: {
-    Backpack: ItemModel[],
-    Chest: ItemModel[],
-    Shop: ItemModel[],
-    Dummy: Equipment | null,
-  },
-  Mount: number,
-  MountValue: number,
-  Group: { ID: number, Name: string | null, Joined?: number, Identifier?: string, Treasure?: number, Instructor?: number, Pet?: number },
-  Book: number,
-  Armor: number,
-  Damage: { Min: number, Max: number },
-  Damage2?: { Min: number, Max: number },
-  MountExpire: number,
-  ThirstReroll: number,
-  ThirstLeft: number,
-  UsedBeers: number,
-  Potions: Potion[],
-  PotionsLife: number,
-  Fortress: {
-    Fortress: number,
-    LaborerQuarters: number,
-    WoodcutterGuild: number,
-    Quarry: number,
-    GemMine: number,
-    Academy: number,
-    ArcheryGuild: number,
-    Barracks: number,
-    MageTower: number,
-    Treasury: number,
-    Smithy: number,
-    Fortifications: number,
-    Knights: number,
-    Upgrade: { Building: number, Finish: number, Start: number },
-    Upgrades: number,
-    Honor: number,
-    WoodcutterMax: number,
-    QuarryMax: number,
-    AcademyMax: number,
-    MaxWood: number,
-    MaxStone: number,
-    SecretWoodLimit: number,
-    SecretStoneLimit: number,
-  },
-  CalendarDay: number,
-  CalendarType: number,
-  LegendaryDungeonTries: number,
-  UsedAdventureTime: number,
-  ClientVersion: number,
-  AdventureSkips: number,
-  Summer: {
-    Missions: { Type: number, Current: number, Target: number, Points: number }[],
-    TotalPoints: number
-  },
-  Pets: {
-    Levels: number[],
-    ShadowLevels: number[],
-    LightLevels: number[],
-    EarthLevels: number[],
-    FireLevels: number[],
-    WaterLevels: number[],
-    ShadowCount: number,
-    LightCount: number,
-    EarthCount: number,
-    FireCount: number,
-    WaterCount: number,
-    ShadowLevel: number,
-    LightLevel: number,
-    EarthLevel: number,
-    FireLevel: number,
-    WaterLevel: number,
-    TotalCount: number,
-    Shadow: number,
-    Light: number,
-    Earth: number,
-    Fire: number,
-    Water: number,
-    Dungeons: number[],
-    Rank: number,
-    Honor: number,
-    TotalLevel: number,
-  },
-  Name: string,
-  GuildRaid: number,
-  GuildPortal: number,
-  DailyTasks: {
-    Rewards: {
-      Collected: boolean,
-      Points: number,
-      ResourceType: number,
-      ResourceAmount: number
-    }[]
-  },
-  EventTasks: {
-    Rewards: {
-      Collected: boolean,
-      Points: number,
-      ResourceType: number,
-      ResourceAmount: number
-    }[]
-  },
-  ItemsArray: ItemModel[],
-  ClassBonus: boolean,
-  Runes: {
-    Gold: number,
-    Chance: number,
-    Quality: number,
-    XP: number,
-    Health: number,
-    ResistanceFire: number,
-    ResistanceCold: number,
-    ResistanceLightning: number,
-    Damage: number,
-    DamageFire: number,
-    DamageCold: number,
-    DamageLightning: number,
-    Damage2: number,
-    Damage2Fire: number,
-    Damage2Cold: number,
-    Damage2Lightning: number,
-    Resistance: number,
-    Runes: number,
-    Achievements: number,
-  },
-  Config?: any,
-  BlockChance: number,
-  Primary: Attribute,
 }
 
 export type Expedition = {
@@ -415,4 +255,200 @@ export enum ScrollType {
   QuestItems = 81,
   QuestGold = 91,
   ArenaGold = 101,
+}
+
+export type Pets = {
+  Levels: number[],
+  ShadowLevels: number[],
+  LightLevels: number[],
+  EarthLevels: number[],
+  FireLevels: number[],
+  WaterLevels: number[],
+  ShadowCount: number,
+  LightCount: number,
+  EarthCount: number,
+  FireCount: number,
+  WaterCount: number,
+  ShadowLevel: number,
+  LightLevel: number,
+  EarthLevel: number,
+  FireLevel: number,
+  WaterLevel: number,
+  TotalCount: number;
+  Shadow: number,
+  Light: number,
+  Earth: number,
+  Fire: number,
+  Water: number,
+  Dungeons: number[],
+  Rank: number,
+  Honor: number,
+  TotalLevel: number,
+  ShadowArenaFought: boolean,
+  LightArenaFought: boolean,
+  EarthArenaFought: boolean,
+  WaterArenaFought: boolean,
+  FireArenaFought: boolean,
+}
+
+export type OwnPlayerSave = {
+  Toilet: { Aura: number, Mana: number, Capacity: number };
+  ID: number;
+  Registered: number;
+  Level: number;
+  XP: number;
+  XPNext: number;
+  Honor: number;
+  Rank: number;
+  DevilPercent: number;
+  Class: number;
+  Action: { Status: number, Index: number, Finish: number };
+  Strength: Attribute;
+  Dexterity: Attribute;
+  Intelligence: Attribute;
+  Constitution: Attribute;
+  Luck: Attribute;
+  Mount: number;
+  MountValue: number;
+  Group: { ID: number, Joined: number, Treasure: number, Instructor: number, Pet: number };
+  Book: number;
+  Armor: number;
+  Damage: { Min: number, Max: number };
+  Damage2?: { Min: number, Max: number };
+  MountExpire: number;
+  /**
+   * Indicates when the Thirst going to be reset (e.g. midnight)
+   *
+   **/
+  ThirstReroll: number;
+  ThirstLeft: number;
+  UsedBeers: number;
+  MaxBeers: number;
+  Potions: Potion[];
+  HasEternalPotion: boolean;
+  Fortress: {
+    Fortress: number,
+    LaborerQuarters: number,
+    WoodcutterGuild: number,
+    Quarry: number,
+    GemMine: number,
+    Academy: number,
+    ArcheryGuild: number,
+    Barracks: number,
+    MageTower: number,
+    Treasury: number,
+    Smithy: number,
+    Fortifications: number,
+    Knights: number,
+    Upgrade: { Building: number, Finish: number, Start: number },
+    Upgrades: number,
+    Honor: number,
+    WoodcutterMax: number,
+    QuarryMax: number,
+    AcademyMax: number,
+    MaxWood: number,
+    MaxStone: number,
+    SecretWoodLimit: number;
+    SecretStoneLimit: number;
+  };
+  CalendarDay: number;
+  CalendarType: number;
+  LegendaryDungeonTries: number;
+  UsedAdventureTime: number;
+  ClientVersion: number;
+  AdventureSkips: number;
+  Summer: {
+    Missions: { Type: number, Current: number, Target: number, Points: number }[],
+    TotalPoints: number
+  };
+  GuildRaid: number;
+  GuildPortal: number;
+  WheelSpinsToday: number;
+  DiceGamesRemaining: number;
+  ArenaFightsToday: number;
+}
+
+export type Companion = {
+  Armor: number,
+  Damage: {
+    Min: number,
+    Max: number
+  },
+  Strength: Attribute,
+  Dexterity: Attribute,
+  Intelligence: Attribute,
+  Constitution: Attribute,
+  Luck: Attribute,
+}
+
+export enum Class {
+  Warrior = 1,
+  Mage = 2,
+  Scout = 3,
+  Assassin = 4,
+  BattleMage = 5,
+  Berserker = 6,
+  DemonHunter = 7,
+  Druid = 8,
+  Bard = 9,
+  Necromancer = 10,
+  Paladin = 11,
+  PlagueDoctor = 12,
+}
+
+export enum RuneType {
+  None = 0,
+  GoldBonus = 1,
+  EpicChance = 2,
+  ItemQuality = 3,
+  ExperienceBonus = 4,
+  HealthBonus = 5,
+  FireResistance = 6,
+  ColdResistance = 7,
+  LightningResistance = 8,
+  TotalResistance = 9,
+  FireDamage = 10,
+  ColdDamage = 11,
+  LightningDamage = 12
+}
+
+export enum EventType {
+  ExceptionalXPEvent = 0,
+  GloriousGoldGalore = 1,
+  TidyToiletTime = 2,
+  AssemblyOfAwesomeAnimals = 3,
+  FantasticFortressFestivity = 4,
+  DaysOfDoomedSouls = 5,
+  WitchesDance = 6,
+  SandsOfTimeSpecial = 7,
+  ForgeFrenzyFestival = 8,
+  EpicShoppingSpreeExtravaganza = 9,
+  EpicQuestExtravaganza = 10,
+  EpicGoodLuckExtravaganza = 11,
+  OneBeerTwoBeerFreeBeer = 12,
+  PieceworkParty = 13,
+  LuckyDay = 14,
+  CrazyMushroomHarvest = 15,
+  HolidaySale = 16,
+  ValentinesBlessing = 17,
+  BlackGemRush = 18,
+  RumbleForRiches = 19,
+}
+
+export type DailyTaskReward = {
+  Claimed: boolean,
+  PointsRequired: number,
+  Rewards: { ResourceType: ResourceType, Amount: number }[]
+}
+
+export type DailyTask = {
+  TaskType: number,
+  Current: number,
+  Target: number,
+  Points: number,
+  Completed: boolean
+}
+
+export type ToiletState = {
+  AmountOfItemsToSacrifice: number
 }

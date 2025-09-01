@@ -4,9 +4,15 @@ import { SessionManager } from './SessionManager';
 import { parseDungeons } from '../sfgame/parsers/DungeonParser';
 import { parseResources } from '../sfgame/parsers/ResourcesParser';
 import { parseWitch } from '../sfgame/parsers/WitchParser';
-import { DataModel, PlayerModel } from '../sfgame/sfgame-parser';
 import { parseTower } from '../sfgame/parsers/TowerParser';
 import { SFGameRequest } from '../sfgame/SFGameModels';
+import { parsePets } from '../sfgame/parsers/PetParser';
+import { parseOwnPlayerSave } from '../sfgame/parsers/OwnPlayerSaveParser';
+import { parseBackpack, parseCompanionEquipment, parseEquipment } from '../sfgame/parsers/EquipmentParser';
+import { parseEvents } from '../sfgame/parsers/EventParser';
+import { parseDailyTaskList, parseDailyTaskRewards } from '../sfgame/parsers/DailyTasksParser';
+import { parseToiletState } from '../sfgame/parsers/ToiletParser';
+import { EquipmentService } from './EquipmentService';
 
 @Injectable({
   providedIn: 'root'
@@ -14,49 +20,70 @@ import { SFGameRequest } from '../sfgame/SFGameModels';
 export class SFGameRequestHandler {
   private expeditionService = inject(ExpeditionService);
   private sessionManager = inject(SessionManager);
+  private equipmentService = inject(EquipmentService);
 
   public async digestResponse(gameRequest: SFGameRequest) {
     const data = gameRequest.data;
 
-    const save = numbers(data['ownplayersave']);
 
-    if (save) {
-      const model: DataModel = {
-        ownsave: save,
-        units: numbers(data['unitlevel'], /\/|,/),
-        pets: numbers(data['ownpets']),
-        chest: numbers(data['fortresschest']),
-        dummy: numbers(data['dummies']),
-        idle: numbers(data['idle']),
-        calendar: numbers(data['calenderinfo']),
-        dailyTasks: numbers(data['dailytasklist']),
-        dailyTasksRewards: numbers(data['dailytaskrewardpreview']),
-        eventTasks: numbers(data['eventtasklist']),
-        eventTasksRewards: numbers(data['eventtaskrewardpreview']),
-      };
+    // TODO: instead of zillion if statements lets use some pattern matching
+    if (data['ownplayersave']) {
+      const save = numbers(data['ownplayersave'])!;
 
       for (const i of [4, 503, 504, 505, 561]) {
-        model.ownsave[i] = 0;
+        save[i] = 0;
       }
 
-      const playerModel = new PlayerModel(model, null);
       const server = gameRequest.server;
+      const ownPlayerSave = parseOwnPlayerSave(save);
 
-      this.sessionManager.currentId.set(`${server}-${playerModel.ID}`);
-      this.sessionManager.updateCurrent(data => {
-        data.player = playerModel;
-        data.server = server;
-      })
-
-      if (playerModel && data['owntower']) {
-        const towerData = numbers(data['owntower'])!;
-        const tower = parseTower(towerData, playerModel);
-        this.sessionManager.updateCurrent(data => {
-          data.tower = tower;
-        })
+      const currentId = `${server}-${ownPlayerSave.ID}`;
+      if (this.sessionManager.currentId() !== currentId) {
+        this.sessionManager.currentId.set(currentId);
       }
+
+      this.sessionManager.updateCurrent(current => {
+        current.server = server;
+        current.ownPlayerSave = ownPlayerSave;
+      });
 
     }
+
+    if (data['owntower']) {
+      const towerData = numbers(data['owntower'])!;
+      this.sessionManager.updateCurrent(data => {
+        data.tower = parseTower(towerData);
+      })
+    }
+
+    if (data['ownplayersaveequipment']) {
+      const equipmentData = numbers(data['ownplayersaveequipment'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.ownItems = parseEquipment(equipmentData);
+      });
+    }
+
+    if (data['companionequipment']) {
+      const companionData = numbers(data['companionequipment'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.companionItems = parseCompanionEquipment(companionData);
+      });
+    }
+
+    if (data['backpack']) {
+      const backpackData = numbers(data['backpack'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.backpack = parseBackpack(backpackData);
+      });
+    }
+
+    if (data['dummieequipment']) {
+      const dummyData = numbers(data['dummieequipment'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.dummy = parseEquipment(dummyData);
+      });
+    }
+
 
     if (data['ownplayername']) {
       this.sessionManager.updateCurrent(current => {
@@ -93,6 +120,49 @@ export class SFGameRequestHandler {
       this.sessionManager.updateCurrent(current => {
         current.witch = parseWitch(witchData);
       });
+    }
+
+    if (data['ownpets']) {
+      const petsData = numbers(data['ownpets'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.pets = parsePets(petsData);
+      });
+    }
+
+    if (data['tavernspecialsub']) {
+      const events = parseInt(data['tavernspecialsub']);
+      this.sessionManager.updateCurrent(current => {
+        current.activeEvents = parseEvents(events);
+      })
+    }
+
+    if (data['dailytaskrewardpreview']) {
+      const dailyTasksRewards = numbers(data['dailytaskrewardpreview'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.dailyTasksRewards = parseDailyTaskRewards(dailyTasksRewards);
+      });
+    }
+
+    if (data['dailytasklist']) {
+      const dailyTasks = numbers(data['dailytasklist'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.dailyTasks = parseDailyTaskList(dailyTasks);
+      });
+    }
+
+    if (data['toiletstate']) {
+      const toiletState = numbers(data['toiletstate'])!;
+      this.sessionManager.updateCurrent(current => {
+        current.toiletState = parseToiletState(toiletState);
+      });
+    }
+
+    if (gameRequest.req === 'PlayerLookAt' && data['otherplayersaveequipment'] && data['otherplayername'] && data['otherplayer']) {
+      const otherPlayerEquipment = parseEquipment(numbers(data['otherplayersaveequipment'])!);
+      const playerName = data['otherplayername'];
+      const server = gameRequest.server;
+      const otherPlayer = numbers(data['otherplayer'])!;
+      await this.equipmentService.saveEquipment(otherPlayerEquipment, otherPlayer, playerName, server);
     }
 
     await this.expeditionService.digestCommand(gameRequest);

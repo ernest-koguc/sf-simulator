@@ -88,12 +88,12 @@ export function parseExpeditionRewardResources(expeditionRewardResources: number
 }
 
 export function parseExpeditionRewardItem(expeditionRewardItem: number[]): ExpeditionItemReward[] {
-  const itemsCount = expeditionRewardItem.length / 12;
+  const itemsCount = expeditionRewardItem.length / 19;
 
   const items = [];
 
   for (let i = 0; i < itemsCount; i++) {
-    items.push({ GoldValue: expeditionRewardItem[10 + (i * 12)], })
+    items.push({ GoldValue: expeditionRewardItem[13 + (i * 19)], })
   }
 
   return items;

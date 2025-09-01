@@ -5,8 +5,13 @@ namespace SFSimulator.Api;
 
 public class SimulateDungeonHandler(IDungeonSimulator dungeonSimulator, IDungeonProvider dungeonProvider, IGameFormulasService gameFormulasService)
 {
-    public Ok<List<SimulateDungeonResponse>> HandleSimulateDungeonAsync(SimulateDungeonRequest request)
+    public Results<Ok<List<SimulateDungeonResponse>>, BadRequest<string>> HandleSimulateDungeonAsync(SimulateDungeonRequest request)
     {
+        if (request.Iterations > 1_000_000)
+        {
+            return TypedResults.BadRequest("Iterations cannot be greater than 1 000 000.");
+        }
+
         dungeonProvider.InitDungeons();
         var enemies = request.DungeonLevels
             .Select(kvp => dungeonProvider.GetDungeonEnemySafe(kvp.Key, kvp.Value + 1))

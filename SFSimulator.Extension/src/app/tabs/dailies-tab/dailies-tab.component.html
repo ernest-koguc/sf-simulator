@@ -1,0 +1,23 @@
+<div class='w-full flex flex-col justify-center items-center'>
+   <table hlmTable class='w-full font-black text-lg'>
+    <tbody hlmTBody>
+    @for (daily of dailies(); track daily) {
+      @let textColor = daily.Completed ? 'text-green-400' : 'text-red-400';
+      <tr hlmTr [class]="'border-b border-gray-600 mb-2 text-xs ' + textColor">
+        <td hlmTd class='flex items-center gap-1'>
+          @if (daily.Completed) {
+            <ng-icon hlm name='lucideCircleCheck'/>
+          }
+          @else {
+            <ng-icon hlm name='lucideCircleMinus'/>
+          }
+          <span>
+            {{ daily.Information }}
+          </span>
+        </td>
+        <td hlmTd>{{ daily.Progress }}</td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>

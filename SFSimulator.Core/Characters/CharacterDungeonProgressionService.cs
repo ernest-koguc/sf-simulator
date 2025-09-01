@@ -23,6 +23,10 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
 
     public void ProgressThrough(SimulationContext simulationContext, OnDungeonKill onDungeonKill, int day, List<DungeonEnemy>? dungeonEnemies = null)
     {
+        if (!ShouldDoDungeons(simulationContext.Level)) return;
+
+        DrHouse.Differential("Doing dungeons");
+
         Reequip(simulationContext, day);
 
         UnlockDungeons(simulationContext);
@@ -146,4 +150,8 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
 
         return isShadow ? index + 100 : index;
     }
+
+    private bool ShouldDoDungeons(int characterLevel) => !DungeonOptions.DoDungeonPause
+        || characterLevel < DungeonOptions.DungeonPauseStartLevel
+        || characterLevel >= DungeonOptions.DungeonPauseEndLevel;
 }

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/tab-btn/tab-btn.component.css"],
-  "sourcesContent": [".fade-in {\r\n    visibility: visible;\r\n    transform: translateX(0);\r\n    opacity: 1;\r\n    margin-right: 0;\r\n    transition: all 0.3s ease-in-out;\r\n}\r\n\r\n.fade-out {\r\n    visibility: hidden;\r\n    transform: translateX(-100%);\r\n    opacity: 0;\r\n    margin-right: -48px;\r\n    transition: all 0.3s ease-in-out;\r\n    margin-left: 24px;\r\n}\r\n"],
-  "mappings": ";AAAA,CAAA;AACI,cAAA;AACA,aAAA,WAAA;AACA,WAAA;AACA,gBAAA;AACA,cAAA,IAAA,KAAA;AACJ;AAEA,CAAA;AACI,cAAA;AACA,aAAA,WAAA;AACA,WAAA;AACA,gBAAA;AACA,cAAA,IAAA,KAAA;AACA,eAAA;AACJ;",
-  "names": []
-}

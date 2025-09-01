@@ -1,6 +1,6 @@
-import { _between } from "../sfgame-parser";
 import { Witch } from "../SFGameModels";
 import { ByteParser } from "./ByteParser";
+import { _between } from "./EquipmentParser";
 
 export function parseWitch(witchData: number[]): Witch {
   const dataType = new ByteParser(witchData);

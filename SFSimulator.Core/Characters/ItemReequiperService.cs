@@ -62,7 +62,7 @@ public class ItemReequiperService(IRuneValueProvider runeValueProvider,
         foreach (var itemType in GetPossibleItems(classType))
         {
             var itemBuilder = new EquipmentBuilder(ItemAttributeType.Epic, simulationContext.Level, classType, simulationContext.Aura,
-                    simulationContext.ScrollsUnlocked, itemQualityRune, itemType).WithAttributes();
+                itemQualityRune, itemType).WithAttributes();
 
             EquipmentItem? currentItem;
             if (itemType != ItemType.Weapon)

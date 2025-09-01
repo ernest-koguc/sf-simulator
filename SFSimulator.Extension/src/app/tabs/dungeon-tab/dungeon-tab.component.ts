@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, untracked, WritableSignal } from '@angular/core';
 import { PercentPipe } from '@angular/common';
 import { HlmButtonDirective } from '@spartan-ng/helm/button';
 import { HlmSpinnerComponent } from '@spartan-ng/helm/spinner';
@@ -9,7 +9,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { BigNumberPipe } from '../../pipes/big-number.pipe';
 import { DungeonSimulator, SimulateDungeonResponse } from '../../services/DungeonSimulator';
 import { SessionManager } from '../../services/SessionManager';
-import { ScrollType } from '../../sfgame/SFGameModels';
+import { WarningService } from '../../services/WarningService';
+import { db } from '../../db';
 
 @Component({
   selector: 'dungeon-tab',
@@ -22,52 +23,48 @@ import { ScrollType } from '../../sfgame/SFGameModels';
 export class DungeonTabComponent {
   public dungeonSimulator = inject(DungeonSimulator);
   public sessionManager = inject(SessionManager);
-  public warnings = computed(() => {
-    const player = this.sessionManager.current()?.player;
-    if (!player) {
-      return [];
-    }
-
-    const warnings = [];
-
-    const witch = this.sessionManager.current()?.witch;
-    const isCritScrollUnlocked = witch?.Scrolls.find(s => s.Type === ScrollType.Crit)?.Unlocked && player.Level >= 66;
-    if (isCritScrollUnlocked === true && !player.Items.Wpn1?.HasEnchantment && !player.Items.Wpn2?.HasEnchantment) {
-      warnings.push('Weapon scroll missing!');
-    }
-
-    const isReactionScrollUnlocked = witch?.Scrolls.find(s => s.Type === ScrollType.Reaction)?.Unlocked && player.Level >= 66;
-    if (isReactionScrollUnlocked === true && !player.Items.Hand?.HasEnchantment) {
-      warnings.push('Gloves scroll missing!');
-    }
-
-    // TODO: Do same for companions
-
-    return warnings;
-  });
+  public warningService = inject(WarningService);
+  public warnings = computed(() => ([...this.warningService.ownMissingScrolls(), ...this.warningService.companionsMissingScrolls()]));
 
   public simulationResult: WritableSignal<SimulateDungeonResponse[] | null> = signal(null);
-  public isSimulating = signal(false);
+  public isSimulating: WritableSignal<boolean> = signal(false);
+
+  public async copyToJson() {
+
+    const records = await db.EquipmentGathering.filter(v => true).toArray();
+
+    const items = records
+      .map(record => record.Items.map(item => ({ UniquePlayerId: record.UniquePlayerId, Class: record.Class, ...item })))
+      .reduce((a, b) => a.concat(b), [])
+      .filter(item => item.ItemQuality >= 350 && item.Armor != 0)
+      .map(item => `${item.UniquePlayerId}\t${item.Type}\t${item.ItemQuality}\t${item.Class}\t${item.Armor}\t${item.MinDmg}\t${item.MaxDmg}`)
+      .join('\n');
+
+    // copy to clipboard as josn
+    await navigator.clipboard.writeText(items);
+  }
 
   public simulateDungeons() {
-    let player = this.sessionManager.current()?.player;
+    let fightable = this.sessionManager.fightable();
     let dungeons = this.sessionManager.current()?.dungeons;
-    let tower = this.sessionManager.current()?.tower;
-    if (!player || !dungeons || !tower) {
+    if (!fightable || !dungeons) {
       return;
     }
 
     this.isSimulating.set(true);
-    this.dungeonSimulator.simulateOpenDungeons(player, dungeons, tower).pipe(finalize(() => this.isSimulating.set(false))).subscribe({
-      next: (response) => {
+    this.simulationResult.set(null);
+
+    this.dungeonSimulator.simulateOpenDungeons(fightable, dungeons)
+      .pipe(finalize(() => {
+        this.isSimulating.set(false);
+      }))
+      .subscribe(response => {
         response.sort((a, b) => a.dungeonMetadata.experience * a.winRatio > b.dungeonMetadata.experience * b.winRatio
           || (b.winRatio <= 5 && a.winRatio > b.winRatio * 10) ? -1 : 1);
-        this.simulationResult.set(response);
-      },
-      error: (err) => {
-        console.error('Error simulating dungeon:', err);
-        this.simulationResult.set(null);
-      },
-    });
+
+        untracked(() => {
+          this.simulationResult.set(response);
+        });
+      });
   }
 }

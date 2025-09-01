@@ -72,6 +72,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
                 var dayResult = new SimulatedGains { DayIndex = CurrentDay };
                 SimulatedDays.Add(dayResult);
                 CurrentDayGains = dayResult;
+                DrHouse.Differential($"Starting day {CurrentDay}, Level {SimulationContext.Level}");
                 RunDay();
                 if (progressStopwatch.ElapsedMilliseconds > 100)
                 {

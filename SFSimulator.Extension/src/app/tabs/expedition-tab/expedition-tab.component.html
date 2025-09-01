@@ -31,19 +31,75 @@
       </div>
     }
   </div>
-  <div hlmTabsContent="Statistics">
-    Here the stats will come
+  @let expes = cast(savedExpeditions() | async) ?? [];
+
+  <div hlmTabsContent="Statistics" class='flex flex-col justify-center'>
+     <table hlmTable class='w-full font-black text-lg'>
+      <tbody hlmTBody>
+          <tr hlmTr class='border-b border-gray-600 mb-2'>
+            <td hlmTd>Total expeditions:</td>
+            <td hlmTd>{{ expes.length }}</td>
+          </tr>
+          <tr hlmTr class='border-b border-gray-600 mb-2'>
+            <td hlmTd>Avg Chest:</td>
+            <td hlmTd>{{ getAvgChest(expes) | number: '1.0-2' }}</td>
+          </tr>
+          <tr hlmTr class='border-b border-gray-600 mb-2'>
+            <td hlmTd>Avg Heorism:</td>
+            <td hlmTd>{{ getAvgHeroism(expes) | number: '1.0-2' }}</td>
+          </tr>
+          <tr hlmTr class='border-b border-gray-600 mb-2'>
+            <td hlmTd>Items per 20 thirst:</td>
+            <td hlmTd>{{ getItemsPerThirst(expes) | number: '1.0-2' }}</td>
+          </tr>
+      </tbody>
+    </table>
+    @let statsPerType = getStatsPerExpeditionType(expes);
+    @if (statsPerType.length > 0) {
+      <table hlmTable class='w-full mt-5'>
+        <thead hlmTHead>
+          <tr hlmTr>
+            <th hlmTh>Type</th>
+            <th hlmTh>Avg Chest</th>
+            <th hlmTh>Avg Heroism</th>
+            <th hlmTh>Count</th>
+          </tr>
+        </thead>
+        <tbody hlmTBody>
+        @for (stat of statsPerType; track stat.Id) {
+          <tr hlmTr>
+            <td hlmTd>
+              <img [src]='getAssetUrl(stat.MainTask)' width='40px' height='40px'/>
+              <span class='hidden'>{{ stat.Id }}</span>
+            </td>
+            <td hlmTd>{{ stat.AvgChests | number: '1.0-2' }}</td>
+            <td hlmTd>{{ stat.AvgHeroism | number: '1.0-2' }}</td>
+            <td hlmTd>{{ stat.Count }}</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
   </div>
   <div hlmTabsContent="History" class='flex flex-col justify-center items-center'>
-    @let list = $any(savedExpeditions | async);
-    @let tep = savedExpeditions | async;
-    @for (expedition of list; track expedition.id) {
-      <div class='flex gap-2 items-center'>
-        <img [src]='getAssetUrl(expedition.MainTask)' width='50px' height='50px'/>
-        <span>{{ expedition.Server }}</span>
-        <span>{{ expedition.PlayerId }}</span>
-        <span>{{ expedition.CreatedAt | date:'short' }}</span>
-      </div>
-  }
+    @if (expes.length > 0) {
+      <table hlmTable class='w-full mt-5'>
+        <tbody hlmTBody>
+        @for (expedition of expes; track expedition.Id) {
+          <tr hlmTr>
+            <td hlmTd>
+              <img [src]='getAssetUrl(expedition.MainTask)' width='50px' height='50px'/>
+            </td>
+            <td hlmTd>{{ expedition.CreatedAt | date:'short' }}</td>
+            <td hlmTd>
+              <button hlmBtn variant='destructive' (click)='deleteExpedition(expedition.Id!)'>
+                <ng-icon hlm name='lucideX'/>
+              </button>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
   </div>
 </hlm-tabs>

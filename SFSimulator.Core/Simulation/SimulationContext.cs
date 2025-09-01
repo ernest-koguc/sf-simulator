@@ -49,7 +49,6 @@ public class SimulationContext : IFightable<EquipmentItem>, IHealthCalculatable,
     public WeeklyTasksOptions WeeklyTasksOptions { get; set; } = new(true, true);
     public ExpeditionOptions ExpeditionOptions { get; set; } = new(1.28M, 1.2M);
     public ExpeditionOptions ExpeditionOptionsAfterSwitch { get; set; } = new(1.28M, 1.2M);
-    public int ScrollsUnlocked { get; set; } = 9;
     public bool DoDungeons { get; set; }
     public DungeonProgressionOptions DungeonOptions { get; set; } = new()
     {

@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'http://localhost:5267',
-  // apiUrl: 'http://sfsimulator.xyz/api',
+  //apiUrl: 'http://localhost:5267',
+  apiUrl: 'https://sfsimulator.xyz',
 };
