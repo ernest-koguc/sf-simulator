@@ -7,7 +7,8 @@ import type { ClassValue } from 'clsx';
   selector: 'hlm-accordion-content',
   template: `
 		<div [attr.inert]="_addInert()" style="overflow: hidden">
-			<p class="flex flex-col gap-4 text-balance p-3">
+			<p class="flex flex-col gap-4 text-balance p-3 pr-1 overflow-y-auto"
+        style="max-height: max(80vh, 800px); scrollbar-width: thin; scrollbar-gutter: stable; scrollbar-color: var(--color-purple-500) transparent;">
 				<ng-content />
 			</p>
 		</div>

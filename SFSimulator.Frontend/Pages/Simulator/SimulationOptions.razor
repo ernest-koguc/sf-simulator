@@ -179,7 +179,7 @@
                                         <Numeric Disabled="!Options.DoDungeons" Name="InstaKillPercentage" Label="Minimum WR" @bind-Value="@Options.DungeonOptions.InstaKillPercentage" Min="0.01M" Max="100" Step="0.01"/>
                                         <CheckBox Name="ChangeGear" Label="Change Gear" @bind-Value="@Options.ReequipOptions.ChangeGear"/>
                                         <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="PreferredWeaponRange" Label="Weapon Range" 
-                                            @bind-Value="@Options.ReequipOptions.PreferredWeaponRange" Min="1" Max="1.75M" Step="0.05"/>
+                                            @bind-Value="@Options.ReequipOptions.PreferredWeaponRange" Min="1" Max="1.5M" Step="0.05"/>
                                         <RadzenText>Character:</RadzenText>
                                         <Numeric Disabled="!Options.ReequipOptions.ChangeGear" Name="CharacterReequip" Label="Every X Level" 
                                             @bind-Value="@Options.ReequipOptions.CharacterReequipLevelOffset" Min="1" Max="100"/>
@@ -189,7 +189,7 @@
                                     </div>
                                     <div class="flex flex-col">
                                         <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
-                                        <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="66"/>
+                                        <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="400"/>
                                         <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="1000"/>
                                         <Numeric Icon="SoloPortal" Name="SoloPortal" Label="Solo Portal" Min="0" Max="50" @bind-Value="@Options.SoloPortal"/>
                                         <Numeric Icon="GuildPortal" Name="GuildPortal" Label="Guild Portal" Min="0" Max="50" @bind-Value="@Options.GuildPortal"/>

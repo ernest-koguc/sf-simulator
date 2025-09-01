@@ -245,7 +245,7 @@ public class DungeonSimulatorTests
         simulationContext.GuildPortal = guildPortal;
 
         var equipmentBuilder = new EquipmentBuilder(ItemAttributeType.Epic, level, @class,
-            0, 0, 0, ItemType.Weapon);
+            0, 0, ItemType.Weapon);
         equipmentBuilder.WithRune(weaponRune, weaponRuneValue);
         if (weaponScroll)
         {

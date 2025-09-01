@@ -39,6 +39,9 @@
       ],
       "@spartan-ng/helm/tabs": [
         "./src/app/shared/ui-tabs-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/scroll-area": [
+        "./src/app/shared/ui-scroll-area-helm/src/index.ts"
       ]
     }
   },

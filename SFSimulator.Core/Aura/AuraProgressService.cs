@@ -7,8 +7,13 @@ public class AuraProgressService : IAuraProgressService
         if (simulationContext.Level < 100)
             return;
 
-        if (simulationContext.Aura == 66)
+        if (simulationContext.Aura == 400)
             return;
+
+        if (simulationContext.Aura == 0)
+        {
+            simulationContext.Aura = 1;
+        }
 
         var points = simulationContext.AuraStrategy switch
         {
@@ -19,40 +24,26 @@ public class AuraProgressService : IAuraProgressService
             _ => throw new InvalidOperationException($"Aura progress strategy for {simulationContext.AuraStrategy} is not implemented")
         };
 
+        // Double points and double items for sacrifice 
         if (isToiletEvent)
-            points *= 2;
+            points *= 4;
 
         simulationContext.AuraFillLevel += points;
 
-        if (simulationContext.AuraFillLevel >= GetAuraFillCapacity(simulationContext.Aura))
+        var maxCapacity = GetAuraFillCapacity(simulationContext.Aura);
+        while (simulationContext.AuraFillLevel >= maxCapacity)
         {
-            simulationContext.AuraFillLevel = 0;
+            simulationContext.AuraFillLevel -= maxCapacity;
             simulationContext.Aura++;
+            maxCapacity = GetAuraFillCapacity(simulationContext.Aura);
         }
     }
 
     private int GetAuraFillCapacity(int auraLevel)
         => auraLevel switch
         {
-            0 => 100,
-            1 => 150,
-            2 => 200,
-            3 => 250,
-            4 => 300,
-            5 => 350,
-            6 => 400,
-            7 => 450,
-            8 => 500,
-            9 => 550,
-            10 => 600,
-            11 => 650,
-            12 => 700,
-            13 => 750,
-            14 => 800,
-            15 => 850,
-            16 => 900,
-            17 => 950,
-            >= 18 => 1000,
-            _ => throw new InvalidOperationException($"Aura level {auraLevel} should not be possible")
+            < 1 => throw new InvalidOperationException("Aura level should not be below 1"),
+            < 97 => 60 + (auraLevel - 1) / 8 * 20,
+            >= 97 => 300,
         };
 }

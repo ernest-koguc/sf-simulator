@@ -83,4 +83,8 @@ export class ByteParser {
     this.ptr -= size;
     return this;
   }
+
+  atLong(index: number) {
+    return this.values[index] || 0;
+  }
 }

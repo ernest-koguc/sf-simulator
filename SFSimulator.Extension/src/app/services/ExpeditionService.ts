@@ -114,8 +114,8 @@ export class ExpeditionService {
       expeditionRewardResources = parseExpeditionRewardResources(numbers(data['expeditionrewardresources'])!);
     }
 
-    if (data['expeditionreward']) {
-      expeditionRewardItems = parseExpeditionRewardItem(numbers(data['expeditionreward'])!);
+    if (data['expeditionrewarditems']) {
+      expeditionRewardItems = parseExpeditionRewardItem(numbers(data['expeditionrewarditems'])!);
     }
 
     if (gameRequest.req === 'ExpeditionStart') {
@@ -177,13 +177,9 @@ export class ExpeditionService {
     const expe = this.sessionManager.current()?.expeditionProgress!;
     this.sessionManager.updateCurrent(data => data.expeditionProgress = null);
 
-    const pid = this.sessionManager.current()?.player?.ID;
-    if (!pid) {
-      throw new Error('Cannot save expedition data: Player ID is null')
-    }
-    const server = this.sessionManager.current()?.server;
-    if (!server) {
-      throw new Error('Cannot save expedition data: Server is null');
+    const upid = this.sessionManager.currentId();
+    if (!upid) {
+      throw new Error('Cannot save expedition data: Unique Player Id is nul')
     }
 
     if (expe.middleReward === null) {
@@ -203,10 +199,10 @@ export class ExpeditionService {
     }
 
     const expeditionHistoryItem = {
-      PlayerId: pid,
-      Server: server,
+      UniquePlayerId: upid,
       MainTask: expe.chosenExpedition.MainTask,
       SideTasks: expe.chosenExpedition.SideTasks,
+      Thirst: expe.chosenExpedition.Time / 60,
       Heroism: expe.heroism,
       HalfTime: expe.middleReward,
       HalfTimeChosen: expe.chosenMiddleReward,

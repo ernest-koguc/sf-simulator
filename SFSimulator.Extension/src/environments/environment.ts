@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'http://sfsimulator.xyz/api'
+  apiUrl: 'https://sfsimulator.xyz',
 };

@@ -13,9 +13,10 @@ namespace SFSimulator.Core;
 /// <exception cref="InvalidEnumArgumentException">Thrown when the class type is not supported.</exception>
 /// <exception cref="InvalidEnumArgumentException">Thrown when the item attribute type is not supported.</exception>
 public class EquipmentBuilder(ItemAttributeType itemAttributeType, int characterLevel, ClassType classType, int aura,
-            int scrollsUnlocked, int itemQualityRuneValue, ItemType itemType)
+            int itemQualityRuneValue, ItemType itemType)
 {
     private EquipmentItem EquipmentItem { get; set; } = new EquipmentItem { ItemAttributeType = itemAttributeType, ItemType = itemType };
+    private readonly int ItemQuality = (int)Math.Round((3 + characterLevel + aura) * (1 + itemQualityRuneValue / 100M));
 
     /// <summary>
     /// Adds attributes to the equipment item based on builder configuration.
@@ -52,14 +53,13 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
     {
         if (!CanHaveArmor(itemType)) return this;
 
-        var witchFactor = 1 + (2 / 9D * scrollsUnlocked) * aura;
-        var levelForItem = characterLevel + 4 + itemQualityRuneValue + witchFactor;
+        double initialArmor = ItemQuality;
 
         if (itemAttributeType == ItemAttributeType.Legendary)
-            levelForItem += 10;
+            initialArmor = initialArmor * 1.024;
 
         var armorMultiplier = ClassConfigurationProvider.Get(classType).ItemArmorMultiplier;
-        var armor = levelForItem * armorMultiplier;
+        var armor = initialArmor * armorMultiplier;
 
         EquipmentItem.Armor = (int)armor;
         return this;
@@ -151,20 +151,21 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
     /// </summary>
     public EquipmentBuilder AsWeapon(double range = 1.5D)
     {
-        if (range is > 1.75D or <= 1D)
-            throw new ArgumentOutOfRangeException(nameof(range), "Range should be between 1 and 1.75");
+        if (range is > 1.5D or <= 1D)
+            throw new ArgumentOutOfRangeException(nameof(range), "Range should be between 1 and 1.5");
 
-        var levelForWeapon = characterLevel + 4;
+        var startingAvgDmg = Math.Min(ItemQuality, 1000D) * 2 + Math.Max(ItemQuality - 1000, 0D);
+
 
         if (itemAttributeType == ItemAttributeType.Legendary)
-            levelForWeapon += 10;
+        {
+            startingAvgDmg = startingAvgDmg * 1.024D;
+        }
 
-        var witchFactor = 1 + (2 / 9D * scrollsUnlocked);
-        var averageDamage = levelForWeapon + (witchFactor * (aura + itemQualityRuneValue));
-        var weaponMultiplier = ClassConfigurationProvider.Get(classType).WeaponMultiplier;
-        averageDamage *= weaponMultiplier;
-        var min = (int)((2 - range) * averageDamage);
-        var max = (int)(range * averageDamage);
+        var weaponMultiplier = ClassConfigurationProvider.Get(classType).WeaponMultiplier / 2;
+        var averageDamage = Math.Round(startingAvgDmg * weaponMultiplier);
+        var min = (int)Math.Round((2 - range) * averageDamage);
+        var max = (int)Math.Round(range * averageDamage);
         EquipmentItem.MinDmg = min;
         EquipmentItem.MaxDmg = max;
         EquipmentItem.ItemType = ItemType.Weapon;
@@ -215,7 +216,6 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
 
         if (item.UpgradeMultiplier != 0)
         {
-            var temp = firstAttribute / item.UpgradeMultiplier;
             firstAttribute = (int)(firstAttribute / item.UpgradeMultiplier);
             secondAttribute = (int)(secondAttribute / item.UpgradeMultiplier);
         }
@@ -291,32 +291,32 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
 
     private ItemAttributesGroup GetItemAttributes()
     {
-        var levelForItems = characterLevel + 4 + itemQualityRuneValue;
-        var witchFactor = 1 + (2 / 9D * scrollsUnlocked);
-        if (itemAttributeType == ItemAttributeType.Legendary)
-            aura += 10;
-
-        var baseAttributes = levelForItems + (aura * witchFactor);
-        int attributesRounded;
-
-        switch (itemAttributeType)
+        if (ItemQuality >= 350)
         {
-            case ItemAttributeType.NormalOneStat:
+            var baseAttribute = 0.001756211D * Math.Pow(ItemQuality, 2) + 1.04214299D * ItemQuality;
+            return itemAttributeType switch
+            {
+                // TODO: make sure that method implementations are correct
+                ItemAttributeType.NormalOneStat => GetNormalOneStatItemAttributes((int)Math.Round(baseAttribute * 1.25)),
+                ItemAttributeType.NormalTwoStats => GetNormalTwoStatItemAttributes((int)Math.Round(baseAttribute * 5 / 3D / 2)),
+                ItemAttributeType.Epic => GetThreeStatItemAttributes((int)Math.Round(baseAttribute)),
+                ItemAttributeType.EpicAllAttributes => GetFiveStatItemAttributes((int)Math.Round(baseAttribute * 5 / 6D)),
+                ItemAttributeType.Legendary => GetThreeStatItemAttributes((int)Math.Round(baseAttribute * 1.08)),
+                _ => throw new InvalidEnumArgumentException($"{nameof(itemAttributeType)} with value {itemAttributeType} is unsupported")
+            };
 
-                attributesRounded = (int)Math.Round(baseAttributes * 2);
-                return GetNormalOneStatItemAttributes(attributesRounded);
-            case ItemAttributeType.NormalTwoStats:
-                attributesRounded = (int)Math.Round(baseAttributes);
-                return GetNormalTwoStatItemAttributes(attributesRounded);
-            case ItemAttributeType.Epic:
-            case ItemAttributeType.Legendary:
-                attributesRounded = (int)Math.Round(baseAttributes * 1.2D);
-                return GetThreeStatItemAttributes(attributesRounded);
-            case ItemAttributeType.EpicAllAttributes:
-            default:
-                attributesRounded = (int)Math.Round(baseAttributes);
-                return GetFiveStatItemAttributes(attributesRounded);
         }
+
+        var itemQuality = ItemQuality;
+
+        return itemAttributeType switch
+        {
+            ItemAttributeType.NormalOneStat => GetNormalOneStatItemAttributes(itemQuality * 2),
+            ItemAttributeType.NormalTwoStats => GetNormalTwoStatItemAttributes(itemQuality),
+            ItemAttributeType.Epic => GetThreeStatItemAttributes((int)(itemQuality * 1.2)),
+            ItemAttributeType.Legendary => GetThreeStatItemAttributes((int)(itemQuality * 1.2 * 1.08)),
+            _ => GetFiveStatItemAttributes(itemQuality),
+        };
     }
 
     private ItemAttributesGroup GetNormalOneStatItemAttributes(int baseAttributes)
@@ -344,9 +344,9 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
         return threeStatItemAttributes;
     }
 
-    private ItemAttributesGroup GetFiveStatItemAttributes(int baseAttributes) => new ItemAttributesGroup(baseAttributes, baseAttributes, baseAttributes, baseAttributes, baseAttributes);
+    private static ItemAttributesGroup GetFiveStatItemAttributes(int baseAttributes) => new(baseAttributes, baseAttributes, baseAttributes, baseAttributes, baseAttributes);
 
-    private bool CanHaveArmor(ItemType itemType)
+    private static bool CanHaveArmor(ItemType itemType)
         => itemType switch
         {
             ItemType.Headgear or ItemType.Breastplate or ItemType.Gloves or ItemType.Boots or ItemType.Belt => true,

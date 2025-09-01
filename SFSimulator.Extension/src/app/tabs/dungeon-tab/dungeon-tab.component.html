@@ -8,6 +8,9 @@
     }
   </div>
   <div class='flex justify-end w-full mb-2'>
+    <button hlmBtn variant='clear' (click)='copyToJson()'>
+      COPY TO JSON
+    </button>
     <button hlmBtn variant='clear' (click)='simulateDungeons()' [disabled]='isSimulating()'>
       <ng-icon hlm size='sm' name="lucideRefreshCw" />
     </button>

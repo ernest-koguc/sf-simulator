@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, inject, signal, viewChild } from '@angular/core';
 import {
   HlmAccordionContentComponent,
   HlmAccordionDirective,
@@ -12,6 +12,7 @@ import { DungeonSimulator } from './services/DungeonSimulator';
 import { SessionManager } from './services/SessionManager';
 import { DungeonTabComponent } from './tabs/dungeon-tab/dungeon-tab.component';
 import { ExpeditionTabComponent } from './tabs/expedition-tab/expedition-tab.component';
+import { DailiesTabComponent } from './tabs/dailies-tab/dailies-tab.component';
 
 @Component({
   selector: 'x-tool',
@@ -22,6 +23,7 @@ import { ExpeditionTabComponent } from './tabs/expedition-tab/expedition-tab.com
     HlmAccordionContentComponent,
     DungeonTabComponent,
     ExpeditionTabComponent,
+    DailiesTabComponent,
     TabBtnComponent,
   ],
   templateUrl: './app.component.html',
@@ -43,7 +45,9 @@ export class AppComponent {
   constructor() {
     document.addEventListener('SFCommand' as any, async (event: CustomEvent) => {
       this.last = this.last.then(() => this.queueCommand(event.detail)).catch((error) => {
-        console.error('XTool: Error processing SFCommand - ' + error);
+        console.error('XTool: Error while processing SFCommand: ' + error);
+        console.error("Logging before rethrow:", error.stack);
+        console.error(JSON.stringify(event.detail));
       });
     });
   }
