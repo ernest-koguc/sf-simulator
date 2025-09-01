@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	<RunAOTCompilation>true</RunAOTCompilation>
 	<WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+    <PublishIISAssets>true</PublishIISAssets>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +26,12 @@
   <ItemGroup>
     <Folder Include="wwwroot\manual\" />
     <Folder Include="wwwroot\external\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
