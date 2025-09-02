@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
     <PublishAot>false</PublishAot>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+    <PublishIISAssets>false</PublishIISAssets>
   </PropertyGroup>
 
   <ItemGroup>
