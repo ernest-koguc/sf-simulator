@@ -179,6 +179,7 @@ public class SFToolsDungeonData
     public int[] Shadow { get; set; } = default!;
     public int Twister { get; set; }
     public int Youtube { get; set; }
+    public int Sandstorm { get; set; }
 }
 
 public class SFToolsFortress

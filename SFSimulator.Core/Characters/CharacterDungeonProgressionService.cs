@@ -97,12 +97,14 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
 
         var lightWorld = dungeonData.Normal.Select((currentPosition, dungeonIndex) => (currentPosition, MapDungeonIndex(dungeonIndex, false)));
         var shadowWorld = dungeonData.Shadow.Select((currentPosition, dungeonIndex) => (currentPosition, MapDungeonIndex(dungeonIndex, true)));
-        var loopOfIdols = (dungeonData.Youtube, 130);
-        var tower = (dungeonData.Tower, 98);
-        var twister = (dungeonData.Twister, 99);
-        var combinedDungeons = lightWorld.Union(shadowWorld).Append(tower).Append(loopOfIdols).Append(twister);
+        var tower = (dungeonData.Tower, -1);
+        var twister = (dungeonData.Twister, -2);
+        var loopOfIdols = (dungeonData.Youtube, -3);
+        var sandstorm = (dungeonData.Sandstorm, -4);
+        var combinedDungeons = lightWorld.Union(shadowWorld).Append(tower).Append(loopOfIdols).Append(twister).Append(sandstorm);
 
         var dungeons = dungeonProvider.GetAllDungeons(simulationContext);
+        // TODO: add SHADOW 5 new dungs
 
         foreach (var (beatenEnemyPosition, dungeonPosition) in combinedDungeons)
         {
@@ -145,6 +147,11 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
             26 => 23,
             27 => 25,
             28 => 26,
+            29 => 29,
+            30 => 30,
+            31 => 31,
+            32 => 32,
+            33 => 33,
             _ => 0
         };
 
