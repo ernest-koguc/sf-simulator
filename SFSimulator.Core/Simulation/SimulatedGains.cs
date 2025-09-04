@@ -2,7 +2,9 @@
 
 public class SimulatedGains
 {
-    public int DayIndex { get; set; }
+    public required int DayIndex { get; set; }
+    public int Level { get; set; }
+    public long BaseStat { get; set; }
 
     public Dictionary<GainSource, long> ExperienceGain { get; set; } = new()
     {

@@ -44,7 +44,7 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
     private SimulationContext SimulationContext { get; set; } = null!;
     private SimulatedGains CurrentDayGains { get; set; } = default!;
 
-    // We need  it to be async + having the error in the action method as a limitation of the SpawnDev web workter limitation
+    // It needs to be async + having the error in the action method as a limitation of the SpawnDev web worker
     public Task<SimulationResult?> Run(SimulationContext simulationContext, Action<SimulationProgress> progressCallback, Action<string> onException)
     {
         try
@@ -79,6 +79,8 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
                     progressCallback(new(lookUpValue() - startingValue, CurrentDay, simulateUntil));
                     progressStopwatch.Restart();
                 }
+                CurrentDayGains.BaseStat = SimulationContext.BaseStat;
+                CurrentDayGains.Level = SimulationContext.Level;
             }
             progressCallback(new(lookUpValue() - startingValue, CurrentDay - 1, simulateUntil));
             progressStopwatch.Stop();

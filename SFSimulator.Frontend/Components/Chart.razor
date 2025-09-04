@@ -14,16 +14,26 @@ else
 @code {
     [Parameter, EditorRequired]
     public List<ChartRecord> Records { get; set; } = default!;
+
     [Parameter, EditorRequired]
     public string Title { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public ChartType ChartType { get; set; } = default!;
+
+    [Parameter]
+    public Func<List<ChartRecord>, bool> ShouldInit { get; set; } = (recs) => recs.Any(r => r.Value > 0);
+
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = default!;
+
     private Guid _elementId = Guid.NewGuid();
+
     private bool shouldInitChart = false;
 
     protected override Task OnParametersSetAsync()
     {
-        shouldInitChart = Records.Any(r => r.Value >= 1);
+        shouldInitChart = ShouldInit(Records);
 
         return base.OnParametersSetAsync();
     }
@@ -38,9 +48,19 @@ else
     {
         if (shouldInitChart)
         {
-            await JSRuntime
-                .InvokeVoidAsync("initChart" , _elementId.ToString(), Records.Select(r => new { label = r.Source, data = r.Value}), Title);
+            switch (ChartType)
+            {
+                case ChartType.Bar:
+                    await JSRuntime
+                        .InvokeVoidAsync("initBarChart" , _elementId.ToString(), Records.Select(r => new { label = r.Label, data = r.Value}), Title);
+                    break;
+                case ChartType.Line:
+                    await JSRuntime
+                        .InvokeVoidAsync("initLineChart" , _elementId.ToString(), Records.Select(r => new { label = r.Label, data = r.Value}), Title);
+                    break;
+            }
         }
         await base.OnAfterRenderAsync(firstRender);
     }
 }
+

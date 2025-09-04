@@ -1,3 +1,3 @@
 ﻿namespace SFSimulator.Frontend;
 
-public record ChartRecord(string Source, decimal Value);
+public record ChartRecord(string Label, decimal Value);

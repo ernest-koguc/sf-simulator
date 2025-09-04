@@ -205,17 +205,11 @@
   .h-100 {
     height: calc(var(--spacing) * 100);
   }
-  .h-\[500px\] {
-    height: 500px;
-  }
   .h-full {
     height: 100%;
   }
   .w-100 {
     width: calc(var(--spacing) * 100);
-  }
-  .w-\[500px\] {
-    width: 500px;
   }
   .w-full {
     width: 100%;
@@ -468,15 +462,23 @@ ul[role=tablist] {
 .rz-accordion-header {
   background-color: rgba(0,0,0,0.2) !important;
 }
+.rz-tabview-nav {
+  background-color: rgba(0, 0, 0, 0.15);
+}
 .progress-bar {
   height: 1rem;
-  background-color: rgb(20,20,20);
-  width: 50%;
+  background-color: rgb(25,25,25);
+  width: min(540px, 50vw);
   overflow: hidden;
   border-radius: 0.25rem;
 }
 .progress-bar-image {
-  background-image: url(./favicon.png);
+  background-image: url(./comet.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: min(540px, 50vh);
+  width: min(960px, 100vw);
 }
 .progress-bar-value {
   width: 100%;

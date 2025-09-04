@@ -1,20 +1,22 @@
 ﻿Chart.register(ChartDataLabels);
 const charts = {};
-window.initChart = function (canvasId, data, title) {
-    if (charts[canvasId] !== undefined)
+
+window.initBarChart = function (canvasId, data, title) {
+    const chartData = {
+        datasets: data.map(d => ({ data: [d.data], label: d.label })),
+    }
+
+    if (charts[canvasId] !== undefined) {
         charts[canvasId].destroy();
+    }
+
     const ctx = document.getElementById(canvasId);
-    const sets = data.map(d => {
-        return {
-            label: d.label,
-            data: [d.data]
-        };
-    });
+
     const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: [''],
-            datasets: sets
+            datasets: chartData.datasets,
         },
         options: {
             indexAxis: window.innerWidth <= 450 ? 'y' : 'x',
@@ -89,19 +91,85 @@ window.initChart = function (canvasId, data, title) {
     charts[canvasId] = chart;
 }
 
-let valueScales = {
-    beginAtZero: true,
-    offset: true,
-    grid: {
-        display: true,
-        color: 'rgba(255,255,255,0.2)'
-    },
-    ticks:
-    {
-        callback: v => format(v),
-        autoSkip: false,
-        color: 'white'
+window.initLineChart = function (canvasId, data, title) {
+    const chartData = {
+        labels: data.map(d => d.label),
+        datasets: [{
+            data: data.map(d => d.data),
+        }]
     }
+    if (charts[canvasId] !== undefined) {
+        charts[canvasId].destroy();
+    }
+
+    const ctx = document.getElementById(canvasId);
+
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: chartData.datasets,
+        },
+        options: {
+            aspectRatio: 2,
+            pointStyle: false,
+            scales: {
+                y: {
+                    display: true,
+                    offset: true,
+                    grid: {
+                        display: true,
+                        color: 'rgba(255,255,255,0.2)',
+                        offset: true,
+                    },
+                    ticks:
+                    {
+                        autoSkip: false,
+                        color: 'white',
+                        padding: 0,
+
+                    },
+                },
+                x: {
+                    display: false,
+                    offset: true,
+                    grid: {
+                        display: true,
+                        color: 'rgba(255,255,255,0.2)',
+                        offset: true,
+                    },
+                    ticks:
+                    {
+                        autoSkip: false,
+                        color: 'white',
+                        padding: 0,
+                    },
+                    title: {
+                        padding: 0,
+                    },
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                datalabels: {
+                  display: false,
+                },
+                title: {
+                    display: true,
+                    text: title,
+                    color: 'white',
+                    font: {
+                        family: "'Poppins', sans-serif",
+                        weight: "bold",
+                        size: 20
+                    },
+                },
+            }
+        }
+    });
+    charts[canvasId] = chart;
 }
 
 window.destroyChart = function (canvasId) {

@@ -9,20 +9,9 @@ public partial class SimulationResultView
     public required SimulationResult Result { get; set; }
     private List<ChartRecord> TotalExperienceGains { get; set; } = default!;
     private List<ChartRecord> TotalBaseStatGains { get; set; } = default!;
-    //private int ChosenDay { get; set; }
-    //private List<ChartRecord> AverageExperienceGains { get; set; } = default!;
-    //private List<ChartRecord> ChosenDayExperienceGains => Result
-    //    .SimulatedDays[ChosenDay - 1]
-    //    .ExperienceGain
-    //    .OrderBy(x => x.Key)
-    //    .Select((kvp) => new ChartRecord(kvp.Key.GetDisplayName(), kvp.Value))
-    //    .ToList();
-    //private List<ChartRecord> AverageBaseStatGains { get; set; } = default!;
-    //private List<ChartRecord> ChosenDayBaseStatGains => Result
-    //    .SimulatedDays[ChosenDay - 1]
-    //    .BaseStatGain
-    //    .Select((kvp) => new ChartRecord(kvp.Key.GetDisplayName(), kvp.Value))
-    //    .ToList();
+
+    private List<ChartRecord> LevelProgress { get; set; } = default!;
+    private List<ChartRecord> BaseStatProgress { get; set; } = default!;
 
     protected override void OnParametersSet()
     {
@@ -48,9 +37,10 @@ public partial class SimulationResultView
         }).OrderBy(x => x.Key)
             .Select((keyValuePair) => new ChartRecord(keyValuePair.Key.GetDisplayName(), keyValuePair.Value)).ToList();
 
-        //AverageExperienceGains = TotalExperienceGains.Select(t => new ChartRecord(t.Source, t.Value / Result.Days)).ToList();
-
-        //AverageBaseStatGains = TotalBaseStatGains.Select(t => new ChartRecord(t.Source, t.Value / Result.Days)).ToList();
+        LevelProgress = Result.SimulatedDays.Select(d => new ChartRecord($"Day - {d.DayIndex}", d.Level))
+            .ToList();
+        BaseStatProgress = Result.SimulatedDays.Select(d => new ChartRecord($"Day - {d.DayIndex}", d.BaseStat))
+            .ToList();
 
         base.OnParametersSet();
     }

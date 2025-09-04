@@ -48,6 +48,7 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
             if (!result.Succeeded) continue;
 
             dungeonsKilled++;
+            DrHouse.Differential($"Defeated enemy {enemy.Name} in dungeon {enemy.Dungeon.Name} {enemy.Dungeon.Type}");
             OnDungeonEnemyKilled(result, enemy, onDungeonKill);
 
 
