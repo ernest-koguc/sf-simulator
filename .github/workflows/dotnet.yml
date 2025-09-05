@@ -18,6 +18,8 @@ jobs:
       run: |
           dotnet publish -c Release -o sfsimulator .\SFSimulator.Api
           dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     - name: show workload
       run: |
           dotnet workload list
