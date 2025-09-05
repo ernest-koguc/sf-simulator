@@ -66,6 +66,7 @@ public partial class SimulatorPage
         catch (Exception ex)
         {
             Stopwatch.Stop();
+            SentrySdk.CaptureException(ex);
             await DialogService.OpenCrashReport("An error occured during simulation.", ex.Message + "\r\n" + (ex.StackTrace ?? ""));
         }
 

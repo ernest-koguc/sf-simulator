@@ -28,11 +28,12 @@
                     <ChildContent>
                         @Body
                     </ChildContent>
-                    <ErrorContent>
+                    <ErrorContent Context="exception">
                         <RadzenCard class="bg-card">
                             <RadzenText TextStyle="TextStyle.H3" Text="Oops, something went wrong" class="text-red-300!"/>
                             @{
                                 var text = $"Try refreshing the page via button below. If the problem persists consider to report this to me on discord: {Constants.DiscordContact}";
+                                SentrySdk.CaptureException(exception);
                                 <RadzenText class="pl-4" Text="@text"/>
                             }
                             <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Secondary" Shade="Shade.Lighter" class="mt-4!" 

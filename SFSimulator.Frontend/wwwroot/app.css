@@ -16,12 +16,11 @@
 html, body {
     font-family: Poppins, sans-serif;
     height: 100%;
-    background-image: url(../scrapbook_library.png);
+    background-image: url(../background.png);
     backdrop-filter: brightness(0.45);
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-position: center;
     background-size: cover;
-    background-position: bottom;
     overflow-x: hidden;
 }
 
