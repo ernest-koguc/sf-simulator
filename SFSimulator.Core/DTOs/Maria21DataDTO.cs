@@ -133,6 +133,7 @@ public class InnerGroupData
     public int Hydra { get; set; }
     public int TotalInstructor { get; set; }
     public int TotalTreasure { get; set; }
+    public int TotalKnights { get; set; }
 }
 
 public class SFToolsItem
