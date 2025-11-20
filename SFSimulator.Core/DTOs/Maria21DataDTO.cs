@@ -100,6 +100,8 @@ public class SFToolsCompanion
 public class Inventory
 {
     public Slots Dummy { get; set; } = null!;
+    public List<SFToolsItem> Backpack { get; set; } = null!;
+    public List<SFToolsItem> Chest { get; set; } = null!;
 }
 public class Potion
 {
@@ -162,7 +164,6 @@ public class SFToolsItem
     public List<int> Attributes { get; set; } = null!;
     public int Index { get; set; }
 }
-
 
 public class PlayerAttribute
 {

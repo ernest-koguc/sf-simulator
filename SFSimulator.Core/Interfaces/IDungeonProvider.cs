@@ -8,4 +8,5 @@ public interface IDungeonProvider
     DungeonEnemy GetDungeonEnemy(int dungeonPositon, int dungeonEnemyPosition);
     DungeonEnemy? GetDungeonEnemySafe(int dungeonPosition, int dungeonEnemyPosition);
     List<Dungeon> InitDungeons();
+    void InitCharacterDungeonState(SimulationContext simulationContext);
 }

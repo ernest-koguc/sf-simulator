@@ -1,4 +1,5 @@
 ﻿namespace SFSimulator.Core;
+
 internal class PaladinFightContext : DelegatableFightableContext
 {
     public required double InitialArmorReduction { get; set; }

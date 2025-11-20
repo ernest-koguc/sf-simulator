@@ -35,12 +35,13 @@ public class GemTypeUsageProvider : IGemTypeUsageProvider
 
     private GemType GetMainGemType(ClassType classType)
     {
-        return classType switch
+        var mainAttribute = ClassConfigurationProvider.Get(classType).MainAttribute;
+        return mainAttribute switch
         {
-            ClassType.Warrior or ClassType.Bert or ClassType.Berserker or ClassType.BattleMage or ClassType.Paladin => GemType.Strength,
-            ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter => GemType.Dexterity,
-            ClassType.Mage or ClassType.Bard or ClassType.Druid or ClassType.Necromancer => GemType.Intelligence,
-            _ => throw new ArgumentException($"Class type {classType} is not supported", nameof(classType))
+            AttributeType.Strength => GemType.Strength,
+            AttributeType.Dexterity => GemType.Dexterity,
+            AttributeType.Intelligence => GemType.Intelligence,
+            _ => throw new NotImplementedException($"Main attribute of {mainAttribute} could not be mapped to gem type")
         };
     }
 

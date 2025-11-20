@@ -1,0 +1,47 @@
+@page "/item-comparer"
+
+<div>
+    <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Warning" Shade="Shade.Lighter" Click="OpenEndpoint">
+        <RadzenIcon Icon="call_received" /><span class="rz-ms-2">Endpoint</span>
+    </RadzenButton>
+    @if (IsSimulating)
+    {
+        <ProgressBar Indeterminate="true" />
+    }
+
+
+    <!-- Choose item  -->
+
+
+    @if (Options is not null)
+    {
+        <RadzenDropDown Data="@ChoosableItems" Style="width:300px" @bind-Value="CompareTo" TextProperty="ItemType"
+            Placeholder="Select item to compare" />
+
+        @if (CompareTo is not null)
+        {
+            <RadzenButton Variant="Variant.Filled" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Lighter" Click="CompareItem">
+                <RadzenIcon Icon="compare_arrows" /><span class="rz-ms-2">Compare</span>
+            </RadzenButton>
+        }
+    }
+    <!-- Results -->
+    @if (ComparisonResults is not null)
+    {
+        <div class='flex'>
+            @for (var index = 0; index < ComparisonResults.Count; index++)
+            {
+                var result = ComparisonResults[index];
+                var title = index == 0 ? "Current" : "New";
+                <div>
+                    <h3>@title</h3>
+                    @foreach (var item in result)
+                    {
+                        <div>@item.DungeonEnemy.Name</div>
+                        <div>@(item.WonFights / (decimal)Iterations * 100)%</div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -6,4 +6,6 @@ public interface IDungeonSimulator
         DungeonSimulationOptions options) where T : IWeaponable where E : IWeaponable;
     PetSimulationResult SimulatePetDungeon(PetFightable petDungeonEnemy, PetFightable playerPet, int simulationContextLevel,
         DungeonSimulationOptions options);
+    Task<DungeonSimulationResult> SimulateDungeonAsync<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions,
+        DungeonSimulationOptions options) where T : IWeaponable where E : IWeaponable;
 }

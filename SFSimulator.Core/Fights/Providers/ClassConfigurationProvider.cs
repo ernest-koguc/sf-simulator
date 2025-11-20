@@ -33,6 +33,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.5,
+                    DamageMultiplier = 1,
                 }
             },
             {
@@ -48,6 +49,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.5,
+                    DamageMultiplier = 1,
                 }
             },
             {
@@ -63,6 +65,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.1,
+                    DamageMultiplier = 1,
                 }
             },
             {
@@ -78,6 +81,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.25,
+                    DamageMultiplier = 1,
                 }
             },
             {
@@ -93,6 +97,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.25,
+                    DamageMultiplier = 0.625,
                 }
             },
             {
@@ -108,6 +113,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1.11,
                     ArmorMultiplier = 5,
                     MaxArmorReduction = 0.5,
+                    DamageMultiplier = 1,
                 }
             },
             {
@@ -123,6 +129,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1.1,
                     ArmorMultiplier = 0.5,
                     MaxArmorReduction = 0.25,
+                    DamageMultiplier = 1.25,
                 }
             },
             {
@@ -138,6 +145,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.25,
+                    DamageMultiplier = 1 / 3D,
                 }
             },
             {
@@ -153,6 +161,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.5,
+                    DamageMultiplier = 1,
                 }
             },
             {
@@ -168,6 +177,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 2,
                     MaxArmorReduction = 0.5,
+                    DamageMultiplier = 1.125,
                 }
             },
             {
@@ -183,6 +193,7 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 2,
                     MaxArmorReduction = 0.2,
+                    DamageMultiplier = 5D / 9D,
                 }
             },
             {
@@ -198,6 +209,23 @@ public static class ClassConfigurationProvider
                     ItemBonusMultiplier = 1,
                     ArmorMultiplier = 1,
                     MaxArmorReduction = 0.45,
+                    DamageMultiplier = 0.833D,
+                }
+            },
+            {
+                ClassType.PlagueDoctor,
+                new ClassConfiguration
+                {
+                    HealthMultiplier = 4,
+                    WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 3,
+                    MainAttribute = AttributeType.Dexterity,
+                    ItemBonusMultiplier = 1.11,
+                    ArmorMultiplier = 2,
+                    MaxArmorReduction = 0.20,
+                    DamageMultiplier = 1.25D,
                 }
             },
         };

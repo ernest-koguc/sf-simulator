@@ -50,7 +50,7 @@ public static class MappingUtils
         simulationContext.GuildPortal = maria21DataDto.Dungeons.Group;
         simulationContext.Calendar = maria21DataDto.CalendarType;
         simulationContext.CalendarDay = maria21DataDto.CalendarDay == 0 ? 1 : maria21DataDto.CalendarDay;
-        simulationContext.Items = MapItems(maria21DataDto.Class, maria21DataDto.Items);
+        simulationContext.Items = MapItems(maria21DataDto.Class, ResolveItemsAsList(maria21DataDto.Items));
         simulationContext.DungeonsData = maria21DataDto.Dungeons;
         simulationContext.Potions = maria21DataDto.Potions;
         simulationContext.Aura = maria21DataDto.Toilet.Aura;
@@ -79,7 +79,7 @@ public static class MappingUtils
                 {
                     Character = simulationContext,
                     Class = companion.Class == ClassType.Warrior ? ClassType.Bert : companion.Class,
-                    Items = MapItems(companion.Class, companion.Items)
+                    Items = MapItems(companion.Class, ResolveItemsAsList(companion.Items))
                 };
             }).ToArray();
         }
@@ -148,11 +148,8 @@ public static class MappingUtils
         return list;
     }
 
-    private static List<EquipmentItem> MapItems(ClassType classType, Slots slots)
-    {
-        var items = ResolveItemsAsList(slots);
-        return items.Select(item => EquipmentBuilder.FromSFToolsItem(classType, item)).ToList();
-    }
+    public static List<EquipmentItem> MapItems(ClassType classType, List<SFToolsItem> items)
+        => items.Select(item => EquipmentBuilder.FromSFToolsItem(classType, item)).ToList();
 
     private enum BonusType
     {

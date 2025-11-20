@@ -33,6 +33,11 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         }
     }
 
+    public Task<DungeonSimulationResult> SimulateDungeonAsync<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions, DungeonSimulationOptions options) where T : IWeaponable where E : IWeaponable
+    {
+        return Task.Run(() => SimulateDungeon(dungeonEnemy, character, companions, options));
+    }
+
     public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions,
         DungeonSimulationOptions options) where T : IWeaponable where E : IWeaponable
     {

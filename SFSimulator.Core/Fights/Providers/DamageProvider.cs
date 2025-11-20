@@ -60,16 +60,16 @@ public class DamageProvider : IDamageProvider
 
     private static void ProcAttributesBonus<T, E>(IFightable<T> attacker, IFightable<E> target, ref (double Minimum, double Maximum) damage) where T : IWeaponable where E : IWeaponable
     {
-        var attribute = attacker.Class switch
+        var mainAttribute = ClassConfigurationProvider.Get(attacker.Class).MainAttribute;
+        var attribute = mainAttribute switch
         {
-            ClassType.Mage or ClassType.Bard or ClassType.Druid or ClassType.Necromancer
+            AttributeType.Intelligence 
                 => Math.Max(attacker.Intelligence / 2D, attacker.Intelligence - target.Intelligence / 2D),
-            ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter
+            AttributeType.Dexterity
                 => Math.Max(attacker.Dexterity / 2D, attacker.Dexterity - target.Dexterity / 2D),
-            ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker or ClassType.Paladin or ClassType.Bert
+            AttributeType.Strength
                 => (double)Math.Max(attacker.Strength / 2D, attacker.Strength - target.Strength / 2D),
-
-            _ => throw new ArgumentOutOfRangeException(nameof(attacker.Class)),
+            _ => throw new NotImplementedException($"Main attribute {mainAttribute} not implemented for attribute reduction"),
         };
         var attributeBonus = 1 + attribute / 10D;
 
@@ -111,15 +111,15 @@ public class DamageProvider : IDamageProvider
 
     public double CalculateFireBallDamage<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
-        var multiplier = opponent.Class switch
-        {
-            ClassType.Paladin => 6,
-            ClassType.Warrior or ClassType.Bert or ClassType.Druid or ClassType.BattleMage => 5,
-            ClassType.Bard => 2,
-            ClassType.Mage => 0,
-            ClassType.Scout or ClassType.Assassin or ClassType.Berserker or ClassType.DemonHunter or ClassType.Necromancer => 4,
-            _ => throw new ArgumentOutOfRangeException(nameof(opponent.Class)),
-        };
+        if (opponent.Class == ClassType.Mage)
+            return 0;
+
+        double multiplier;
+        if (opponent.Class == ClassType.Bert)
+            multiplier = 5;
+        else
+            multiplier = ClassConfigurationProvider.Get(opponent.Class).HealthMultiplier;
+
         var dmg = Math.Ceiling(multiplier * 0.05D * main.Health);
         return Math.Min(Math.Ceiling(opponent.Health / 3D), dmg);
     }
@@ -145,19 +145,18 @@ public class DamageProvider : IDamageProvider
 
     public double CalculateDamageMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target)
         where T : IWeaponable where E : IWeaponable
-        => (attacker.Class, target.Class) switch
+    {
+        var baseDmgMultiplier = ClassConfigurationProvider.Get(attacker.Class).DamageMultiplier;
+        return (attacker.Class, target.Class) switch
         {
-            (ClassType.Mage, ClassType.Paladin) => 1.5D,
-            (ClassType.Assassin, _) => 0.625D,
-            (ClassType.Berserker, _) => 1.25D,
-            (ClassType.Druid, ClassType.Mage) => 1D / 3D * 4D / 3D,
-            (ClassType.Druid, ClassType.DemonHunter) => 1D / 3D * 1.15D,
-            (ClassType.Druid, _) => 1D / 3D,
-            (ClassType.Bard, _) => 1.125D,
-            (ClassType.Necromancer, ClassType.DemonHunter) => ((5D / 9D) + 0.1D),
-            (ClassType.Necromancer, _) => 5D / 9D,
-            (ClassType.Paladin, ClassType.Mage) => 0.833D * 1.5D,
-            (ClassType.Paladin, _) => 0.833D,
-            (_, _) => 1D,
+            (ClassType.Mage, ClassType.Paladin) => baseDmgMultiplier * 1.5D,
+            (ClassType.Druid, ClassType.Mage) => baseDmgMultiplier * 4D / 3D,
+            (ClassType.Druid, ClassType.DemonHunter) => baseDmgMultiplier * 1.15D,
+            (ClassType.Bard, ClassType.PlagueDoctor) => baseDmgMultiplier * 1.05D,
+            (ClassType.Necromancer, ClassType.DemonHunter) => baseDmgMultiplier + 0.1D,
+            (ClassType.Paladin, ClassType.Mage) => baseDmgMultiplier * 1.5D,
+            (ClassType.PlagueDoctor, ClassType.DemonHunter) => baseDmgMultiplier * 1.065D,
+            (_, _) => baseDmgMultiplier,
         };
+    }
 }

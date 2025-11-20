@@ -45,5 +45,9 @@ public sealed class ClassConfiguration
     /// Property <c>MaxArmorReduction</c> specifies a maximum armor reduction value.
     /// </summary>
     public required double MaxArmorReduction { get; init; }
+    /// <summary>
+    /// Property <c>DamageMultiplier</c> specifies a base damage multiplier.
+    /// </summary>
+    public required double DamageMultiplier { get; init; }
 
 }

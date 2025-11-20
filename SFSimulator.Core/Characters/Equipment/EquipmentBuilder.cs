@@ -55,6 +55,7 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
 
         double initialArmor = ItemQuality;
 
+        // TODO: this is outdated knowledge
         if (itemAttributeType == ItemAttributeType.Legendary)
             initialArmor = initialArmor * 1.024;
 
@@ -157,6 +158,7 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
         var startingAvgDmg = Math.Min(ItemQuality, 1000D) * 2 + Math.Max(ItemQuality - 1000, 0D);
 
 
+        // TODO: this is outdated knowledge
         if (itemAttributeType == ItemAttributeType.Legendary)
         {
             startingAvgDmg = startingAvgDmg * 1.024D;
@@ -314,6 +316,7 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
             ItemAttributeType.NormalOneStat => GetNormalOneStatItemAttributes(itemQuality * 2),
             ItemAttributeType.NormalTwoStats => GetNormalTwoStatItemAttributes(itemQuality),
             ItemAttributeType.Epic => GetThreeStatItemAttributes((int)(itemQuality * 1.2)),
+            // TODO: this is outdated knowledge
             ItemAttributeType.Legendary => GetThreeStatItemAttributes((int)(itemQuality * 1.2 * 1.08)),
             _ => GetFiveStatItemAttributes(itemQuality),
         };
@@ -321,12 +324,13 @@ public class EquipmentBuilder(ItemAttributeType itemAttributeType, int character
 
     private ItemAttributesGroup GetNormalOneStatItemAttributes(int baseAttributes)
     {
-        return classType switch
+        return ClassConfigurationProvider.Get(classType).MainAttribute switch
         {
-            ClassType.Bard or ClassType.Mage or ClassType.Necromancer or ClassType.Druid => new ItemAttributesGroup(0, 0, baseAttributes, 0, 0),
-            ClassType.Warrior or ClassType.BattleMage or ClassType.Berserker or ClassType.Bert or ClassType.Paladin => new ItemAttributesGroup(baseAttributes, 0, 0, 0, 0),
-            ClassType.Scout or ClassType.Assassin or ClassType.DemonHunter => new ItemAttributesGroup(0, baseAttributes, 0, 0, 0),
+            AttributeType.Strength => new ItemAttributesGroup(baseAttributes, 0, 0, 0, 0),
+            AttributeType.Dexterity => new ItemAttributesGroup(0, baseAttributes, 0, 0, 0),
+            AttributeType.Intelligence => new ItemAttributesGroup(0, 0, baseAttributes, 0, 0),
             _ => throw new InvalidEnumArgumentException($"{nameof(classType)} with value {classType} is unsupported")
+
         };
     }
 

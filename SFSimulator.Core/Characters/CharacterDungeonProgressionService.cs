@@ -91,75 +91,9 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
         onDungeonKill(result);
     }
 
-    public void InitCharacterDungeonState(SimulationContext simulationContext)
-    {
-        var dungeonData = simulationContext.DungeonsData;
-        if (dungeonData is null) return;
-
-        var lightWorld = dungeonData.Normal.Select((currentPosition, dungeonIndex) => (currentPosition, MapDungeonIndex(dungeonIndex, false)));
-        var shadowWorld = dungeonData.Shadow.Select((currentPosition, dungeonIndex) => (currentPosition, MapDungeonIndex(dungeonIndex, true)));
-        var tower = (dungeonData.Tower, -1);
-        var twister = (dungeonData.Twister, -2);
-        var loopOfIdols = (dungeonData.Youtube, -3);
-        var sandstorm = (dungeonData.Sandstorm, -4);
-        var combinedDungeons = lightWorld.Union(shadowWorld).Append(tower).Append(loopOfIdols).Append(twister).Append(sandstorm);
-
-        var dungeons = dungeonProvider.GetAllDungeons(simulationContext);
-        // TODO: add SHADOW 5 new dungs
-
-        foreach (var (beatenEnemyPosition, dungeonPosition) in combinedDungeons)
-        {
-            var dungeon = dungeons.FirstOrDefault(d => d.Position == dungeonPosition);
-            if (dungeon is null) continue;
-            var beatenEnemy = dungeon.DungeonEnemies.FirstOrDefault(e => e.Position == beatenEnemyPosition);
-            if (beatenEnemy is null)
-            {
-                dungeon.IsUnlocked = false;
-                continue;
-            }
-
-            foreach (var enemy in dungeon.DungeonEnemies.Where(e => e.Position <= beatenEnemy.Position))
-            {
-                enemy.IsDefeated = true;
-            }
-
-            if (dungeon.DungeonEnemies.All(e => e.IsDefeated)) dungeon.IsDefeated = true;
-        }
-    }
-
-    private static int MapDungeonIndex(int sfToolsIndex, bool isShadow)
-    {
-        var index = (sfToolsIndex + 1) switch
-        {
-            >= 1 and <= 12 => sfToolsIndex + 1,
-            13 => 15,
-            14 => 19,
-            15 => 17,
-            16 => 18,
-            17 => 24,
-            18 => 27,
-            19 => 21,
-            20 => 13,
-            21 => 14,
-            22 => 16,
-            23 => 20,
-            24 => 28,
-            25 => 22,
-            26 => 23,
-            27 => 25,
-            28 => 26,
-            29 => 29,
-            30 => 30,
-            31 => 31,
-            32 => 32,
-            33 => 33,
-            _ => 0
-        };
-
-        return isShadow ? index + 100 : index;
-    }
-
     private bool ShouldDoDungeons(int characterLevel) => !DungeonOptions.DoDungeonPause
         || characterLevel < DungeonOptions.DungeonPauseStartLevel
         || characterLevel >= DungeonOptions.DungeonPauseEndLevel;
+
+    public void InitCharacterDungeonState(SimulationContext simulationContext) => dungeonProvider.InitCharacterDungeonState(simulationContext);
 }

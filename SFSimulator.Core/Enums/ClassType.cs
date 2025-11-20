@@ -19,4 +19,6 @@ public enum ClassType
     Bard = 9,
     Necromancer = 10,
     Paladin = 11,
+    [Display(Name = "Plague Doctor")]
+    PlagueDoctor = 12,
 }

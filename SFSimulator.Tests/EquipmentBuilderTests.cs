@@ -82,6 +82,7 @@ public class EquipmentBuilderTests
     [DataRow(ItemAttributeType.Legendary, 400, ClassType.Bard, 47, 0, ItemType.Boots, 3456)] // IQ = 450
     [DataRow(ItemAttributeType.Epic, 400, ClassType.Necromancer, 7, 0, ItemType.Belt, 1230)] // IQ = 410
     [DataRow(ItemAttributeType.NormalOneStat, 397, ClassType.Paladin, 0, 0, ItemType.Headgear, 6000)] // IQ = 400
+    [DataRow(ItemAttributeType.NormalOneStat, 397, ClassType.PlagueDoctor, 0, 0, ItemType.Headgear, 1200)] // IQ = 400
     public void EquipmentBuilder_provides_proper_armor_values(ItemAttributeType attrType, int characterLevel, ClassType classType, int aura,
             int itemQualityRune, ItemType itemType, int expectedArmor)
     {
@@ -148,6 +149,7 @@ public class EquipmentBuilderTests
     [DataRow(ItemAttributeType.Epic, 500, ClassType.Bard, 0, 0, 2264)] // IQ = 503
     [DataRow(ItemAttributeType.Legendary, 397, ClassType.Necromancer, 0, 0, 1843)] // IQ = 400
     [DataRow(ItemAttributeType.Epic, 350, ClassType.Paladin, 1, 0, 708)] // IQ = 354
+    [DataRow(ItemAttributeType.Epic, 350, ClassType.PlagueDoctor, 1, 0, 708)] // IQ = 354
     public void EquipmentBuilder_weapon_has_proper_damage_values(ItemAttributeType attrType, int characterLevel, ClassType classType, int aura,
             int itemQualityRune, int expectedAvgDmg)
     {

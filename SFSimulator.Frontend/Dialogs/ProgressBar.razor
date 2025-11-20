@@ -2,8 +2,13 @@
 
 <div class="overlay">
     <div class="progressbar">
-        <RadzenText Text="@Text" TextStyle="TextStyle.H6"/>        
-        <RadzenProgressBar ShowValue="false" Min=0 Max=100 Value=Current Style="width: max(300px, 30vw); height: 35px; border-radius: 0.25rem;" ProgressBarStyle="ProgressBarStyle.Primary"/>
+        @if (Text is not null)
+        {
+            <RadzenText Text="@Text" TextStyle="TextStyle.H6" />
+        }
+        <RadzenProgressBar ShowValue="false" Min=0 Max=100 Value="@(Indeterminate ? 0 : Current)"
+            Style="width: max(300px, 30vw); height: 35px; border-radius: 0.25rem;"
+            ProgressBarStyle="ProgressBarStyle.Primary" Mode=Mode />
         <RadzenText class="mt-1!">@MiscText</RadzenText>
     </div>
 </div>
@@ -18,7 +23,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(0,0,0,0.8);
+        background-color: rgba(0, 0, 0, 0.8);
         z-index: 2;
         cursor: pointer;
     }
@@ -37,17 +42,18 @@
 </style>
 
 @code {
-    [Parameter, EditorRequired]
-    public bool Visible { get; set; }
-    [Parameter, EditorRequired]
+    [Parameter]
     public int Current { get; set; }
-    [Parameter, EditorRequired]
-    public string Text { get; set; } = default!;
+    [Parameter]
+    public string? Text { get; set; } = default!;
+    [Parameter]
+    public bool Indeterminate { get; set; } = false;
+    private ProgressBarMode Mode => Indeterminate ? ProgressBarMode.Indeterminate : ProgressBarMode.Determinate;
 
     private string MiscText { get; set; } = FunkyTexts[Random.Shared.Next(FunkyTexts.Length)];
-    private readonly PeriodicTimer _timer = new (TimeSpan.FromSeconds(2));
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(2));
 
-    private static string[] FunkyTexts =
+    private static string[] FunkyTexts = 
     [
         "Obliterating enemies...",
         "Bringing back #banter on Tavern discord...",
@@ -69,7 +75,7 @@
         "Admiring New Backend...",
         "Getting fact-checked by Milado...",
         "Making sure Eggman reworks new class into scout variant...",
-        "Letting know Magi that warrior is worst class...",
+        "Letting Magi know that warrior is worst class...",
         "Waiting to get mod on Tavern...",
         "Siding up with Norbert...",
         "Making scrambled eggs on GS4 server...",
@@ -82,6 +88,9 @@
         "Finding new ways to exploit the game...",
         "Living through tavern team internship hell...",
         "Reading SF History Book from Resist 2 Exist...",
+        "Waiting for leaks from Julian...",
+        "Waiting for Pahx to delete his character for the 69th time...",
+        "Getting a job in circus for rafa97sam...",
     ];
 
     protected override void OnInitialized()

@@ -1,19 +1,12 @@
 ﻿namespace SFSimulator.Core;
 
-public class FightableContextFactory : IFightableContextFactory
+public class FightableContextFactory(IDamageProvider damageProvider, ICritChanceProvider critChanceProvider,
+        IBonusMelodyLengthProvider bonusMelodyLengthProvider, Random random) : IFightableContextFactory
 {
-    private readonly IDamageProvider _damageProvider;
-    private readonly ICritChanceProvider _critChanceProvider;
-    private readonly IBonusMelodyLengthProvider _bonusMelodyLengthProvider;
-    private readonly Random _random;
-
-    public FightableContextFactory(IDamageProvider damageProvider, ICritChanceProvider critChanceProvider, IBonusMelodyLengthProvider bonusMelodyLengthProvider, Random random)
-    {
-        _damageProvider = damageProvider;
-        _random = random;
-        _critChanceProvider = critChanceProvider;
-        _bonusMelodyLengthProvider = bonusMelodyLengthProvider;
-    }
+    private readonly IDamageProvider _damageProvider = damageProvider;
+    private readonly ICritChanceProvider _critChanceProvider = critChanceProvider;
+    private readonly IBonusMelodyLengthProvider _bonusMelodyLengthProvider = bonusMelodyLengthProvider;
+    private readonly Random _random = random;
 
     public IFightableContext Create<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
@@ -31,6 +24,7 @@ public class FightableContextFactory : IFightableContextFactory
             ClassType.Bard => CreateBardContext(main, opponent),
             ClassType.Necromancer => CreateNecromancerContext(main, opponent),
             ClassType.Paladin => CreatePaladinContext(main, opponent),
+            ClassType.PlagueDoctor => CreatePlagueDoctorContext(main, opponent),
             _ => throw new ArgumentOutOfRangeException(nameof(main), $"{main.Class} is not supported in FightableContext"),
         };
         InstantiateSharedProperties(context, main, opponent);
@@ -146,6 +140,13 @@ public class FightableContextFactory : IFightableContextFactory
         {
             InitialArmorReduction = damageReduction
         };
+        return context;
+    }
+
+    private PlagueDoctorFightContext CreatePlagueDoctorContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
+    {
+        var baseDmgMultiplier = _damageProvider.CalculateDamageMultiplier(main, opponent);
+        var context = new PlagueDoctorFightContext(opponent.Class, baseDmgMultiplier);
         return context;
     }
 }
