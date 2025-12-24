@@ -155,8 +155,18 @@ public class DamageProvider : IDamageProvider
             (ClassType.Bard, ClassType.PlagueDoctor) => baseDmgMultiplier * 1.05D,
             (ClassType.Necromancer, ClassType.DemonHunter) => baseDmgMultiplier + 0.1D,
             (ClassType.Paladin, ClassType.Mage) => baseDmgMultiplier * 1.5D,
-            (ClassType.PlagueDoctor, ClassType.DemonHunter) => baseDmgMultiplier * 1.065D,
+            (ClassType.PlagueDoctor, ClassType.DemonHunter) => baseDmgMultiplier * 1.06D,
             (_, _) => baseDmgMultiplier,
         };
+    }
+
+    public double CalculateSwoopMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target)
+        where T : IWeaponable where E : IWeaponable
+    {
+        var dmgMultiplier = CalculateDamageMultiplier(attacker, target);
+        var baseDmgMultiplier = ClassConfigurationProvider.Get(ClassType.Druid).DamageMultiplier;
+        var classSpecificDmgMultiplier = dmgMultiplier / baseDmgMultiplier;
+
+        return ((dmgMultiplier / classSpecificDmgMultiplier + 0.8) * classSpecificDmgMultiplier) / dmgMultiplier;
     }
 }

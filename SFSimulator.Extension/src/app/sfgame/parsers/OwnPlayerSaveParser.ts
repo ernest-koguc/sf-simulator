@@ -148,7 +148,9 @@ export function parseOwnPlayerSave(ownSaveData: number[]): OwnPlayerSave {
   dataType.skip(15);
   const groupTreasure = dataType.long();
   const groupInstructor = dataType.long();
-  dataType.skip(4);
+  dataType.skip(3);
+  const hydraRemainingFights = dataType.long();
+
   const groupPet = dataType.long();
   dataType.skip(18);
 
@@ -244,7 +246,8 @@ export function parseOwnPlayerSave(ownSaveData: number[]): OwnPlayerSave {
       Joined: groupJoined,
       Treasure: groupTreasure,
       Instructor: groupInstructor,
-      Pet: groupPet
+      Pet: groupPet,
+      CanAttackHydra: hydraRemainingFights > 0,
     },
     Fortress: fortress,
     Summer: summer,

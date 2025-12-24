@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 
-public class ScoutFightContext : DelegatableFightableContext
+public class ScoutFightContext : FightContextBase
 {
     public ScoutFightContext()
     {
@@ -13,17 +13,17 @@ public class ScoutFightContext : DelegatableFightableContext
     {
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
             return false;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 

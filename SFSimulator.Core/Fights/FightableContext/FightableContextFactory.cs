@@ -1,16 +1,15 @@
 ﻿namespace SFSimulator.Core;
 
 public class FightableContextFactory(IDamageProvider damageProvider, ICritChanceProvider critChanceProvider,
-        IBonusMelodyLengthProvider bonusMelodyLengthProvider, Random random) : IFightableContextFactory
+        Random random) : IFightableContextFactory
 {
     private readonly IDamageProvider _damageProvider = damageProvider;
     private readonly ICritChanceProvider _critChanceProvider = critChanceProvider;
-    private readonly IBonusMelodyLengthProvider _bonusMelodyLengthProvider = bonusMelodyLengthProvider;
     private readonly Random _random = random;
 
     public IFightableContext Create<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
-        DelegatableFightableContext context = main.Class switch
+        FightContextBase context = main.Class switch
         {
             ClassType.Warrior => CreateWarriorContext(),
             ClassType.Mage => CreateMageContext(),
@@ -32,7 +31,7 @@ public class FightableContextFactory(IDamageProvider damageProvider, ICritChance
         return context;
     }
 
-    private void InstantiateSharedProperties<T, E>(DelegatableFightableContext context, IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
+    private void InstantiateSharedProperties<T, E>(FightContextBase context, IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
         context.Random = _random;
         var (Minimum, Maximum) = _damageProvider.CalculateDamage(main.FirstWeapon, main, opponent);
@@ -103,7 +102,8 @@ public class FightableContextFactory(IDamageProvider damageProvider, ICritChance
     {
         var context = new DruidFightContext(opponent.Class)
         {
-            RageCritChance = _critChanceProvider.CalculateCritChance(main, opponent, 0.75D, 0.1)
+            RageCritChance = _critChanceProvider.CalculateCritChance(main, opponent, 0.75D, 0.1),
+            SwoopDamageMultiplier = _damageProvider.CalculateSwoopMultiplier(main, opponent)
         };
         return context;
     }
@@ -116,8 +116,7 @@ public class FightableContextFactory(IDamageProvider damageProvider, ICritChance
 
     private BardFightContext CreateBardContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
     {
-        var bonusLength = _bonusMelodyLengthProvider.GetBonusMelodyLength(main);
-        var context = new BardFightContext(opponent.Class, bonusLength);
+        var context = new BardFightContext(opponent.Class);
         return context;
     }
 

@@ -310,7 +310,7 @@ export type OwnPlayerSave = {
   Luck: Attribute;
   Mount: number;
   MountValue: number;
-  Group: { ID: number, Joined: number, Treasure: number, Instructor: number, Pet: number };
+  Group: { ID: number, Joined: number, Treasure: number, Instructor: number, Pet: number, CanAttackHydra: boolean };
   Book: number;
   Armor: number;
   Damage: { Min: number, Max: number };
@@ -451,4 +451,22 @@ export type DailyTask = {
 
 export type ToiletState = {
   AmountOfItemsToSacrifice: number
+}
+
+export type Guild = {
+  Id: number,
+  TotalTreasure: number,
+  PortalLife: number,
+  TotalInstructor: number,
+  Portal: number,
+  Honor: number,
+  Raids: number,
+  PetId: number,
+  PetMaxLevel: number,
+}
+
+export type PortalProgress = {
+  Finished: number,
+  HpPercentage: number,
+  CanAttack: boolean,
 }

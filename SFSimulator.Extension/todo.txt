@@ -1,0 +1,6 @@
+Features for the extension:
+- Arena WR simulator
+- Hellevator WR simulator
+- Warnings if runes/scrolls missing for the expeditions
+- Better items - tooltips to show if there are any better items in backpack/shop
+- Maybe player look at - show hidden info?

@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 
-public class MageFightContext : DelegatableFightableContext
+public class MageFightContext : FightContextBase
 {
     public MageFightContext()
     {
@@ -11,14 +11,14 @@ public class MageFightContext : DelegatableFightableContext
     private bool AttackImpl(IAttackTakable target, ref int round)
     {
         round++;
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 

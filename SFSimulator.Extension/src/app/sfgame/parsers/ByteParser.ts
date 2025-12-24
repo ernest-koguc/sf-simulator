@@ -87,4 +87,11 @@ export class ByteParser {
   atLong(index: number) {
     return this.values[index] || 0;
   }
+
+  getDate(): Date {
+    const timestamp = this.long();
+    return new Date(timestamp * 1000 + ByteParser.timezoneOffset);
+  }
+
+  public static timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 }

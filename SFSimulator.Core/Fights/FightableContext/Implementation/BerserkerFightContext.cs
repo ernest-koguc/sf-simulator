@@ -1,15 +1,17 @@
 ﻿namespace SFSimulator.Core;
 
-public class BerserkerFightContext : DelegatableFightableContext, IRoundSkipable
+public class BerserkerFightContext : FightContextBase
 {
     private int ChainAttackCounter { get; set; } = 0;
     private int ChainAttackCap { get; set; } = 14;
     private ClassType OpponentClass { get; set; }
+
     public BerserkerFightContext(ClassType opponentClass)
     {
         AttackImplementation = AttackImpl;
         TakeAttackImplementation = TakeAttackImpl;
         WillTakeAttackImplementation = WillTakeAttackImpl;
+        WillSkipRoundImplementation = WillSkipRound;
         OpponentClass = opponentClass;
     }
 
@@ -23,17 +25,17 @@ public class BerserkerFightContext : DelegatableFightableContext, IRoundSkipable
     {
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
             return false;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 
@@ -52,7 +54,8 @@ public class BerserkerFightContext : DelegatableFightableContext, IRoundSkipable
         }
         else if (Random.Next(1, 101) > 50)
         {
-            round++;
+            // NOTE: currently there is a bug that makes berserker chain attack not increase enrage round
+            //round++;
             ChainAttackCounter++;
             return true;
         }

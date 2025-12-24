@@ -23,6 +23,7 @@ public static class ITotalStatsCalculatableExtensions
     {
         var items = totalStatsCalculatable.Items;
 
+        // check if this works as intended for Battle Mage, Zerk and Plague Doctor
         var attributesFromItems = items.Sum(i => GetSumOfItem(attributeType, i, totalStatsCalculatable.Class, totalStatsCalculatable.IsCompanion));
         attributesFromItems = (int)(attributesFromItems * ClassConfigurationProvider.Get(totalStatsCalculatable.Class).ItemBonusMultiplier);
 

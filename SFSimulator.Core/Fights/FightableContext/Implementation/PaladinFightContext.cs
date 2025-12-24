@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 
-internal class PaladinFightContext : DelegatableFightableContext
+internal class PaladinFightContext : FightContextBase
 {
     public required double InitialArmorReduction { get; set; }
 
@@ -55,15 +55,15 @@ internal class PaladinFightContext : DelegatableFightableContext
 
         ChangeStance();
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
         {
             return false;
         }
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, CritChance, CritMultiplier, Random) * DamageMultiplier;
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
@@ -73,25 +73,26 @@ internal class PaladinFightContext : DelegatableFightableContext
         if (Stance == PaladinStanceType.Defensive && Random.Next(1, 101) <= BlockChance)
         {
             var health = actualDamage * 0.3;
-            Health += Math.Min(Math.Max(0, MaxHealth - Health), (long)health);
+            Health += Math.Min(Math.Max(0, MaxHealth - Health), health);
 
             return false;
         }
 
-        Health -= (long)actualDamage;
+        Health -= actualDamage;
         return Health <= 0;
     }
 
     private bool MageAttackImpl(IAttackTakable target, ref int round)
     {
         round++;
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
-        return target.TakeAttack(dmg, ref round);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
-    private bool NoBlockTakeAttackImpl(double damage, ref int round)
+    public bool NoBlockTakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        var actualDamage = damage * CurrentArmorReduction;
+        Health -= actualDamage;
         return Health <= 0;
     }
 

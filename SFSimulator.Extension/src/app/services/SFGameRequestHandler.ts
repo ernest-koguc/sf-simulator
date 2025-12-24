@@ -13,6 +13,9 @@ import { parseEvents } from '../sfgame/parsers/EventParser';
 import { parseDailyTaskList, parseDailyTaskRewards } from '../sfgame/parsers/DailyTasksParser';
 import { parseToiletState } from '../sfgame/parsers/ToiletParser';
 import { EquipmentService } from './EquipmentService';
+import { parseOwnGroupSave } from '../sfgame/parsers/OwnGroupSaveParser';
+import { parsePortalProgress } from '../sfgame/parsers/PortalProgressParser';
+import { ByteParser } from '../sfgame/parsers/ByteParser';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +24,15 @@ export class SFGameRequestHandler {
   private expeditionService = inject(ExpeditionService);
   private sessionManager = inject(SessionManager);
   private equipmentService = inject(EquipmentService);
+  private serverTime: number = Date.now();
 
   public async digestResponse(gameRequest: SFGameRequest) {
     const data = gameRequest.data;
 
 
+    if (data['timestamp']) {
+      this.serverTime = parseInt(data['timestamp']) * 1000 + ByteParser.timezoneOffset;
+    }
     // TODO: instead of zillion if statements lets use some pattern matching
     if (data['ownplayersave']) {
       const save = numbers(data['ownplayersave'])!;
@@ -94,6 +101,22 @@ export class SFGameRequestHandler {
     if (data['owngroupname']) {
       this.sessionManager.updateCurrent(current => {
         current.guildName = data['owngroupname'];
+      });
+    }
+
+    if (data['owngroupsave']) {
+      const groupSaveData = numbers(data['owngroupsave'])!;
+      const ownGroup = parseOwnGroupSave(groupSaveData);
+      this.sessionManager.updateCurrent(current => {
+        current.guild = ownGroup;
+      });
+    }
+
+    if (data['portalprogress']) {
+      const portalProgressData = numbers(data['portalprogress'])!;
+      const portalProgress = parsePortalProgress(portalProgressData, this.serverTime);
+      this.sessionManager.updateCurrent(current => {
+        current.portalProgress = portalProgress;
       });
     }
 
@@ -173,4 +196,8 @@ export class SFGameRequestHandler {
 
 export function numbers(val: string | undefined, delimiter: string | RegExp = '/') {
   return val?.split(delimiter).filter(v => v !== '').map(Number) ?? null;
+}
+
+export function mixed(val: string, delimiter: string = '/'): (number | string)[] {
+  return val?.split(delimiter).filter(v => v !== '') ?? null;
 }

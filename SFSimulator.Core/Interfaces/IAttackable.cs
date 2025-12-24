@@ -1,7 +1,10 @@
-﻿namespace SFSimulator.Core
+﻿
+using static SFSimulator.Core.IFightableContext;
+
+namespace SFSimulator.Core
 {
     public interface IAttackable
     {
-        bool Attack(IAttackTakable target, ref int round);
+        AttackDelegate AttackImplementation { get; }
     }
 }

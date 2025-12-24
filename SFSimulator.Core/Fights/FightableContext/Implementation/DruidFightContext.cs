@@ -1,13 +1,13 @@
 ﻿namespace SFSimulator.Core;
 
-public class DruidFightContext : DelegatableFightableContext
+public class DruidFightContext : FightContextBase
 {
     private int EvadeChance { get; set; } = 35;
     private bool IsInBearForm { get; set; } = false;
     public double RageCritChance { get; set; }
     private double RageCritMultiplierBonus { get; set; } = 4D;
     private double SwoopChance { get; set; } = 0.15;
-    private double SwoopDamageModifier { get; set; } = (1 / 3D + 0.8D) / (1 / 3D);
+    public double SwoopDamageMultiplier { get; set; }
     private ClassType OpponentClass { get; set; }
 
     public DruidFightContext(ClassType opponentClass)
@@ -46,16 +46,16 @@ public class DruidFightContext : DelegatableFightableContext
         AttackImplementation = AttackImpl;
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
         {
             return false;
         }
 
         var critMultiplier = (2 + RageCritMultiplierBonus) * CritMultiplier / 2;
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, RageCritChance, critMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool AttackImpl(IAttackTakable target, ref int round)
@@ -68,12 +68,12 @@ public class DruidFightContext : DelegatableFightableContext
             round++;
 
             SwoopChance = Math.Min(0.5, SwoopChance + 0.05);
-            if (target.WillTakeAttack())
+            if (target.WillTakeAttackImplementation())
             {
-                var swoopDmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
-                    round, CritChance, CritMultiplier, Random) * SwoopDamageModifier;
+                var swoopDmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+                    round, CritChance, CritMultiplier, Random) * SwoopDamageMultiplier;
 
-                if (target.TakeAttack(swoopDmg, ref round))
+                if (target.TakeAttackImplementation(swoopDmg, ref round))
                 {
                     return true;
                 }
@@ -82,29 +82,29 @@ public class DruidFightContext : DelegatableFightableContext
 
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
         {
             return false;
         }
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool AttackMageImpl(IAttackTakable target, ref int round)
     {
         round++;
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 

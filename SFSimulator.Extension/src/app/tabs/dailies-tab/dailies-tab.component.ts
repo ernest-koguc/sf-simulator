@@ -25,6 +25,8 @@ export class DailiesTabComponent {
     const dailyTasks = current?.dailyTasks;
     const tower = current?.tower;
     const toiletState = current?.toiletState;
+    const guild = current?.guild;
+    const portalProgress = current?.portalProgress;
     if (!current || !ownSave || events === null || events === undefined || !dailyTasksRewards || !dailyTasks) {
       return [];
     }
@@ -79,10 +81,23 @@ export class DailiesTabComponent {
     dailies[TaskType.SpinWheelOfFortune].Progress = `${ownSave.WheelSpinsToday}/${maxSpins}`;
 
     // SOLO PORTAL
+    if (ownSave.Level < 99 || !portalProgress || portalProgress.Finished === 50) {
+      delete dailies[TaskType.FightSoloPortal];
+    } else {
+      dailies[TaskType.FightSoloPortal].Completed = !portalProgress.CanAttack;
+    }
 
-    // GUILD PORTAL
+    if (!guild || guild.PetMaxLevel <= 0) {
+      delete dailies[TaskType.FightHydra];
+    } else {
+      dailies[TaskType.FightHydra].Completed = !ownSave.Group.CanAttackHydra;
+    }
 
-
+    // if (ownSave.Level < 99 || !guild || guild.Portal === 50) {
+    //   delete dailies[TaskType.FightGuildPortal];
+    // } else {
+    //   dailies[TaskType.FightGuildPortal].Completed = !guild.CanAttackPortal;
+    // }
 
     const dailyTasksPointsRequired = dailyTasksRewards.reduce((a, b) => a.PointsRequired > b.PointsRequired ? a : b).PointsRequired;
     const currentPoints = dailyTasks.filter(v => v.Completed).reduce((a, b) => a + b.Points, 0);
@@ -103,7 +118,8 @@ export class DailiesTabComponent {
     [TaskType.CollectAdventuromatic]: { Completed: false, Information: 'Collect TFA from Adventuromatic', Progress: '' },
     [TaskType.SpinWheelOfFortune]: { Completed: false, Information: 'Spin Abawuwu Wheel of Fortune', Progress: '' },
     [TaskType.FightSoloPortal]: { Completed: false, Information: 'Fight in Solo Portal', Progress: '' },
-    [TaskType.FightGuildPortal]: { Completed: false, Information: 'Fight in Guild Portal', Progress: '' },
+    //[TaskType.FightGuildPortal]: { Completed: false, Information: 'Fight in Guild Portal', Progress: '' },
+    [TaskType.FightHydra]: { Completed: false, Information: 'Fight Hydra', Progress: '' },
     [TaskType.CompleteDailyTasks]: { Completed: false, Information: 'Complete Daily Tasks', Progress: '' },
   });
 }
@@ -123,7 +139,8 @@ enum TaskType {
   CollectAdventuromatic,
   SpinWheelOfFortune,
   FightSoloPortal,
-  FightGuildPortal,
+  //FightGuildPortal,
+  FightHydra,
   CompleteDailyTasks,
 }
 

@@ -1,4 +1,5 @@
 ﻿namespace SFSimulator.Core;
+
 public class PetFightableFactory : IPetFightableFactory
 {
     public PetFightable CreatePetFightable(Pet pet, PetsState petsState, int gladiatorLevel)

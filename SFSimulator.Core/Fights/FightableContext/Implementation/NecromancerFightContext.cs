@@ -1,5 +1,5 @@
 ﻿namespace SFSimulator.Core;
-public class NecromancerFightContext : DelegatableFightableContext
+public class NecromancerFightContext : FightContextBase
 {
     public required double BaseDamageMultiplier { get; init; }
     private NecromancerMinionType MinionType { get; set; } = NecromancerMinionType.None;
@@ -33,9 +33,9 @@ public class NecromancerFightContext : DelegatableFightableContext
     {
         round++;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool NoBlockWillTakeAttackImpl()
@@ -53,11 +53,11 @@ public class NecromancerFightContext : DelegatableFightableContext
             return AttackWithMinion(target, ref round);
         }
 
-        if (target.WillTakeAttack())
+        if (target.WillTakeAttackImplementation())
         {
-            var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+            var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
                 round, CritChance, CritMultiplier, Random);
-            if (target.TakeAttack(dmg, ref round))
+            if (target.TakeAttackImplementation(dmg, ref round))
             {
                 return true;
             }
@@ -68,7 +68,7 @@ public class NecromancerFightContext : DelegatableFightableContext
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 
@@ -93,9 +93,9 @@ public class NecromancerFightContext : DelegatableFightableContext
 
         MinionRounds--;
         var currentMinion = MinionType;
-        // TODO: this is currently not working as in game but we are comparing to SFTOOLS
-        if (MinionRounds == 0 && MinionType == NecromancerMinionType.Skeleton && SkeletonRevivesCount < 2
-            )//&& Random.Next(1, 101) > 50)
+        // NOTE: Currently skeleton can revive only once per fight but this is a bug
+        if (MinionRounds == 0 && MinionType == NecromancerMinionType.Skeleton &&
+            SkeletonRevivesCount < 1 && Random.Next(1, 101) > 50)
         {
             MinionRounds = 1;
             SkeletonRevivesCount++;
@@ -106,18 +106,18 @@ public class NecromancerFightContext : DelegatableFightableContext
             SkeletonRevivesCount = 0;
         }
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
         {
             return false;
         }
 
         var critChance = currentMinion == NecromancerMinionType.Hound ? Math.Min(0.6, CritChance + 0.1) : CritChance;
         var critMultiplier = currentMinion == NecromancerMinionType.Hound ? 2.5 * CritMultiplier / 2 : CritMultiplier;
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, critChance, critMultiplier, Random);
         dmg *= GetMinionDmgMultiplier(currentMinion);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private void SummonMinion()

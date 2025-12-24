@@ -1,19 +1,19 @@
 ﻿namespace SFSimulator.Core;
 
-public class BardFightContext : DelegatableFightableContext
+public class BardFightContext : FightContextBase
 {
     private readonly (int duration, double dmgBonus)[] MelodiesEffects =
     [
-        (1, 1.2),
-        (1, 1.4),
-        (2, 1.6)
+        (3, 1.2),
+        (3, 1.4),
+        (4, 1.6)
     ];
 
     public int MelodyLength { get; set; } = -1;
     public int NextMelodyRound { get; set; } = 0;
     public double MelodyDmgMultiplier { get; set; } = 1;
 
-    public BardFightContext(ClassType enemyClass, int melodyLengthBonus)
+    public BardFightContext(ClassType enemyClass)
     {
         TakeAttackImplementation = TakeAttackImpl;
         WillTakeAttackImplementation = WillTakeAttackImpl;
@@ -23,11 +23,6 @@ public class BardFightContext : DelegatableFightableContext
         else
         {
             AttackImplementation = AttackImpl;
-
-            for (var i = 0; i < MelodiesEffects.Length; i++)
-            {
-                MelodiesEffects[i].duration += melodyLengthBonus;
-            }
         }
     }
 
@@ -43,10 +38,10 @@ public class BardFightContext : DelegatableFightableContext
     {
         round++;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool AttackImpl(IAttackTakable target, ref int round)
@@ -64,18 +59,18 @@ public class BardFightContext : DelegatableFightableContext
         MelodyLength--;
         NextMelodyRound--;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
             return false;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, CritChance, CritMultiplier, Random) * MelodyDmgMultiplier;
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 

@@ -1,6 +1,6 @@
 namespace SFSimulator.Core;
 
-internal class PlagueDoctorFightContext : DelegatableFightableContext
+internal class PlagueDoctorFightContext : FightContextBase
 {
     private double BaseDamageMultiplier { get; init; }
     private int PoisonRound { get; set; } = 0;
@@ -44,7 +44,7 @@ internal class PlagueDoctorFightContext : DelegatableFightableContext
         if (PoisonRound <= 0 && Random.Next(1, 101) > 50)
         {
             round++;
-            if (!target.WillTakeAttack())
+            if (!target.WillTakeAttackImplementation())
             {
                 return false;
             }
@@ -52,10 +52,19 @@ internal class PlagueDoctorFightContext : DelegatableFightableContext
             PoisonRound = 3;
 
             var poisonMultiplier = PoisonDmgMultipliers[2];
-            var tinctureThrowDmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage * poisonMultiplier, 
+            var tinctureThrowDmg = CalculateNormalHitDamage(MinimumDamage * poisonMultiplier, 
             MaximumDamage * poisonMultiplier, round, CritChance, CritMultiplier, Random);
 
-            return target.TakeAttack(tinctureThrowDmg, ref round);
+            // NOTE: dirty trick to make Paladin vs Plague Doctor work.
+            // In general I think this is okay to keep right now since refactoring is expensive and
+            // usually each new class has some unique random shit never seen before that will break it again
+            if (target is PaladinFightContext paladinTarget) {
+                var hpBeforeAttack = paladinTarget.Health;
+                var result = target.TakeAttackImplementation(tinctureThrowDmg, ref round);
+                PoisonRound = hpBeforeAttack > paladinTarget.Health ? 3 : 0;
+                return result;
+            }
+            return target.TakeAttackImplementation(tinctureThrowDmg, ref round);
         }
 
         if (PoisonRound > 0)
@@ -63,39 +72,44 @@ internal class PlagueDoctorFightContext : DelegatableFightableContext
             round++;
             PoisonRound--;
             var poisonMultiplier = PoisonDmgMultipliers[PoisonRound];
-            var poisonDmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage * poisonMultiplier, 
+            var poisonDmg = CalculateNormalHitDamage(MinimumDamage * poisonMultiplier, 
             MaximumDamage * poisonMultiplier, round, CritChance, CritMultiplier, Random);
 
-            if (target.TakeAttack(poisonDmg, ref round))
-            {
+            // NOTE: dirty trick to make Paladin vs Plague Doctor work
+            if (target is PaladinFightContext paladinTarget) {
+                if (paladinTarget.NoBlockTakeAttackImpl(poisonDmg, ref round)) {
+                    return true;
+                }
+            }
+            else if (target.TakeAttackImplementation(poisonDmg, ref round)) {
                 return true;
             }
         }
 
         round++;
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
         {
             return false;
         }
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 
     private bool MageAttackImpl(IAttackTakable target, ref int round)
     {
         round++;
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
             round, CritChance, CritMultiplier, Random);
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool WillTakeAttackImpl()
@@ -108,11 +122,14 @@ internal class PlagueDoctorFightContext : DelegatableFightableContext
         var dmgMultiplier = ClassConfigurationProvider.Get(ClassType.PlagueDoctor).DamageMultiplier;
         var classSpecificDmgMultiplier = BaseDamageMultiplier / dmgMultiplier;
 
-        return
+        return 
         [
-            (BaseDamageMultiplier - 0.9 * classSpecificDmgMultiplier) / BaseDamageMultiplier,
-            (BaseDamageMultiplier - 0.55 * classSpecificDmgMultiplier) / BaseDamageMultiplier,
-            (BaseDamageMultiplier - 0.2 * classSpecificDmgMultiplier) / BaseDamageMultiplier,
+            ((BaseDamageMultiplier / classSpecificDmgMultiplier - 0.9) * classSpecificDmgMultiplier) /
+            BaseDamageMultiplier,
+            ((BaseDamageMultiplier / classSpecificDmgMultiplier - 0.55) * classSpecificDmgMultiplier) /
+            BaseDamageMultiplier,
+            ((BaseDamageMultiplier / classSpecificDmgMultiplier - 0.2) * classSpecificDmgMultiplier) /
+            BaseDamageMultiplier
         ];
     }
 }

@@ -6,4 +6,5 @@ public interface IDamageProvider
     double CalculateFireBallDamage<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable;
     double CalculateDamageReduction<T, E>(IFightable<T> attacker, IFightable<E> target) where T : IWeaponable where E : IWeaponable;
     double CalculateDamageMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target) where T : IWeaponable where E : IWeaponable;
+    double CalculateSwoopMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target) where T : IWeaponable where E : IWeaponable;
 }

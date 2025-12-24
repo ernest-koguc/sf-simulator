@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 
-public class BattleMageFightContext : DelegatableFightableContext, IBeforeFightAttackable
+public class BattleMageFightContext : FightContextBase
 {
     public double FireBallDamage { get; set; }
     public BattleMageFightContext()
@@ -8,29 +8,30 @@ public class BattleMageFightContext : DelegatableFightableContext, IBeforeFightA
         AttackImplementation = AttackImpl;
         TakeAttackImplementation = TakeAttackImpl;
         WillTakeAttackImplementation = WillTakeAttackImpl;
+        AttackBeforeFightImplementation = AttackBeforeFight;
     }
 
     public bool AttackBeforeFight(IAttackTakable target, ref int round)
     {
         round++;
-        return target.TakeAttack(FireBallDamage, ref round);
+        return target.TakeAttackImplementation(FireBallDamage, ref round);
     }
 
     private bool AttackImpl(IAttackTakable target, ref int round)
     {
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
             return false;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 

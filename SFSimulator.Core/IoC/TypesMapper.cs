@@ -22,7 +22,6 @@ public static class TypesMapper
         new (typeof(FightableContextFactory), typeof(IFightableContextFactory)),
         new (typeof(CritChanceProvider), typeof(ICritChanceProvider)),
         new (typeof(DamageProvider), typeof(IDamageProvider)),
-        new (typeof(BonusMelodyLengthProvider), typeof(IBonusMelodyLengthProvider)),
         new (typeof(WeeklyTasksRewardProvider), typeof(IWeeklyTasksRewardProvider)),
         new (typeof(ExpeditionService), typeof(IExpeditionService)),
         new (typeof(BlackSmithAdvisor), typeof(IBlackSmithAdvisor)) ,

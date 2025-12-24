@@ -1,6 +1,6 @@
 ﻿namespace SFSimulator.Core;
 
-public class AssassinFightContext : DelegatableFightableContext
+public class AssassinFightContext : FightContextBase
 {
     public double SecondMinimumDamage { get; set; }
     public double SecondMaximumDamage { get; set; }
@@ -15,11 +15,11 @@ public class AssassinFightContext : DelegatableFightableContext
     {
         round++;
 
-        if (target.WillTakeAttack())
+        if (target.WillTakeAttackImplementation())
         {
-            var firstWeaponDamage = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
+            var firstWeaponDamage = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
                 round, CritChance, CritMultiplier, Random);
-            if (target.TakeAttack(firstWeaponDamage, ref round))
+            if (target.TakeAttackImplementation(firstWeaponDamage, ref round))
             {
                 return true;
             }
@@ -27,20 +27,20 @@ public class AssassinFightContext : DelegatableFightableContext
 
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
         {
             return false;
         }
 
-        var secondWeaponDamage = DungeonableDefaultImplementation.CalculateNormalHitDamage(SecondMinimumDamage, SecondMaximumDamage,
+        var secondWeaponDamage = CalculateNormalHitDamage(SecondMinimumDamage, SecondMaximumDamage,
             round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(secondWeaponDamage, ref round);
+        return target.TakeAttackImplementation(secondWeaponDamage, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 

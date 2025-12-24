@@ -1,9 +1,8 @@
 ﻿namespace SFSimulator.Core;
 
-public class DemonHunterFightContext : DelegatableFightableContext
+public class DemonHunterFightContext : FightContextBase
 {
-    private double ReviveChance { get; set; } = 0.44;
-    private double HpReviveModifier { get; set; } = 0.9;
+    private int ReviveCount { get; set; } = 0;
     public DemonHunterFightContext(ClassType enemyClass)
     {
         AttackImplementation = AttackImpl;
@@ -20,24 +19,23 @@ public class DemonHunterFightContext : DelegatableFightableContext
     public override void ResetState()
     {
         base.ResetState();
-        ReviveChance = 0.44;
-        HpReviveModifier = 0.9;
+        ReviveCount = 0;
     }
     private bool AttackImpl(IAttackTakable target, ref int round)
     {
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
             return false;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
 
         if (Health <= 0)
         {
@@ -49,7 +47,7 @@ public class DemonHunterFightContext : DelegatableFightableContext
 
     private bool NoReviveTakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 
@@ -57,15 +55,14 @@ public class DemonHunterFightContext : DelegatableFightableContext
 
     private void Revive(ref int round)
     {
-        if (ReviveChance > 0 && Random.NextDouble() >= ReviveChance)
-        {
+        var currentReviveChance = 0.44 - ReviveCount * 0.11;
+        if (currentReviveChance <= 0 || Random.NextDouble() >= currentReviveChance) {
             return;
         }
 
-        round++;
+        Health = MaxHealth * (0.9 - ReviveCount * 0.1);
 
-        Health = (long)(MaxHealth * HpReviveModifier);
-        ReviveChance -= 0.11;
-        HpReviveModifier -= 0.1;
+        round++;
+        ReviveCount++;
     }
 }

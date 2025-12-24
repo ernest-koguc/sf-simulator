@@ -280,9 +280,4 @@ public class DungeonSimulatorTests
 
         return (int)Math.Floor(dmgReduction * 100 * level / classConfig.ArmorMultiplier);
     }
-    
-    private static void Method()
-    {
-        Span<uint> buffer = stackalloc uint[1024];
-    }
 }

@@ -1,8 +1,9 @@
 ﻿namespace SFSimulator.Core;
 
-public class WarriorFightContext : DelegatableFightableContext
+public class WarriorFightContext : FightContextBase
 {
     public int BlockChance { get; set; }
+
     public WarriorFightContext()
     {
         AttackImplementation = AttackImpl;
@@ -14,17 +15,17 @@ public class WarriorFightContext : DelegatableFightableContext
     {
         round++;
 
-        if (!target.WillTakeAttack())
+        if (!target.WillTakeAttackImplementation())
             return false;
 
-        var dmg = DungeonableDefaultImplementation.CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
+        var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage, round, CritChance, CritMultiplier, Random);
 
-        return target.TakeAttack(dmg, ref round);
+        return target.TakeAttackImplementation(dmg, ref round);
     }
 
     private bool TakeAttackImpl(double damage, ref int round)
     {
-        Health -= (long)damage;
+        Health -= damage;
         return Health <= 0;
     }
 

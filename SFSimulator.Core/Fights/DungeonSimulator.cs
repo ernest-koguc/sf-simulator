@@ -120,7 +120,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
     private bool PerformSingleFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext)
     {
-        long? leftoverHealth = null;
+        double? leftoverHealth = null;
         foreach (var (CharSide, DungeonSide) in lookupContext)
         {
             if (leftoverHealth.HasValue)
@@ -137,19 +137,22 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         return false;
     }
 
-    private bool PerformFight(IFightableContext charSide, IFightableContext dungeonSide)
+    private bool PerformFight(IFightableContext charSide, IFightableContext enemySide)
     {
-        var charSideStarts = charSide.Reaction > dungeonSide.Reaction || _random.NextDouble() < 0.5;
-        var (attacker, defender) = charSideStarts ? (charSide, dungeonSide) : (dungeonSide, charSide);
+        var charSideStarts = charSide.Reaction > enemySide.Reaction ||
+                            (charSide.Reaction == enemySide.Reaction
+                             && _random.NextDouble() < 0.5);
+
+        var (attacker, defender) = charSideStarts ? (charSide, enemySide) : (enemySide, charSide);
 
         var round = 0;
 
-        if (attacker is IBeforeFightAttackable attackerImpl && attackerImpl.AttackBeforeFight(defender, ref round))
+        if (attacker.AttackBeforeFightImplementation != null && attacker.AttackBeforeFightImplementation(defender, ref round))
         {
             return charSideStarts;
         }
 
-        if (defender is IBeforeFightAttackable defenderImpl && defenderImpl.AttackBeforeFight(attacker, ref round))
+        if (defender.AttackBeforeFightImplementation != null && defender.AttackBeforeFightImplementation(attacker, ref round))
         {
             return !charSideStarts;
         }
@@ -158,17 +161,17 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         for (var i = 0; i < int.MaxValue; i++)
         {
-            var skipRound = defender is IRoundSkipable roundSkipable && roundSkipable.WillSkipRound(ref round);
+            var skipRound = defender.WillSkipRoundImplementation != null && defender.WillSkipRoundImplementation(ref round);
 
-            if (!skipRound && attacker.Attack(defender, ref round))
+            if (!skipRound && attacker.AttackImplementation(defender, ref round))
             {
                 result = charSideStarts;
                 break;
             }
 
-            skipRound = attacker is IRoundSkipable roundSkipable1 && roundSkipable1.WillSkipRound(ref round);
+            skipRound = attacker.WillSkipRoundImplementation != null && attacker.WillSkipRoundImplementation(ref round);
 
-            if (!skipRound && defender.Attack(attacker, ref round))
+            if (!skipRound && defender.AttackImplementation(attacker, ref round))
             {
                 result = !charSideStarts;
                 break;

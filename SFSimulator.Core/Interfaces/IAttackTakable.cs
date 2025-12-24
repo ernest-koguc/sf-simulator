@@ -1,7 +1,9 @@
-﻿namespace SFSimulator.Core;
+﻿using static SFSimulator.Core.IFightableContext;
+
+namespace SFSimulator.Core;
 
 public interface IAttackTakable
 {
-    bool TakeAttack(double damage, ref int round);
-    bool WillTakeAttack();
+    TakeAttackDelegate TakeAttackImplementation { get; }
+    WillTakeAttackDelegate WillTakeAttackImplementation { get; }
 }

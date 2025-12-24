@@ -1,5 +1,5 @@
 import { computed, Injectable, signal, WritableSignal } from '@angular/core';
-import { DailyTask, DailyTaskReward, Dungeons, Equipment, EventType, Expedition, OwnPlayerSave, Pets, Resources, ToiletState, Tower, Witch } from '../sfgame/SFGameModels';
+import { DailyTask, DailyTaskReward, Dungeons, Equipment, EventType, Expedition, Guild, OwnPlayerSave, Pets, PortalProgress, Resources, ToiletState, Tower, Witch } from '../sfgame/SFGameModels';
 import { ExpeditionProgress } from './ExpeditionService';
 import { ItemModel } from '../sfgame/parsers/EquipmentParser';
 import { Fightable } from '../sfgame/Fightable';
@@ -57,6 +57,8 @@ export class SessionManager {
         dailyTasksRewards: null,
         dailyTasks: null,
         toiletState: null,
+        guild: null,
+        portalProgress: null,
       }
     }
 
@@ -72,6 +74,7 @@ type SessionData = {
   playerName: string | null;
   server: string | null;
   guildName: string | null;
+  guild: Guild | null;
   dungeons: Dungeons | null;
   resources: Resources | null;
   tower: Tower | null;
@@ -92,4 +95,5 @@ type SessionData = {
   dailyTasksRewards: DailyTaskReward[] | null;
   dailyTasks: DailyTask[] | null;
   toiletState: ToiletState | null;
+  portalProgress: PortalProgress | null;
 }

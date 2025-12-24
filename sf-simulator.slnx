@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SFSimulator.Api/SFSimulator.Api.csproj" />
+  <Project Path="SFSimulator.Core/SFSimulator.Core.csproj" />
+  <Project Path="SFSimulator.Frontend/SFSimulator.Frontend.csproj" />
+  <Project Path="SFSimulator.Tests/SFSimulator.Tests.csproj" />
+</Solution>
