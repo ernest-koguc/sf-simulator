@@ -16,13 +16,11 @@ jobs:
         dotnet-version: 10.0.x
     - name: dotnet publish 
       run: |
+          dotnet workload restore
           dotnet publish -c Release -o sfsimulator .\SFSimulator.Api
           dotnet publish -c Release -o sfsimulator .\SFSimulator.Frontend
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    - name: show workload
-      run: |
-          dotnet workload list
     - name: deploy on iis
       uses: ChristopheLav/iis-deploy@v1
       with:
