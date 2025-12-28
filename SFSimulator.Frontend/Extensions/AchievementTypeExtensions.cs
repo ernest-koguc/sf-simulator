@@ -19,6 +19,8 @@ public static class AchievementTypeExtensions
             AchievementType.Level600 => PointStyle.Primary,
             AchievementType.Level700 => PointStyle.Primary,
             AchievementType.Level800 => PointStyle.Primary,
+            AchievementType.Level900 => PointStyle.Primary,
+            AchievementType.Level1000 => PointStyle.Primary,
 
             AchievementType.BaseStat1000 => PointStyle.Secondary,
             AchievementType.BaseStat10000 => PointStyle.Secondary,

@@ -36,7 +36,7 @@
                                 <div class="flex flex-col justify-center xs:flex-row xs:justify-start xs:gap-20">
                                     <div class="flex flex-col">
                                         <DropDown Name="Class" Label="Class" @bind-Value="@Options.Class" Filter="(e) => e != ClassType.Bert && e != ClassType.Mirror"/>
-                                        <Numeric Icon="Level" Name="Level" Label="Level" Min="1" Max="800" @bind-Value="@Options.Level" Validator="() => ValidateField(o => o.Level)"/>
+                                        <Numeric Icon="Level" Name="Level" Label="Level" Min="1" Max="CoreShared.MAX_LEVEL" @bind-Value="@Options.Level" Validator="() => ValidateField(o => o.Level)"/>
                                         <Numeric Icon="XP" Name="Experience" Label="Experience" Min="0" Max="1_500_000_000" @bind-Value="@Options.Experience"/>
                                         <DropDown Icon="Mount" Name="Mount" Label="Mount" @bind-Value="@Options.Mount" />
                                         <Numeric Icon="Hydra" Name="Hydra" Label="Hydra" Min="0" Max="20" @bind-Value="@Options.HydraHeads"/>
@@ -191,10 +191,10 @@
                                         <CheckBox Disabled="Options.DungeonsData is null" Name="DoDungeonPause" Label="Do Dungeon Pause" 
                                             @bind-Value="@Options.DungeonOptions.DoDungeonPause"/>
                                         <Numeric Disabled="!Options.DoDungeons || !Options.DungeonOptions.DoDungeonPause" Name="DungeonPauseStart"
-                                            Label="DP Start" @bind-Value="@Options.DungeonOptions.DungeonPauseStartLevel" Min="1" Max="800"/>
+                                            Label="DP Start" @bind-Value="@Options.DungeonOptions.DungeonPauseStartLevel" Min="1" Max="CoreShared.MAX_LEVEL"/>
                                         <Numeric Disabled="!Options.DoDungeons || !Options.DungeonOptions.DoDungeonPause" Name="DungeonPauseEnd" 
                                             Label="DP End" @bind-Value="@Options.DungeonOptions.DungeonPauseEndLevel" 
-                                            Min="@Options.DungeonOptions.DungeonPauseStartLevel" Max="800"/>
+                                            Min="@Options.DungeonOptions.DungeonPauseStartLevel" Max="CoreShared.MAX_LEVEL"/>
                                         <DropDown Name="AuraStrategy" Label="Toilet Strategy" @bind-Value="@Options.AuraStrategy"/>
                                         <Numeric Icon="Toilet" Name="Aura" Label="Aura" @bind-Value="@Options.Aura" Min="0" Max="400"/>
                                         <Numeric Icon="Mana" Name="AuraFillLevel" Label="Mana" @bind-Value="@Options.AuraFillLevel" Min="0" Max="300"/>
