@@ -8,7 +8,7 @@ public class BlackSmithAdvisor : IBlackSmithAdvisor
 
         for (var i = 0; i < item.UpgradeLevel; i++)
         {
-            attributes = Math.Round(attributes / 1.04D);
+            attributes = Math.Round(attributes / 1.04D, MidpointRounding.ToPositiveInfinity);
         }
 
         if (item.ItemAttributeType == ItemAttributeType.EpicAllAttributes)

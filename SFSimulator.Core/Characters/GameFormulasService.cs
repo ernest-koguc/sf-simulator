@@ -392,7 +392,7 @@ public class GameFormulasService : IGameFormulasService
 
         baseGold = Math.Min(1E9M, baseGold) / 60.38647M;
 
-        var goldMultiplier = (1 + Math.Min(3, (goldBonus.GuildBonus / 100M) + (goldBonus.Tower / 100M) * 2) + goldBonus.RuneBonus / 100M) * (goldBonus.HasGoldScroll ? 1.1M : 1);
+        var goldMultiplier = (1 + Math.Min(3.5M, (goldBonus.GuildBonus / 100M) + (goldBonus.Tower / 100M) * 2) + goldBonus.RuneBonus / 100M) * (goldBonus.HasGoldScroll ? 1.1M : 1);
         var goldWithBonuses = Math.Min(40_000_000, baseGold * goldMultiplier) * GetExpeditionMountBonus(mount);
         goldWithBonuses += Math.Clamp(characterLevel - 557, 0, 75) * (50_000_000 * GetExpeditionMountBonus(mount) - goldWithBonuses) / 75;
         var goldPerChest = goldWithBonuses / 5 * thirst / 25M;
