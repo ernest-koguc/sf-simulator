@@ -1,6 +1,6 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { ApplicationConfig, provideZonelessChangeDetection, } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZonelessChangeDetection(), provideHttpClient()]
+  providers: [provideZonelessChangeDetection(), provideHttpClient(withXhr())]
 };

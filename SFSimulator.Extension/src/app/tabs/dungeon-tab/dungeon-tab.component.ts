@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, untracked, WritableSignal } from '@angular/core';
 import { PercentPipe } from '@angular/common';
-import { HlmButtonDirective } from '@spartan-ng/helm/button';
-import { HlmSpinnerComponent } from '@spartan-ng/helm/spinner';
+import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmSpinner } from '@spartan-ng/helm/spinner';
 import { finalize } from 'rxjs';
-import { HlmIconDirective } from '@spartan-ng/helm/icon';
 import { lucideCircleAlert, lucideRefreshCw } from '@ng-icons/lucide';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { BigNumberPipe } from '../../pipes/big-number.pipe';
@@ -14,7 +13,7 @@ import { db } from '../../db';
 
 @Component({
   selector: 'dungeon-tab',
-  imports: [PercentPipe, BigNumberPipe, HlmButtonDirective, HlmSpinnerComponent, HlmIconDirective, NgIcon],
+  imports: [PercentPipe, BigNumberPipe, HlmButton, HlmSpinner, NgIcon],
   providers: [provideIcons({ lucideRefreshCw, lucideCircleAlert })],
   templateUrl: './dungeon-tab.component.html',
   styleUrl: './dungeon-tab.component.css',
@@ -28,21 +27,6 @@ export class DungeonTabComponent {
 
   public simulationResult: WritableSignal<SimulateDungeonResponse[] | null> = signal(null);
   public isSimulating: WritableSignal<boolean> = signal(false);
-
-  public async copyToJson() {
-
-    const records = await db.EquipmentGathering.filter(v => true).toArray();
-
-    const items = records
-      .map(record => record.Items.map(item => ({ UniquePlayerId: record.UniquePlayerId, Class: record.Class, ...item })))
-      .reduce((a, b) => a.concat(b), [])
-      .filter(item => item.ItemQuality >= 350 && item.Armor != 0)
-      .map(item => `${item.UniquePlayerId}\t${item.Type}\t${item.ItemQuality}\t${item.Class}\t${item.Armor}\t${item.MinDmg}\t${item.MaxDmg}`)
-      .join('\n');
-
-    // copy to clipboard as josn
-    await navigator.clipboard.writeText(items);
-  }
 
   public simulateDungeons() {
     let fightable = this.sessionManager.fightable();
@@ -62,9 +46,7 @@ export class DungeonTabComponent {
         response.sort((a, b) => a.dungeonMetadata.experience * a.winRatio > b.dungeonMetadata.experience * b.winRatio
           || (b.winRatio <= 5 && a.winRatio > b.winRatio * 10) ? -1 : 1);
 
-        untracked(() => {
-          this.simulationResult.set(response);
-        });
+        this.simulationResult.set(response);
       });
   }
 }

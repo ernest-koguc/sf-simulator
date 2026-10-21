@@ -2,17 +2,14 @@
   <div class='flex flex-col w-full text-wrap'>
     @for (warning of warnings(); track warning) {
       <div class='flex items-center gap-2 text-destructive'>
-        <ng-icon hlm size='sm' name='lucideCircleAlert'/>
+        <ng-icon class="text-[length:--spacing(4)]" name='lucideCircleAlert'/>
         <span>{{ warning }}</span>
       </div>
     }
   </div>
   <div class='flex justify-end w-full mb-2'>
-    <!-- <button hlmBtn variant='clear' (click)='copyToJson()'> -->
-    <!--   COPY TO JSON -->
-    <!-- </button> -->
     <button hlmBtn variant='clear' (click)='simulateDungeons()' [disabled]='isSimulating()'>
-      <ng-icon hlm size='sm' name="lucideRefreshCw" />
+      <ng-icon class="text-[length:--spacing(4)]" name="lucideRefreshCw" />
     </button>
   </div>
   @if (isSimulating()) {

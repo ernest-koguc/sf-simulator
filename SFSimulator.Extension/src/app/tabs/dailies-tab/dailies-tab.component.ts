@@ -1,16 +1,16 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { SessionManager } from '../../services/SessionManager';
 import { EventType } from '../../sfgame/SFGameModels';
 import { HlmTableImports } from '@spartan-ng/helm/table';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { HlmIconDirective } from '@spartan-ng/helm/icon';
 import { lucideCircleCheck, lucideCircleMinus } from '@ng-icons/lucide';
 
 @Component({
   selector: 'dailies-tab',
-  imports: [HlmTableImports, HlmIconDirective, NgIcon],
+  imports: [HlmTableImports, NgIcon],
   providers: [provideIcons({ lucideCircleCheck, lucideCircleMinus })],
   templateUrl: './dailies-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dailies-tab.component.css'
 })
 export class DailiesTabComponent {
@@ -27,22 +27,26 @@ export class DailiesTabComponent {
     const toiletState = current?.toiletState;
     const guild = current?.guild;
     const portalProgress = current?.portalProgress;
+    const characterStatus = current?.characterStatus;
     if (!current || !ownSave || events === null || events === undefined || !dailyTasksRewards || !dailyTasks) {
       return [];
     }
 
     let dailies = structuredClone(this.DailyTasks);
 
-    const maxThirst = ownSave.MaxBeers * 20 + 100;
-    const usedThirst = 100 + (ownSave.UsedBeers * 20) - (ownSave.ThirstLeft / 60);
-
-    dailies[TaskType.DoExpeditions].Completed = maxThirst == usedThirst;
-    dailies[TaskType.DoExpeditions].Progress = `${usedThirst}/${maxThirst}`;
+    if (characterStatus) {
+      const maxThirst = characterStatus.MaxBeers * 20 + 100;
+      const usedThirst = 100 + (characterStatus.UsedBeers * 20) - (characterStatus.ThirstLeft / 60);
+      dailies[TaskType.DoExpeditions].Completed = maxThirst === usedThirst;
+      dailies[TaskType.DoExpeditions].Progress = `${usedThirst}/${maxThirst}`;
+    } else {
+      delete dailies[TaskType.DoExpeditions];
+    }
 
     if (ownSave.Level < 100 || !toiletState) {
       delete dailies[TaskType.SacrificeItemInToilet];
     } else {
-      const maxAmountOfSacrifices = events.find(e => e.Id === EventType.TidyToiletTime) ? 2 : 1;
+      const maxAmountOfSacrifices = events.includes(EventType.TidyToiletTime) ? 2 : 1;
       const sacrificesDone = maxAmountOfSacrifices - toiletState.AmountOfItemsToSacrifice;
       dailies[TaskType.SacrificeItemInToilet].Completed = sacrificesDone === maxAmountOfSacrifices;
       dailies[TaskType.SacrificeItemInToilet].Progress = `${sacrificesDone}/${maxAmountOfSacrifices}`;
@@ -56,18 +60,22 @@ export class DailiesTabComponent {
       dailies[TaskType.PetFights].Progress = `${petFights}/5`;
     }
 
-    const isLuckyDayEvent = events.find(e => e.Id === EventType.LuckyDay) !== undefined;
+    const isLuckyDayEvent = events.includes(EventType.LuckyDay);
 
-    if (ownSave.Level <= 120) {
+    if (ownSave.Level <= 120 || current.diceGamesRemaining === null) {
       delete dailies[TaskType.DiceGame];
     } else {
       const maxDice = isLuckyDayEvent ? 20 : 10;
-      dailies[TaskType.DiceGame].Completed = ownSave.DiceGamesRemaining === 0;
-      dailies[TaskType.DiceGame].Progress = `${maxDice - ownSave.DiceGamesRemaining}/${maxDice}`;
+      dailies[TaskType.DiceGame].Completed = current.diceGamesRemaining === 0;
+      dailies[TaskType.DiceGame].Progress = `${maxDice - current.diceGamesRemaining}/${maxDice}`;
     }
 
-    dailies[TaskType.ArenaFights].Completed = ownSave.ArenaFightsToday === 10;
-    dailies[TaskType.ArenaFights].Progress = `${ownSave.ArenaFightsToday}/10`;
+    if (current.arenaFightsToday === null) {
+      delete dailies[TaskType.ArenaFights];
+    } else {
+      dailies[TaskType.ArenaFights].Completed = current.arenaFightsToday >= 10;
+      dailies[TaskType.ArenaFights].Progress = `${current.arenaFightsToday}/10`;
+    }
 
     // TODO: handle the case when Adventuromatic is being upgraded
     if (ownSave.Level < 125 || !tower) {
@@ -77,8 +85,12 @@ export class DailiesTabComponent {
     }
 
     const maxSpins = isLuckyDayEvent ? 40 : 20;
-    dailies[TaskType.SpinWheelOfFortune].Completed = ownSave.WheelSpinsToday === maxSpins;
-    dailies[TaskType.SpinWheelOfFortune].Progress = `${ownSave.WheelSpinsToday}/${maxSpins}`;
+    if (current.wheelSpinsToday === null) {
+      delete dailies[TaskType.SpinWheelOfFortune];
+    } else {
+      dailies[TaskType.SpinWheelOfFortune].Completed = current.wheelSpinsToday >= maxSpins;
+      dailies[TaskType.SpinWheelOfFortune].Progress = `${current.wheelSpinsToday}/${maxSpins}`;
+    }
 
     // SOLO PORTAL
     if (ownSave.Level < 99 || !portalProgress || portalProgress.Finished === 50) {
@@ -87,19 +99,13 @@ export class DailiesTabComponent {
       dailies[TaskType.FightSoloPortal].Completed = !portalProgress.CanAttack;
     }
 
-    if (!guild || guild.PetMaxLevel <= 0) {
+    if (!guild || guild.PetMaxLevel <= 0 || current.canAttackHydra === null) {
       delete dailies[TaskType.FightHydra];
     } else {
-      dailies[TaskType.FightHydra].Completed = !ownSave.Group.CanAttackHydra;
+      dailies[TaskType.FightHydra].Completed = !current.canAttackHydra;
     }
 
-    // if (ownSave.Level < 99 || !guild || guild.Portal === 50) {
-    //   delete dailies[TaskType.FightGuildPortal];
-    // } else {
-    //   dailies[TaskType.FightGuildPortal].Completed = !guild.CanAttackPortal;
-    // }
-
-    const dailyTasksPointsRequired = dailyTasksRewards.reduce((a, b) => a.PointsRequired > b.PointsRequired ? a : b).PointsRequired;
+    const dailyTasksPointsRequired = Math.max(0, ...dailyTasksRewards.map(reward => reward.PointsRequired));
     const currentPoints = dailyTasks.filter(v => v.Completed).reduce((a, b) => a + b.Points, 0);
     const allTasksClaimed = dailyTasksRewards.every(r => r.Claimed);
 
@@ -118,7 +124,6 @@ export class DailiesTabComponent {
     [TaskType.CollectAdventuromatic]: { Completed: false, Information: 'Collect TFA from Adventuromatic', Progress: '' },
     [TaskType.SpinWheelOfFortune]: { Completed: false, Information: 'Spin Abawuwu Wheel of Fortune', Progress: '' },
     [TaskType.FightSoloPortal]: { Completed: false, Information: 'Fight in Solo Portal', Progress: '' },
-    //[TaskType.FightGuildPortal]: { Completed: false, Information: 'Fight in Guild Portal', Progress: '' },
     [TaskType.FightHydra]: { Completed: false, Information: 'Fight Hydra', Progress: '' },
     [TaskType.CompleteDailyTasks]: { Completed: false, Information: 'Complete Daily Tasks', Progress: '' },
   });
@@ -139,7 +144,6 @@ enum TaskType {
   CollectAdventuromatic,
   SpinWheelOfFortune,
   FightSoloPortal,
-  //FightGuildPortal,
   FightHydra,
   CompleteDailyTasks,
 }

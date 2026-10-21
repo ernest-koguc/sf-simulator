@@ -1,10 +1,9 @@
-import { ToiletState } from "../SFGameModels";
-import { ByteParser } from "./ByteParser";
+import { ToiletState } from '../SFGameModels';
+import { ByteParser } from './ByteParser';
 
-export function parseToiletState(data: number[]): ToiletState {
-  const parser = new ByteParser(data);
-
-  return {
-    AmountOfItemsToSacrifice: parser.atLong(2)
-  }
+export function parseToiletState(data: number[]): ToiletState | null {
+  // gamestate/mod.rs: toiletstate ignores responses shorter than three words.
+  return data.length < 3 ? null : {
+    AmountOfItemsToSacrifice: new ByteParser(data).at(2) >>> 0,
+  };
 }

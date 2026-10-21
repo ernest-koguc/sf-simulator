@@ -1,97 +1,54 @@
+/** Reads the server's integer words. Offsets always refer to whole words. */
 export class ByteParser {
-  values: number[];
-  ptr: number;
-  bytes: any[];
-  constructor(values: number[] | null) {
-    this.values = values || [];
-    this.ptr = 0;
-    this.bytes = [];
+  private position = 0;
+
+  constructor(private readonly values: readonly number[]) {}
+
+  get remaining(): number {
+    return this.values.length - this.position;
   }
 
-  empty() {
-    return this.values.length <= this.ptr;
-  }
-
-  atLeast(size: number) {
-    return (this.ptr + size) <= this.values.length;
-  }
-
-  long() {
-    return this.values[this.ptr++] || 0;
-  }
-
-  peek() {
-    return this.values[this.ptr] || 0;
-  }
-
-  string() {
-    return this.values[this.ptr++] || '';
-  }
-
-  split() {
-    var word = this.long();
-    this.bytes = [word % 0x100, (word >> 8) % 0x100, (word >> 16) % 0x100, (word >> 24) % 0x100];
-  }
-
-  short() {
-    if (!this.bytes.length) {
-      this.split();
+  at(index: number): number {
+    const value = this.values[index];
+    if (!Number.isInteger(index) || index < 0 || value === undefined) {
+      throw new RangeError(`Missing response value at ${index} (length ${this.values.length})`);
     }
-
-    return this.bytes.shift() + (this.bytes.shift() << 8);
-  }
-
-  byte() {
-    if (!this.bytes.length) {
-      this.split();
+    if (!Number.isFinite(value) || !Number.isInteger(value)) {
+      throw new TypeError(`Invalid response integer at ${index}: ${value}`);
     }
-
-    return this.bytes.shift();
+    return value;
   }
 
-  byteArray(len: number) {
-    const array = [];
-    for (let i = 0; i < len; i++) {
-      array.push(this.byte());
+  read(): number {
+    const value = this.at(this.position);
+    this.position++;
+    return value;
+  }
+
+  unsignedAt(index: number, max = 0xffffffff, fallback = 0): number {
+    return unsigned(this.at(index), max, fallback);
+  }
+
+  skip(count: number): this {
+    if (!Number.isInteger(count) || count < 0 || count > this.remaining) {
+      throw new RangeError(`Cannot skip ${count} values (${this.remaining} remaining)`);
     }
-
-    return array;
-  }
-
-  assert(size: number) {
-    if (this.values.length < size) {
-      throw `ComplexDataType Exception: Expected ${size} values but ${this.values.length} were supplied!`;
-    }
-  }
-
-  sub(size: number) {
-    var b = this.values.slice(this.ptr, this.ptr + size);
-    this.ptr += size;
-    return b;
-  }
-
-  clear() {
-    this.bytes = [];
-  }
-
-  skip(size: number) {
-    this.ptr += size;
+    this.position += count;
     return this;
   }
+}
 
-  back(size: number) {
-    this.ptr -= size;
-    return this;
+/** Rust's soft_into for the unsigned integers used by these parsers. */
+export function unsigned(value: number, max = 0xffffffff, fallback = 0): number {
+  return Number.isInteger(value) && value >= 0 && value <= max ? value : fallback;
+}
+
+/** Like Rust's chunks_exact: ignore an incomplete record at the end. */
+export function* chunks(values: readonly number[], size: number): Generator<number[]> {
+  if (!Number.isInteger(size) || size <= 0) {
+    throw new RangeError('Record size must be a positive integer');
   }
-
-  atLong(index: number) {
-    return this.values[index] || 0;
+  for (let offset = 0; offset + size <= values.length; offset += size) {
+    yield values.slice(offset, offset + size);
   }
-
-  getDate(): Date {
-    const timestamp = this.long();
-    return new Date(timestamp * 1000 + ByteParser.timezoneOffset);
-  }
-
-  public static timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 }

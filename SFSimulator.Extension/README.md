@@ -1,6 +1,6 @@
 # Xtool
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.7.
+This project uses Angular 22.2.3 and spartan/ui 1.8.0. Development requires Node.js 22.22.3+, 24.15.0+, or 26+.
 
 ## Development server
 

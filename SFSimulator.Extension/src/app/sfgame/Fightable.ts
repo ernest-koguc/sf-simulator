@@ -1,5 +1,22 @@
-import { CONFIG } from "./ClassConfig";
-import { Class, Companion, Dungeons, Equipment, OwnPlayerSave, RuneType, Tower } from "./SFGameModels";
+import { Class, Companion, Equipment, OwnPlayerSave, RuneType, Tower } from './SFGameModels';
+
+type Weapon = { MinDmg: number; MaxDmg: number; RuneType: number; RuneValue: number };
+type CompanionFighter = {
+  Class: Class;
+  Strength: number;
+  Dexterity: number;
+  Intelligence: number;
+  Constitution: number;
+  Luck: number;
+  Health: number;
+  Armor: number;
+  FirstWeapon: Weapon;
+  Reaction: number;
+  CritMultiplier: number;
+  LightningResistance: number;
+  FireResistance: number;
+  ColdResistance: number;
+};
 
 export class Fightable {
   public Level: number;
@@ -11,180 +28,96 @@ export class Fightable {
   public Luck: number;
   public Health: number;
   public Armor: number;
-  public FirstWeapon: {
-    MinDmg: number,
-    MaxDmg: number,
-    RuneType: number,
-    RuneValue: number,
-  };
-  public SecondWeapon: {
-    MinDmg: number,
-    MaxDmg: number,
-    RuneType: number,
-    RuneValue: number,
-  } | null
+  public FirstWeapon: Weapon;
+  public SecondWeapon: Weapon | null;
   public Reaction: number;
   public CritMultiplier: number;
   public LightningResistance: number;
   public FireResistance: number;
   public ColdResistance: number;
   public GuildPortal: number;
-  public Companions:
-    {
-      Class: Class,
-      Strength: number,
-      Dexterity: number,
-      Intelligence: number,
-      Constitution: number,
-      Luck: number,
-      Health: number,
-      Armor: number,
-      FirstWeapon: {
-        MinDmg: number,
-        MaxDmg: number,
-        RuneType: number,
-        RuneValue: number,
-      },
-      Reaction: number,
-      CritMultiplier: number,
-      LightningResistance: number,
-      FireResistance: number,
-      ColdResistance: number,
-    }[];
+  public Companions: CompanionFighter[];
 
-  constructor(playerSave: OwnPlayerSave, playerEquipment: Equipment, companionsEquipment: CompanionsEquipment | null,
-    tower: Tower | null, dungeons: Dungeons) {
-    this.Level = playerSave.Level;
-    this.Class = playerSave.Class;
-    this.Strength = playerSave.Strength.Total;
-    this.Dexterity = playerSave.Dexterity.Total;
-    this.Intelligence = playerSave.Intelligence.Total;
-    this.Constitution = playerSave.Constitution.Total;
-    this.Luck = playerSave.Luck.Total;
-    this.Health = getHealth(playerSave.Class, playerSave.Level, playerSave.Constitution.Total, playerSave.HasEternalPotion, dungeons.SoloPortal, getRuneValue(RuneType.HealthBonus, playerEquipment));
-    this.Armor = playerSave.Armor;
-    this.FirstWeapon = {
-      MinDmg: playerEquipment.Wpn1.DamageMin,
-      MaxDmg: playerEquipment.Wpn1.DamageMax,
-      RuneType: playerEquipment.Wpn1.RuneType,
-      RuneValue: playerEquipment.Wpn1.RuneValue,
-    }
-    this.SecondWeapon = playerEquipment.Wpn2 ? {
-      MinDmg: playerEquipment.Wpn2.DamageMin,
-      MaxDmg: playerEquipment.Wpn2.DamageMax,
-      RuneType: playerEquipment.Wpn2.RuneType,
-      RuneValue: playerEquipment.Wpn2.RuneValue,
-    } : null;
-    this.Reaction = playerEquipment.Hand.HasEnchantment ? 1 : 0;
-    this.CritMultiplier = 2 + (playerEquipment.Wpn1.HasEnchantment || playerEquipment.Wpn2?.HasEnchantment ? 0.05 : 0) + 0.11 * (tower?.Underworld.Gladiator ?? 0);
-    this.GuildPortal = playerSave.GuildPortal;
-    this.LightningResistance = getRuneValue(RuneType.LightningResistance, playerEquipment);
-    this.FireResistance = getRuneValue(RuneType.FireResistance, playerEquipment);
-    this.ColdResistance = getRuneValue(RuneType.ColdResistance, playerEquipment);
+  constructor(player: OwnPlayerSave, equipment: Equipment,
+    companionEquipment: { Bert: Equipment; Mark: Equipment; Kunigunde: Equipment } | null,
+    tower: Tower | null, hasEternalPotion: boolean) {
+    this.Level = player.Level;
+    this.Class = player.Class;
+    this.Strength = player.Strength;
+    this.Dexterity = player.Dexterity;
+    this.Intelligence = player.Intelligence;
+    this.Constitution = player.Constitution;
+    this.Luck = player.Luck;
+    this.Health = getHealth(player.Class, player.Level, player.Constitution, hasEternalPotion,
+      player.PortalHealthBonus, getRuneValue(RuneType.HealthBonus, equipment));
+    this.Armor = player.Armor;
+    this.FirstWeapon = weapon(equipment.Wpn1);
+    this.SecondWeapon = equipment.Wpn2?.Type === 1 ? weapon(equipment.Wpn2) : null;
+    this.Reaction = equipment.Hand.HasEnchantment ? 1 : 0;
+    const gladiator = tower?.Underworld.Gladiator ?? 0;
+    this.CritMultiplier = 2 + (equipment.Wpn1.HasEnchantment || equipment.Wpn2?.HasEnchantment ? 0.05 : 0)
+      + 0.11 * gladiator;
+    this.GuildPortal = player.GuildPortal;
+    this.LightningResistance = getRuneValue(RuneType.LightningResistance, equipment);
+    this.FireResistance = getRuneValue(RuneType.FireResistance, equipment);
+    this.ColdResistance = getRuneValue(RuneType.ColdResistance, equipment);
 
-
-    const comps = [];
-    if (companionsEquipment && tower) {
-      comps.push({ companion: tower.Companions.Bert, equipment: companionsEquipment.Bert });
-      comps.push({ companion: tower.Companions.Mark, equipment: companionsEquipment.Mark });
-      comps.push({ companion: tower.Companions.Kunigunde, equipment: companionsEquipment.Kunigunde })
-      this.Companions = comps.map((c, i) => {
-        let hp;
-        if (i === 0) {
-          hp = getHealth(i + 1, playerSave.Level, c.companion.Constitution.Total, playerSave.HasEternalPotion, dungeons.SoloPortal, getRuneValue(RuneType.HealthBonus, c.equipment), 6.1);
-        } else {
-          hp = getHealth(i + 1, playerSave.Level, c.companion.Constitution.Total, playerSave.HasEternalPotion, dungeons.SoloPortal, getRuneValue(RuneType.HealthBonus, c.equipment));
-        }
-
-        return {
-          Class: i + 1,
-          Strength: c.companion.Strength.Total,
-          Dexterity: c.companion.Dexterity.Total,
-          Intelligence: c.companion.Intelligence.Total,
-          Constitution: c.companion.Constitution.Total,
-          Luck: c.companion.Luck.Total,
-          Health: hp,
-          Armor: c.companion.Armor,
-          FirstWeapon: {
-            MinDmg: c.equipment.Wpn1.DamageMin,
-            MaxDmg: c.equipment.Wpn1.DamageMax,
-            RuneType: c.equipment.Wpn1.RuneType,
-            RuneValue: c.equipment.Wpn1.RuneValue,
-          },
-          Reaction: c.equipment.Hand.HasEnchantment ? 1 : 0,
-          CritMultiplier: 2 + (c.equipment.Wpn1.HasEnchantment ? 0.05 : 0) + 0.11 * tower.Underworld.Gladiator,
-          LightningResistance: getRuneValue(RuneType.LightningResistance, c.equipment),
-          FireResistance: getRuneValue(RuneType.FireResistance, c.equipment),
-          ColdResistance: getRuneValue(RuneType.ColdResistance, c.equipment),
-        }
-      });
-    } else {
-      this.Companions = [];
-    }
-
+    const companion = (stats: Companion, items: Equipment, classType: Class): CompanionFighter => ({
+      Class: classType,
+      Strength: stats.Strength,
+      Dexterity: stats.Dexterity,
+      Intelligence: stats.Intelligence,
+      Constitution: stats.Constitution,
+      Luck: stats.Luck,
+      Health: getHealth(classType, Math.max(1, stats.Level), stats.Constitution, hasEternalPotion,
+        player.PortalHealthBonus, getRuneValue(RuneType.HealthBonus, items), true),
+      // Rust derives companion armor from equipment, not the old tower offsets.
+      Armor: Object.values(items).reduce((sum, item) => sum + (item?.Armor ?? 0), 0),
+      FirstWeapon: weapon(items.Wpn1),
+      Reaction: items.Hand.HasEnchantment ? 1 : 0,
+      CritMultiplier: 2 + (items.Wpn1.HasEnchantment ? 0.05 : 0) + 0.11 * gladiator,
+      LightningResistance: getRuneValue(RuneType.LightningResistance, items),
+      FireResistance: getRuneValue(RuneType.FireResistance, items),
+      ColdResistance: getRuneValue(RuneType.ColdResistance, items),
+    });
+    this.Companions = companionEquipment && tower ? [
+      companion(tower.Companions.Bert, companionEquipment.Bert, Class.Warrior),
+      companion(tower.Companions.Mark, companionEquipment.Mark, Class.Mage),
+      companion(tower.Companions.Kunigunde, companionEquipment.Kunigunde, Class.Scout),
+    ] : [];
   }
 }
 
-function getRuneValue(runeType: RuneType, equipment: Equipment) {
-  const items = [
-    equipment.Head,
-    equipment.Body,
-    equipment.Hand,
-    equipment.Feet,
-    equipment.Neck,
-    equipment.Belt,
-    equipment.Ring,
-    equipment.Misc,
-    equipment.Wpn1,
-    equipment.Wpn2
-  ].filter(i => i !== null) as (typeof equipment.Wpn1)[];
+function weapon(item: Equipment['Wpn1']): Weapon {
+  return { MinDmg: item.DamageMin, MaxDmg: item.DamageMax, RuneType: item.RuneType, RuneValue: item.RuneValue };
+}
 
-  const runeTypes = [runeType];
-  if (runeType === RuneType.FireResistance || runeType === RuneType.ColdResistance || runeType === RuneType.LightningResistance) {
-    runeTypes.push(RuneType.TotalResistance);
+function getRuneValue(runeType: RuneType, equipment: Equipment): number {
+  const resistance = runeType === RuneType.FireResistance || runeType === RuneType.ColdResistance
+    || runeType === RuneType.LightningResistance;
+  const total = Object.values(equipment).reduce((sum, item) =>
+    sum + (item && (item.RuneType === runeType || resistance && item.RuneType === RuneType.TotalResistance)
+      ? item.RuneValue : 0), 0);
+  return Math.min(total, resistance ? 75 : 15);
+}
+
+// Class::health_multiplier in the Rust reference.
+const HEALTH_MULTIPLIER: Record<Class, number> = {
+  [Class.Warrior]: 5, [Class.Mage]: 2, [Class.Scout]: 4, [Class.Assassin]: 4,
+  [Class.BattleMage]: 5, [Class.Berserker]: 4, [Class.DemonHunter]: 4, [Class.Druid]: 5,
+  [Class.Bard]: 2, [Class.Necromancer]: 4, [Class.Paladin]: 6, [Class.PlagueDoctor]: 4,
+  [Class.BloodWeaver]: 5,
+};
+
+function getHealth(classType: Class, level: number, constitution: number, eternal: boolean,
+  portalBonus: number, healthRune: number, companion = false): number {
+  const multiplier = companion && classType === Class.Warrior ? 6.1 : HEALTH_MULTIPLIER[classType];
+  // UpgradeableFighter::hit_points applies and truncates each bonus in this order.
+  let health = Math.trunc(constitution * multiplier) * (level + 1);
+  if (eternal) {
+    health = Math.trunc(health * 1.25);
   }
-
-  const runeValue = items.filter(v => runeTypes.indexOf(v.RuneType) >= 0).reduce((a, b) => a + b.RuneValue, 0);
-
-  return Math.min(runeValue, RUNE_CAP[runeType]);
-}
-
-const RUNE_CAP: Record<RuneType, number> = {
-  [RuneType.None]: 0,
-  [RuneType.GoldBonus]: 50,
-  [RuneType.EpicChance]: 50,
-  [RuneType.ItemQuality]: 5,
-  [RuneType.ExperienceBonus]: 10,
-  [RuneType.HealthBonus]: 15,
-  [RuneType.FireResistance]: 75,
-  [RuneType.ColdResistance]: 75,
-  [RuneType.LightningResistance]: 75,
-  [RuneType.TotalResistance]: 75,
-  [RuneType.FireDamage]: 60,
-  [RuneType.ColdDamage]: 60,
-  [RuneType.LightningDamage]: 60,
-}
-
-function getHealth(classType: Class, level: number, constitution: number, hasEternalPotion: boolean, soloPortal: number, hpRune: number, hpMultiplier?: number) {
-  const config = (CONFIG as any).fromID(classType);
-
-  let ma = hpMultiplier || config.HealthMultiplier;
-  let mb = (100 + soloPortal) / 100;
-  let mc = hasEternalPotion ? 1.25 : 1;
-  let md = (100 + hpRune) / 100;
-
-  return Math.trunc(Math.floor(Math.floor(constitution * ma * (level + 1) * mb) * mc) * md);
-}
-
-
-type Companions = {
-  Bert: Companion,
-  Mark: Companion,
-  Kunigunde: Companion,
-}
-
-type CompanionsEquipment = {
-  Bert: Equipment,
-  Mark: Equipment,
-  Kunigunde: Equipment,
+  health += Math.trunc(health * portalBonus / 100);
+  health += Math.trunc(health * healthRune / 100);
+  return health;
 }

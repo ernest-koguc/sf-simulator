@@ -1,4 +1,4 @@
-import { ItemModel } from "./parsers/EquipmentParser";
+import type { ItemModel } from "./parsers/EquipmentParser";
 
 export type SFGameRequest = {
   req: string;
@@ -7,25 +7,13 @@ export type SFGameRequest = {
   server: string;
 }
 
-export type Attribute = {
-  Type: number,
-  Base: number,
-  Bonus: number,
-  Purchased: number,
-  Items: number,
-  Gems: number,
-  Upgrades: number,
-  Class: number,
-  Potion: number,
-  Pet: number,
-  Total: number,
-}
-
-export type Potion = {
-  Type: number,
-  Expire: number,
-  Size: number
-}
+export type Attributes = {
+  Strength: number;
+  Dexterity: number;
+  Intelligence: number;
+  Constitution: number;
+  Luck: number;
+};
 
 export type Equipment = {
   Head: ItemModel,
@@ -41,62 +29,17 @@ export type Equipment = {
 };
 
 export type Tower = {
-  Underworld: {
-    Heart: number,
-    Gate: number,
-    GoldPit: number,
-    Extractor: number,
-    GoblinPit: number,
-    Torture: number,
-    Gladiator: number,
-    TrollBlock: number,
-    TimeMachine: number,
-    Keeper: number,
-    ExtractorSouls: number,
-    ExtractorMax: number,
-    MaxSouls: number,
-    ExtractorHourly: number,
-    GoldPitGold: number,
-    GoldPitMax: number,
-    GoldPitHourly: number,
-    TimeMachineThirst: number,
-    TimeMachineMax: number,
-    TimeMachineDaily: number,
-  };
-  Companions: {
-    Bert: Companion,
-    Mark: Companion,
-    Kunigunde: Companion,
-  };
-}
+  Underworld: { Gladiator: number; TimeMachineThirst: number };
+  Companions: { Bert: Companion; Mark: Companion; Kunigunde: Companion };
+};
 
 export type Dungeons = {
   Light: { Position: number, Current: number }[],
   Shadow: { Position: number, Current: number }[],
-  SoloPortal: number,
   Tower: number,
   Twister: number,
   LoopOfIdols: number,
   Sandstorm: number
-}
-
-export type Resources = {
-  Mushrooms: number,
-  Gold: number,
-  LuckyCoins: number,
-  Hourglass: number,
-  Wood: number,
-  SecretWood: number,
-  Stone: number,
-  SecretStone: number,
-  Metal: number,
-  Crystals: number,
-  Souls: number,
-  ShadowFood: number,
-  LightFood: number,
-  EarthFood: number,
-  FireFood: number,
-  WaterFood: number,
 }
 
 export type Expedition = {
@@ -106,23 +49,10 @@ export type Expedition = {
 }
 
 export type ExpeditionState = {
-  Stage: number,
-  CurrentLocation: number,
-  CurrentStatus: ExpeditionStatus,
-  MainTask: ExpeditionEncounter,
-  SideTasks: ExpeditionEncounter[],
-  MainTaskFinishedCounter: number,
-  MainTaskMaxCounter: number,
-  Backpack: ExpeditionEncounter[],
-  CurrentHeroism: number,
-  CurrentStars: number,
-  WaitingStarted: number,
-  WaitingUntil: number,
-  TaskBonus: number,
-  TaskPenalty: number,
-  BonusForRepeatableTask: number,
-  BonusLimitForRepeatableTask: number,
-}
+  Stage: number;
+  CurrentStatus: ExpeditionStatus;
+  CurrentHeroism: number;
+};
 
 export enum ExpeditionStatus {
   EncounterChoosing = 1,
@@ -133,37 +63,8 @@ export enum ExpeditionStatus {
 
 export type ExpeditionCrossroad = {
   Left: ExpeditionEncounter,
-  LeftHeroism: number,
   Mid: ExpeditionEncounter,
-  MidHeroism: number,
   Right: ExpeditionEncounter,
-  RightHeroism: number,
-}
-
-export type ExpeditionHalfTime = {
-  LeftReward: {
-    Type: ResourceType,
-    Amount: number,
-  },
-  MidReward: {
-    Type: ResourceType,
-    Amount: number,
-  },
-  RightReward: {
-    Type: ResourceType,
-    Amount: number,
-  },
-}
-
-export type ExpeditionRewardResources = {
-  Resources: {
-    Type: ResourceType,
-    Amount: number,
-  }[]
-}
-
-export type ExpeditionItemReward = {
-  GoldValue: number,
 }
 
 export enum ExpeditionEncounter {
@@ -203,7 +104,20 @@ export enum ExpeditionEncounter {
   Klaus = 124,
   Key = 131,
   Chest = 132,
+  FishingRod = 141,
+  FishingBait = 142,
+  Merman = 143,
+  Mugs = 151,
+  DraftBeer = 152,
+  Barkeeper = 153,
+  Chicken = 161,
+  Tiger = 162,
+  RidingStan = 163,
+  Cupid = 171,
+  LovestruckShakes = 172,
+  LoveBirds = 173,
   Bounty_Skeleton = 1000,
+  Bounty_ToiletPaper = 1001,
   Bounty_Dragon = 1002,
   Bounty_Campfire = 1003,
   Bounty_Unicorn = 1004,
@@ -212,42 +126,18 @@ export enum ExpeditionEncounter {
   Bounty_BrokenSword = 1009,
   Bounty_Witch = 1010,
   Bounty_CursedWell = 1011,
-  Bounty_Klaus = 1012
+  Bounty_Klaus = 1012,
+  Bounty_Merman = 1014,
+  Bounty_Barkeeper = 1015,
+  Bounty_Stan = 1016,
+  Bounty_LoveBirds = 1017,
 }
 
-export enum ResourceType {
-  None = 0,
-  Mushroom = 3,
-  Gold = 4,
-  Wood = 6,
-  Stone = 7,
-  Splinters = 8,
-  Metal = 9,
-  Souls = 10,
-  Fruit = 23,
-  Experience = 24,
-  PetEgg = 25,
-  Hourglass = 26,
-  Honor = 27,
-}
-
-export type Witch = {
-  Stage: number,
-  Items: number,
-  ItemsNext: number,
-  ItemForCauldron: number,
-  Finish: number,
-  Scrolls: {
-    Date: number,
-    Type: ScrollType,
-    Unlocked: boolean
-  }[]
-}
+export type Witch = { Scrolls: ScrollType[] };
 
 export enum ScrollType {
-  None = 0,
   Crit = 11,
-  QuestSpeed = 21,
+  QuestSpeed = 41,
   QuestMushroom = 31,
   Reaction = 51,
   QuestExperience = 61,
@@ -258,128 +148,29 @@ export enum ScrollType {
 }
 
 export type Pets = {
-  Levels: number[],
-  ShadowLevels: number[],
-  LightLevels: number[],
-  EarthLevels: number[],
-  FireLevels: number[],
-  WaterLevels: number[],
-  ShadowCount: number,
-  LightCount: number,
-  EarthCount: number,
-  FireCount: number,
-  WaterCount: number,
-  ShadowLevel: number,
-  LightLevel: number,
-  EarthLevel: number,
-  FireLevel: number,
-  WaterLevel: number,
-  TotalCount: number;
-  Shadow: number,
-  Light: number,
-  Earth: number,
-  Fire: number,
-  Water: number,
-  Dungeons: number[],
-  Rank: number,
-  Honor: number,
-  TotalLevel: number,
-  ShadowArenaFought: boolean,
-  LightArenaFought: boolean,
-  EarthArenaFought: boolean,
-  WaterArenaFought: boolean,
-  FireArenaFought: boolean,
-}
+  ShadowArenaFought: boolean;
+  LightArenaFought: boolean;
+  EarthArenaFought: boolean;
+  FireArenaFought: boolean;
+  WaterArenaFought: boolean;
+};
 
-export type OwnPlayerSave = {
-  Toilet: { Aura: number, Mana: number, Capacity: number };
+export type OwnPlayerSave = Attributes & {
   ID: number;
-  Registered: number;
   Level: number;
-  XP: number;
-  XPNext: number;
-  Honor: number;
-  Rank: number;
-  DevilPercent: number;
-  Class: number;
-  Action: { Status: number, Index: number, Finish: number };
-  Strength: Attribute;
-  Dexterity: Attribute;
-  Intelligence: Attribute;
-  Constitution: Attribute;
-  Luck: Attribute;
-  Mount: number;
-  MountValue: number;
-  Group: { ID: number, Joined: number, Treasure: number, Instructor: number, Pet: number, CanAttackHydra: boolean };
-  Book: number;
+  Class: Class;
   Armor: number;
-  Damage: { Min: number, Max: number };
-  Damage2?: { Min: number, Max: number };
-  MountExpire: number;
-  /**
-   * Indicates when the Thirst going to be reset (e.g. midnight)
-   *
-   **/
-  ThirstReroll: number;
+  GuildPortal: number;
+  PortalHealthBonus: number;
+};
+
+export type CharacterStatus = {
+  MaxBeers: number;
   ThirstLeft: number;
   UsedBeers: number;
-  MaxBeers: number;
-  Potions: Potion[];
-  HasEternalPotion: boolean;
-  Fortress: {
-    Fortress: number,
-    LaborerQuarters: number,
-    WoodcutterGuild: number,
-    Quarry: number,
-    GemMine: number,
-    Academy: number,
-    ArcheryGuild: number,
-    Barracks: number,
-    MageTower: number,
-    Treasury: number,
-    Smithy: number,
-    Fortifications: number,
-    Knights: number,
-    Upgrade: { Building: number, Finish: number, Start: number },
-    Upgrades: number,
-    Honor: number,
-    WoodcutterMax: number,
-    QuarryMax: number,
-    AcademyMax: number,
-    MaxWood: number,
-    MaxStone: number,
-    SecretWoodLimit: number;
-    SecretStoneLimit: number;
-  };
-  CalendarDay: number;
-  CalendarType: number;
-  LegendaryDungeonTries: number;
-  UsedAdventureTime: number;
-  ClientVersion: number;
-  AdventureSkips: number;
-  Summer: {
-    Missions: { Type: number, Current: number, Target: number, Points: number }[],
-    TotalPoints: number
-  };
-  GuildRaid: number;
-  GuildPortal: number;
-  WheelSpinsToday: number;
-  DiceGamesRemaining: number;
-  ArenaFightsToday: number;
-}
+};
 
-export type Companion = {
-  Armor: number,
-  Damage: {
-    Min: number,
-    Max: number
-  },
-  Strength: Attribute,
-  Dexterity: Attribute,
-  Intelligence: Attribute,
-  Constitution: Attribute,
-  Luck: Attribute,
-}
+export type Companion = Attributes & { Level: number };
 
 export enum Class {
   Warrior = 1,
@@ -394,6 +185,7 @@ export enum Class {
   Necromancer = 10,
   Paladin = 11,
   PlagueDoctor = 12,
+  BloodWeaver = 13,
 }
 
 export enum RuneType {
@@ -436,37 +228,17 @@ export enum EventType {
 }
 
 export type DailyTaskReward = {
-  Claimed: boolean,
-  PointsRequired: number,
-  Rewards: { ResourceType: ResourceType, Amount: number }[]
-}
+  Claimed: boolean;
+  PointsRequired: number;
+};
 
 export type DailyTask = {
-  TaskType: number,
-  Current: number,
-  Target: number,
-  Points: number,
-  Completed: boolean
-}
+  Points: number;
+  Completed: boolean;
+};
 
-export type ToiletState = {
-  AmountOfItemsToSacrifice: number
-}
+export type ToiletState = { AmountOfItemsToSacrifice: number };
 
-export type Guild = {
-  Id: number,
-  TotalTreasure: number,
-  PortalLife: number,
-  TotalInstructor: number,
-  Portal: number,
-  Honor: number,
-  Raids: number,
-  PetId: number,
-  PetMaxLevel: number,
-}
+export type Guild = { PetMaxLevel: number };
 
-export type PortalProgress = {
-  Finished: number,
-  HpPercentage: number,
-  CanAttack: boolean,
-}
+export type PortalProgress = { Finished: number; CanAttack: boolean };

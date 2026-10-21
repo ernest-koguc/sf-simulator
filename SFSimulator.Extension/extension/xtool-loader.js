@@ -17,5 +17,4 @@ async function xtoolLoad() {
   setTimeout(function () {
     doc.appendChild(main);
   }, 300);
-
 }

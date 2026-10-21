@@ -1,13 +1,13 @@
-import { Component, ElementRef, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronDown, lucideChevronRight } from '@ng-icons/lucide';
-import { HlmIconDirective } from '@spartan-ng/helm/icon';
 
 @Component({
   selector: 'tab-btn',
-  imports: [NgIcon, HlmIconDirective],
+  imports: [NgIcon],
   templateUrl: './tab-btn.component.html',
   styleUrl: './tab-btn.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideIcons({ lucideChevronRight, lucideChevronDown })],
 })
 export class TabBtnComponent {

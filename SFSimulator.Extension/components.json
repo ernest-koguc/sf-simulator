@@ -1,3 +1,5 @@
 {
-  "componentsPath": "src/app/shared"
+  "componentsPath": "src/app/shared",
+  "importAlias": "@spartan-ng/helm",
+  "style": "vega"
 }

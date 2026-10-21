@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, inject, signal, viewChild } from '@angular/core';
 import {
-  HlmAccordionContentComponent,
-  HlmAccordionDirective,
-  HlmAccordionItemDirective,
-  HlmAccordionTriggerDirective,
+  HlmAccordionContent,
+  HlmAccordion,
+  HlmAccordionItem,
+  HlmAccordionTrigger,
 } from '@spartan-ng/helm/accordion';
 import { SFGameRequest } from './sfgame/SFGameModels';
 import { TabBtnComponent } from './tab-btn/tab-btn.component';
@@ -17,10 +17,10 @@ import { DailiesTabComponent } from './tabs/dailies-tab/dailies-tab.component';
 @Component({
   selector: 'x-tool',
   imports: [
-    HlmAccordionDirective,
-    HlmAccordionItemDirective,
-    HlmAccordionTriggerDirective,
-    HlmAccordionContentComponent,
+    HlmAccordion,
+    HlmAccordionItem,
+    HlmAccordionTrigger,
+    HlmAccordionContent,
     DungeonTabComponent,
     ExpeditionTabComponent,
     DailiesTabComponent,

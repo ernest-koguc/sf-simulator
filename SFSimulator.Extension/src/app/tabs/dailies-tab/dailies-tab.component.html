@@ -6,10 +6,10 @@
       <tr hlmTr [class]="'border-b border-gray-600 mb-2 text-xs ' + textColor">
         <td hlmTd class='flex items-center gap-1'>
           @if (daily.Completed) {
-            <ng-icon hlm name='lucideCircleCheck'/>
+            <ng-icon class="text-[length:--spacing(6)]" name='lucideCircleCheck'/>
           }
           @else {
-            <ng-icon hlm name='lucideCircleMinus'/>
+            <ng-icon class="text-[length:--spacing(6)]" name='lucideCircleMinus'/>
           }
           <span>
             {{ daily.Information }}

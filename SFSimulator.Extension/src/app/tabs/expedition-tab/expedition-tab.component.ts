@@ -1,36 +1,32 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import {
-  HlmTabsComponent,
-  HlmTabsListComponent,
-  HlmTabsContentDirective,
-  HlmTabsTriggerDirective
+  HlmTabs,
+  HlmTabsList,
+  HlmTabsContent,
+  HlmTabsTrigger
 } from '@spartan-ng/helm/tabs';
 import { ExpeditionEncounter } from '../../sfgame/SFGameModels';
 import { SessionManager } from '../../services/SessionManager';
 import { liveQuery } from 'dexie';
-import { db, ExpeditionHistoryItem } from '../../db';
+import { db, expeditionChestCount, expeditionItemCount, ExpeditionHistoryItem } from '../../db';
 import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { HlmTableImports } from '@spartan-ng/helm/table';
-import { HlmButtonDirective } from '@spartan-ng/helm/button';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { HlmIconDirective } from '@spartan-ng/helm/icon';
 import { lucideX } from '@ng-icons/lucide';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'expedition-tab',
-  imports: [HlmTabsComponent,
-    HlmTabsListComponent,
-    HlmTabsContentDirective,
-    HlmTabsTriggerDirective,
+  imports: [HlmTabs,
+    HlmTabsList,
+    HlmTabsContent,
+    HlmTabsTrigger,
     AsyncPipe,
     DatePipe,
     DecimalPipe,
     HlmTableImports,
-    HlmButtonDirective,
+    HlmButton,
     NgIcon,
-    HlmIconDirective
   ],
   providers: [
     provideIcons({ lucideX }),
@@ -58,7 +54,7 @@ export class ExpeditionTabComponent {
     if (expes.length === 0) {
       return 0;
     }
-    const totalChests = expes.reduce((sum, exp) => sum + exp.ChestRewards.length, 0);
+    const totalChests = expes.reduce((sum, exp) => sum + expeditionChestCount(exp), 0);
     return totalChests / expes.length;
   }
 
@@ -74,7 +70,7 @@ export class ExpeditionTabComponent {
     if (expes.length === 0) {
       return 0;
     }
-    const totalItems = expes.reduce((sum, exp) => sum + exp.HalfTimeItems.length + exp.FinalItems.length, 0);
+    const totalItems = expes.reduce((sum, exp) => sum + expeditionItemCount(exp), 0);
     const totalThirst = expes.reduce((sum, exp) => sum + exp.Thirst, 0);
     return totalItems / totalThirst * 20;
   }

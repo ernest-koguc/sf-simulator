@@ -22,12 +22,12 @@ export class WarningService {
     const warnings = [];
 
     const witch = current.witch;
-    const isCritScrollUnlocked = witch?.Scrolls.find(s => s.Type === ScrollType.Crit)?.Unlocked && ownSave.Level >= 66;
+    const isCritScrollUnlocked = witch?.Scrolls.includes(ScrollType.Crit) && ownSave.Level >= 66;
     if (isCritScrollUnlocked === true && !items.Wpn1?.HasEnchantment && !items.Wpn2?.HasEnchantment) {
       warnings.push('Weapon scroll missing!');
     }
 
-    const isReactionScrollUnlocked = witch?.Scrolls.find(s => s.Type === ScrollType.Reaction)?.Unlocked && ownSave.Level >= 66;
+    const isReactionScrollUnlocked = witch?.Scrolls.includes(ScrollType.Reaction) && ownSave.Level >= 66;
     if (isReactionScrollUnlocked === true && !items.Hand?.HasEnchantment) {
       warnings.push('Gloves scroll missing!');
     }
@@ -51,8 +51,8 @@ export class WarningService {
 
     const witch = current.witch;
 
-    const isCritScrollUnlocked = witch?.Scrolls.find(s => s.Type === ScrollType.Crit)?.Unlocked && ownSave?.Level >= 66;
-    const isReactionScrollUnlocked = witch?.Scrolls.find(s => s.Type === ScrollType.Reaction)?.Unlocked && ownSave?.Level >= 66;
+    const isCritScrollUnlocked = witch?.Scrolls.includes(ScrollType.Crit) && ownSave?.Level >= 66;
+    const isReactionScrollUnlocked = witch?.Scrolls.includes(ScrollType.Reaction) && ownSave?.Level >= 66;
 
     if (isCritScrollUnlocked) {
       const bertWeaponScroll = companionsItems.Bert?.Wpn1?.HasEnchantment;

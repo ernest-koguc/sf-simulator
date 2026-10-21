@@ -1,6 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { ExpeditionEncounter, ExpeditionHalfTime, ExpeditionItemReward, ExpeditionRewardResources } from './sfgame/SFGameModels';
-import { ItemModel } from './sfgame/parsers/EquipmentParser';
+import { ExpeditionEncounter } from './sfgame/SFGameModels';
 
 export class Database extends Dexie {
   ExpeditionHistory!: Table<ExpeditionHistoryItem, number>;
@@ -11,7 +10,7 @@ export class Database extends Dexie {
     this.version(2).stores({
       ExpeditionHistory: '++Id',
       EquipmentGathering: '++Id',
-    }).upgrade(() => { });
+    }).upgrade(() => {});
   }
 }
 
@@ -21,40 +20,34 @@ export interface ExpeditionHistoryItem {
   Id?: number;
   UniquePlayerId: string;
   MainTask: ExpeditionEncounter;
-  SideTasks: ExpeditionEncounter[];
   Heroism: number;
-  HalfTime: ExpeditionHalfTime,
-  HalfTimeItems: ExpeditionItemReward[],
-  HalfTimeChosen: 'left' | 'mid' | 'right',
-  ChestRewards: ExpeditionRewardResources[],
-  FinalRewards: ExpeditionRewardResources,
-  FinalItems: ExpeditionItemReward[],
-  Stages: {
-    Left: ExpeditionEncounter,
-    Mid: ExpeditionEncounter,
-    Right: ExpeditionEncounter,
-    Chosen: 'left' | 'mid' | 'right',
-    Backpack: ExpeditionEncounter[],
-  }[],
   Thirst: number;
   CreatedAt: Date;
+  ChestCount?: number;
+  ItemCount?: number;
+  // Existing history stores arrays. Only their lengths are read.
+  ChestRewards?: unknown[];
+  HalfTimeItems?: unknown[];
+  FinalItems?: unknown[];
+}
+
+export function expeditionChestCount(record: ExpeditionHistoryItem): number {
+  return record.ChestCount ?? record.ChestRewards?.length ?? 0;
+}
+
+export function expeditionItemCount(record: ExpeditionHistoryItem): number {
+  return record.ItemCount ?? (record.HalfTimeItems?.length ?? 0) + (record.FinalItems?.length ?? 0);
 }
 
 export interface EquipmentGatheringItem {
   Id?: number;
-  UniquePlayerId: string,
-  Class: number,
+  UniquePlayerId: string;
+  Class: number;
   Items: {
-    Strength: number,
-    Dexterity: number,
-    Intelligence: number,
-    Constitution: number,
-    Luck: number,
-    ItemQuality: number,
-    PicIndex: number,
-    Type: number,
-    Armor: number,
-    MinDmg: number,
-    MaxDmg: number,
-  }[]
+    ItemQuality: number;
+    Type: number;
+    Armor: number;
+    MinDmg: number;
+    MaxDmg: number;
+  }[];
 }

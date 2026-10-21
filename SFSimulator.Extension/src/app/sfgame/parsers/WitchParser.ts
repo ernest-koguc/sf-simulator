@@ -1,41 +1,19 @@
-import { Witch } from "../SFGameModels";
-import { ByteParser } from "./ByteParser";
-import { _between } from "./EquipmentParser";
+import { ScrollType, Witch } from '../SFGameModels';
+import { ByteParser } from './ByteParser';
 
-export function parseWitch(witchData: number[]): Witch {
-  const dataType = new ByteParser(witchData);
-  let witchStage = dataType.long();
-  let witchItems = dataType.long();
-  const witchItemsNext = Math.max(0, dataType.long());
-  const witchTodayItemForCauldron = dataType.long();
-  witchItems = Math.min(witchItems, witchItemsNext);
+const SCROLL_TYPES = new Set<number>(Object.values(ScrollType).filter(v => typeof v === 'number'));
 
-  dataType.skip(2);
-
-  const witchFinish = dataType.long() * 1000; //+ data.offset;
-  dataType.skip(1);
-
-  const witchScrolls = [];
-  for (let i = 0; i < 9; i++) {
-    dataType.skip(1);
-
-    const type = dataType.long();
-    const date = dataType.long() * 1000;// + data.offset;
-
-    witchScrolls.push({
-      Date: date,
-      Type: type,
-      Unlocked: _between(date, 0, (new Date()).getTime())
-    });
+// Witch::update uses a count at [4] and enchantment IDs at [6 + 3*i].
+// Presence in this list unlocks a scroll; dates are not an unlock condition.
+export function parseWitch(data: number[]): Witch {
+  const parser = new ByteParser(data);
+  const count = parser.unsignedAt(4, 0xff);
+  const scrolls: ScrollType[] = [];
+  for (let i = 0; i < count; i++) {
+    const type = parser.at(6 + 3 * i);
+    if (SCROLL_TYPES.has(type)) {
+      scrolls.push(type);
+    }
   }
-
-  witchStage = witchScrolls.filter(s => s.Unlocked).length;
-  return {
-    Stage: witchStage,
-    Items: witchItems,
-    ItemsNext: witchItemsNext,
-    ItemForCauldron: witchTodayItemForCauldron,
-    Finish: witchFinish,
-    Scrolls: witchScrolls
-  };
+  return { Scrolls: scrolls };
 }

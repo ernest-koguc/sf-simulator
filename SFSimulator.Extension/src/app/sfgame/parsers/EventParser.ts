@@ -1,13 +1,13 @@
-import { EventType } from "../SFGameModels";
+import { EventType } from '../SFGameModels';
+import { ByteParser } from './ByteParser';
 
-export function parseEvents(events: number): { Id: EventType, Name: string }[] {
-  const eventList = [];
-  const eventMap = Object.values(EventType);
-  for (let i of eventMap.filter(v => typeof v === 'number') as number[]) {
-    if ((events & (1 << i)) > 0) {
-      eventList.push({ Id: i, Name: eventMap[i] as string });
-    }
+const EVENTS = Object.values(EventType).filter(v => typeof v === 'number');
+
+// gamestate/mod.rs: events. Short responses leave the existing state untouched.
+export function parseEvents(data: number[]): EventType[] | null {
+  if (data.length < 8) {
+    return null;
   }
-
-  return eventList;
+  const flags = new ByteParser(data).at(1);
+  return EVENTS.filter(event => (flags & (1 << event)) !== 0);
 }

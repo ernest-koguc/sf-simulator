@@ -1,50 +1,25 @@
 import { Injectable } from '@angular/core';
 import { db } from '../db';
-import { Equipment } from '../sfgame/SFGameModels';
-import { ByteParser } from '../sfgame/parsers/ByteParser';
+import { Class, Equipment } from '../sfgame/SFGameModels';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class EquipmentService {
-  private database = db;
-  public async saveEquipment(playerEquipment: Equipment, playerSave: number[], playerName: string, server: string) {
-
-    let parser = new ByteParser(playerSave);
-    let classType = parser.atLong(20);
-
-    let equipmentGathering = {
+  public async saveEquipment(playerEquipment: Equipment, classType: Class, playerName: string, server: string) {
+    const record = {
       UniquePlayerId: `${server}-${playerName}`,
       Class: classType,
-      Items: [
-        playerEquipment.Head,
-        playerEquipment.Body,
-        playerEquipment.Hand,
-        playerEquipment.Feet,
-        playerEquipment.Neck,
-        playerEquipment.Belt,
-        playerEquipment.Ring,
-        playerEquipment.Misc,
-        playerEquipment.Wpn1,
-        playerEquipment.Wpn2
-      ].filter(i => i !== null && i.ItemQuality != 0).map(i => {
-        return {
-          Strength: i!.BaseStrength,
-          Dexterity: i!.BaseDexterity,
-          Intelligence: i!.BaseIntelligence,
-          Constitution: i!.BaseConstitution,
-          Luck: i!.BaseLuck,
-          ItemQuality: i!.ItemQuality,
-          PicIndex: i!.PicIndex,
-          Armor: i!.Armor,
-          MinDmg: i!.DamageMin,
-          MaxDmg: i!.DamageMax,
-          Type: i!.Type,
-        }
-      })
-    }
-
-    const previous = await this.database.EquipmentGathering.filter(e => e.UniquePlayerId === equipmentGathering.UniquePlayerId).first();
-    await this.database.EquipmentGathering.put({ Id: previous?.Id, ...equipmentGathering });
+      Items: Object.values(playerEquipment)
+        .filter((item): item is Equipment['Wpn1'] => item !== null && item.ItemQuality !== 0)
+        .map(item => ({
+          ItemQuality: item.ItemQuality,
+          Armor: item.Armor,
+          MinDmg: item.DamageMin,
+          MaxDmg: item.DamageMax,
+          Type: item.Type,
+        })),
+    };
+    const previous = await db.EquipmentGathering
+      .filter(entry => entry.UniquePlayerId === record.UniquePlayerId).first();
+    await db.EquipmentGathering.put({ Id: previous?.Id, ...record });
   }
 }

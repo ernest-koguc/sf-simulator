@@ -1,99 +1,91 @@
 import { computed, Injectable, signal, WritableSignal } from '@angular/core';
-import { DailyTask, DailyTaskReward, Dungeons, Equipment, EventType, Expedition, Guild, OwnPlayerSave, Pets, PortalProgress, Resources, ToiletState, Tower, Witch } from '../sfgame/SFGameModels';
-import { ExpeditionProgress } from './ExpeditionService';
-import { ItemModel } from '../sfgame/parsers/EquipmentParser';
+import {
+  CharacterStatus, DailyTask, DailyTaskReward, Dungeons, Equipment, EventType,
+  Expedition, Guild, OwnPlayerSave, Pets, PortalProgress, ToiletState, Tower, Witch,
+} from '../sfgame/SFGameModels';
+import type { ExpeditionProgress } from './ExpeditionService';
 import { Fightable } from '../sfgame/Fightable';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SessionManager {
   public sessions: WritableSignal<Record<string, SessionData>> = signal({});
   public currentId: WritableSignal<string | null> = signal(null);
 
   public fightable = computed(() => {
     const current = this.current();
-    if (!current || !current.ownPlayerSave || !current.ownItems || !current.dungeons) {
+    if (!current?.ownPlayerSave || !current.ownItems || !current.dungeons) {
       return null;
     }
-
-    return new Fightable(current.ownPlayerSave, current.ownItems, current.companionItems, current.tower, current.dungeons);
+    return new Fightable(current.ownPlayerSave, current.ownItems, current.companionItems,
+      current.tower, current.hasEternalPotion);
   });
 
   public current = computed(() => {
-    const current = this.currentId();
-    if (!current) {
-      return null;
-    }
-
-    return this.sessions()[current] || null;
+    const id = this.currentId();
+    return id === null ? null : this.sessions()[id] ?? null;
   });
 
   public updateCurrent(update: (data: SessionData) => void) {
     const currentId = this.currentId();
-    let currentData = this.current();
     if (currentId === null) {
       return;
     }
-
-    if (currentData === null) {
-      currentData = {
-        playerName: null,
-        server: null,
-        guildName: null,
-        dungeons: null,
-        resources: null,
-        tower: null,
-        witch: null,
-        expedition: null,
-        expeditionProgress: null,
-        pets: null,
-        ownItems: null,
-        backpack: null,
-        dummy: null,
-        ownPlayerSave: null,
-        companionItems: null,
-        activeEvents: null,
-        dailyTasksRewards: null,
-        dailyTasks: null,
-        toiletState: null,
-        guild: null,
-        portalProgress: null,
-      }
-    }
-
+    const currentData: SessionData = { ...(this.current() ?? createSessionData()) };
     update(currentData);
-
-    this.sessions.update(sessions => {
-      return { ...sessions, [currentId]: { ...currentData } };
-    });
+    this.sessions.update(sessions => ({ ...sessions, [currentId]: currentData }));
   }
 }
 
-type SessionData = {
+export function createSessionData(): SessionData {
+  return {
+    playerName: null,
+    server: null,
+    ownPlayerSave: null,
+    ownItems: null,
+    companionItems: null,
+    tower: null,
+    dungeons: null,
+    witch: null,
+    pets: null,
+    guild: null,
+    portalProgress: null,
+    activeEvents: null,
+    dailyTasksRewards: null,
+    dailyTasks: null,
+    toiletState: null,
+    characterStatus: null,
+    hasEternalPotion: false,
+    wheelSpinsToday: null,
+    diceGamesRemaining: null,
+    arenaFightsToday: null,
+    canAttackHydra: null,
+    expedition: null,
+    expeditionProgress: null,
+  };
+}
+
+export type SessionData = {
   playerName: string | null;
   server: string | null;
-  guildName: string | null;
-  guild: Guild | null;
-  dungeons: Dungeons | null;
-  resources: Resources | null;
-  tower: Tower | null;
-  witch: Witch | null;
-  expedition: Expedition[] | null;
-  expeditionProgress: ExpeditionProgress | null;
-  pets: Pets | null;
-  ownItems: Equipment | null;
-  companionItems: {
-    Bert: Equipment;
-    Mark: Equipment;
-    Kunigunde: Equipment;
-  } | null;
-  backpack: ItemModel[] | null;
-  dummy: Equipment | null;
   ownPlayerSave: OwnPlayerSave | null;
-  activeEvents: { Id: EventType, Name: string }[] | null;
+  ownItems: Equipment | null;
+  companionItems: { Bert: Equipment; Mark: Equipment; Kunigunde: Equipment } | null;
+  tower: Tower | null;
+  dungeons: Dungeons | null;
+  witch: Witch | null;
+  pets: Pets | null;
+  guild: Guild | null;
+  portalProgress: PortalProgress | null;
+  activeEvents: EventType[] | null;
   dailyTasksRewards: DailyTaskReward[] | null;
   dailyTasks: DailyTask[] | null;
   toiletState: ToiletState | null;
-  portalProgress: PortalProgress | null;
-}
+  characterStatus: CharacterStatus | null;
+  hasEternalPotion: boolean;
+  wheelSpinsToday: number | null;
+  diceGamesRemaining: number | null;
+  arenaFightsToday: number | null;
+  canAttackHydra: boolean | null;
+  expedition: Expedition[] | null;
+  expeditionProgress: ExpeditionProgress | null;
+};

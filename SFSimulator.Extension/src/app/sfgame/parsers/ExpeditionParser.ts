@@ -1,100 +1,36 @@
-import { Expedition, ExpeditionCrossroad, ExpeditionEncounter, ExpeditionHalfTime, ExpeditionItemReward, ExpeditionRewardResources, ExpeditionState, ResourceType } from "../SFGameModels";
+import { Expedition, ExpeditionCrossroad, ExpeditionEncounter, ExpeditionState } from '../SFGameModels';
+import { ByteParser, chunks, unsigned } from './ByteParser';
 
-export function parseExpeditions(expeditionData: number[]): Expedition[] {
-  const firstExpedition = {
-    MainTask: expeditionData[0],
-    SideTasks: [expeditionData[1], expeditionData[2], expeditionData[3]],
-    Locations: [expeditionData[4], expeditionData[5]],
-    Time: expeditionData[6],
-    Flag: expeditionData[7], // 7 - this is 0 - nothing, 1 - pet egg, 2 - location for the daily task
+const ENCOUNTERS = new Set<number>(Object.values(ExpeditionEncounter).filter(v => typeof v === 'number'));
+const encounter = (value: number): ExpeditionEncounter => ENCOUNTERS.has(value) ? value : ExpeditionEncounter.None;
+
+export function parseExpeditions(data: number[]): Expedition[] {
+  return Array.from(chunks(data, 8), record => ({
+    MainTask: encounter(record[0]),
+    // The current UI displays these three legacy task slots. The Rust
+    // AvailableExpedition parser leaves words 1..3 uninterpreted.
+    SideTasks: record.slice(1, 4),
+    Time: unsigned(record[6], 0xffffffff, 600),
+  }));
+}
+
+// gamestate/mod.rs: expeditionstate (current_floor, floor_stage, heroism).
+export function parseExpeditionState(data: number[]): ExpeditionState {
+  const parser = new ByteParser(data);
+  return {
+    Stage: parser.unsignedAt(0, 0xff),
+    CurrentStatus: parser.at(2),
+    CurrentHeroism: parser.at(13),
   };
-
-  const secondExpedition = {
-    MainTask: expeditionData[8],
-    SideTasks: [expeditionData[9], expeditionData[10], expeditionData[11]],
-    Locations: [expeditionData[12], expeditionData[13]], // 12 and 13 is the location ids
-    Time: expeditionData[14],
-    Flag: expeditionData[15], // 15 - this is 0 - nothing, 1 - pet egg, 2 - location for the daily task
-  }
-
-  return [firstExpedition, secondExpedition];
 }
 
-export function parseExpeditionState(expeditionStateData: number[]): ExpeditionState {
-  const expeditionState = {
-    Stage: expeditionStateData[0],
-    CurrentLocation: expeditionStateData[1],
-    CurrentStatus: expeditionStateData[2],// 2 - status - 1 for encounter choice, 2 for boss fight, 3 for reward choosing (midway), 4 for wait time
-    MainTask: expeditionStateData[3],
-    SideTasks: [expeditionStateData[4], expeditionStateData[5], expeditionStateData[6]],
-    MainTaskFinishedCounter: expeditionStateData[7],
-    MainTaskMaxCounter: expeditionStateData[8],
-    Backpack: [expeditionStateData[9], expeditionStateData[10], expeditionStateData[11], expeditionStateData[12]],
-    CurrentHeroism: expeditionStateData[13],
-    CurrentStars: expeditionStateData[14],
-    WaitingStarted: expeditionStateData[15],
-    WaitingUntil: expeditionStateData[16],
-    TaskBonus: expeditionStateData[17],
-    TaskPenalty: expeditionStateData[18],
-    BonusForRepeatableTask: expeditionStateData[19],
-    BonusLimitForRepeatableTask: expeditionStateData[20],
-  }
-
-  return expeditionState;
-}
-
-export function parseExpeditionCrossroad(expeditionCrossroadData: number[]): ExpeditionCrossroad {
-  const crossroad = {
-    Left: expeditionCrossroadData[0],
-    LeftHeroism: expeditionCrossroadData[1],
-    Mid: expeditionCrossroadData[2] ?? ExpeditionEncounter.None,
-    MidHeroism: expeditionCrossroadData[3] ?? 0,
-    Right: expeditionCrossroadData[4] ?? ExpeditionEncounter.None,
-    RightHeroism: expeditionCrossroadData[5] ?? 0,
-  }
-
-  return crossroad;
-}
-
-export function parseExpeditionHalftime(expeditionHalftimeData: number[]): ExpeditionHalfTime {
-  // [0] is the monster id for some reason
+// Expedition::update_encounters consumes pairs of encounter type / heroism.
+// Only the encounter choices are displayed by the extension.
+export function parseExpeditionCrossroad(data: number[]): ExpeditionCrossroad {
+  const choices = Array.from(chunks(data, 2), pair => encounter(pair[0]));
   return {
-    LeftReward: {
-      Type: expeditionHalftimeData[1] ?? ResourceType.None,
-      Amount: expeditionHalftimeData[2] ?? 0,
-    },
-    MidReward: {
-      Type: expeditionHalftimeData[3] ?? ResourceType.None,
-      Amount: expeditionHalftimeData[4] ?? 0,
-    },
-    RightReward: {
-      Type: expeditionHalftimeData[5] ?? ResourceType.None,
-      Amount: expeditionHalftimeData[6] ?? 0,
-    }
-  }
-}
-
-export function parseExpeditionRewardResources(expeditionRewardResources: number[]): ExpeditionRewardResources {
-  const rewards = [];
-  const length = expeditionRewardResources[0] / 2;
-
-  for (let i = 0; i < length; i++) {
-    rewards.push({ Type: expeditionRewardResources[2 * i + 1], Amount: expeditionRewardResources[2 * i + 2], });
-  }
-
-  return {
-    Resources: rewards
-  }
-}
-
-export function parseExpeditionRewardItem(expeditionRewardItem: number[]): ExpeditionItemReward[] {
-  const itemsCount = expeditionRewardItem.length / 19;
-
-  const items = [];
-
-  for (let i = 0; i < itemsCount; i++) {
-    items.push({ GoldValue: expeditionRewardItem[13 + (i * 19)], })
-  }
-
-  return items;
+    Left: choices[0] ?? ExpeditionEncounter.None,
+    Mid: choices[1] ?? ExpeditionEncounter.None,
+    Right: choices[2] ?? ExpeditionEncounter.None,
+  };
 }
