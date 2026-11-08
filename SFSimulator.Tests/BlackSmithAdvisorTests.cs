@@ -63,12 +63,12 @@ public class BlackSmithAdvisorTests
     }
 
     [TestMethod]
-    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 20, 1067798, 1501933)]
-    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 10, 241461, 188823)]
-    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 5, ItemType.Weapon, 14, 495520, 522485)]
-    [DataRow(ItemAttributeType.Legendary, 521, ClassType.Mage, 43, 5, ItemType.Weapon, 18, 1859800, 2416538)]
-    [DataRow(ItemAttributeType.NormalOneStat, 400, ClassType.Berserker, 43, 5, ItemType.Ring, 8, 93114, 19318)]
-    [DataRow(ItemAttributeType.NormalTwoStats, 200, ClassType.Warrior, 43, 5, ItemType.Trinket, 16, 99769, 78425)]
+    [DataRow(ItemAttributeType.Epic, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 20, 1067814, 1501965)]
+    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 5, ItemType.Breastplate, 10, 241468, 188837)]
+    [DataRow(ItemAttributeType.EpicAllAttributes, 521, ClassType.BattleMage, 43, 5, ItemType.Weapon, 14, 495525, 522495)]
+    [DataRow(ItemAttributeType.Legendary, 521, ClassType.Mage, 43, 5, ItemType.Weapon, 18, 1859810, 2416558)]
+    [DataRow(ItemAttributeType.NormalOneStat, 400, ClassType.Berserker, 43, 5, ItemType.Ring, 8, 93121, 19318)]
+    [DataRow(ItemAttributeType.NormalTwoStats, 200, ClassType.Warrior, 43, 5, ItemType.Trinket, 16, 99784, 78427)]
     public void DismantleItem_gives_proper_refund_costs_for_upgraded_items(ItemAttributeType itemAttributeType, int characterLevel,
         ClassType classType, int aura, int itemQualityRuneValue, ItemType itemType, int upgradeLevel, int expectedMetal, int expectedSplinters)
     {

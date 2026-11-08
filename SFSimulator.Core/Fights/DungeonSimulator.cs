@@ -43,7 +43,7 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
     {
         var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
 
-        if (dungeonEnemy.Dungeon.Type.WithCompanions())
+        if (dungeonEnemy.Dungeon.Type.WithCompanions)
         {
             foreach (var companion in companions)
             {
@@ -63,6 +63,18 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         return CreateDungeonSimulationResult(result.WonFights, result.Succeeded, dungeonEnemy, character.Level);
     }
+
+    // TODO: at one point we should consider either renaming DungeonSimulator or moving this out to different interface
+    public FightSimulationResult SimulateArenaFight<T, E>(IFightable<T> left, IFightable<E> right, DungeonSimulationOptions options)
+        where T : IWeaponable
+        where E : IWeaponable
+    {
+        var leftContext = _fightableContextFactory.Create(left, right);
+        var rightContext = _fightableContextFactory.Create(right, left);
+
+        return SimulateFight([(leftContext, rightContext)], options);
+    }
+
 
     private FightSimulationResult SimulateFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext,
         DungeonSimulationOptions options)

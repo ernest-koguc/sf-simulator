@@ -61,17 +61,20 @@ public class DruidFightContext : FightContextBase
     private bool AttackImpl(IAttackTakable target, ref int round)
     {
         IsInBearForm = false;
-        var willSwoop = Random.NextDouble() < SwoopChance;
 
-        if (willSwoop)
+        if (Random.NextDouble() < SwoopChance)
         {
             round++;
 
             SwoopChance = Math.Min(0.5, SwoopChance + 0.05);
             if (target.WillTakeAttackImplementation())
             {
+                var isCrit = Random.NextDouble() < CritChance; 
+
+                // BUG: SwoopMultiplier is bugged in game and calculates as follows:
+                var swoopMultiplier = isCrit ? (CritMultiplier + SwoopDamageMultiplier - 1) / CritMultiplier : SwoopDamageMultiplier;
                 var swoopDmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
-                    round, CritChance, CritMultiplier, Random) * SwoopDamageMultiplier;
+                    round, isCrit ? 1 : -1, CritMultiplier, Random) * swoopMultiplier;
 
                 if (target.TakeAttackImplementation(swoopDmg, ref round))
                 {

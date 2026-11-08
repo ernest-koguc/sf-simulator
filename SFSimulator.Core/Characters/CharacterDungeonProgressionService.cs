@@ -15,12 +15,6 @@ public class CharacterDungeonProgressionService(IDungeonProvider dungeonProvider
     {
         return dungeonProvider.GetAllDungeons(simulationContext);
     }
-
-    public void ResetProgress()
-    {
-        dungeonProvider.InitDungeons();
-    }
-
     public void ProgressThrough(SimulationContext simulationContext, OnDungeonKill onDungeonKill, int day, List<DungeonEnemy>? dungeonEnemies = null)
     {
         if (!ShouldDoDungeons(simulationContext.Level)) return;

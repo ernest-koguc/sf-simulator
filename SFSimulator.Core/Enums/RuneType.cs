@@ -16,9 +16,3 @@ public enum RuneType
     ColdDamage = 11,
     LightningDamage = 12
 }
-
-public static class RuneTypeExtensions
-{
-    public static bool IsWeaponRune(this RuneType rune)
-        => rune is not RuneType.None or RuneType.LightningDamage or RuneType.FireDamage or RuneType.ColdDamage;
-}

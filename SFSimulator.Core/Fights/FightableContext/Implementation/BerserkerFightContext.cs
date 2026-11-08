@@ -54,8 +54,7 @@ public class BerserkerFightContext : FightContextBase
         }
         else if (Random.Next(1, 101) > 50)
         {
-            // NOTE: currently there is a bug that makes berserker chain attack not increase enrage round
-            //round++;
+            round++;
             ChainAttackCounter++;
             return true;
         }

@@ -6,12 +6,13 @@ public class BardFightContext : FightContextBase
     [
         (3, 1.2),
         (3, 1.4),
-        (4, 1.6)
+        (4, 1.6),
     ];
 
     public int MelodyLength { get; set; } = -1;
     public int NextMelodyRound { get; set; } = 0;
     public double MelodyDmgMultiplier { get; set; } = 1;
+    public double MelodyCritMultiplier { get; set; } = 1;
 
     public BardFightContext(ClassType enemyClass)
     {
@@ -51,6 +52,7 @@ public class BardFightContext : FightContextBase
         if (MelodyLength == 0)
         {
             MelodyDmgMultiplier = 1;
+            MelodyCritMultiplier = CritMultiplier;
         }
         if (MelodyLength <= 0 && NextMelodyRound <= 0)
         {
@@ -63,7 +65,7 @@ public class BardFightContext : FightContextBase
             return false;
 
         var dmg = CalculateNormalHitDamage(MinimumDamage, MaximumDamage,
-            round, CritChance, CritMultiplier, Random) * MelodyDmgMultiplier;
+            round, CritChance, MelodyCritMultiplier, Random) * MelodyDmgMultiplier;
 
         return target.TakeAttackImplementation(dmg, ref round);
     }
@@ -87,5 +89,7 @@ public class BardFightContext : FightContextBase
 
         (MelodyLength, MelodyDmgMultiplier) = MelodiesEffects[melody];
         NextMelodyRound = 4;
+        // BUG: this is current Bard bug, there should be no crit multiplier changes
+        MelodyCritMultiplier = (CritMultiplier + MelodyDmgMultiplier) / MelodyDmgMultiplier;
     }
 }

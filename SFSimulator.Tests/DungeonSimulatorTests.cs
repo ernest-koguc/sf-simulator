@@ -96,90 +96,88 @@ public class DungeonSimulatorTests
         Assert.AreEqual(expectedWinRatio, winRatio, 0.005, $"Expected win ratio: {expectedWinRatio} but actual was {winRatio}, won fights: {wonFights}");
     }
 
-    [TestMethod]
-    [DataRow(ClassType.Warrior, 3, 9, 0.3925)]
-    [DataRow(ClassType.Warrior, 4, 6, 0.4554)]
-    [DataRow(ClassType.Warrior, 5, 8, 0.0599)]
-    [DataRow(ClassType.Warrior, 25, 4, 0.0139)]
-    [DataRow(ClassType.Warrior, 25, 8, 0.0392)]
-    [DataRow(ClassType.Warrior, 24, 7, 0.2613)]
-    [DataRow(ClassType.Mage, 3, 9, 0.5717)]
-    [DataRow(ClassType.Mage, 4, 6, 0.7964)]
-    [DataRow(ClassType.Mage, 5, 8, 0.2204)]
-    [DataRow(ClassType.Mage, 25, 4, 0.0310)]
-    [DataRow(ClassType.Mage, 25, 8, 0.2365)]
-    [DataRow(ClassType.Mage, 24, 7, 0.1771)]
-    [DataRow(ClassType.Scout, 3, 9, 0.4673)]
-    [DataRow(ClassType.Scout, 4, 6, 0.7829)]
-    [DataRow(ClassType.Scout, 5, 8, 0.0767)]
-    [DataRow(ClassType.Scout, 25, 4, 0.1302)]
-    [DataRow(ClassType.Scout, 25, 8, 0.1609)]
-    [DataRow(ClassType.Scout, 24, 7, 0.2100)]
-    [DataRow(ClassType.Assassin, 3, 9, 0.4708)]
-    [DataRow(ClassType.Assassin, 4, 6, 0.8061)]
-    [DataRow(ClassType.Assassin, 5, 8, 0.0861)]
-    [DataRow(ClassType.Assassin, 25, 4, 0.1578)]
-    [DataRow(ClassType.Assassin, 25, 8, 0.2334)]
-    [DataRow(ClassType.Assassin, 24, 7, 0.2731)]
-    [DataRow(ClassType.BattleMage, 3, 9, 0.3695)]
-    [DataRow(ClassType.BattleMage, 4, 6, 0.4831)]
-    [DataRow(ClassType.BattleMage, 5, 8, 0.0724)]
-    [DataRow(ClassType.BattleMage, 25, 4, 0.0051)]
-    [DataRow(ClassType.BattleMage, 25, 8, 0.0010)]
-    [DataRow(ClassType.BattleMage, 24, 7, 0.1884)]
-    [DataRow(ClassType.Berserker, 3, 9, 0.6724)]
-    [DataRow(ClassType.Berserker, 4, 6, 0.6255)]
-    [DataRow(ClassType.Berserker, 5, 8, 0.0776)]
-    [DataRow(ClassType.Berserker, 25, 4, 0.0772)]
-    [DataRow(ClassType.Berserker, 25, 8, 0.2065)]
-    [DataRow(ClassType.Berserker, 24, 7, 0.3815)]
-    [DataRow(ClassType.DemonHunter, 3, 9, 0.3628)]
-    [DataRow(ClassType.DemonHunter, 4, 6, 0.6048)]
-    [DataRow(ClassType.DemonHunter, 5, 8, 0.0767)]
-    [DataRow(ClassType.DemonHunter, 25, 4, 0.1632)]
-    [DataRow(ClassType.DemonHunter, 25, 8, 0.2662)]
-    [DataRow(ClassType.DemonHunter, 24, 7, 0.2127)]
-    [DataRow(ClassType.Druid, 3, 9, 0.3396)]
-    [DataRow(ClassType.Druid, 4, 6, 0.4801)]
-    [DataRow(ClassType.Druid, 5, 8, 0.1235)]
-    [DataRow(ClassType.Druid, 25, 4, 0.0944)]
-    [DataRow(ClassType.Druid, 25, 8, 0.1538)]
-    [DataRow(ClassType.Druid, 24, 7, 0.2646)]
-    [DataRow(ClassType.Bard, 3, 9, 0.2435)]
-    [DataRow(ClassType.Bard, 4, 6, 0.4705)]
-    [DataRow(ClassType.Bard, 5, 8, 0.2344)]
-    [DataRow(ClassType.Bard, 25, 4, 0.0556)]
-    [DataRow(ClassType.Bard, 25, 8, 0.0512)]
-    [DataRow(ClassType.Bard, 24, 7, 0.1849)]
-    [DataRow(ClassType.Necromancer, 3, 9, 0.4997)]
-    [DataRow(ClassType.Necromancer, 4, 6, 0.6338)]
-    [DataRow(ClassType.Necromancer, 5, 8, 0.1461)]
-    [DataRow(ClassType.Necromancer, 25, 4, 0.0884)]
-    [DataRow(ClassType.Necromancer, 25, 8, 0.1619)]
-    [DataRow(ClassType.Necromancer, 24, 7, 0.2594)]
-    [DataRow(ClassType.Paladin, 3, 9, 0.6723)]
-    [DataRow(ClassType.Paladin, 4, 6, 0.6184)]
-    [DataRow(ClassType.Paladin, 5, 8, 0.0773)]
-    [DataRow(ClassType.Paladin, 25, 4, 0.0392)]
-    [DataRow(ClassType.Paladin, 25, 8, 0.1488)]
-    [DataRow(ClassType.Paladin, 24, 7, 0.3668)]
-    [DataRow(ClassType.PlagueDoctor, 3, 9, 0.4872)]
-    [DataRow(ClassType.PlagueDoctor, 4, 6, 0.7878)]
-    [DataRow(ClassType.PlagueDoctor, 5, 8, 0.0751)]
-    [DataRow(ClassType.PlagueDoctor, 25, 4, 0.1542)]
-    [DataRow(ClassType.PlagueDoctor, 25, 8, 0.1706)]
-    [DataRow(ClassType.PlagueDoctor, 24, 7, 0.2300)]
-
-    // NOT TESTED
-    // We dont have match ups between classes below yet, as they don't exist in dungeons
-    // Demon Hunter, Druid, Bard, Necromancer, Paladin, Plague Doctor
+    // Here we mainly care about opponents being properly generated. 
+    // Sim logic should be checked with the arena fights test cases further below
+    // [TestMethod]
+    // [DataRow(ClassType.Warrior, 3, 9, 0.3925)]
+    // [DataRow(ClassType.Warrior, 4, 6, 0.4554)]
+    // [DataRow(ClassType.Warrior, 5, 8, 0.0599)]
+    // [DataRow(ClassType.Warrior, 25, 4, 0.0139)]
+    // [DataRow(ClassType.Warrior, 25, 8, 0.0392)]
+    // [DataRow(ClassType.Warrior, 24, 7, 0.2613)]
+    // [DataRow(ClassType.Mage, 3, 9, 0.5717)]
+    // [DataRow(ClassType.Mage, 4, 6, 0.7964)]
+    // [DataRow(ClassType.Mage, 5, 8, 0.2204)]
+    // [DataRow(ClassType.Mage, 25, 4, 0.0310)]
+    // [DataRow(ClassType.Mage, 25, 8, 0.2365)]
+    // [DataRow(ClassType.Mage, 24, 7, 0.1771)]
+    // [DataRow(ClassType.Scout, 3, 9, 0.4673)]
+    // [DataRow(ClassType.Scout, 4, 6, 0.7829)]
+    // [DataRow(ClassType.Scout, 5, 8, 0.0767)]
+    // [DataRow(ClassType.Scout, 25, 4, 0.1302)]
+    // [DataRow(ClassType.Scout, 25, 8, 0.1609)]
+    // [DataRow(ClassType.Scout, 24, 7, 0.2100)]
+    // [DataRow(ClassType.Assassin, 3, 9, 0.4708)]
+    // [DataRow(ClassType.Assassin, 4, 6, 0.8061)]
+    // [DataRow(ClassType.Assassin, 5, 8, 0.0861)]
+    // [DataRow(ClassType.Assassin, 25, 4, 0.1578)]
+    // [DataRow(ClassType.Assassin, 25, 8, 0.2334)]
+    // [DataRow(ClassType.Assassin, 24, 7, 0.2731)]
+    // [DataRow(ClassType.BattleMage, 3, 9, 0.3695)]
+    // [DataRow(ClassType.BattleMage, 4, 6, 0.4831)]
+    // [DataRow(ClassType.BattleMage, 5, 8, 0.0724)]
+    // [DataRow(ClassType.BattleMage, 25, 4, 0.0051)]
+    // [DataRow(ClassType.BattleMage, 25, 8, 0.0010)]
+    // [DataRow(ClassType.BattleMage, 24, 7, 0.1884)]
+    // [DataRow(ClassType.Berserker, 3, 9, 0.6724)]
+    // [DataRow(ClassType.Berserker, 4, 6, 0.6255)]
+    // [DataRow(ClassType.Berserker, 5, 8, 0.0776)]
+    // [DataRow(ClassType.Berserker, 25, 4, 0.0772)]
+    // [DataRow(ClassType.Berserker, 25, 8, 0.2065)]
+    // [DataRow(ClassType.Berserker, 24, 7, 0.3815)]
+    // [DataRow(ClassType.DemonHunter, 3, 9, 0.3628)]
+    // [DataRow(ClassType.DemonHunter, 4, 6, 0.6048)]
+    // [DataRow(ClassType.DemonHunter, 5, 8, 0.0767)]
+    // [DataRow(ClassType.DemonHunter, 25, 4, 0.1632)]
+    // [DataRow(ClassType.DemonHunter, 25, 8, 0.2662)]
+    // [DataRow(ClassType.DemonHunter, 24, 7, 0.2127)]
+    // [DataRow(ClassType.Druid, 3, 9, 0.3396)]
+    // [DataRow(ClassType.Druid, 4, 6, 0.4801)]
+    // [DataRow(ClassType.Druid, 5, 8, 0.1235)]
+    // [DataRow(ClassType.Druid, 25, 4, 0.0944)]
+    // [DataRow(ClassType.Druid, 25, 8, 0.1538)]
+    // [DataRow(ClassType.Druid, 24, 7, 0.2646)]
+    // [DataRow(ClassType.Bard, 3, 9, 0.2435)]
+    // [DataRow(ClassType.Bard, 4, 6, 0.4705)]
+    // [DataRow(ClassType.Bard, 5, 8, 0.2344)]
+    // [DataRow(ClassType.Bard, 25, 4, 0.0556)]
+    // [DataRow(ClassType.Bard, 25, 8, 0.0512)]
+    // [DataRow(ClassType.Bard, 24, 7, 0.1849)]
+    // [DataRow(ClassType.Necromancer, 3, 9, 0.4997)]
+    // [DataRow(ClassType.Necromancer, 4, 6, 0.6338)]
+    // [DataRow(ClassType.Necromancer, 5, 8, 0.1461)]
+    // [DataRow(ClassType.Necromancer, 25, 4, 0.0884)]
+    // [DataRow(ClassType.Necromancer, 25, 8, 0.1619)]
+    // [DataRow(ClassType.Necromancer, 24, 7, 0.2594)]
+    // [DataRow(ClassType.Paladin, 3, 9, 0.6723)]
+    // [DataRow(ClassType.Paladin, 4, 6, 0.6184)]
+    // [DataRow(ClassType.Paladin, 5, 8, 0.0773)]
+    // [DataRow(ClassType.Paladin, 25, 4, 0.0392)]
+    // [DataRow(ClassType.Paladin, 25, 8, 0.1488)]
+    // [DataRow(ClassType.Paladin, 24, 7, 0.3668)]
+    // [DataRow(ClassType.PlagueDoctor, 3, 9, 0.4872)]
+    // [DataRow(ClassType.PlagueDoctor, 4, 6, 0.7878)]
+    // [DataRow(ClassType.PlagueDoctor, 5, 8, 0.0751)]
+    // [DataRow(ClassType.PlagueDoctor, 25, 4, 0.1542)]
+    // [DataRow(ClassType.PlagueDoctor, 25, 8, 0.1706)]
+    // [DataRow(ClassType.PlagueDoctor, 24, 7, 0.2300)]
     public void SimulateDungeon_yields_correct_win_ratio_for_light_world_fights(ClassType @class, int dungeonPosition, int dungeonEnemyPosition, double expectedWinRatio)
     {
         DrHouse.IsDebugging = true;
         var dungeon = DungeonProvider.GetDungeonEnemy(dungeonPosition, dungeonEnemyPosition);
         var simulationContext = GetSimulationContextFor(@class, dungeonPosition, dungeonEnemyPosition);
 
-        var iterations = 2_000_000;
+        var iterations = 10_000_000;
         var result = DungeonSimulator.SimulateDungeon<EquipmentItem, EquipmentItem>(dungeon, simulationContext, [],
             new(iterations, iterations, false));
 
@@ -279,5 +277,162 @@ public class DungeonSimulatorTests
         var dmgReduction = classConfig.MaxArmorReduction * 0.8;
 
         return (int)Math.Floor(dmgReduction * 100 * level / classConfig.ArmorMultiplier);
+    }
+
+    [TestMethod]
+    [DataRow(ClassType.Warrior, ClassType.Mage, 0.5000)]
+    [DataRow(ClassType.Warrior, ClassType.Scout, 0.4889)]
+    [DataRow(ClassType.Warrior, ClassType.Assassin, 0.4821)]
+    [DataRow(ClassType.Warrior, ClassType.BattleMage, 0.5034)]
+    [DataRow(ClassType.Warrior, ClassType.Berserker, 0.4909)]
+    [DataRow(ClassType.Warrior, ClassType.DemonHunter, 0.4946)]
+    [DataRow(ClassType.Warrior, ClassType.Druid, 0.5224)]
+    [DataRow(ClassType.Warrior, ClassType.Bard, 0.3900)]
+    [DataRow(ClassType.Warrior, ClassType.Necromancer, 0.5093)]
+    [DataRow(ClassType.Warrior, ClassType.Paladin, 0.4836)]
+    [DataRow(ClassType.Warrior, ClassType.PlagueDoctor, 0.4920)]
+    [DataRow(ClassType.Mage, ClassType.Scout, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.Assassin, 0.4895)]
+    [DataRow(ClassType.Mage, ClassType.BattleMage, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.Berserker, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.DemonHunter, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.Druid, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.Bard, 0.4876)]
+    [DataRow(ClassType.Mage, ClassType.Necromancer, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.Paladin, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.PlagueDoctor, 0.5000)]
+    [DataRow(ClassType.Scout, ClassType.Assassin, 0.4910)]
+    [DataRow(ClassType.Scout, ClassType.BattleMage, 0.5183)]
+    [DataRow(ClassType.Scout, ClassType.Berserker, 0.5003)]
+    [DataRow(ClassType.Scout, ClassType.DemonHunter, 0.4933)]
+    [DataRow(ClassType.Scout, ClassType.Druid, 0.5418)]
+    [DataRow(ClassType.Scout, ClassType.Bard, 0.4569)]
+    [DataRow(ClassType.Scout, ClassType.Necromancer, 0.5344)]
+    [DataRow(ClassType.Scout, ClassType.Paladin, 0.5006)]
+    [DataRow(ClassType.Scout, ClassType.PlagueDoctor, 0.5082)]
+    [DataRow(ClassType.Assassin, ClassType.BattleMage, 0.5240)]
+    [DataRow(ClassType.Assassin, ClassType.Berserker, 0.5125)]
+    [DataRow(ClassType.Assassin, ClassType.DemonHunter, 0.4992)]
+    [DataRow(ClassType.Assassin, ClassType.Druid, 0.5253)]
+    [DataRow(ClassType.Assassin, ClassType.Bard, 0.4784)]
+    [DataRow(ClassType.Assassin, ClassType.Necromancer, 0.5433)]
+    [DataRow(ClassType.Assassin, ClassType.Paladin, 0.5017)]
+    [DataRow(ClassType.Assassin, ClassType.PlagueDoctor, 0.5095)]
+    [DataRow(ClassType.BattleMage, ClassType.Berserker, 0.4849)]
+    [DataRow(ClassType.BattleMage, ClassType.DemonHunter, 0.4933)]
+    [DataRow(ClassType.BattleMage, ClassType.Druid, 0.5150)]
+    [DataRow(ClassType.BattleMage, ClassType.Bard, 0.3813)]
+    [DataRow(ClassType.BattleMage, ClassType.Necromancer, 0.5124)]
+    [DataRow(ClassType.BattleMage, ClassType.Paladin, 0.4754)]
+    [DataRow(ClassType.BattleMage, ClassType.PlagueDoctor, 0.4890)]
+    [DataRow(ClassType.Berserker, ClassType.DemonHunter, 0.4846)]
+    [DataRow(ClassType.Berserker, ClassType.Druid, 0.5073)]
+    [DataRow(ClassType.Berserker, ClassType.Bard, 0.4250)]
+    [DataRow(ClassType.Berserker, ClassType.Necromancer, 0.5101)]
+    [DataRow(ClassType.Berserker, ClassType.Paladin, 0.4786)]
+    [DataRow(ClassType.Berserker, ClassType.PlagueDoctor, 0.4691)]
+    [DataRow(ClassType.DemonHunter, ClassType.Druid, 0.4751)]
+    [DataRow(ClassType.DemonHunter, ClassType.Bard, 0.4721)]
+    [DataRow(ClassType.DemonHunter, ClassType.Necromancer, 0.4505)]
+    [DataRow(ClassType.DemonHunter, ClassType.Paladin, 0.5050)]
+    [DataRow(ClassType.DemonHunter, ClassType.PlagueDoctor, 0.4703)]
+    [DataRow(ClassType.Druid, ClassType.Bard, 0.3854)]
+    [DataRow(ClassType.Druid, ClassType.Necromancer, 0.4865)]
+    [DataRow(ClassType.Druid, ClassType.Paladin, 0.4694)]
+    [DataRow(ClassType.Druid, ClassType.PlagueDoctor, 0.4911)]
+    [DataRow(ClassType.Bard, ClassType.Necromancer, 0.5854)]
+    [DataRow(ClassType.Bard, ClassType.Paladin, 0.5778)]
+    [DataRow(ClassType.Bard, ClassType.PlagueDoctor, 0.5399)]
+    [DataRow(ClassType.Necromancer, ClassType.Paladin, 0.4764)]
+    [DataRow(ClassType.Necromancer, ClassType.PlagueDoctor, 0.4647)]
+    [DataRow(ClassType.Paladin, ClassType.PlagueDoctor, 0.5008)]
+    public void SimulateArenaFight_Returns_Expected_WinRatio(ClassType @class,
+        ClassType opponentClass, double expectedWinRatio)
+    {
+        var left = InitSimulationContext(@class);
+        var right = InitSimulationContext(opponentClass);
+
+        var options = new DungeonSimulationOptions(20_000_000, 2_000_000, false);
+        
+
+        var actualWinRatio = (double)result.WonFights / options.Iterations;
+        Assert.AreEqual(expectedWinRatio, actualWinRatio, 0.003,
+            $"Match up: {@class} vs {opponentClass} had unexpected delta of {Math.Abs(actualWinRatio - expectedWinRatio)}");
+    }
+
+    private static SimulationContext InitSimulationContext(ClassType @class)
+    {
+
+        var config = ClassConfigurationProvider.Get(@class);
+        var (str, dex, @int) = config.MainAttribute switch
+        {
+            AttributeType.Strength => (100_000, 4_000, 4_000),
+            AttributeType.Dexterity => (4_000, 100_000, 4_000),
+            AttributeType.Intelligence => (4_000, 4_000, 100_000),
+            _ => throw new ArgumentException($"{@class} has unsupported main attribute of {config.MainAttribute}")
+        };
+
+        var simulationContext = new SimulationContext
+        {
+            Level = 500,
+            Class = @class,
+            GladiatorLevel = 0,
+            SoloPortal = 50,
+            GuildPortal = 50,
+            Potions = [Potion.Eternity],
+            BaseStrength = str,
+            BaseDexterity = dex,
+            BaseIntelligence = @int,
+            BaseConstitution = 100_000,
+            BaseLuck = 30_000,
+            Items = [
+                new()
+                {
+                    RuneType = RuneType.FireResistance,
+                    RuneValue = 75,
+                    ItemType = ItemType.Headgear
+                },
+                new()
+                {
+                    RuneType = RuneType.LightningResistance,
+                    RuneValue = 75,
+                    ItemType = ItemType.Breastplate
+                },
+                new()
+                {
+                    RuneType = RuneType.ColdResistance,
+                    RuneValue = 75,
+                    ItemType = ItemType.Gloves,
+                    ScrollType = WitchScrollType.Reaction
+                }
+            ]
+        };
+
+
+        var armor = (int)(config.MaxArmorReduction * 100 * simulationContext.Level / config.ArmorMultiplier * 2);
+        simulationContext.Items.Add(new()
+        {
+            Armor = armor,
+            RuneType = RuneType.HealthBonus,
+            RuneValue = 15,
+            ItemType = ItemType.Boots,
+        });
+        var weapon = new EquipmentItem()
+        {
+            RuneType = RuneType.FireDamage,
+            RuneValue = 60,
+            ItemType = ItemType.Weapon,
+            ScrollType = WitchScrollType.Crit,
+            MinDmg = (int)(700 / 2d * config.WeaponMultiplier),
+            MaxDmg = (int)(2100 / 2d * config.WeaponMultiplier)
+        };
+
+        simulationContext.Items.Add(weapon);
+        if (@class == ClassType.Assassin)
+        {
+            simulationContext.Items.Add(weapon);
+        }
+
+        return simulationContext;
     }
 }

@@ -327,7 +327,7 @@ public class GameFormulasService : IGameFormulasService
 
     public long GetExperienceForDungeonEnemy(DungeonEnemy dungeonEnemy)
     {
-        if (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Tower)
+        if (dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Tower || dungeonEnemy.Dungeon.Type == DungeonTypeEnum.Class)
             return 0;
 
         long xp;

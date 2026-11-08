@@ -2,13 +2,22 @@
 
 public static class DungeonEnemyName
 {
-    public static string GetName(string dungeonName, int dungeonEnemyPosition)
-        => EnemyNames[dungeonName].FirstOrDefault(e => e.Position == dungeonEnemyPosition).Name ?? string.Empty;
+    public static string GetName(int dungeonPosition, int dungeonEnemyPosition)
+    {
+        if (dungeonPosition >= 101 && dungeonPosition < 200)
+            dungeonPosition -= 100;
 
-    private static Dictionary<string, List<(int Position, string Name)>> EnemyNames { get; set; } = new()
+        if (EnemyNames.TryGetValue(dungeonPosition, out var names))
+        {
+            return names.FirstOrDefault(e => e.Position == dungeonEnemyPosition).Name ?? $"Unkown ({dungeonEnemyPosition})";
+        }
+
+        return $"Unkown ({dungeonEnemyPosition})";
+    }
+    private static Dictionary<int, List<(int Position, string Name)>> EnemyNames { get; } = new()
     {
         {
-            DungeonNames.DesecratedCatacombs,
+            1,
             new()
             {
             (1, "Ghost"),
@@ -24,7 +33,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.MinesOfGloria,
+            2,
             new()
             {
             (1, "Water Glompf"),
@@ -40,7 +49,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.RuinsOfGnark,
+            3,
             new()
             {
             (1, "Sewer Rat"),
@@ -56,7 +65,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.CutthroatGrotto,
+            4,
             new()
             {
             (1, "Wind Elemental"),
@@ -72,7 +81,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.EmeraldScaleAltar,
+            5,
             new()
             {
             (1, "Rattling Cobra"),
@@ -88,7 +97,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.ToxicTree,
+            6,
             new()
             {
             (1, "Toxic Tree"),
@@ -104,7 +113,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.MagmaStream,
+            7,
             new()
             {
             (1, "Fire Scorpion"),
@@ -120,7 +129,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.FrostBloodTemple,
+            8,
             new()
             {
             (1, "Yeti"),
@@ -136,7 +145,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.PyramidsOfMadness,
+            9,
             new()
             {
             (1, "Cave Cyclops"),
@@ -152,7 +161,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.BlackSkullFortress,
+            10,
             new()
             {
             (1, "Dark Rider"),
@@ -168,7 +177,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.CircusOfTerror,
+            11,
             new()
             {
             (1, "Happy Slappy the Clown"),
@@ -184,7 +193,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.Hell,
+            12,
             new()
             {
             (1, "Restless Soul"),
@@ -200,7 +209,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.DragonsHoard,
+            13,
             new()
             {
             (1, "Not So Snappy Dragon"),
@@ -216,7 +225,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.HouseOfHorrors,
+            14,
             new()
             {
             (1, "Cutlery Head"),
@@ -232,7 +241,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.ThirteenthFloor,
+            15,
             new()
             {
             (1, "Hellgore the Hellish"),
@@ -248,7 +257,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.ThirdLeagueOfSuperheroes,
+            16,
             new()
             {
             (1, "1,000 Punch Man"),
@@ -264,7 +273,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.TimeHonoredSchoolOfMagic,
+            17,
             new()
             {
             (1, "Eloquent Hat"),
@@ -280,7 +289,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.Hemorridor,
+            18,
             new()
             {
             (1, "Orc on Warg"),
@@ -296,7 +305,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.Easteros,
+            19,
             new()
             {
             (1, "Robert Drunkatheon"),
@@ -312,7 +321,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.DojoOfChildhoodHeros,
+            20,
             new()
             {
             (1, "Magical Schoolgirl"),
@@ -328,7 +337,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.TavernOfDarkDoppelgangers,
+            21,
             new()
             {
             (1, "Dancing Mushroom"),
@@ -344,7 +353,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.CityOfIntrigues,
+            22,
             new()
             {
             (1, "Cool Villain"),
@@ -360,7 +369,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.SchoolOfMagicExpress,
+            23,
             new()
             {
             (1, "Unrepentant Penitent"),
@@ -376,7 +385,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.NordicGods,
+            24,
             new()
             {
             (1, "Heimdall"),
@@ -392,7 +401,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.AshMountain,
+            25,
             new()
             {
             (1, "Valaraukar"),
@@ -408,7 +417,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.PlayaHQ,
+            26,
             new()
             {
             (1, "Thesi the Terrible"),
@@ -424,7 +433,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.MountOlympus,
+            27,
             new()
             {
             (1, "Singing Sirens"),
@@ -440,7 +449,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.MonsterGrotto,
+            28,
             new()
             {
             (1, "Doltopus"),
@@ -458,7 +467,7 @@ public static class DungeonEnemyName
 
 
         {
-            DungeonNames.ArcadeOfTheOldPixelIcons,
+            29,
             new()
             {
             (1, "Yum Yum Man"),
@@ -474,7 +483,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.TheServerRoom,
+            30,
             new()
             {
             (1, "Roynish Regression Robert"),
@@ -490,7 +499,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.WorkshopOfTheHuntersOfTheUndead,
+            31,
             new()
             {
             (1, "Time Traveler Ash"),
@@ -506,7 +515,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.RetroTvLegends,
+            32,
             new()
             {
             (1, "Tropical Island Inspector"),
@@ -522,7 +531,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.TheMeetingRoom,
+            33,
             new()
             {
             (1, "Phil, Judge of Numbers"),
@@ -538,7 +547,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.Tower,
+            -1,
             new()
             {
             (1, "Living Cake Man"),
@@ -644,7 +653,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.Twister,
+            -2,
             new()
             {
             (486, "Grey Ghoul"),
@@ -675,7 +684,7 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.ContinousLoopOfIdols,
+            -3,
             new()
             {
             (1, "DoctorBenx"),
@@ -711,11 +720,74 @@ public static class DungeonEnemyName
             }
         },
         {
-            DungeonNames.Sandstorm,
+            -4,
             new()
             {
-            (1, string.Empty),
             }
-        }
+        },
+        {
+            201,
+            new()
+            {
+                (1, "Venturesome Viking"),
+                (2, "Pogo Knight"),
+                (3, "Inspector Abracadabra"),
+                (4, "Leading Ninja Turtle"),
+                (5, "Brave Scot"),
+                (6, "Warlord's Blade"),
+                (7, "Rolling Security Guard"),
+                (8, "The Half-Knight"),
+                (9, "Engaged Bride"),
+                (10, "Ambessador of War"),
+            }
+        },
+        {
+            202,
+            new()
+            {
+                (1, "Gear Parasite"),
+                (2, "Reckless Teenage Witch"),
+                (3, "Broken Proudnomore"),
+                (4, "Trippy Troll"),
+                (5, "Fairy Bodmother"),
+                (6, "Magically Challenged Coward"),
+                (7, "Bareback Sorceress"),
+                (8, "Power-hungry Snake Charmer"),
+                (9, "Doll Witch of the Moon"),
+                (10, "Submerged Escape Artist"),
+            }
+        },
+        {
+            203,
+            new()
+            {
+                (1, "Anointed Scrap Huntress"),
+                (2, "Righteous Men in Tights"),
+                (3, "The Unblinking Flasher"),
+                (4, "Mocking Geologist"),
+                (5, "Disconnected Navigator"),
+                (6, "Dragon-guided Blind Archer"),
+                (7, "Crumbling Coffee-Break Cop"),
+                (8, "Heroic Zeldo"),
+                (9, "Super Trick Archer"),
+                (10, "Elven Ranger of Romance"),
+            }
+        },
+        {
+            204,
+            new()
+            {
+                (1, "Winged High Priest"),
+                (2, "The Incomplete"),
+                (3, "Categorical Meter Maid"),
+                (4, "Baa-ssiah"),
+                (5, "Zealous Apostle"),
+                (6, "Asgard's Fashion Icon"),
+                (7, "Lewd Lawman"),
+                (8, "Skeleton Man"),
+                (9, "Lord of the Back Pain"),
+                (10, "Corpse Lover"),
+            }
+        },
     };
 }

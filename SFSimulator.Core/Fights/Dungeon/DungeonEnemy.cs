@@ -4,7 +4,7 @@ public class DungeonEnemy : IFightable<RawWeapon>
 {
     public int Position { get; set; }
     public bool IsDefeated { get; set; }
-    public string Name => DungeonEnemyName.GetName(Dungeon.Name, Position);
+    public string Name => DungeonEnemyName.GetName(Dungeon.Position, Position);
     public ClassType Class { get; set; }
     public int Level { get; set; }
     public int Strength { get; set; }
@@ -44,6 +44,9 @@ public class DungeonEnemy : IFightable<RawWeapon>
         Position = position;
         Class = @class;
         Level = level;
+        if (Class == ClassType.Mirror) {
+            return;
+        }
         Strength = strength;
         Dexterity = dexterity;
         Intelligence = intelligence;

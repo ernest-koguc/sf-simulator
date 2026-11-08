@@ -138,7 +138,6 @@ public class GameLoopService(IGameFormulasService gameFormulasService, IThirstSi
         BeforeSimulation = new ContextSnapshot(simulationContext.BaseStat, simulationContext.Level, simulationContext.Experience);
 
         _thirstSimulator.ThirstSimulationOptions.Mount = SimulationContext.Mount;
-        _characterDungeonProgressionService.ResetProgress();
 
         _expeditionService.Options = SimulationContext.ExpeditionOptions ?? throw new ArgumentException("ExpeditionOptions must be set when ExpeditionsInsteadOfQuests is true", nameof(simulationContext));
 

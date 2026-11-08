@@ -12,9 +12,9 @@ public class SimulateDungeonHandler(IDungeonSimulator dungeonSimulator, IDungeon
             return TypedResults.BadRequest("Iterations cannot be greater than 1 000 000.");
         }
 
-        dungeonProvider.InitDungeons();
-        var enemies = request.DungeonLevels
-            .Select(kvp => dungeonProvider.GetDungeonEnemySafe(kvp.Key, kvp.Value + 1))
+        List<int> dungeons =[..request.DungeonState.Light, ..request.DungeonState.Shadow, ..request.DungeonState.Class];
+        var enemies = dungeons
+            .Select((v, k)=> dungeonProvider.GetDungeonEnemySafe(k, v + 1))
             .Where(enemy => enemy != null)
             .Select(enemy => enemy!)
             .ToList();
@@ -48,7 +48,7 @@ public class SimulateDungeonHandler(IDungeonSimulator dungeonSimulator, IDungeon
 
             var xpReward = gameFormulasService.GetExperienceForDungeonEnemy(enemy);
             var dungeonMetadata = new DungeonMetadata(enemy.Position, enemy.Dungeon.Name,
-                enemy.Name, enemy.Dungeon.Type.WithCompanions(), player.Class, xpReward);
+                enemy.Name, enemy.Dungeon.Type.WithCompanions, player.Class, xpReward);
 
             results.Add(new SimulateDungeonResponse(dungeonMetadata,
                 simulationResult.WonFights / (decimal)request.Iterations));
@@ -66,10 +66,12 @@ public record class SimulateDungeonResponse(DungeonMetadata DungeonMetadata, dec
 
 public record class SimulateDungeonRequest(
     int Iterations, int WinThreshold,
-    Dictionary<int, int> DungeonLevels,
+    DungeonState DungeonState,
     Player Player,
     List<Companion> Companions
 );
+
+public record class DungeonState(int[] Light, int[] Shadow, int[] Class);
 
 public record class Weapon(int MinDmg, int MaxDmg, RuneType RuneType, int RuneValue) : IWeaponable;
 

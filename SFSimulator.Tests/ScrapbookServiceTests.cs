@@ -19,7 +19,7 @@ public class ScrapbookServiceTests
         var simulationContext = new SimulationContext();
         simulationContext.Level = level;
         simulationContext.ExperienceBonus.ScrapbookFillness = 0;
-        var dungeons = dungeonProvider.InitDungeons();
+        var dungeons = dungeonProvider.GetAllDungeons(simulationContext);
 
         scrapbookService.InitScrapbook(dungeons, simulationContext);
 
@@ -38,7 +38,7 @@ public class ScrapbookServiceTests
         var simulationContext = new SimulationContext();
         simulationContext.Level = level;
         simulationContext.ExperienceBonus.ScrapbookFillness = (decimal)initialFillness;
-        var dungeons = dungeonProvider.InitDungeons();
+        var dungeons = dungeonProvider.GetAllDungeons(simulationContext);
 
         scrapbookService.InitScrapbook(dungeons, simulationContext);
 
@@ -56,7 +56,7 @@ public class ScrapbookServiceTests
         simulationContext.GuildPortal = 50;
         simulationContext.GuildRaids = 50;
         simulationContext.ExperienceBonus.ScrapbookFillness = 0;
-        var dungeons = dungeonProvider.InitDungeons();
+        var dungeons = dungeonProvider.GetAllDungeons(simulationContext);
         foreach (var dungeonEnemy in dungeons.SelectMany(d => d.DungeonEnemies))
         {
             dungeonEnemy.IsDefeated = true;
