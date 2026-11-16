@@ -2,7 +2,6 @@
 
 public class DemonHunterFightContext : FightContextBase
 {
-    private int ReviveCount { get; set; } = 0;
     public DemonHunterFightContext(ClassType enemyClass)
     {
         AttackImplementation = AttackImpl;
@@ -15,12 +14,6 @@ public class DemonHunterFightContext : FightContextBase
         WillTakeAttackImplementation = WillTakeAttackImpl;
     }
 
-
-    public override void ResetState()
-    {
-        base.ResetState();
-        ReviveCount = 0;
-    }
     private bool AttackImpl(IAttackTakable target, ref int round)
     {
         round++;

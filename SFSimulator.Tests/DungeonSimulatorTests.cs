@@ -105,6 +105,7 @@ public class DungeonSimulatorTests
     // [DataRow(ClassType.Warrior, 25, 4, 0.0139)]
     // [DataRow(ClassType.Warrior, 25, 8, 0.0392)]
     // [DataRow(ClassType.Warrior, 24, 7, 0.2613)]
+    // [DataRow(ClassType.Warrior, 24, 7, 0.2613)]
     // [DataRow(ClassType.Mage, 3, 9, 0.5717)]
     // [DataRow(ClassType.Mage, 4, 6, 0.7964)]
     // [DataRow(ClassType.Mage, 5, 8, 0.2204)]
@@ -291,6 +292,7 @@ public class DungeonSimulatorTests
     [DataRow(ClassType.Warrior, ClassType.Necromancer, 0.5093)]
     [DataRow(ClassType.Warrior, ClassType.Paladin, 0.4836)]
     [DataRow(ClassType.Warrior, ClassType.PlagueDoctor, 0.4920)]
+    [DataRow(ClassType.Warrior, ClassType.BloodWeaver, 0.4916)]
     [DataRow(ClassType.Mage, ClassType.Scout, 0.5000)]
     [DataRow(ClassType.Mage, ClassType.Assassin, 0.4895)]
     [DataRow(ClassType.Mage, ClassType.BattleMage, 0.5000)]
@@ -301,6 +303,7 @@ public class DungeonSimulatorTests
     [DataRow(ClassType.Mage, ClassType.Necromancer, 0.5000)]
     [DataRow(ClassType.Mage, ClassType.Paladin, 0.5000)]
     [DataRow(ClassType.Mage, ClassType.PlagueDoctor, 0.5000)]
+    [DataRow(ClassType.Mage, ClassType.BloodWeaver, 0.5000)]
     [DataRow(ClassType.Scout, ClassType.Assassin, 0.4910)]
     [DataRow(ClassType.Scout, ClassType.BattleMage, 0.5183)]
     [DataRow(ClassType.Scout, ClassType.Berserker, 0.5003)]
@@ -310,6 +313,7 @@ public class DungeonSimulatorTests
     [DataRow(ClassType.Scout, ClassType.Necromancer, 0.5344)]
     [DataRow(ClassType.Scout, ClassType.Paladin, 0.5006)]
     [DataRow(ClassType.Scout, ClassType.PlagueDoctor, 0.5082)]
+    [DataRow(ClassType.Scout, ClassType.BloodWeaver, 0.5135)]
     [DataRow(ClassType.Assassin, ClassType.BattleMage, 0.5240)]
     [DataRow(ClassType.Assassin, ClassType.Berserker, 0.5125)]
     [DataRow(ClassType.Assassin, ClassType.DemonHunter, 0.4992)]
@@ -318,6 +322,7 @@ public class DungeonSimulatorTests
     [DataRow(ClassType.Assassin, ClassType.Necromancer, 0.5433)]
     [DataRow(ClassType.Assassin, ClassType.Paladin, 0.5017)]
     [DataRow(ClassType.Assassin, ClassType.PlagueDoctor, 0.5095)]
+    [DataRow(ClassType.Assassin, ClassType.BloodWeaver, 0.5039)]
     [DataRow(ClassType.BattleMage, ClassType.Berserker, 0.4849)]
     [DataRow(ClassType.BattleMage, ClassType.DemonHunter, 0.4933)]
     [DataRow(ClassType.BattleMage, ClassType.Druid, 0.5150)]
@@ -325,38 +330,47 @@ public class DungeonSimulatorTests
     [DataRow(ClassType.BattleMage, ClassType.Necromancer, 0.5124)]
     [DataRow(ClassType.BattleMage, ClassType.Paladin, 0.4754)]
     [DataRow(ClassType.BattleMage, ClassType.PlagueDoctor, 0.4890)]
+    [DataRow(ClassType.BattleMage, ClassType.BloodWeaver, 0.5109)]
     [DataRow(ClassType.Berserker, ClassType.DemonHunter, 0.4846)]
     [DataRow(ClassType.Berserker, ClassType.Druid, 0.5073)]
     [DataRow(ClassType.Berserker, ClassType.Bard, 0.4250)]
     [DataRow(ClassType.Berserker, ClassType.Necromancer, 0.5101)]
     [DataRow(ClassType.Berserker, ClassType.Paladin, 0.4786)]
     [DataRow(ClassType.Berserker, ClassType.PlagueDoctor, 0.4691)]
+    [DataRow(ClassType.Berserker, ClassType.BloodWeaver, 0.4748)]
     [DataRow(ClassType.DemonHunter, ClassType.Druid, 0.4751)]
     [DataRow(ClassType.DemonHunter, ClassType.Bard, 0.4721)]
     [DataRow(ClassType.DemonHunter, ClassType.Necromancer, 0.4505)]
     [DataRow(ClassType.DemonHunter, ClassType.Paladin, 0.5050)]
-    [DataRow(ClassType.DemonHunter, ClassType.PlagueDoctor, 0.4703)]
+    [DataRow(ClassType.DemonHunter, ClassType.PlagueDoctor, 0.4721)]
+    [DataRow(ClassType.DemonHunter, ClassType.BloodWeaver, 0.5172)]
     [DataRow(ClassType.Druid, ClassType.Bard, 0.3854)]
     [DataRow(ClassType.Druid, ClassType.Necromancer, 0.4865)]
     [DataRow(ClassType.Druid, ClassType.Paladin, 0.4694)]
     [DataRow(ClassType.Druid, ClassType.PlagueDoctor, 0.4911)]
+    [DataRow(ClassType.Druid, ClassType.BloodWeaver, 0.4395)]
     [DataRow(ClassType.Bard, ClassType.Necromancer, 0.5854)]
     [DataRow(ClassType.Bard, ClassType.Paladin, 0.5778)]
     [DataRow(ClassType.Bard, ClassType.PlagueDoctor, 0.5399)]
+    [DataRow(ClassType.Bard, ClassType.BloodWeaver, 0.5107)]
     [DataRow(ClassType.Necromancer, ClassType.Paladin, 0.4764)]
     [DataRow(ClassType.Necromancer, ClassType.PlagueDoctor, 0.4647)]
+    [DataRow(ClassType.Necromancer, ClassType.BloodWeaver, 0.4810)]
     [DataRow(ClassType.Paladin, ClassType.PlagueDoctor, 0.5008)]
+    [DataRow(ClassType.Paladin, ClassType.BloodWeaver, 0.5020)]
+    [DataRow(ClassType.PlagueDoctor, ClassType.BloodWeaver, 0.5125)]
     public void SimulateArenaFight_Returns_Expected_WinRatio(ClassType @class,
         ClassType opponentClass, double expectedWinRatio)
     {
         var left = InitSimulationContext(@class);
         var right = InitSimulationContext(opponentClass);
 
-        var options = new DungeonSimulationOptions(20_000_000, 2_000_000, false);
+        var options = new DungeonSimulationOptions(10_000_000, 2_000_000, false);
         
+        var result = DungeonSimulator.SimulateArenaFight(left, right, options);
 
         var actualWinRatio = (double)result.WonFights / options.Iterations;
-        Assert.AreEqual(expectedWinRatio, actualWinRatio, 0.003,
+        Assert.AreEqual(expectedWinRatio, actualWinRatio, 0.001,
             $"Match up: {@class} vs {opponentClass} had unexpected delta of {Math.Abs(actualWinRatio - expectedWinRatio)}");
     }
 

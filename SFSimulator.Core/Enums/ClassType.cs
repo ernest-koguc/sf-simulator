@@ -21,4 +21,6 @@ public enum ClassType
     Paladin = 11,
     [Display(Name = "Plague Doctor")]
     PlagueDoctor = 12,
+    [Display(Name = "Blood Weaver")]
+    BloodWeaver = 13,
 }

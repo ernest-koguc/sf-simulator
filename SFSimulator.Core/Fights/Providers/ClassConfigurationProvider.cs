@@ -228,6 +228,22 @@ public static class ClassConfigurationProvider
                     DamageMultiplier = 1.25D,
                 }
             },
+            {
+                ClassType.BloodWeaver,
+                new ClassConfiguration
+                {
+                    HealthMultiplier = 4,
+                    WeaponMultiplier = 2,
+                    WeaponGemMultiplier = 2,
+                    WeaponAttributeMultiplier = 1,
+                    ItemArmorMultiplier = 7.5,
+                    MainAttribute = AttributeType.Strength,
+                    ItemBonusMultiplier = 1.11,
+                    ArmorMultiplier = 1,
+                    MaxArmorReduction = 0.25,
+                    DamageMultiplier = 1.0D,
+                }
+            },
         };
     }
 }

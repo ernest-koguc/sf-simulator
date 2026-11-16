@@ -150,12 +150,16 @@ public class DamageProvider : IDamageProvider
         return (attacker.Class, target.Class) switch
         {
             (ClassType.Mage, ClassType.Paladin) => baseDmgMultiplier * 1.5D,
+            (ClassType.BattleMage, ClassType.BloodWeaver) => baseDmgMultiplier * 1.2D,
             (ClassType.Druid, ClassType.Mage) => baseDmgMultiplier * 4D / 3D,
             (ClassType.Druid, ClassType.DemonHunter) => baseDmgMultiplier * 1.15D,
             (ClassType.Bard, ClassType.PlagueDoctor) => baseDmgMultiplier * 1.05D,
             (ClassType.Necromancer, ClassType.DemonHunter) => baseDmgMultiplier + 0.1D,
             (ClassType.Paladin, ClassType.Mage) => baseDmgMultiplier * 1.5D,
-            (ClassType.PlagueDoctor, ClassType.DemonHunter) => baseDmgMultiplier * 1.06D,
+            (ClassType.PlagueDoctor, ClassType.DemonHunter) => baseDmgMultiplier * 1.065D,
+            (ClassType.BloodWeaver, ClassType.Mage) => baseDmgMultiplier * 1.25D,
+            (ClassType.BloodWeaver, ClassType.Assassin) => baseDmgMultiplier * 1.10D,
+            (ClassType.BloodWeaver, ClassType.Berserker) => baseDmgMultiplier * 1.10D,
             (_, _) => baseDmgMultiplier,
         };
     }
@@ -163,10 +167,28 @@ public class DamageProvider : IDamageProvider
     public double CalculateSwoopMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target)
         where T : IWeaponable where E : IWeaponable
     {
+        return CalculateBonusDmgMulitplier(attacker, target, 0.8);
+    }
+
+    public double CalculateDaggerMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target)
+        where T : IWeaponable where E : IWeaponable
+    {
+        return CalculateBonusDmgMulitplier(attacker, target, -0.5);
+    }
+
+    public double CalculateScytheMultiplier<T, E>(IFightable<T> attacker, IFightable<E> target)
+        where T : IWeaponable where E : IWeaponable
+    {
+        return CalculateBonusDmgMulitplier(attacker, target, 1.1);
+    }
+
+    private double CalculateBonusDmgMulitplier<T, E>(IFightable<T> attacker, IFightable<E> target, double bonusDmg)
+        where T : IWeaponable where E : IWeaponable
+    {
         var dmgMultiplier = CalculateDamageMultiplier(attacker, target);
-        var baseDmgMultiplier = ClassConfigurationProvider.Get(ClassType.Druid).DamageMultiplier;
+        var baseDmgMultiplier = ClassConfigurationProvider.Get(attacker.Class).DamageMultiplier;
         var classSpecificDmgMultiplier = dmgMultiplier / baseDmgMultiplier;
 
-        return ((dmgMultiplier / classSpecificDmgMultiplier + 0.8) * classSpecificDmgMultiplier) / dmgMultiplier;
+        return ((dmgMultiplier / classSpecificDmgMultiplier + bonusDmg) * classSpecificDmgMultiplier) / dmgMultiplier;
     }
 }

@@ -6,9 +6,7 @@ internal class PlagueDoctorFightContext : FightContextBase
     private double BaseDamageMultiplier { get; init; }
     private int PoisonRound { get; set; } = 0;
     private double[] PoisonDmgMultipliers { get; init; }
-    private double CurrentPoisonMultiplier { get; set; }
-    private List<(double, double)> PoisonDmgRanges => PoisonDmgMultipliers.Select(c => (MinimumDamage * c, MaximumDamage * c)).ToList();
-
+    private double CurrentPoisonMultiplier { get; set; } = 1;
     private int EvadeChance => PoisonRound switch
     {
         3 => 65,
@@ -38,6 +36,7 @@ internal class PlagueDoctorFightContext : FightContextBase
     public override void ResetState()
     {
         PoisonRound = 0;
+        CurrentPoisonMultiplier = 1;
         base.ResetState();
     }
 
@@ -54,13 +53,14 @@ internal class PlagueDoctorFightContext : FightContextBase
 
             PoisonRound = 3;
 
-            var tinctureThrowDmg = CalculateNormalHitDamage(MinimumDamage * CurrentPoisonMultiplier, 
-            MaximumDamage * CurrentPoisonMultiplier, round, CritChance, CritMultiplier, Random);
+            var tinctureThrowDmg = CalculateNormalHitDamage(MinimumDamage * CurrentPoisonMultiplier,
+                MaximumDamage * CurrentPoisonMultiplier, round, CritChance, CritMultiplier, Random);
 
             // NOTE: dirty trick to make Paladin vs Plague Doctor work.
             // In general I think this is okay to keep right now since refactoring is expensive and
             // usually each new class has some unique random shit never seen before that will break it again
-            if (target is PaladinFightContext paladinTarget) {
+            if (target is PaladinFightContext paladinTarget)
+            {
                 var hpBeforeAttack = paladinTarget.Health;
                 var result = target.TakeAttackImplementation(tinctureThrowDmg, ref round);
                 PoisonRound = hpBeforeAttack > paladinTarget.Health ? 3 : 0;
@@ -71,22 +71,58 @@ internal class PlagueDoctorFightContext : FightContextBase
 
         if (PoisonRound > 0)
         {
-            round++;
-            PoisonRound--;
-            CurrentPoisonMultiplier = PoisonDmgMultipliers[PoisonRound];
-            var poisonDmg = CalculateNormalHitDamage(MinimumDamage * CurrentPoisonMultiplier, 
-            MaximumDamage * CurrentPoisonMultiplier, round, CritChance, CritMultiplier, Random);
+            var result = PoisonAttack(target, ref round);
+            if (PoisonRound == 0)
+                CurrentPoisonMultiplier = 1;
 
-            // NOTE: dirty trick to make Paladin vs Plague Doctor work
-            CurrentPoisonMultiplier = 1;
-            if (target is PaladinFightContext paladinTarget) {
-                if (paladinTarget.NoBlockTakeAttackImpl(poisonDmg, ref round)) {
-                    return true;
-                }
+            return result;
+        }
+        else 
+        {
+            round++;
+            if (!target.WillTakeAttackImplementation())
+            {
+                return false;
             }
-            else if (target.TakeAttackImplementation(poisonDmg, ref round)) {
+
+            // BUG: We use CurrentPoisonMultiplier here becuase PD has a bug - if the Tincture Throw is blocked or enemy revived after the poison hit
+            // PD stays on the last poison/tincture multiplier
+            var dmg = CalculateNormalHitDamage(MinimumDamage * CurrentPoisonMultiplier, MaximumDamage * CurrentPoisonMultiplier,
+                round, CritChance, CritMultiplier, Random);
+
+            return target.TakeAttackImplementation(dmg, ref round);
+        }
+    }
+
+    private bool PoisonAttack(IAttackTakable target, ref int round)
+    {
+        round++;
+        PoisonRound--;
+        CurrentPoisonMultiplier = PoisonDmgMultipliers[PoisonRound];
+        var poisonDmg = CalculateNormalHitDamage(MinimumDamage * CurrentPoisonMultiplier,
+        MaximumDamage * CurrentPoisonMultiplier, round, CritChance, CritMultiplier, Random);
+
+        // NOTE: dirty trick to make Paladin vs Plague Doctor work
+        if (target is PaladinFightContext paladinTarget)
+        {
+            CurrentPoisonMultiplier = 1;
+            if (paladinTarget.NoBlockTakeAttackImpl(poisonDmg, ref round))
+            {
                 return true;
             }
+        }
+        // BUG: follow in-game revive bug that makes PD do poison dmg on normal hit after revive
+        else
+        {
+            var targetContext = target as FightContextBase;
+            var revivesBefore = targetContext!.ReviveCount;
+            var result = target.TakeAttackImplementation(poisonDmg, ref round);
+            if (revivesBefore == targetContext.ReviveCount)
+            {
+                CurrentPoisonMultiplier = 1;
+            }
+
+            if (result) return true;
         }
 
         round++;
@@ -95,8 +131,8 @@ internal class PlagueDoctorFightContext : FightContextBase
             return false;
         }
 
-        // BUG: We use CurrentPoisonMultiplier here becuase PD has a bug when if the Tincture Throw is blocked the 
-        // throw tincture multiplier stays on the normal hits
+        // BUG: We use CurrentPoisonMultiplier here becuase PD has a bug - if the Tincture Throw is blocked or enemy revived after the poison hit
+        // PD stays on the last poison/tincture multiplier
         var dmg = CalculateNormalHitDamage(MinimumDamage * CurrentPoisonMultiplier, MaximumDamage * CurrentPoisonMultiplier,
             round, CritChance, CritMultiplier, Random);
 
@@ -127,7 +163,7 @@ internal class PlagueDoctorFightContext : FightContextBase
         var dmgMultiplier = ClassConfigurationProvider.Get(ClassType.PlagueDoctor).DamageMultiplier;
         var classSpecificDmgMultiplier = BaseDamageMultiplier / dmgMultiplier;
 
-        return 
+        return
         [
             ((BaseDamageMultiplier / classSpecificDmgMultiplier - 0.9) * classSpecificDmgMultiplier) /
             BaseDamageMultiplier,

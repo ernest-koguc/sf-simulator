@@ -24,6 +24,7 @@ public class FightableContextFactory(IDamageProvider damageProvider, ICritChance
             ClassType.Necromancer => CreateNecromancerContext(main, opponent),
             ClassType.Paladin => CreatePaladinContext(main, opponent),
             ClassType.PlagueDoctor => CreatePlagueDoctorContext(main, opponent),
+            ClassType.BloodWeaver => CreateBloodWeaverContext(main, opponent),
             _ => throw new ArgumentOutOfRangeException(nameof(main), $"{main.Class} is not supported in FightableContext"),
         };
         InstantiateSharedProperties(context, main, opponent);
@@ -147,5 +148,14 @@ public class FightableContextFactory(IDamageProvider damageProvider, ICritChance
         var baseDmgMultiplier = _damageProvider.CalculateDamageMultiplier(main, opponent);
         var context = new PlagueDoctorFightContext(opponent.Class, baseDmgMultiplier);
         return context;
+    }
+
+    private BloodWeaverFightContext CreateBloodWeaverContext<T, E>(IFightable<T> main, IFightable<E> opponent) where T : IWeaponable where E : IWeaponable
+    {
+        return new BloodWeaverFightContext(opponent.Class)
+        {
+            DaggerDmgMultiplier = _damageProvider.CalculateDaggerMultiplier(main, opponent),
+            ScytheDmgMultiplier = _damageProvider.CalculateScytheMultiplier(main, opponent),
+        };
     }
 }

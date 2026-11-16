@@ -11,6 +11,7 @@ public abstract class FightContextBase : IFightableContext
     public double MaximumDamage { get; set; }
     public double CritChance { get; set; }
     public double CritMultiplier { get; set; }
+    public int ReviveCount { get; protected set; }
 
     public AttackDelegate AttackImplementation { get; protected set; } = default!;
     public TakeAttackDelegate TakeAttackImplementation { get; protected set; } = default!;
@@ -25,6 +26,7 @@ public abstract class FightContextBase : IFightableContext
     public virtual void ResetState()
     {
         Health = MaxHealth;
+        ReviveCount = 0;
     }
 
     public static double CalculateNormalHitDamage(double minDmg, double maxDmg, int round, double critChance, double critMultiplier, Random random)
