@@ -2,25 +2,23 @@
 
 namespace SFSimulator.Core;
 
-public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService,
-    IItemGenerator itemGenerator, Random random) : IDungeonSimulator
+public class DungeonSimulator(IFightContextFactory dungeonableContextFactory, IGameFormulasService gameFormulasService,
+    IItemGenerator itemGenerator) : IDungeonSimulator
 {
-    private readonly IFightableContextFactory _fightableContextFactory = dungeonableContextFactory;
+    private readonly IFightContextFactory _fightableContextFactory = dungeonableContextFactory;
     private readonly IGameFormulasService _gameFormulasService = gameFormulasService;
     private readonly IItemGenerator _itemGenerator = itemGenerator;
-    private readonly Random _random = random;
 
     public PetSimulationResult SimulatePetDungeon(PetFightable petDungeonEnemy, PetFightable playerPet, int simulationContextLevel,
         DungeonSimulationOptions options)
     {
-        var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
-        var playerPetContext = _fightableContextFactory.Create(playerPet, petDungeonEnemy);
-        var petDungeonContext = _fightableContextFactory.Create(petDungeonEnemy, playerPet);
-        lookupContext.Add((playerPetContext, petDungeonContext));
+        var random = new CombatRandom();
+        var playerPetContext = _fightableContextFactory.Create(playerPet, petDungeonEnemy, random);
+        var petDungeonContext = _fightableContextFactory.Create(petDungeonEnemy, playerPet, random);
 
         DrHouse.DungeonDifferential($"Pet habitat {petDungeonEnemy.ElementType} - position {petDungeonEnemy.Position}:");
 
-        var result = SimulateFight(lookupContext, options);
+        var result = SimulateFight([(playerPetContext, petDungeonContext)], options);
 
         if (result.Succeeded)
         {
@@ -41,21 +39,23 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
     public DungeonSimulationResult SimulateDungeon<T, E>(DungeonEnemy dungeonEnemy, IFightable<T> character, IFightable<E>[] companions,
         DungeonSimulationOptions options) where T : IWeaponable where E : IWeaponable
     {
-        var lookupContext = new List<(IFightableContext LeftSide, IFightableContext RightSide)>();
+        var random = new CombatRandom();
+        var companionCount = dungeonEnemy.Dungeon.Type.WithCompanions ? companions.Length : 0;
+        var lookupContext = new (FightContext LeftSide, FightContext RightSide)[companionCount + 1];
 
         if (dungeonEnemy.Dungeon.Type.WithCompanions)
         {
-            foreach (var companion in companions)
+            for (var i = 0; i < companions.Length; i++)
             {
-                var context = _fightableContextFactory.Create(companion, dungeonEnemy);
-                var companionDungeonContext = _fightableContextFactory.Create(dungeonEnemy, companion);
-                lookupContext.Add((context, companionDungeonContext));
+                var context = _fightableContextFactory.Create(companions[i], dungeonEnemy, random);
+                var companionDungeonContext = _fightableContextFactory.Create(dungeonEnemy, companions[i], random);
+                lookupContext[i] = (context, companionDungeonContext);
             }
         }
 
-        var characterContext = _fightableContextFactory.Create(character, dungeonEnemy);
-        var dungeonContext = _fightableContextFactory.Create(dungeonEnemy, character);
-        lookupContext.Add((characterContext, dungeonContext));
+        var characterContext = _fightableContextFactory.Create(character, dungeonEnemy, random);
+        var dungeonContext = _fightableContextFactory.Create(dungeonEnemy, character, random);
+        lookupContext[companionCount] = (characterContext, dungeonContext);
 
         DrHouse.DungeonDifferential($"{dungeonEnemy.Dungeon.Type} {dungeonEnemy.Dungeon.Name} - {dungeonEnemy.Name}:");
 
@@ -69,14 +69,15 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         where T : IWeaponable
         where E : IWeaponable
     {
-        var leftContext = _fightableContextFactory.Create(left, right);
-        var rightContext = _fightableContextFactory.Create(right, left);
+        var random = new CombatRandom();
+        var leftContext = _fightableContextFactory.Create(left, right, random);
+        var rightContext = _fightableContextFactory.Create(right, left, random);
 
         return SimulateFight([(leftContext, rightContext)], options);
     }
 
 
-    private FightSimulationResult SimulateFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext,
+    private FightSimulationResult SimulateFight((FightContext LeftSide, FightContext RightSide)[] lookupContext,
         DungeonSimulationOptions options)
     {
         var stopwatch = new Stopwatch();
@@ -130,18 +131,20 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         return result;
     }
 
-    private bool PerformSingleFight(List<(IFightableContext LeftSide, IFightableContext RightSide)> lookupContext)
+    private bool PerformSingleFight((FightContext LeftSide, FightContext RightSide)[] lookupContext)
     {
         double? leftoverHealth = null;
-        foreach (var (CharSide, DungeonSide) in lookupContext)
+        foreach (ref var pair in lookupContext.AsSpan())
         {
+            ref var charSide = ref pair.LeftSide;
+            ref var dungeonSide = ref pair.RightSide;
             if (leftoverHealth.HasValue)
-                DungeonSide.Health = leftoverHealth.Value;
+                dungeonSide.Health = leftoverHealth.Value;
 
-            var characterWon = PerformFight(CharSide, DungeonSide);
-            leftoverHealth = DungeonSide.Health;
-            CharSide.ResetState();
-            DungeonSide.ResetState();
+            var characterWon = PerformFight(ref charSide, ref dungeonSide);
+            leftoverHealth = dungeonSide.Health;
+            charSide.ResetState();
+            dungeonSide.ResetState();
 
             if (characterWon)
                 return true;
@@ -149,22 +152,23 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
         return false;
     }
 
-    private bool PerformFight(IFightableContext charSide, IFightableContext enemySide)
+    private bool PerformFight(ref FightContext charSide, ref FightContext enemySide)
     {
         var charSideStarts = charSide.Reaction > enemySide.Reaction ||
                             (charSide.Reaction == enemySide.Reaction
-                             && _random.NextDouble() < 0.5);
+                             && charSide.Random.NextDouble() < 0.5);
 
-        var (attacker, defender) = charSideStarts ? (charSide, enemySide) : (enemySide, charSide);
+        ref var attacker = ref (charSideStarts ? ref charSide : ref enemySide);
+        ref var defender = ref (charSideStarts ? ref enemySide : ref charSide);
 
         var round = 0;
 
-        if (attacker.AttackBeforeFightImplementation != null && attacker.AttackBeforeFightImplementation(defender, ref round))
+        if (attacker.AttackBeforeFight(ref defender, ref round))
         {
             return charSideStarts;
         }
 
-        if (defender.AttackBeforeFightImplementation != null && defender.AttackBeforeFightImplementation(attacker, ref round))
+        if (defender.AttackBeforeFight(ref attacker, ref round))
         {
             return !charSideStarts;
         }
@@ -173,17 +177,17 @@ public class DungeonSimulator(IFightableContextFactory dungeonableContextFactory
 
         for (var i = 0; i < int.MaxValue; i++)
         {
-            var skipRound = defender.WillSkipRoundImplementation != null && defender.WillSkipRoundImplementation(ref round);
+            var skipRound = defender.WillSkipRound(ref round);
 
-            if (!skipRound && attacker.AttackImplementation(defender, ref round))
+            if (!skipRound && attacker.Attack(ref defender, ref round))
             {
                 result = charSideStarts;
                 break;
             }
 
-            skipRound = attacker.WillSkipRoundImplementation != null && attacker.WillSkipRoundImplementation(ref round);
+            skipRound = attacker.WillSkipRound(ref round);
 
-            if (!skipRound && defender.AttackImplementation(attacker, ref round))
+            if (!skipRound && defender.Attack(ref attacker, ref round))
             {
                 result = !charSideStarts;
                 break;

@@ -19,7 +19,7 @@ public static class TypesMapper
         new (typeof(ItemGenerator), typeof(IItemGenerator)),
         new (typeof(DungeonSimulator), typeof(IDungeonSimulator)),
         new (typeof(DungeonProvider), typeof(IDungeonProvider)),
-        new (typeof(FightableContextFactory), typeof(IFightableContextFactory)),
+        new (typeof(FightContextFactory), typeof(IFightContextFactory)),
         new (typeof(CritChanceProvider), typeof(ICritChanceProvider)),
         new (typeof(DamageProvider), typeof(IDamageProvider)),
         new (typeof(WeeklyTasksRewardProvider), typeof(IWeeklyTasksRewardProvider)),
