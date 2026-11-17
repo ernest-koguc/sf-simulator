@@ -15,6 +15,15 @@ export type Attributes = {
   Luck: number;
 };
 
+export enum AttributeType {
+  Strength = 1,
+  Dexterity = 2,
+  Intelligence = 3,
+  Constitution = 4,
+  Luck = 5,
+  All = 6,
+}
+
 export type Equipment = {
   Head: ItemModel,
   Body: ItemModel,
@@ -34,12 +43,9 @@ export type Tower = {
 };
 
 export type Dungeons = {
-  Light: { Position: number, Current: number }[],
-  Shadow: { Position: number, Current: number }[],
-  Tower: number,
-  Twister: number,
-  LoopOfIdols: number,
-  Sandstorm: number
+  Light: number[],
+  Shadow: number[],
+  Class: number[],
 }
 
 export type Expedition = {
@@ -148,6 +154,11 @@ export enum ScrollType {
 }
 
 export type Pets = {
+  Shadow: number;
+  Light: number;
+  Earth: number;
+  Fire: number;
+  Water: number;
   ShadowArenaFought: boolean;
   LightArenaFought: boolean;
   EarthArenaFought: boolean;
@@ -170,7 +181,9 @@ export type CharacterStatus = {
   UsedBeers: number;
 };
 
-export type Companion = Attributes & { Level: number };
+export type Potion = { Type: number; Size: number };
+
+export type Companion = Attributes & { Level: number; Bonus: Attributes };
 
 export enum Class {
   Warrior = 1,

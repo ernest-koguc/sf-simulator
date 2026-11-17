@@ -5,6 +5,14 @@ namespace SFSimulator.Api;
 
 public class SimulateDungeonHandler(IDungeonSimulator dungeonSimulator, IDungeonProvider dungeonProvider, IGameFormulasService gameFormulasService)
 {
+    // In-game array slot for each SF Tools dungeon progress index.
+    // Source: sf-tools/src/data/dungeon-helper.ts, PLAYA_TO_INTERNAL_MAPPING.
+    private static readonly int[] SfToolsToGameDungeonIndices =
+    [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 18,
+        19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32, 33, 34, 35, 36
+    ];
+
     public Results<Ok<List<SimulateDungeonResponse>>, BadRequest<string>> HandleSimulateDungeonAsync(SimulateDungeonRequest request)
     {
         if (request.Iterations > 1_000_000)
@@ -12,9 +20,13 @@ public class SimulateDungeonHandler(IDungeonSimulator dungeonSimulator, IDungeon
             return TypedResults.BadRequest("Iterations cannot be greater than 1 000 000.");
         }
 
-        List<int> dungeons =[..request.DungeonState.Light, ..request.DungeonState.Shadow, ..request.DungeonState.Class];
+        var dungeons = MapDungeonProgress(request.DungeonState.Light, shadow: false)
+            .Concat(MapDungeonProgress(request.DungeonState.Shadow, shadow: true))
+            .Concat(request.DungeonState.Class.Select((progress, index) =>
+                (DungeonPosition: index + 201, BeatenEnemyPosition: progress)));
         var enemies = dungeons
-            .Select((v, k)=> dungeonProvider.GetDungeonEnemySafe(k, v + 1))
+            .Where(dungeon => dungeon.BeatenEnemyPosition >= 0)
+            .Select(dungeon => dungeonProvider.GetDungeonEnemySafe(dungeon.DungeonPosition, dungeon.BeatenEnemyPosition + 1))
             .Where(enemy => enemy != null)
             .Select(enemy => enemy!)
             .ToList();
@@ -58,6 +70,26 @@ public class SimulateDungeonHandler(IDungeonSimulator dungeonSimulator, IDungeon
         //var res = dungeonSimulator.SimulateDungeon(en, player, companions, new(request.Iterations, request.WinThreshold, false));
 
         return TypedResults.Ok(results);
+    }
+
+    private static IEnumerable<(int DungeonPosition, int BeatenEnemyPosition)> MapDungeonProgress(int[] progress, bool shadow)
+    {
+        for (var sfToolsIndex = 0; sfToolsIndex < SfToolsToGameDungeonIndices.Length; sfToolsIndex++)
+        {
+            var gameIndex = SfToolsToGameDungeonIndices[sfToolsIndex];
+            if (gameIndex >= progress.Length) continue;
+
+            var dungeonPosition = DungeonProvider.MapDungeonIndex(sfToolsIndex + 1);
+            yield return (dungeonPosition + (shadow ? 100 : 0), progress[gameIndex]);
+        }
+
+        // Special slots are excluded from the standard SF Tools progress arrays.
+        if (progress.Length > 14)
+            yield return (shadow ? -2 : -1, progress[14]);
+        if (shadow && progress.Length > 17)
+            yield return (-3, progress[17]);
+        if (!shadow && progress.Length > 31)
+            yield return (-4, progress[31]);
     }
 }
 

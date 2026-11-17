@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "xtool": {
+    "sflab": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -44,7 +44,12 @@
                   "maximumError": "200kB"
                 }
               ],
-              "outputHashing": "none"
+              "outputHashing": "none",
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": true
+              }
             },
             "development": {
               "optimization": false,
@@ -64,10 +69,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "xtool:build:production"
+              "buildTarget": "sflab:build:production"
             },
             "development": {
-              "buildTarget": "xtool:build:development"
+              "buildTarget": "sflab:build:development"
             }
           },
           "defaultConfiguration": "development"

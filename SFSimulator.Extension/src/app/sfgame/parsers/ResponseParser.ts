@@ -1,20 +1,22 @@
-/** Mirrors ResponseVal::into_list: trim padding, never remove interior slots. */
-export function parseNumberList(value: string): number[] {
+export function parseResponseList(value: string): string[] {
   const trimmed = value.replace(/^[\s/]+|[\s/]+$/g, '');
-  if (trimmed === '') {
-    return [];
+  return trimmed === '' ? [] : trimmed.split('/');
+}
+
+export function parseResponseInteger(value: string, index: number): number {
+  const token = value.trim();
+  if (!/^[+-]?\d+$/.test(token)) {
+    throw new TypeError(`Invalid response integer at ${index}: ${JSON.stringify(value)}`);
   }
-  return trimmed.split('/').map((part, index) => {
-    const token = part.trim();
-    if (!/^[+-]?\d+$/.test(token)) {
-      throw new TypeError(`Invalid response integer at ${index}: ${JSON.stringify(part)}`);
-    }
-    const result = Number(token);
-    if (!Number.isFinite(result)) {
-      throw new RangeError(`Response integer is out of range at ${index}`);
-    }
-    return result;
-  });
+  const result = Number(token);
+  if (!Number.isFinite(result)) {
+    throw new RangeError(`Response integer is out of range at ${index}`);
+  }
+  return result;
+}
+
+export function parseNumberList(value: string): number[] {
+  return parseResponseList(value).map(parseResponseInteger);
 }
 
 /** Server timestamps encode the server's calendar; use UTC calendar accessors. */

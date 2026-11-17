@@ -68,8 +68,8 @@ public static class DungeonEnemyName
             4,
             new()
             {
-            (1, "Wind Elemental"),
-            (2, "Pirate Dark Beard"),
+            (1, "Water Glompf"),
+            (2, "Saurus Rogue"),
             (3, "Rowdy Robber"),
             (4, "Shadow Alligator"),
             (5, "Sturdy Swashbuckler"),
@@ -89,7 +89,7 @@ public static class DungeonEnemyName
             (3, "Roaring Raptor"),
             (4, "Swamp Warrior"),
             (5, "Green Rex"),
-            (6, "Saurus Rogue"),
+            (6, "Jungle Scorpion"),
             (7, "Swamp Dragon"),
             (8, "Swamp Gorgon"),
             (9, "Toxic Dragon"),

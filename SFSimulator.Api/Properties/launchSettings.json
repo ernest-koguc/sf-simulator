@@ -6,7 +6,8 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5267",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SENTRY_DSN": "https://a9d47a69c2b674cce1792a07079967ff@o4509968167403520.ingest.de.sentry.io/4512448498696272"
       }
     }
   }

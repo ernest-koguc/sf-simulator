@@ -1,0 +1,11 @@
+  {
+  "configurations": [
+    {
+      "name": "Blazor WASM - No Browser",
+      "type": "blazorwasm",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/SFSimulator.Frontend/SFSimulator.Frontend.csproj",
+      "launchBrowser": false
+    }
+  ]
+}

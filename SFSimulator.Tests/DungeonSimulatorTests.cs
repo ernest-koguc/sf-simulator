@@ -98,7 +98,7 @@ public class DungeonSimulatorTests
 
     // Here we mainly care about opponents being properly generated. 
     // Sim logic should be checked with the arena fights test cases further below
-    // [TestMethod]
+    [TestMethod]
     // [DataRow(ClassType.Warrior, 3, 9, 0.3925)]
     // [DataRow(ClassType.Warrior, 4, 6, 0.4554)]
     // [DataRow(ClassType.Warrior, 5, 8, 0.0599)]
@@ -136,12 +136,12 @@ public class DungeonSimulatorTests
     // [DataRow(ClassType.Berserker, 25, 4, 0.0772)]
     // [DataRow(ClassType.Berserker, 25, 8, 0.2065)]
     // [DataRow(ClassType.Berserker, 24, 7, 0.3815)]
-    // [DataRow(ClassType.DemonHunter, 3, 9, 0.3628)]
-    // [DataRow(ClassType.DemonHunter, 4, 6, 0.6048)]
-    // [DataRow(ClassType.DemonHunter, 5, 8, 0.0767)]
-    // [DataRow(ClassType.DemonHunter, 25, 4, 0.1632)]
-    // [DataRow(ClassType.DemonHunter, 25, 8, 0.2662)]
-    // [DataRow(ClassType.DemonHunter, 24, 7, 0.2127)]
+    [DataRow(ClassType.DemonHunter, 3, 9, 0.3628)]
+    [DataRow(ClassType.DemonHunter, 4, 6, 0.6048)]
+    [DataRow(ClassType.DemonHunter, 5, 8, 0.0767)]
+    [DataRow(ClassType.DemonHunter, 25, 4, 0.1632)]
+    [DataRow(ClassType.DemonHunter, 25, 8, 0.2662)]
+    [DataRow(ClassType.DemonHunter, 24, 7, 0.2127)]
     // [DataRow(ClassType.Druid, 3, 9, 0.3396)]
     // [DataRow(ClassType.Druid, 4, 6, 0.4801)]
     // [DataRow(ClassType.Druid, 5, 8, 0.1235)]
@@ -178,14 +178,14 @@ public class DungeonSimulatorTests
         var dungeon = DungeonProvider.GetDungeonEnemy(dungeonPosition, dungeonEnemyPosition);
         var simulationContext = GetSimulationContextFor(@class, dungeonPosition, dungeonEnemyPosition);
 
-        var iterations = 10_000_000;
+        var iterations = 20_000_000;
         var result = DungeonSimulator.SimulateDungeon<EquipmentItem, EquipmentItem>(dungeon, simulationContext, [],
             new(iterations, iterations, false));
 
         var winRatio = (double)result.WonFights / iterations;
         DrHouse.Differential($"Class {@class}, actual WR: {winRatio}, expected {expectedWinRatio}");
 
-        Assert.AreEqual(expectedWinRatio, winRatio, 0.005,
+        Assert.AreEqual(expectedWinRatio, winRatio, 0.001,
              $"Simulation for {@class} class for enemy {dungeonPosition}:{dungeonEnemyPosition} failed.\r\n" +
              $"Expected win ratio: {expectedWinRatio} but actual was {winRatio}, won fights: {result.WonFights}");
     }

@@ -2,9 +2,15 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { SFGameRequest } from './app/sfgame/SFGameModels';
+import { captureExtensionError, initializeSentry } from './app/monitoring/sentry';
+
+initializeSentry();
 
 bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    captureExtensionError(err, 'bootstrap');
+    console.error(err);
+  });
 
 const { fetch: origFetch } = window;
 window.fetch = async (...args) => {
@@ -16,11 +22,21 @@ window.fetch = async (...args) => {
     return response;
   }
 
+  try {
+    await processGameResponse(response);
+  } catch (error) {
+    captureExtensionError(error, 'game-response-interception');
+  }
+
+  return response;
+};
+
+async function processGameResponse(response: Response): Promise<void> {
   const url = response.url;
   const urlParams = new URLSearchParams(url.split('?')[1] || '');
   const req = urlParams.get('req');
   if (!req) {
-    return response;
+    return;
   }
   let params = urlParams.get('params');
 
@@ -56,6 +72,4 @@ window.fetch = async (...args) => {
   document.dispatchEvent(new CustomEvent("SFCommand", {
     bubbles: true, composed: true, detail: gameRequest
   }));
-
-  return response;
-};
+}

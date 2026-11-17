@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFSimulator.Api\SFSimulator.Api.csproj" />
     <ProjectReference Include="..\SFSimulator.Core\SFSimulator.Core.csproj" />
   </ItemGroup>
 

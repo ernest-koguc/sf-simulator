@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "x-tool",
-  "version": "1.0",
-  "description": "Set of helpers for Shakes & Fidget gameplay",
+  "name": "sf-lab",
+  "version": "0.1",
+  "description": "Utility tool to enhance SFGame gameplay",
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
@@ -17,7 +17,7 @@
   ],
   "content_scripts": [
     {
-      "js": [ "xtool-loader.js" ],
+      "js": [ "sf-lab-loader.js" ],
       "matches": [
         "https://sfgame.net/*",
         "https://play.sfgame.net/*"
@@ -30,7 +30,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [ "main.js", "styles.css", "*.png" ],
+      "resources": [ "main.js", "styles.css" ],
       "matches": [
         "<all_urls>"
       ]

@@ -1,4 +1,4 @@
-import { CharacterStatus } from '../SFGameModels';
+import { CharacterStatus, Potion } from '../SFGameModels';
 import { ByteParser } from './ByteParser';
 
 // gamestate/mod.rs: characterstatus, ownplayersavepotions, wheel, dice, arena, charactergroup.
@@ -14,6 +14,20 @@ export function parseCharacterStatus(data: number[]): CharacterStatus {
 export function parseHasEternalPotion(data: number[]): boolean {
   // parse_active_potions ignores lists shorter than ten words. Type 16 is EternalLife.
   return data.length >= 10 && data.slice(1, 4).includes(16);
+}
+
+export function parsePotions(data: number[]): Potion[] {
+  if (data.length < 10) {
+    return [];
+  }
+  const parser = new ByteParser(data);
+  return [1, 2, 3].map(index => {
+    const type = parser.at(index);
+    return {
+      Type: type === 16 ? 6 : type === 0 ? 0 : 1 + (type - 1) % 5,
+      Size: parser.unsignedAt(index + 6),
+    };
+  }).sort((left, right) => right.Size - left.Size);
 }
 
 export function parseWheelSpins(data: number[]): number {

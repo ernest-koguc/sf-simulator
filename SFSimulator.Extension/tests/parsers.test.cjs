@@ -3,7 +3,6 @@ const { test } = require('node:test');
 const fs = require('node:fs');
 const ts = require('typescript');
 
-// Exercise the actual TypeScript modules without requiring a browser/Karma.
 require.extensions['.ts'] = (module, filename) => {
   const result = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
     compilerOptions: {
@@ -99,20 +98,21 @@ test('status, potions, wheel, dice, arena and hydra use their separate response 
   assert.equal(status.parseDiceGamesRemaining([0, 256]), 0);
 });
 
-test('tower uses three 148-word companion records, five attributes, and underworld offsets', () => {
+test('tower uses three 148-word companion records, base attributes, server bonuses, and underworld offsets', () => {
   const data = words(474, { 448: 1, 454: 15, 473: 1200 });
   for (let i = 0; i < 3; i++) {
     const start = 3 + 148 * i;
     data[start] = 100 + i;
     for (let j = 0; j < 5; j++) {
       data[start + 4 + j] = 10 * (i + 1) + j;
-      data[start + 9 + j] = 999; // Legacy bonus words must not be added.
+      data[start + 9 + j] = 999;
     }
   }
   const tower = parseTower(data);
   assert.deepEqual(tower.Underworld, { Gladiator: 15, TimeMachineThirst: 1200 });
   assert.deepEqual(tower.Companions.Bert, {
     Level: 100, Strength: 10, Dexterity: 11, Intelligence: 12, Constitution: 13, Luck: 14,
+    Bonus: { Strength: 999, Dexterity: 999, Intelligence: 999, Constitution: 999, Luck: 999 },
   });
   assert.equal(tower.Companions.Mark.Strength, 20);
   assert.equal(tower.Companions.Kunigunde.Luck, 34);
@@ -120,8 +120,9 @@ test('tower uses three 148-word companion records, five attributes, and underwor
   assert.deepEqual(parseTower(data).Underworld, { Gladiator: 0, TimeMachineThirst: 0 });
 });
 
-test('only the five used pet arena flags and guild pet cap are parsed', () => {
-  assert.deepEqual(parsePets(words(228, { 223: 1, 225: 1, 226: 2, 227: 1 })), {
+test('pet attribute bonuses, arena flags and guild pet cap are parsed', () => {
+  assert.deepEqual(parsePets(words(228, { 104: 11, 105: 22, 106: 33, 107: 44, 108: 55, 223: 1, 225: 1, 226: 2, 227: 1 })), {
+    Shadow: 11, Light: 22, Earth: 33, Fire: 44, Water: 55,
     ShadowArenaFought: true, LightArenaFought: false, EarthArenaFought: true,
     FireArenaFought: false, WaterArenaFought: true,
   });
@@ -181,7 +182,7 @@ test('dungeon IDs stay at their raw protocol indices after gaps and special dung
   assert.equal(find(33), 8);
   assert.equal(data.Sandstorm, 6);
   assert.equal(data.Twister, -1);
-  assert.equal(data.Light.length, 33); // No fabricated entry for training camp.
+  assert.equal(data.Light.length, 33);
   assert.equal('SoloPortal' in data, false);
 });
 
@@ -202,6 +203,8 @@ test('partial dungeon responses preserve the other world and normalize Rust term
 test('items mask type flags, restrict armor/damage to their types, and find runes in any slot', () => {
   const weapon = new ItemModel(item({ 0: 0x101, 2: 11, 7: 40, 10: 17, 9: 0 }));
   assert.deepEqual({ ...weapon }, {
+    Class: 1, AttributeTypes: [40, 0, 0], Attributes: [17, 0, 0],
+    HasGem: false, GemType: 0, GemValue: 0, Gold: 0,
     Type: 1, Armor: 0, DamageMin: 123, DamageMax: 456, HasEnchantment: true,
     ItemQuality: 600, RuneType: RuneType.FireDamage, RuneValue: 17,
   });
@@ -248,17 +251,19 @@ test('combat uses character portal bonus, companion levels/gear armor and exclud
   equipment.Wpn1 = new ItemModel(item());
   equipment.Wpn2 = new ItemModel(item({ 0: 2 }));
   equipment.Body = new ItemModel(item({ 0: 3, 5: 321 }));
-  const companion = { Level: 10, Strength: 1, Dexterity: 2, Intelligence: 3, Constitution: 100, Luck: 4 };
+  const companion = {
+    Level: 10, Strength: 1, Dexterity: 2, Intelligence: 3, Constitution: 100, Luck: 4,
+    Bonus: { Strength: 0, Dexterity: 0, Intelligence: 0, Constitution: 0, Luck: 0 },
+  };
   const tower = {
     Underworld: { Gladiator: 10, TimeMachineThirst: 0 },
     Companions: { Bert: companion, Mark: companion, Kunigunde: companion },
   };
   const fighter = new Fightable(parseOwnPlayerSave(character()), equipment,
-    { Bert: equipment, Mark: equipment, Kunigunde: equipment }, tower, true);
+    { Bert: equipment, Mark: equipment, Kunigunde: equipment }, tower, true, [], null);
   assert.equal(fighter.SecondWeapon, null);
   assert.equal(fighter.GuildPortal, 7);
   assert.equal(fighter.Companions[0].Armor, 321);
-  // 100 * 6.1 * (10+1) -> potion -> 12% portal.
   assert.equal(fighter.Companions[0].Health, 9393);
   assert.equal(fighter.CritMultiplier, 3.1);
 });

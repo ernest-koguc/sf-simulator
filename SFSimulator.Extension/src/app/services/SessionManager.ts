@@ -1,9 +1,8 @@
 import { computed, Injectable, signal, WritableSignal } from '@angular/core';
 import {
   CharacterStatus, DailyTask, DailyTaskReward, Dungeons, Equipment, EventType,
-  Expedition, Guild, OwnPlayerSave, Pets, PortalProgress, ToiletState, Tower, Witch,
+  Expedition, Guild, OwnPlayerSave, Pets, PortalProgress, Potion, ToiletState, Tower, Witch,
 } from '../sfgame/SFGameModels';
-import type { ExpeditionProgress } from './ExpeditionService';
 import { Fightable } from '../sfgame/Fightable';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +16,7 @@ export class SessionManager {
       return null;
     }
     return new Fightable(current.ownPlayerSave, current.ownItems, current.companionItems,
-      current.tower, current.hasEternalPotion);
+      current.tower, current.hasEternalPotion, current.potions, current.pets);
   });
 
   public current = computed(() => {
@@ -55,12 +54,12 @@ export function createSessionData(): SessionData {
     toiletState: null,
     characterStatus: null,
     hasEternalPotion: false,
+    potions: [],
     wheelSpinsToday: null,
     diceGamesRemaining: null,
     arenaFightsToday: null,
     canAttackHydra: null,
     expedition: null,
-    expeditionProgress: null,
   };
 }
 
@@ -82,10 +81,10 @@ export type SessionData = {
   toiletState: ToiletState | null;
   characterStatus: CharacterStatus | null;
   hasEternalPotion: boolean;
+  potions: Potion[];
   wheelSpinsToday: number | null;
   diceGamesRemaining: number | null;
   arenaFightsToday: number | null;
   canAttackHydra: boolean | null;
   expedition: Expedition[] | null;
-  expeditionProgress: ExpeditionProgress | null;
 };

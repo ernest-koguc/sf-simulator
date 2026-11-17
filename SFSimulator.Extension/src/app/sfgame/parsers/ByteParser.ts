@@ -1,17 +1,21 @@
-/** Reads the server's integer words. Offsets always refer to whole words. */
+import { parseResponseInteger } from './ResponseParser';
+
 export class ByteParser {
   private position = 0;
 
-  constructor(private readonly values: readonly number[]) {}
+  constructor(private readonly values: readonly (number | string)[]) { }
 
   get remaining(): number {
     return this.values.length - this.position;
   }
 
   at(index: number): number {
-    const value = this.values[index];
+    let value = this.values[index];
     if (!Number.isInteger(index) || index < 0 || value === undefined) {
       throw new RangeError(`Missing response value at ${index} (length ${this.values.length})`);
+    }
+    if (typeof value === 'string') {
+      value = parseResponseInteger(value, index);
     }
     if (!Number.isFinite(value) || !Number.isInteger(value)) {
       throw new TypeError(`Invalid response integer at ${index}: ${value}`);
@@ -38,12 +42,10 @@ export class ByteParser {
   }
 }
 
-/** Rust's soft_into for the unsigned integers used by these parsers. */
 export function unsigned(value: number, max = 0xffffffff, fallback = 0): number {
   return Number.isInteger(value) && value >= 0 && value <= max ? value : fallback;
 }
 
-/** Like Rust's chunks_exact: ignore an incomplete record at the end. */
 export function* chunks(values: readonly number[], size: number): Generator<number[]> {
   if (!Number.isInteger(size) || size <= 0) {
     throw new RangeError('Record size must be a positive integer');

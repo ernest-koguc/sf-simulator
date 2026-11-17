@@ -9,7 +9,6 @@ import { BigNumberPipe } from '../../pipes/big-number.pipe';
 import { DungeonSimulator, SimulateDungeonResponse } from '../../services/DungeonSimulator';
 import { SessionManager } from '../../services/SessionManager';
 import { WarningService } from '../../services/WarningService';
-import { db } from '../../db';
 
 @Component({
   selector: 'dungeon-tab',

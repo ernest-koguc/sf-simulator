@@ -1,4 +1,5 @@
-import { Class, Companion, Equipment, OwnPlayerSave, RuneType, Tower } from './SFGameModels';
+import { Class, Companion, Equipment, OwnPlayerSave, Pets, Potion, RuneType, Tower } from './SFGameModels';
+import { getCompanionAttributes } from './CompanionAttributes';
 
 type Weapon = { MinDmg: number; MaxDmg: number; RuneType: number; RuneValue: number };
 type CompanionFighter = {
@@ -40,7 +41,7 @@ export class Fightable {
 
   constructor(player: OwnPlayerSave, equipment: Equipment,
     companionEquipment: { Bert: Equipment; Mark: Equipment; Kunigunde: Equipment } | null,
-    tower: Tower | null, hasEternalPotion: boolean) {
+    tower: Tower | null, hasEternalPotion: boolean, potions: readonly Potion[], pets: Pets | null) {
     this.Level = player.Level;
     this.Class = player.Class;
     this.Strength = player.Strength;
@@ -62,24 +63,22 @@ export class Fightable {
     this.FireResistance = getRuneValue(RuneType.FireResistance, equipment);
     this.ColdResistance = getRuneValue(RuneType.ColdResistance, equipment);
 
-    const companion = (stats: Companion, items: Equipment, classType: Class): CompanionFighter => ({
-      Class: classType,
-      Strength: stats.Strength,
-      Dexterity: stats.Dexterity,
-      Intelligence: stats.Intelligence,
-      Constitution: stats.Constitution,
-      Luck: stats.Luck,
-      Health: getHealth(classType, Math.max(1, stats.Level), stats.Constitution, hasEternalPotion,
-        player.PortalHealthBonus, getRuneValue(RuneType.HealthBonus, items), true),
-      // Rust derives companion armor from equipment, not the old tower offsets.
-      Armor: Object.values(items).reduce((sum, item) => sum + (item?.Armor ?? 0), 0),
-      FirstWeapon: weapon(items.Wpn1),
-      Reaction: items.Hand.HasEnchantment ? 1 : 0,
-      CritMultiplier: 2 + (items.Wpn1.HasEnchantment ? 0.05 : 0) + 0.11 * gladiator,
-      LightningResistance: getRuneValue(RuneType.LightningResistance, items),
-      FireResistance: getRuneValue(RuneType.FireResistance, items),
-      ColdResistance: getRuneValue(RuneType.ColdResistance, items),
-    });
+    const companion = (stats: Companion, items: Equipment, classType: Class): CompanionFighter => {
+      const attributes = getCompanionAttributes(stats, items, classType, player.Class, potions, pets);
+      return {
+        Class: classType,
+        ...attributes,
+        Health: getHealth(classType, Math.max(1, stats.Level), attributes.Constitution, hasEternalPotion,
+          player.PortalHealthBonus, getRuneValue(RuneType.HealthBonus, items), true),
+        Armor: Object.values(items).reduce((sum, item) => sum + (item?.Armor ?? 0), 0),
+        FirstWeapon: weapon(items.Wpn1),
+        Reaction: items.Hand.HasEnchantment ? 1 : 0,
+        CritMultiplier: 2 + (items.Wpn1.HasEnchantment ? 0.05 : 0) + 0.11 * gladiator,
+        LightningResistance: getRuneValue(RuneType.LightningResistance, items),
+        FireResistance: getRuneValue(RuneType.FireResistance, items),
+        ColdResistance: getRuneValue(RuneType.ColdResistance, items),
+      };
+    };
     this.Companions = companionEquipment && tower ? [
       companion(tower.Companions.Bert, companionEquipment.Bert, Class.Warrior),
       companion(tower.Companions.Mark, companionEquipment.Mark, Class.Mage),
@@ -101,18 +100,25 @@ function getRuneValue(runeType: RuneType, equipment: Equipment): number {
   return Math.min(total, resistance ? 75 : 15);
 }
 
-// Class::health_multiplier in the Rust reference.
 const HEALTH_MULTIPLIER: Record<Class, number> = {
-  [Class.Warrior]: 5, [Class.Mage]: 2, [Class.Scout]: 4, [Class.Assassin]: 4,
-  [Class.BattleMage]: 5, [Class.Berserker]: 4, [Class.DemonHunter]: 4, [Class.Druid]: 5,
-  [Class.Bard]: 2, [Class.Necromancer]: 4, [Class.Paladin]: 6, [Class.PlagueDoctor]: 4,
-  [Class.BloodWeaver]: 5,
+  [Class.Warrior]: 5,
+  [Class.Mage]: 2,
+  [Class.Scout]: 4,
+  [Class.Assassin]: 4,
+  [Class.BattleMage]: 5,
+  [Class.Berserker]: 4,
+  [Class.DemonHunter]: 4,
+  [Class.Druid]: 5,
+  [Class.Bard]: 2,
+  [Class.Necromancer]: 4,
+  [Class.Paladin]: 6,
+  [Class.PlagueDoctor]: 4,
+  [Class.BloodWeaver]: 4,
 };
 
 function getHealth(classType: Class, level: number, constitution: number, eternal: boolean,
   portalBonus: number, healthRune: number, companion = false): number {
   const multiplier = companion && classType === Class.Warrior ? 6.1 : HEALTH_MULTIPLIER[classType];
-  // UpgradeableFighter::hit_points applies and truncates each bonus in this order.
   let health = Math.trunc(constitution * multiplier) * (level + 1);
   if (eternal) {
     health = Math.trunc(health * 1.25);

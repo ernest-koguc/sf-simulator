@@ -1,20 +1,22 @@
 {
-  "name": "xtool",
+  "name": "sf-lab",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "start": "node scripts/angular.mjs serve",
+    "build": "node scripts/angular.mjs build",
+    "watch": "node scripts/angular.mjs build --watch --configuration development",
+    "sentry:sourcemaps": "node scripts/sourcemaps.mjs",
     "test": "ng test",
-    "test:parsers": "node tests/parsers.test.cjs"
+    "test:parsers": "node tests/parsers.test.cjs",
+    "test:sentry": "node --test tests/sentry.test.cjs"
   },
   "private": true,
   "engines": {
     "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "dependencies": {
-    "@angular/cdk": "^22.2.3",
+    "@angular/cdk": "^22.2.4",
     "@angular/common": "^22.2.3",
     "@angular/compiler": "^22.2.3",
     "@angular/core": "^22.2.3",
@@ -24,11 +26,11 @@
     "@angular/router": "^22.2.3",
     "@ng-icons/core": "^33.4.0",
     "@ng-icons/lucide": "^33.4.0",
+    "@sentry/browser": "11.14.0",
     "@spartan-ng/brain": "1.8.0",
     "@tailwindcss/postcss": "4.1.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "dexie": "^4.0.11",
     "ngx-scrollbar": "^19.1.5",
     "postcss": "^8.5.6",
     "rxjs": "~7.8",
@@ -42,6 +44,7 @@
     "@angular/cli": "^22.2.3",
     "@angular/compiler-cli": "^22.2.3",
     "@spartan-ng/cli": "1.8.0",
+    "@types/chrome": "^0.3.6",
     "@types/jasmine": "~5.1.0",
     "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "~5.6.0",

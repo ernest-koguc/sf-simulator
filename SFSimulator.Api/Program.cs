@@ -4,6 +4,18 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry(options =>
+{
+    options.Dsn = builder.Configuration["SENTRY_DSN"] ?? options.Dsn;
+    options.Environment = builder.Configuration["SENTRY_ENVIRONMENT"]
+        ?? (builder.Environment.IsDevelopment() ? "development" : "production");
+    options.Release = builder.Configuration["SENTRY_RELEASE"] ?? options.Release;
+    options.TracesSampleRate ??= builder.Environment.IsDevelopment() ? 1.0 : 0.1;
+    options.EnableLogs = true;
+    options.SendDefaultPii = false;
+    options.MaxRequestBodySize = Sentry.Extensibility.RequestSize.None;
+});
+
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);

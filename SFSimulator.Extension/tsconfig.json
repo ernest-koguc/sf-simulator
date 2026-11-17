@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
@@ -42,6 +43,9 @@
       ],
       "@spartan-ng/helm/typography": [
         "./src/app/shared/typography/src/index.ts"
+      ],
+      "@spartan-ng/helm/badge": [
+        "./src/app/shared/badge/src/index.ts"
       ]
     }
   },

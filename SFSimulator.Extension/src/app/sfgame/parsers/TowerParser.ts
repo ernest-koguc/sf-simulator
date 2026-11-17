@@ -6,11 +6,11 @@ export function parseTower(data: number[]): Tower {
   const parser = new ByteParser(data);
   const hasUnderworld = parser.unsignedAt(448, 0xff) > 0;
   const companion = (index: number): Companion => {
-    // gamestate/mod.rs: owntower. Five attributes at companion start + 4.
     const start = 3 + index * 148;
     return {
       Level: parser.at(start),
       ...parseAttributes(parser, start + 4),
+      Bonus: parseAttributes(parser, start + 9),
     };
   };
   return {

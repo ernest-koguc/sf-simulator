@@ -3,17 +3,17 @@ import { BrnTabsContent } from '@spartan-ng/brain/tabs';
 import { classes } from '@spartan-ng/helm/utils';
 
 @Directive({
-	selector: '[hlmTabsContent]',
-	exportAs: 'hlmTabsContent',
-	hostDirectives: [{ directive: BrnTabsContent, inputs: ['brnTabsContent: hlmTabsContent'] }],
-	host: {
-		'data-slot': 'tabs-content',
-	},
+  selector: '[hlmTabsContent]',
+  exportAs: 'hlmTabsContent',
+  hostDirectives: [{ directive: BrnTabsContent, inputs: ['brnTabsContent: hlmTabsContent'] }],
+  host: {
+    'data-slot': 'tabs-content',
+  },
 })
 export class HlmTabsContent {
-	public readonly contentFor = input.required<string>({ alias: 'hlmTabsContent' });
+  public readonly contentFor = input.required<string>({ alias: 'hlmTabsContent' });
 
-	constructor() {
-		classes(() => 'flex-1 text-sm outline-none');
-	}
+  constructor() {
+    classes(() => 'flex-1 text-sm outline-none p-5 h-120 max-h-120 overflow-y-auto');
+  }
 }

@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -10,8 +9,18 @@
     <PublishIISAssets>false</PublishIISAssets>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <SentryOrg>ernest-koguc</SentryOrg>
+    <SentryProject>sf-simulator-api</SentryProject>
+    <SentryUploadSymbols Condition="'$(SENTRY_AUTH_TOKEN)' != ''">true</SentryUploadSymbols>
+    <SentryUploadSources Condition="'$(SENTRY_AUTH_TOKEN)' != ''">true</SentryUploadSources>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SFSimulator.Core\SFSimulator.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Sentry.AspNetCore" Version="7.0.1" />
+  </ItemGroup>
 </Project>

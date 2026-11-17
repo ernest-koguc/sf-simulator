@@ -46,7 +46,7 @@ public class DungeonProvider : IDungeonProvider
         }
     }
 
-    private static int MapDungeonIndex(int sfToolsIndex)
+    public static int MapDungeonIndex(int sfToolsIndex)
     {
         return (sfToolsIndex) switch
         {

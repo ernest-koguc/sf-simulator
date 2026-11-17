@@ -1,7 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ExpeditionService } from './ExpeditionService';
 import { SessionData, SessionManager } from './SessionManager';
-import { EquipmentService } from './EquipmentService';
 import { SFGameRequest } from '../sfgame/SFGameModels';
 import { parseDungeons } from '../sfgame/parsers/DungeonParser';
 import { parseWitch } from '../sfgame/parsers/WitchParser';
@@ -14,17 +12,15 @@ import { parseDailyTaskList, parseDailyTaskRewards } from '../sfgame/parsers/Dai
 import { parseToiletState } from '../sfgame/parsers/ToiletParser';
 import { parseOwnGroupSave } from '../sfgame/parsers/OwnGroupSaveParser';
 import { parsePortalProgress } from '../sfgame/parsers/PortalProgressParser';
-import { parseNumberList } from '../sfgame/parsers/ResponseParser';
+import { parseNumberList, parseResponseList } from '../sfgame/parsers/ResponseParser';
 import {
   parseArenaFights, parseCanAttackHydra, parseCharacterStatus, parseDiceGamesRemaining,
-  parseHasEternalPotion, parseWheelSpins,
+  parseHasEternalPotion, parsePotions, parseWheelSpins,
 } from '../sfgame/parsers/CharacterStatusParser';
 
 @Injectable({ providedIn: 'root' })
 export class SFGameRequestHandler {
-  private expeditionService = inject(ExpeditionService);
   private sessionManager = inject(SessionManager);
-  private equipmentService = inject(EquipmentService);
   private serverOffsets = new Map<string, number>();
 
   public async digestResponse(gameRequest: SFGameRequest) {
@@ -76,21 +72,28 @@ export class SFGameRequestHandler {
     update('ownplayersaveequipment', 'ownItems', parseEquipment);
     update('companionequipment', 'companionItems', words => words.length ? parseCompanionEquipment(words) : null);
     update('ownplayersavepotions', 'hasEternalPotion', parseHasEternalPotion);
+    update('ownplayersavepotions', 'potions', parsePotions);
     update('characterstatus', 'characterStatus', parseCharacterStatus);
     update('wheel', 'wheelSpinsToday', parseWheelSpins);
     update('dice', 'diceGamesRemaining', parseDiceGamesRemaining);
     update('arena', 'arenaFightsToday', parseArenaFights);
     update('charactergroup', 'canAttackHydra', parseCanAttackHydra);
-    update('owngroupsave', 'guild', parseOwnGroupSave);
+    if (data['owngroupsave'] !== undefined) {
+      const guild = parseOwnGroupSave(parseResponseList(data['owngroupsave']));
+      this.sessionManager.updateCurrent(current => { current.guild = guild; });
+    }
     update('portalprogress', 'portalProgress', words => parsePortalProgress(words, serverTime));
 
-    if (data['dungeonprogresslight'] !== undefined || data['dungeonprogressshadow'] !== undefined) {
+    if (data['dungeonprogresslight'] !== undefined
+      || data['dungeonprogressshadow'] !== undefined
+      || data['dungeonprogressclass'] !== undefined) {
       const dungeonData = {
         light: data['dungeonprogresslight'] === undefined ? undefined : parseNumberList(data['dungeonprogresslight']),
         shadow: data['dungeonprogressshadow'] === undefined ? undefined : parseNumberList(data['dungeonprogressshadow']),
+        class: data['dungeonprogressclass'] === undefined ? undefined : parseNumberList(data['dungeonprogressclass'])
       };
       this.sessionManager.updateCurrent(current => {
-        current.dungeons = parseDungeons(dungeonData, current.dungeons);
+        current.dungeons = parseDungeons(dungeonData);
       });
     }
 
@@ -108,16 +111,6 @@ export class SFGameRequestHandler {
       });
     }
 
-    if (gameRequest.req === 'PlayerLookAt' && data['otherplayersaveequipment'] !== undefined
-      && data['otherplayername'] !== undefined && data['otherplayersavecharacter'] !== undefined) {
-      await this.equipmentService.saveEquipment(
-        parseEquipment(parseNumberList(data['otherplayersaveequipment'])),
-        parseCharacterClass(parseNumberList(data['otherplayersavecharacter'])),
-        data['otherplayername'], server,
-      );
-    }
-
-    await this.expeditionService.digestCommand(gameRequest);
     return gameRequest.req === 'SFAccountCharLogin';
   }
 }

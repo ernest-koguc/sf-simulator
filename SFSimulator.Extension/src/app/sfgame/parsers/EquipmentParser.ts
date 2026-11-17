@@ -36,6 +36,13 @@ export function parseCompanionEquipment(data: number[]) {
 
 export class ItemModel {
   public readonly Type: number;
+  public readonly Class: number;
+  public readonly AttributeTypes: readonly number[];
+  public readonly Attributes: readonly number[];
+  public readonly HasGem: boolean;
+  public readonly GemType: number;
+  public readonly GemValue: number;
+  public readonly Gold: number;
   public readonly Armor: number;
   public readonly DamageMin: number;
   public readonly DamageMax: number;
@@ -49,6 +56,21 @@ export class ItemModel {
     const parser = new ByteParser(data);
     this.Type = parser.at(0) & 0xff;
     const hasItem = this.Type !== 0;
+    this.Class = Math.trunc(parser.unsignedAt(3) / 1000) + 1;
+    const attributeTypes = [parser.at(7), parser.at(8), parser.at(9)];
+    const attributes = [parser.unsignedAt(10), parser.unsignedAt(11), parser.unsignedAt(12)];
+    if (attributeTypes[1] === 4 && attributeTypes[2] === 5) {
+      this.AttributeTypes = [20 + attributeTypes[0], 0, 0];
+      this.Attributes = [attributes[0], 0, 0];
+    } else {
+      this.AttributeTypes = attributeTypes;
+      this.Attributes = attributes;
+    }
+    const socket = parser.unsignedAt(1);
+    this.HasGem = hasItem && socket > 1;
+    this.GemType = socket >= 10 ? 1 + socket % 10 : 0;
+    this.GemValue = parser.unsignedAt(16);
+    this.Gold = parser.unsignedAt(13);
     this.Armor = this.Type >= 3 && this.Type <= 10 ? parser.unsignedAt(5) : 0;
     this.DamageMin = this.Type === 1 ? parser.unsignedAt(5) : 0;
     this.DamageMax = this.Type === 1 ? parser.unsignedAt(6) : 0;
