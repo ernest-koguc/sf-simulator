@@ -16,7 +16,24 @@ export SENTRY_ENVIRONMENT=development
 dotnet run --project SFSimulator.Api
 ```
 
-The launch profile supplies the development DSN automatically. The IIS deployment workflow generates `appsettings.Production.json` with the API DSN, production environment, deployed commit SHA as the release, and 10% trace sampling. Runtime environment variables `SENTRY_DSN`, `SENTRY_ENVIRONMENT`, and `SENTRY_RELEASE` can override these values. Request bodies and default user identity collection are disabled. Trace sampling defaults to 100% in Development and 10% elsewhere; `Sentry__TracesSampleRate` overrides it.
+The launch profile supplies the development DSN automatically. The IIS deployment workflow generates `appsettings.Production.json` with the API DSN, production environment, deployed commit SHA as the release, and 10% trace sampling. Runtime environment variables `SENTRY_DSN`, `SENTRY_ENVIRONMENT`, and `SENTRY_RELEASE` can override these values. Automatic request-body attachments on error events and default user identity collection are disabled. Trace sampling defaults to 100% in Development and 10% elsewhere; `Sentry__TracesSampleRate` overrides it.
+
+The API emits one structured `Information` log per completed request, including failures, through `SFSimulator.Api.RequestLoggingMiddleware`. Search Sentry Logs for `HTTP` or filter by that logger category. Fields are `RequestMethod`, `RequestUrl`, `StatusCode`, `DurationMs`, `RequestBody`, and `RequestBodyStatus`. These logs are independent of trace sampling.
+
+Sentry stores the structured message parameters under `sentry.message.parameter.*`. For queries and columns in Sentry's API or CLI, use these field names:
+
+| Value | Sentry field |
+| --- | --- |
+| HTTP method | `sentry.message.parameter.RequestMethod` |
+| URL | `sentry.message.parameter.RequestUrl` |
+| Status code | `tags[sentry.message.parameter.StatusCode,number]` |
+| Duration in milliseconds | `tags[sentry.message.parameter.DurationMs,number]` |
+| JSON body | `sentry.message.parameter.RequestBody` |
+| Body capture status | `sentry.message.parameter.RequestBodyStatus` |
+
+Status and duration are numeric attributes, so they can be filtered and aggregated without parsing the log message.
+
+JSON request bodies up to 32 KiB are included, with credential fields redacted recursively. Sensitive query-string values are also redacted. The endpoint still receives the original request body. Bodies over the limit, invalid JSON, compressed bodies, and non-JSON uploads are omitted with a reason in `RequestBodyStatus`. Configure `RequestLogging:BodyLimitBytes` in appsettings or `RequestLogging__BodyLimitBytes` in the environment; `0` disables body capture while keeping request metadata, and the maximum is 1 MiB.
 
 Release API builds upload debug symbols and sources when `SENTRY_AUTH_TOKEN` is present, using the same CI secret already used by the Blazor frontend. The token must have access to the new API project. Local builds without that token continue to work.
 

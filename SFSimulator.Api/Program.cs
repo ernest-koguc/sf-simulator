@@ -27,12 +27,19 @@ foreach (var type in TypesMapper.Types)
 }
 
 builder.Services.AddScoped<SimulateDungeonHandler>();
+builder.Services.AddOptions<RequestLoggingOptions>()
+    .BindConfiguration("RequestLogging")
+    .Validate(options => options.BodyLimitBytes is >= 0 and <= 1024 * 1024,
+        "RequestLogging:BodyLimitBytes must be between 0 and 1048576.")
+    .ValidateOnStart();
 builder.Services.AddCors(o =>
 {
     o.AddDefaultPolicy(p => p.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseCors(b => b.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 

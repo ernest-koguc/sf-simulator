@@ -60,7 +60,7 @@ public class SimulateDungeonHandler(IDungeonSimulator dungeonSimulator, IDungeon
 
             var xpReward = gameFormulasService.GetExperienceForDungeonEnemy(enemy);
             var dungeonMetadata = new DungeonMetadata(enemy.Position, enemy.Dungeon.Name,
-                enemy.Name, enemy.Dungeon.Type.WithCompanions, player.Class, xpReward);
+                enemy.Name, enemy.Dungeon.Type, player.Class, xpReward);
 
             results.Add(new SimulateDungeonResponse(dungeonMetadata,
                 simulationResult.WonFights / (decimal)request.Iterations));
@@ -144,4 +144,4 @@ public record class Companion(
     int ColdResistance
 );
 
-public record class DungeonMetadata(int Position, string DungeonName, string EnemyName, bool WithCompanions, ClassType Class, long Experience);
+public record class DungeonMetadata(int Position, string DungeonName, string EnemyName, DungeonTypeEnum DungeonType, ClassType Class, long Experience);
