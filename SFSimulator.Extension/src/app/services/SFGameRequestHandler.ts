@@ -93,7 +93,7 @@ export class SFGameRequestHandler {
         class: data['dungeonprogressclass'] === undefined ? undefined : parseNumberList(data['dungeonprogressclass'])
       };
       this.sessionManager.updateCurrent(current => {
-        current.dungeons = parseDungeons(dungeonData);
+        current.dungeons = parseDungeons(dungeonData, current.dungeons);
       });
     }
 
