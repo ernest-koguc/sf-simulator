@@ -238,6 +238,7 @@ export enum EventType {
   ValentinesBlessing = 17,
   BlackGemRush = 18,
   RumbleForRiches = 19,
+  Hellevator = 'hv',
 }
 
 export type DailyTaskReward = {

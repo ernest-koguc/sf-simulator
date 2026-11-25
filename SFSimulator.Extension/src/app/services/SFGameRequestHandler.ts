@@ -48,7 +48,7 @@ export class SFGameRequestHandler {
     }
 
     if (!this.sessionManager.currentId()?.startsWith(`${server}-`)) {
-      return false;
+      return;
     }
 
     const update = <K extends keyof SessionData>(
@@ -97,9 +97,14 @@ export class SFGameRequestHandler {
       });
     }
 
-    update('witch', 'witch', parseWitch);
+    update('witchshop', 'witch', words => parseWitch(words, this.sessionManager.current()?.witch));
     update('ownpets', 'pets', parsePets);
-    update('events', 'activeEvents', parseEvents);
+    if (data['events'] !== undefined) {
+      const events = parseEvents(parseResponseList(data['events']));
+      if (events !== null) {
+        this.sessionManager.updateCurrent(current => { current.activeEvents = events; });
+      }
+    }
     update('dailytaskrewardpreview', 'dailyTasksRewards', parseDailyTaskRewards);
     update('dailytasklist', 'dailyTasks', parseDailyTaskList);
     update('toiletstate', 'toiletState', parseToiletState);
@@ -111,6 +116,6 @@ export class SFGameRequestHandler {
       });
     }
 
-    return gameRequest.req === 'SFAccountCharLogin';
+    return;
   }
 }

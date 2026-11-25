@@ -46,6 +46,9 @@
       ],
       "@spartan-ng/helm/badge": [
         "./src/app/shared/badge/src/index.ts"
+      ],
+      "@spartan-ng/helm/alert": [
+        "./src/app/shared/alert/src/index.ts"
       ]
     }
   },

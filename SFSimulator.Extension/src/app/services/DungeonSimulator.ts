@@ -19,7 +19,7 @@ export class DungeonSimulator {
   private createBody(dungeons: Dungeons, fightable: Fightable) {
     const { Companions, ...Player } = fightable
     return {
-      Iterations: 1000000,
+      Iterations: 100000,
       WinThreshold: 100000,
       DungeonState: dungeons,
       Player: Player,
@@ -34,8 +34,18 @@ export type SimulateDungeonResponse = {
     position: number,
     dungeonName: string,
     enemyName: string,
-    withCompanions: boolean,
+    dungeonType: DungeonTypeEnum,
     class: number,
     experience: number
   }
+}
+
+export enum DungeonTypeEnum {
+  Default = -1,
+  Twister = 1,
+  Tower = 2,
+  Shadow = 3,
+  LoopOfIdols = 4,
+  Sandstorm = 5,
+  Class = 6,
 }

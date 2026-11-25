@@ -11,8 +11,6 @@ async function sfLabLoad() {
   bootstrap.setAttribute( 'extension-base-url', chrome.runtime.getURL(''));
   document.body.appendChild(bootstrap);
 
-  console.log('Before Angular:', bootstrap.outerHTML);
-
   const main = document.createElement('script');
   main.type = 'module';
   main.src = chrome.runtime.getURL('./main.js');

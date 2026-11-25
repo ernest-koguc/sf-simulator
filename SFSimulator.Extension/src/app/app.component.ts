@@ -1,13 +1,7 @@
 /// <reference types="chrome" />
-import { Attribute, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, ViewEncapsulation, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, type EffectCleanupRegisterFn, ViewEncapsulation, afterRenderEffect, computed, inject, signal, untracked, viewChild } from '@angular/core';
 import { HlmBadge } from '@spartan-ng/helm/badge';
 import manifest from '../../extension/manifest.json';
-import {
-  HlmAccordionContent,
-  HlmAccordion,
-  HlmAccordionItem,
-  HlmAccordionTrigger,
-} from '@spartan-ng/helm/accordion';
 import { SFGameRequest } from './sfgame/SFGameModels';
 import { SFGameRequestHandler } from './services/SFGameRequestHandler';
 import { DungeonSimulator } from './services/DungeonSimulator';
@@ -15,7 +9,7 @@ import { SessionManager } from './services/SessionManager';
 import { SettingsService, WindowPosition } from './services/SettingsService';
 import { DungeonTabComponent } from './tabs/dungeon-tab/dungeon-tab.component';
 import { DailiesTabComponent } from './tabs/dailies-tab/dailies-tab.component';
-import { lucideHistory, lucideHome, lucideSettings } from '@ng-icons/lucide';
+import { lucideHistory, lucideHome, lucideMaximize2, lucideMinus, lucideSettings } from '@ng-icons/lucide';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import {
   CdkDrag,
@@ -26,6 +20,10 @@ import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { SfLabLogo } from './sf-lab-logo/sf-lab-logo.component';
 import { captureExtensionError } from './monitoring/sentry';
+import { HomeTabComponent } from './tabs/home-tab/home-tab.component';
+import { TabContentComponent } from './tabs/tab-content/tab-content.component';
+import { LogsTabComponent } from './tabs/logs-tab/logs-tab.component';
+import { SettingsTabComponent } from './tabs/settings-tab/settings-tab.component';
 
 @Component({
   selector: 'sf-lab',
@@ -35,12 +33,16 @@ import { captureExtensionError } from './monitoring/sentry';
     HlmBadge,
     HlmButtonImports,
     HlmTabsImports,
+    HomeTabComponent,
     DungeonTabComponent,
     DailiesTabComponent,
+    LogsTabComponent,
+    SettingsTabComponent,
     CdkDrag,
-    CdkDragHandle
+    CdkDragHandle,
+    TabContentComponent
   ],
-  providers: [provideIcons({ lucideSettings, lucideHome, lucideHistory })],
+  providers: [provideIcons({ lucideHistory, lucideHome, lucideMaximize2, lucideMinus, lucideSettings })],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   encapsulation: ViewEncapsulation.ShadowDom,
@@ -55,26 +57,28 @@ export class AppComponent {
   public dungeonSimulator = inject(DungeonSimulator);
   public sessionManager = inject(SessionManager);
   public readonly settings = inject(SettingsService);
+  public readonly minimized = signal(true);
 
   private readonly windowDrag = viewChild(CdkDrag);
-  private readonly availableSpace = signal<WindowPosition>({ x: 0, y: 0 });
-  private readonly destroyRef = inject(DestroyRef);
-
-  public readonly dragPosition = computed(() => {
-    const position = this.settings.position();
-    const space = this.availableSpace();
-
-    return {
-      x: (position?.x ?? 1) * space.x,
-      y: (position?.y ?? 0) * space.y,
-    };
-  });
 
   public loggedInAs = computed(() => this.sessionManager.current()?.playerName);
   private last = Promise.resolve();
 
   constructor() {
-    afterNextRender(() => this.observeWindowSize());
+    afterRenderEffect({
+      mixedReadWrite: (onCleanup) => {
+        const drag = this.windowDrag();
+        if (!drag) {
+          return;
+        }
+
+        if (this.minimized()) {
+          drag.setFreeDragPosition({ x: 0, y: 0 });
+        } else {
+          this.observeWindowSize(drag, onCleanup);
+        }
+      },
+    });
 
     document.addEventListener('SFCommand' as any, async (event: CustomEvent) => {
       this.last = this.last.then(() => this.queueCommand(event.detail)).catch((error) => {
@@ -95,50 +99,52 @@ export class AppComponent {
       return;
     }
 
-    const space = {
-      x: Math.max(0, boundary.clientWidth - element.offsetWidth),
-      y: Math.max(0, boundary.clientHeight - element.offsetHeight),
-    };
+    const space = this.getAvailableSpace(element, boundary);
     const current = this.settings.position();
 
-    this.availableSpace.set(space);
     this.settings.setPosition({
       x: space.x > 0 ? position.x / space.x : current?.x ?? 1,
       y: space.y > 0 ? position.y / space.y : current?.y ?? 0,
     });
   }
 
-  private observeWindowSize(): void {
-    const element = this.windowDrag()?.getRootElement();
-    const boundary = element?.parentElement;
+  private observeWindowSize(drag: CdkDrag, onCleanup: EffectCleanupRegisterFn): void {
+    const element = drag.getRootElement();
+    const boundary = element.parentElement;
 
-    if (!element || !boundary) {
+    if (!boundary) {
       return;
     }
 
-    const updateSize = () => {
+    const updatePosition = () => {
       if (boundary.clientWidth === 0 || boundary.clientHeight === 0) {
         return;
       }
 
-      const space = {
-        x: Math.max(0, boundary.clientWidth - element.offsetWidth),
-        y: Math.max(0, boundary.clientHeight - element.offsetHeight),
-      };
-
-      this.availableSpace.set(space);
+      const space = this.getAvailableSpace(element, boundary);
       this.settings.initializePosition({ x: space.x - 24, y: 80 }, space);
+      const position = this.settings.position();
+      drag.setFreeDragPosition({
+        x: (position?.x ?? 1) * space.x,
+        y: (position?.y ?? 0) * space.y,
+      });
     };
 
-    const observer = new ResizeObserver(updateSize);
+    const observer = new ResizeObserver(updatePosition);
     observer.observe(boundary);
-    this.destroyRef.onDestroy(() => observer.disconnect());
-    updateSize();
+    observer.observe(element);
+    onCleanup(() => observer.disconnect());
+    untracked(updatePosition);
+  }
+
+  private getAvailableSpace(element: HTMLElement, boundary: HTMLElement): WindowPosition {
+    return {
+      x: Math.max(0, boundary.clientWidth - element.offsetWidth),
+      y: Math.max(0, boundary.clientHeight - element.offsetHeight),
+    };
   }
 
   private async queueCommand(gameRequest: SFGameRequest) {
-    if (await this.tracker.digestResponse(gameRequest)) {
-      this.dungeonTab()?.simulateDungeons();
-    }
+    await this.tracker.digestResponse(gameRequest)
   }
 }

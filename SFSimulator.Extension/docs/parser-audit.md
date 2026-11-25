@@ -25,10 +25,10 @@ Offsets below are zero based integer words, not bytes. The local `parser-referen
 | Underworld `Gladiator` | `Underworld::update` / `UnderworldBuildingType`, `owntower[448 + 6]` | Crit damage |
 | Underworld `TimeMachineThirst` | `Underworld::update`, `owntower[473]` | Daily Adventuromatic collection |
 | Five pet arena flags | `Pets::update`, `ownpets[223..227] == 1`, Shadow / Light / Earth / Fire / Water | Dailies |
-| Witch `Scrolls` | `Witch::update`, count `witch[4]`, IDs `witch[6 + 3*i]` | Missing scroll warnings; list membership unlocks a scroll |
+| Witch `Scrolls` | `Witch::update`, count `witchshop[4]`, IDs `witchshop[6 + 3*i]` | Missing scroll warnings; listed IDs unlock scrolls, and updates preserve earlier unlocks |
 | Guild `PetMaxLevel` | `Guild::update_group_save`, `owngroupsave[378]` | Hydra daily availability |
 | Portal `Finished`, `CanAttack` | `Portal::update`, `portalprogress[0]`, `portalprogress[2] != current server ordinal` | Dailies |
-| Active events | `gamestate/mod.rs`, `events[1]` flags, minimum 8 words; enum order in `gamestate/rewards.rs` | Tidy Toilet Time / Lucky Day rules |
+| Active events | `gamestate/mod.rs`, `events[1]` flags, minimum 8 fields; enum order in `gamestate/rewards.rs`; captured `events[11]` string code `hv` adds Hellevator | Session events and Tidy Toilet Time / Lucky Day rules |
 | Daily reward `Claimed`, `PointsRequired` | `RewardChest::parse` / `parse_rewards`: three variable records, header `opened != 0 / points / pair count` | Daily task completion |
 | Daily task `Completed`, `Points` | `dailytasklist`: skip one word, then complete 4-word records; `Task::is_completed` compares current >= target | Daily task completion |
 | Toilet sacrifices remaining | `gamestate/mod.rs`, `toiletstate[2]`; ignore packets shorter than 3 words | Dailies |
@@ -53,9 +53,12 @@ Offsets below are zero based integer words, not bytes. The local `parser-referen
 - Server timestamps establish a per-server clock difference; portal day comparisons use the server's calendar and advance between responses. Local timezone/DST does not alter the ordinal.
 - Empty lists remain empty. Interior empty numeric slots are errors instead of being removed and shifting offsets. Missing required words throw an Error instead of reading zero.
 - Retired `ownplayersave` and `tavernspecial*` keys are ignored, matching the Rust dispatch.
+- Witch scroll availability comes from `witchshop`; the obsolete `witch` key is ignored. Known scroll IDs are retained across updates for each character, matching Rust's enchantment map. The warning service requires character level 66 or higher.
 - Login/Update responses are processed even when the request has no parameters.
 
 ## Reference gaps
+
+The supplied login capture extends `events` to 12 fields, with `hv` at index 11 identifying Hellevator alongside the numeric flags at index 1. This string field is absent from the Rust snapshot. The extension preserves string fields for this response and recognizes `hv` at the observed offset, retaining Rust's minimum length and replacement semantics.
 
 The current expedition UI reads `SideTasks` from words 1..3 of each available expedition. The Rust `AvailableExpedition` parser skips these words entirely. This used UI field is retained as legacy compatibility data; its meaning cannot be verified from the supplied Rust implementation.
 
@@ -69,4 +72,4 @@ Expedition state fields, crossroad heroism, backpacks, halftime choices and rewa
 
 ## Checks
 
-`npm run test:parsers` exercises fixed Rust-layout fixtures, parser boundaries, account isolation, partial updates, server day rollover, modern response dispatch, combat inputs and history compatibility. The Angular production build also checks templates. Fixtures are synthetic protocol records derived from the supplied Rust code; no live game response capture was supplied.
+`npm run test:parsers` exercises fixed Rust-layout fixtures, parser boundaries, account isolation, partial updates, server day rollover, modern response dispatch, combat inputs and history compatibility. `node tests/event-response.test.cjs` checks the captured mixed event response, numeric flags, string codes and session updates. The Angular production build also checks templates. Other fixtures are synthetic protocol records derived from the supplied Rust code.

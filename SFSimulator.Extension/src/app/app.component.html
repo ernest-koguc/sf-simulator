@@ -1,45 +1,60 @@
-<div class="extension-overlay pointer-events-none fixed inset-0 z-[2147483647]">
+@let current = sessionManager.current();
+@let isMinimized = minimized();
+<div class="extension-overlay pointer-events-none fixed inset-0 z-2147483647">
   <div tab='home' cdkDrag cdkDragBoundary=".extension-overlay"
-    [cdkDragFreeDragPosition]="dragPosition()"
+    [cdkDragDisabled]="isMinimized"
     (cdkDragEnded)="savePosition($event)"
     [style.opacity]="settings.opacity()"
+    [class.extension-panel-minimized]="isMinimized"
     class="pointer-events-auto absolute top-0 left-0 w-100 max-w-full max-h-full overflow-hidden bg-background text-foreground rounded-xl shadow-2xl">
-    <div cdkDragHandle class="flex w-full cursor-grab touch-none select-none items-center px-4 py-3
-      active:cursor-grabbing">
-      <sf-lab-logo/>
-      <span class="font-semibold text-xl">SF Lab</span>
-      <span class='mx-auto'></span>
-      <span hlmBadge variant="secondary">{{ version }}</span>
-      <button hlmBtn variant='ghost' class='ml-2'>
-        <ng-icon name="lucideSettings" />
+    <div class="extension-title-bar flex w-full select-none items-center px-1 py-2">
+      <div cdkDragHandle class="extension-title flex flex-1 touch-none items-center cursor-grab active:cursor-grabbing">
+        <sf-lab-logo/>
+        <span class="extension-title-text font-semibold text-xl">SF Lab</span>
+      </div>
+      <button hlmBtn type="button" variant="ghost" size="icon-sm"
+        [title]="isMinimized ? 'Restore SF Lab' : 'Minimize SF Lab'"
+        (click)="minimized.set(!isMinimized)">
+        <ng-icon [name]="isMinimized ? 'lucideMaximize2' : 'lucideMinus'" />
       </button>
     </div>
-    <hlm-tabs tab='home'>
-      <hlm-tabs-list class='w-full'>
-        <button class="flex-[0]" hlmTabsTrigger="home"><ng-icon name='lucideHome'/></button>
-        <button class="min-w-20" hlmTabsTrigger="dungeon">Dungeon</button>
-        <button class="min-w-20" hlmTabsTrigger="dailies">Dailies</button>
-        <button class="flex-[0]" hlmTabsTrigger="logs"><ng-icon name='lucideHistory'/></button>
-      </hlm-tabs-list>
-      <div hlmTabsContent='home'>
-        @let current = sessionManager.current();
+    <div [hidden]="isMinimized">
+      <hlm-tabs tab='home'>
+        <hlm-tabs-list class='w-full'>
+          <button class="flex-0" hlmTabsTrigger="home"><ng-icon name='lucideHome'/></button>
+          <button class="min-w-20" hlmTabsTrigger="dungeon" [disabled]='current == null'>Dungeons</button>
+          <button class="min-w-20" hlmTabsTrigger="dailies" [disabled]='current == null'>Dailies</button>
+          <button class="flex-0" hlmTabsTrigger="logs"><ng-icon name='lucideHistory'/></button>
+          <button class="flex-0" hlmTabsTrigger='settings'><ng-icon name='lucideSettings'/></button>
+        </hlm-tabs-list>
+        <tab-content hlmTabsContent='home'>
+          <home-tab/>
+        </tab-content>
+        <tab-content hlmTabsContent='dungeon' appearance='compact' fullHeight>
+          <dungeon-tab/>
+        </tab-content>
+        <tab-content hlmTabsContent='dailies'>
+          <dailies-tab/>
+        </tab-content>
+        <tab-content hlmTabsContent='logs'>
+          <logs-tab/>
+        </tab-content>
+        <tab-content hlmTabsContent='settings'>
+          <settings-tab/>
+        </tab-content>
+      </hlm-tabs>
+      <div class='flex justify-center items-center gap-1 pb-5 pt-2 px-5 text-xs font-bold'>
         @if (current) {
-          Logged as {{ current.playerName }}
-          <br/>
-          Server: {{ current.server }}
+          <span class='text-primary'>{{ current.playerName }}</span>
+          |
+          <span class='text-secondary'>{{ current.server }}</span>
         }
         @else {
-          You are currently not logged in to any character.
+          <span class='text-destructive'>You are currently not logged in to any character.</span>
         }
-
+        <span class='mx-auto'></span>
+        <span hlmBadge variant="outline">ver {{ version }}</span>
       </div>
-      <div hlmTabsContent='dungeon'>
-        <dungeon-tab/>
-      </div>
-      <div hlmTabsContent='dailies'>
-        <dailies-tab/>
-      </div>
-      <div hlmTabsContent='logs'>Logs</div>
-    </hlm-tabs>
+    </div>
   </div>
 </div>

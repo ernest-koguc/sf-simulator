@@ -3,23 +3,23 @@ import { BrnTabs } from '@spartan-ng/brain/tabs';
 import { classes } from '@spartan-ng/helm/utils';
 
 @Directive({
-	selector: '[hlmTabs],hlm-tabs',
-	exportAs: 'hlmTabs',
-	hostDirectives: [
-		{
-			directive: BrnTabs,
-			inputs: ['orientation', 'activationMode', 'brnTabs: tab'],
-			outputs: ['tabActivated'],
-		},
-	],
-	host: {
-		'data-slot': 'tabs',
-	},
+  selector: '[hlmTabs],hlm-tabs',
+  exportAs: 'hlmTabs',
+  hostDirectives: [
+    {
+      directive: BrnTabs,
+      inputs: ['orientation', 'activationMode', 'brnTabs: tab'],
+      outputs: ['tabActivated'],
+    },
+  ],
+  host: {
+    'data-slot': 'tabs',
+  },
 })
 export class HlmTabs {
-	public readonly tab = input.required<string>();
+  public readonly tab = input.required<string>();
 
-	constructor() {
-		classes(() => 'group/tabs flex gap-2 data-[orientation=horizontal]:flex-col');
-	}
+  constructor() {
+    classes(() => 'group/tabs flex data-[orientation=horizontal]:flex-col');
+  }
 }

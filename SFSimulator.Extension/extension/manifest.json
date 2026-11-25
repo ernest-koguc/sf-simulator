@@ -7,7 +7,9 @@
     "16": "icon16.png",
     "32": "icon32.png",
     "48": "icon48.png",
-    "64": "icon64.png"
+    "64": "icon64.png",
+    "128": "icon128.png"
+
   },
   "permissions": [
   ],
@@ -20,11 +22,13 @@
       "js": [ "sf-lab-loader.js" ],
       "matches": [
         "https://sfgame.net/*",
-        "https://play.sfgame.net/*"
+        "https://play.sfgame.net/*",
+        "https://test1.sfgame.net/*"
       ],
       "include_globs": [
         "https://sfgame.net/*",
-        "https://play.sfgame.net/"
+        "https://play.sfgame.net/",
+        "https://test1.sfgame.net/*"
       ]
     }
   ],
