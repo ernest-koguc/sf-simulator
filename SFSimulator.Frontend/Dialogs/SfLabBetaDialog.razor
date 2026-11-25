@@ -1,0 +1,19 @@
+@inject DialogService DialogService
+
+<RadzenStack Gap="1rem">
+    <p>
+        <strong class='rz-color-primary'>SF Lab</strong> is a browser extension for Shakes &amp; Fidget, now in closed beta.
+        It estimates your chances of winning upcoming dungeon fights using your live character stats directly in the game!
+        On top of that there is a daily activities reminder about things like arena fights, wheel of fortune and so on.
+    </p>
+
+    <video autoplay loop muted playsinline controls style="width: 100%; border-radius: 8px;" class='sf-lab-preview'>
+        <source src="videos/sf_lab_demo.webm" type="video/webm" />
+    </video>
+
+    <p>Want to try it? Send <strong class='rz-color-primary'>@Constants.DiscordContact</strong> a DM on Discord for beta access.</p>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+        <RadzenButton Text="Got it" Click="() => DialogService.Close(true)" />
+    </RadzenStack>
+</RadzenStack>

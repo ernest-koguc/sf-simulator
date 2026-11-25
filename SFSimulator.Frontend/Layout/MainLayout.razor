@@ -61,12 +61,56 @@
 <RadzenComponents />
 
 @code {
+    private const string SfLabBetaAcknowledgedKey = "sf-simulator:sf-lab-closed-beta-acknowledged";
+
     private bool ShowMenu { get; set; } = false;
     private void ToggleMenu() => ShowMenu = !ShowMenu;
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
     [Inject]
     private IJSRuntime JsRuntime { get; set; } = default!;
+    [Inject]
+    private DialogService DialogService { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        try
+        {
+            if (await JsRuntime.InvokeAsync<string?>("localStorage.getItem", SfLabBetaAcknowledgedKey) == "true")
+            {
+                return;
+            }
+        }
+        catch (JSException)
+        {
+            // The announcement can still be shown when browser storage is unavailable.
+        }
+
+        var acknowledged = await DialogService.OpenAsync<SfLabBetaDialog>("SF Lab closed beta", options: new DialogOptions
+        {
+            Width = "min(64rem, calc(100vw - 2rem))",
+            ShowClose = false,
+            CloseDialogOnEsc = false,
+            CloseDialogOnOverlayClick = false
+        });
+
+        if (acknowledged is true)
+        {
+            try
+            {
+                await JsRuntime.InvokeVoidAsync("localStorage.setItem", SfLabBetaAcknowledgedKey, "true");
+            }
+            catch (JSException)
+            {
+                // Confirmation still dismisses the announcement when browser storage is unavailable.
+            }
+        }
+    }
 
     private async Task NavigateToGithub()
     {
